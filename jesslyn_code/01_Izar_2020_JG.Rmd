@@ -1,0 +1,397 @@
+---
+title: "01 Izar 2020"
+author: "Jesslyn Goh"
+date: "4/17/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+
+# saving obj setup
+proj = "Izar_2020"
+date = Sys.Date()
+fig.dir = "jesslyn_plots"
+
+# Read in Seurat objects
+cohort1 = readRDS("data/Izar_2020/Izar_2020_10x.RDS")
+cohort2 = readRDS("data/Izar_2020/Izar_2020_SS2.RDS")
+
+# Read in gene lists
+hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+beep(4)
+```
+
+# Jesslyn Tasks for 4/24/20
+*Run all tasks on datasets separately*
+
+[Dplyr cheatsheet for data transformation](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf)
+
+## Analysis & plots (for 4/29/20)
+  - Read in expression data **done**
+  - Read in gene lists **done**
+  - Read in and wrangle supp tables
+    - *hint1:* might have to make edited version of excel files 
+    - *hint2:* use `read_xlsx()`
+    - Supp table 1 for patient/PDX metadata (treatment info, etc)
+    - Supp table 2 for cell type assignments (can enter this in manaully if you want) **done**
+    - Add relevant metadata to metadata slots of Seurat objects 
+    - Add cell type assignments **done**
+  - Make distribution plots of gene expression by cells and by genes
+  - Add cell cycle state to metadata slot **done**
+  - Patient-specific metrics (*hint:* use `summarize()` and `count`)
+    - Number of patients **done**
+    - Number of cells per patient **done**
+    - Number of cels per type per patient **done**
+  - Run PCA, plot PCA using Seurat functions (dotplot + Heatmaps) **done**
+  - Run UMAP **done**
+  - Run clustering **done**
+  - Run Find Marker genes **done**
+  - Generate UMAP plots for all metadata clumns
+  
+hint: to save plot use `ggsave()`
+
+## (for 4/29/2020)
+COHORT1
+- remove clusters from cohort1 (19-21, maybe -1)
+- run clustering and umap separately for malignant and nonmalignant cells
+   - create patient and treatment status specific overlays
+- score cells using gene list (list describe certain biological functions)
+- maybe run infercnv
+- make heatmap (y = genes, x = cells, cells grouped by cell type) - top20
+- average gene expression per gene per cell type (make a table) 
+  - one for columns that are cell types 
+  - one for columns that are clusters
+- make table: number of cells per treatment status
+- make table: number of cells per treatment status per cell type
+- make table: subset malignant cells --> number of cells per patient per treatment status
+- save tables to csv files
+(important to have a big enough sample size)
+
+COHORT2
+- same thing as last week + this week 
+
+
+PDX
+- same thing as last week + this week 
+
+
+# Below is brief intro on Rmarkdown by Rstudio
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r treatmentInfo}
+supptab1 = read_excel("data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
+
+#treatment info of cohort 1
+pnt = supptab1 %>% mutate(Patient = parse_number(`Patient ID`)) %>%
+                    select(`Patient`, `Treatment status of sample`) %>% filter(`Patient`<=6)
+
+pnt = rbind(pnt[1:2,], c(2.1, "On-treatment"), pnt[-(1:2),])
+pnt = rbind(pnt[1:6,], c(5.1, "After 1 cycle of chemotherapy"), pnt[-(1:6),])
+
+pnt[6,2] = "Treatment-naïve"
+
+pnt = mutate(pnt, sample.ID = c("1976", "3250", "3250.1", "3266", "3281", "3288", "3288.1", "3290"))
+
+#add treatment info to metadata 
+treatment <- rep("treatment", ncol(cohort1))
+treatment[cohort1$sample.ID == "1976"] <- "On-treatment"
+treatment[cohort1$sample.ID == "3250"] <- "On-treatment"
+treatment[cohort1$sample.ID == "3250.1"] <- "On-treatment"
+treatment[cohort1$sample.ID == "3266"] <- "Treatment-naive"
+treatment[cohort1$sample.ID == "3281"] <- "After 1 cycle of chemotherapy"
+treatment[cohort1$sample.ID == "3288"] <- "Treatment-naive"
+treatment[cohort1$sample.ID == "3288.1"] <- "After 1 cycle of chemotherapy"
+treatment[cohort1$sample.ID == "3290"] <- "Treatment-naive"
+
+cohort1 <- AddMetaData(cohort1, treatment, col.name = "treatment.Status")
+```
+
+```{r cellTypeAssignment}
+supptab2 = read_excel("data/Izar_2020/Table_S2.xlsx", skip=2) #make 2nd the header
+
+
+celltypes = rep("NA", ncol(cohort1))
+celltypes[cohort1$clst %in% c(1,2,3,4,5)] <- "Malignant" #gives a logical vector for every spot in the cluster vector
+
+celltypes[cohort1$clst == "6"] <- "Fibroblast"
+celltypes[cohort1$clst == "7"] <- "Fibroblast"
+celltypes[cohort1$clst == "8"] <- "Fibroblast"
+celltypes[cohort1$clst == "9"] <- "Fibroblast"
+celltypes[cohort1$clst == "10"] <- "Macrophage"
+celltypes[cohort1$clst == "11"] <- "Macrophage"
+celltypes[cohort1$clst == "12"] <- "Macrophage"
+celltypes[cohort1$clst == "13"] <- "Macrophage"
+celltypes[cohort1$clst == "14"] <- "DC"
+celltypes[cohort1$clst == "15"] <- "DC"
+celltypes[cohort1$clst == "16"] <- "B cells"
+celltypes[cohort1$clst == "17"] <- "T cells"
+celltypes[cohort1$clst == "18"] <- "Erythrocytes"
+
+cohort1 <- AddMetaData(cohort1, celltypes, col.name = "cell.type")
+Idents(cohort1) <- "cell.type"
+
+```
+
+```{r patientMetrics}
+
+#patient metrics for cohort1
+numPatients = length(unique(cohort1@meta.data$patient)) #number of patients in the cohort 
+numCellsPerPatient = table(cohort1@meta.data$patient) %>% as.data.frame() #number of cells per patient 
+write_csv(numCellsPerPatient, "jesslyn_plots/numCellsPerPatient.csv")
+numCellsPerTypePerPatient = table(cohort1$patient, cohort1$cell.type)%>% as.data.frame() #number of cells per type per patient
+write_csv(numCellsPerTypePerPatient, "jesslyn_plots/numCellsPerTypePerPatient.csv")
+
+
+```
+
+```{r cellCycle}
+cohort1 <- CellCycleScoring(cohort1, g2m.features = g2m.genes, s.features = s.genes)
+```
+
+```{r score cells}
+#score house keeping genes
+cohort1 <- AddModuleScore(cohort1, features = list(hkgenes), name = "hkgenes")
+```
+
+```{r plot, echo=FALSE}
+#distribution plots of gene expression by cells 
+
+
+
+#distribution plots of gene expression by genes
+
+```
+
+```{r PCA}
+#identify highly variable genes 
+cohort1 <- FindVariableFeatures(cohort1, selection.method = "vst") #wasn't sure if this was already done
+
+#scale data 
+cohort1 <- ScaleData(cohort1, features = rownames(cohort1), do.scale = FALSE, do.center = FALSE) #data is already scaled, but have to "scale" it for pca 
+
+#run PCA
+cohort1 <- RunPCA(cohort1, features = VariableFeatures(cohort1))
+
+
+
+#plot PCA - shows differential expresison between different cohorts
+PCAPlot(cohort1)
+ggsave("cohort1_pcaplot.jpeg", path="jesslyn_plots")
+
+#determine dimensionality of data (how many pcs to include)
+ElbowPlot(cohort1)
+#graph shows probably pc1 to pc15 are important
+ggsave("cohort1_pcaDim.jpeg", path="jesslyn_plots")
+
+DotPlot(cohort1, features = VariableFeatures(cohort1)[1:5])
+ggsave("cohort1_pca_dotplot.jpeg", path = "jesslyn_plots")
+DoHeatmap(cohort1, features = VariableFeatures(cohort1)[1:10], group.by = 'ident', size = 2)
+ggsave("cohort1_pca_heatmap.jpeg", path = "jesslyn_plots", width = 10)
+```
+
+```{r run UMAP}
+
+#run UMAP, specify dimensions previously determined
+cohort1<- RunUMAP(cohort1)
+
+#plot UMAP- shows clustering of cohorts
+DimPlot(cohort1, reduction = "umap")
+ggsave("cohort1_umap_celltype_plot.jpeg", path = "jesslyn_plots")
+```
+
+```{r run clustering}
+#find neighbors first
+cohort1 <- FindNeighbors(cohort1)
+
+#find clusters
+cohort1 <- FindClusters(cohort1)
+#seurat and metadata had different clusters
+#there are multiple clustering algorithms and paramters, and inputs
+```
+
+```{r find marker genes}
+#find differentially expressed genes between every cluster
+cohort1.markers <- FindAllMarkers(cohort1, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+#what does it mean for a marker to be negative?
+#looking for genes that are exclusively expressed in certain clusters 
+#can also look for genes that are exclusively not expressed in clusters
+#pps doesn't consider genes that are not expressed 
+#important to know if a gene is truly zero in 10x data 
+
+#plot top 10 differential gene expression across clusters 
+top10 <- cohort1.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
+DoHeatmap(cohort1, features = top10$gene) + NoLegend()
+ggsave("cohort1_top10_differential_genes.jpeg", path="jesslyn_plots")
+```
+
+```{plot UMAP for metadata}
+UMAPPlot(cohort1, group.by = 'ident')
+ggsave("cohort1_umap_celltype.png", path = "jesslyn_plots")
+
+UMAPPlot(cohort1, group.by = 'patient')
+ggsave("cohort1_umap_patient.png", path = "jesslyn_plots")
+
+UMAPPlot(cohort1, group.by = 'treatment.Status')
+ggsave("cohort1_umap_treatment.png", path = "jesslyn_plots")
+
+UMAPPlot(cohort1, group.by='Phase')
+ggsave("cohort1_umap_cellcyle.png", path = "jesslyn_plots")
+
+bySScore = UMAPPlot(cohort1, group.by = 'S.Score')
+byG2M.Score = UMAPPlot(cohort1, group.by = 'G2M.Score')
+```
+
+#FOCUS ON MALIGNANT CELLS vs. NONMALIGNANT CELLS
+```{r subset malignant cells vs. nonmalignant cells}
+cohort1Malignant <- subset(cohort1, subset = (cell.type == "Malignant"))
+cohort1NonMalignant <- subset(cohort1, subset = (cell.type != "Malignant"))
+```
+
+```{r patient metrics}
+numMalCellsPerPatientPerTreatment <- table(cohort1Malignant$patient, cohort1Malignant$treatment.Status)
+
+numNonMalCellsPerPatientPerTreatment <- table(cohort1NonMalignant$patient, cohort1NonMalignant$treatment.Status)
+```
+
+```{r identify variable genes and run PCA}
+#MALIGNANT
+
+#identify highly variable genes 
+cohort1Malignant <- FindVariableFeatures(cohort1Malignant, selection.method = "vst") 
+#scale data 
+cohort1Malignant <- ScaleData(cohort1Malignant, features = rownames(cohort1Malignant), do.scale = FALSE, do.center = FALSE) 
+
+cohort1Malignant <- RunPCA(cohort1Malignant, features = VariableFeatures(cohort1Malignant))
+
+PCAPlot(cohort1Malignant)
+ggsave("cohort1Malignant_pcaplot.jpeg", path="jesslyn_plots")
+
+#NONMALIGNANT 
+
+cohort1NonMalignant <- FindVariableFeatures(cohort1NonMalignant, selection.method = "vst") 
+cohort1NonMalignant <- ScaleData(cohort1NonMalignant, features = rownames(cohort1NonMalignant), do.scale = FALSE, do.center = FALSE) #data is already scaled, but have to "scale" it for pca 
+
+cohort1NonMalignant <- RunPCA(cohort1NonMalignant, features = VariableFeatures(cohort1NonMalignant))
+PCAPlot(cohort1NonMalignant)
+ggsave("cohort1NonMalignant_pcaplot.jpeg", path="jesslyn_plots")
+```
+
+```{r run clustering}
+## MALIGNANT SUBSET
+
+#find neighbors first
+cohort1Malignant <- FindNeighbors(cohort1Malignant)
+
+#find clusters
+cohort1Malignant <- FindClusters(cohort1Malignant)
+
+Idents(cohort1Malignant) <- "seurat_clusters"
+
+## NONMALIGNANT SUBSET
+
+#find neighbors first
+cohort1NonMalignant <- FindNeighbors(cohort1NonMalignant)
+
+#find clusters
+cohort1NonMalignant <- FindClusters(cohort1NonMalignant)
+Idents(cohort1NonMalignant) <- "seurat_clusters"
+
+```
+
+```{r run UMAP}
+#MALIGNANT 
+#run UMAP, specify dimensions previously determined
+
+cohort1Malignant<- RunUMAP(cohort1Malignant, dims = 1:15)
+#plot UMAP- shows clustering
+DimPlot(cohort1Malignant, reduction = "umap", pt.size = 0.3)
+ggsave("cohort1_umap_Malignant_plot.jpeg", path = "jesslyn_plots")
+
+
+#patient and treatment overlays
+DimPlot(cohort1Malignant, reduction = "umap", shape.by = "treatment.Status", pt.size = 0.5)
+ggsave("cohort1_umap_Malignant_ShapebyTreatment.png", path = "jesslyn_plots", width = 10)
+
+DimPlot(cohort1Malignant, reduction = "umap", group.by="treatment.Status")
+ggsave("cohort1_umap_Malignant_ColorbyTreatment.png", path = "jesslyn_plots", width = 10)
+
+
+#NONMALIGNANT
+#run UMAP, specify dimensions previously determined
+cohort1NonMalignant<- RunUMAP(cohort1NonMalignant, dims = 1:15)
+
+#plot UMAP- shows clustering of cohorts
+DimPlot(cohort1NonMalignant, reduction = "umap")
+
+ggsave("cohort1_umap_Nonmalignant_plot.jpeg", path = "jesslyn_plots")
+
+
+#patient and treatment overlays
+DimPlot(cohort1NonMalignant, reduction = "umap", group.by="treatment.Status")
+ggsave("cohort1_umap_NonMalignant_ColorbyTreatment.png", path = "jesslyn_plots", width = 10)
+
+```
+
+```{r find marker genes}
+#find marker genes for malignant cells
+cohort1Malignant.markers <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+#plot top 20 differential gene expression across malignant clusters 
+top20Malignant <- cohort1Malignant.markers %>% group_by(cluster) %>% top_n(n = 20, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top20Malignant$gene) + NoLegend()
+ggsave("cohort1Malignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
+
+#find marker genes for nonmalignant cells
+cohort1NonMalignant.markers <- FindAllMarkers(cohort1NonMalignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+#plot top 20 differential gene expression across malignant clusters 
+top20NonMalignant <- cohort1NonMalignant.markers %>% group_by(cluster) %>% top_n(n = 20, wt = avg_logFC)
+
+DoHeatmap(cohort1NonMalignant, features = top20NonMalignant$gene) + NoLegend()
+ggsave("cohort1NonMalignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
+
+```
+
+```{r compute average gene expression}
+#ALL
+celltype.averages <- AverageExpression(cohort1)
+celltype.averages[["RNA"]] #cell type as columns 
+celltype.averages[["RNA"]] %>% as.data.frame() %>% write_csv( "jesslyn_plots/cohort1_averageExpression_byCellType.csv") #missing genes as rows
+
+Idents(cohort1) <- "clst"
+cluster.averages <- AverageExpression(cohort1)
+cluster.averages[["RNA"]] #cluster as columns 
+cluster.averages[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1_averageExpression_byCluster.csv") #missing genes as rows
+
+#MALIGNANT ONLY 
+Idents(cohort1Malignant) <- "seurat_clusters"
+Malcluster.avergaes <- AverageExpression(cohort1Malignant)
+Malcluster.avergaes[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1Malignant_averageExpression_byCluster.csv")
+
+#NON MALIGNANT ONLY
+Idents(cohort1NonMalignant) <- "seurat_clusters"
+NonMalcluster.avergaes <- AverageExpression(cohort1NonMalignant)
+NonMalcluster.avergaes[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1NonMalignant_averageExpression_byCluster.csv")
+```
