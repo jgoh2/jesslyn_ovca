@@ -3,6 +3,8 @@ Analyzing gene expression data of cells in ascites samples of patients with ovar
 Our goal is to detect how treatment affects the gene expression profile of malignant cells, and how the gene expression profile of 
 cycling persister cells differ from those that are not resistant to chemotherapy treatment. 
 
+## collaborators: Mike and Jesslyn 
+
 ### tasks
 - [x] Load in the Seurat objects (10x, SmartSeq, PDX) 
   - [ ] Add relevant metadata slots 
