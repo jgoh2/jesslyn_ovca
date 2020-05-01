@@ -85,8 +85,8 @@ p2 = ggplot(genes, aes(x = id, y = . , fill = id)) +
        y = "avg expresion") +
   theme_classic()
 
-p = (p1 + p2) +  plot_annotation(title = glue('{proj}: mean expression across cells and genes'),
-                                 caption =  caption = date())
+p = (p1 + p2) + plot_annotation(title = glue('{proj}: mean expression across cells and genes'),
+                                 caption = date())
 print(p)
 ggsave(glue('{fig.dir}/summary_dist.png'))
 
