@@ -1,0 +1,187 @@
+---
+title: "Izar 2020 scRNAseq data preprocessing"
+author: "Mike Cuoco"
+output:
+  html_document:
+    theme: united
+    df_print: kable
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+editor_options: 
+  chunk_output_type: console
+---
+***
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 120),
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r init}
+library(tidyverse)
+library(plyr)
+library(reshape2)
+library(Matrix)
+library(Seurat)
+library(infercnv)
+library(patchwork)
+library(glue)
+library(beepr)
+library(broom)
+library(here)
+
+# saving obj setup
+proj = "Izar_2020"
+date = Sys.Date()
+
+# setup directories
+if (!dir.exists(here("mike_plots",proj))){
+  dir.create(here("mike_plots",proj))
+  dir.create(here("mike_plots",proj,date))
+} else if (!dir.exists(here("mike_plots",proj,date))){
+  dir.create(here("mike_plots",proj,date))
+}
+
+fig.dir = here("mike_plots",proj,date)
+
+# Read in Seurat objects
+ovca_10x = here("data",proj,"Izar_2020_10x.RDS") %>% readRDS()
+ovca_SS2 = here("data",proj,"Izar_2020_SS2.RDS") %>% readRDS()
+hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+beep(4)
+```
+
+
+```{r check normal}
+# distribution plots
+cells_10x = Matrix::colMeans(ovca_10x[["RNA"]]) %>% as.data.frame()
+cells_10x$id = "10X"
+genes_10x = Matrix::rowMeans(ovca_10x[["RNA"]]) %>% as.data.frame()
+genes_10x$id = "10X"
+cells_SS2 = Matrix::colMeans(ovca_SS2[["RNA"]]) %>% as.data.frame()
+cells_SS2$id = "SS2"
+genes_SS2 = Matrix::rowMeans(ovca_SS2[["RNA"]]) %>% as.data.frame()
+genes_SS2$id = "SS2"
+
+cells = rbind(cells_10x, cells_SS2)
+genes = rbind(genes_10x, genes_SS2)
+
+p1 = ggplot(cells, aes(x = id, y = . , fill = id)) + 
+  geom_violin() +
+  labs(x = "cells",
+       y = "avg expression") +
+  theme_classic()
+
+p2 = ggplot(genes, aes(x = id, y = . , fill = id)) + 
+  geom_violin() +
+  labs(x = "genes",
+       y = "avg expresion") +
+  theme_classic()
+
+p = (p1 + p2) +  plot_annotation(title = glue('{proj}: mean expression across cells and genes'),
+                                 caption =  caption = date())
+print(p)
+ggsave(glue('{fig.dir}/summary_dist.png'))
+
+plot_df = rbind(select(ovca_10x@meta.data, c("orig.ident","nCount_RNA","nFeature_RNA")),
+               select(ovca_SS2@meta.data, c("orig.ident","nCount_RNA","nFeature_RNA")))
+
+p1 = ggplot(plot_df, aes(x = orig.ident, y = nFeature_RNA, fill = orig.ident)) + 
+  geom_violin() + 
+  geom_hline(yintercept = 1000, color = "darkred", linetype = "dashed") + 
+  geom_hline(yintercept = 2000, color = "darkblue", linetype = "dashed") + 
+  labs(y = "Genes") +
+  theme_classic()
+
+p2 = ggplot(plot_df, aes(x = orig.ident, y = nCount_RNA, fill = orig.ident)) + 
+  geom_violin() + 
+  geom_hline(yintercept = 4000, color = "darkred", linetype = "dashed") + 
+  labs(y = "Counts") +
+  theme_classic()
+
+p = (p1 + p2) +  plot_annotation(title = glue('{proj}: Genes/Counts per cell'),
+                                 caption =  caption = date())
+print(p)
+ggsave(glue('{fig.dir}/genes_UMIs.png'), width = 10, height = 10)
+```
+
+ - Looks like SS2 data is centered around 1 for by cell
+ - 10X data is not centered, but rather scaled
+
+```{r scale}
+# do not scale or center data, already done by authors
+ovca_10x = ScaleData(ovca_10x, do.scale = F, do.center = F)
+ovca_SS2 = ScaleData(ovca_SS2, do.scale = F, do.center = F)
+```
+
+***
+
+```{r pca,results='hide'}
+# run PCA
+ovca_10x <- RunPCA(object = ovca_10x, features = rownames(ovca_10x[["RNA"]]@data))
+ovca_SS2 <- RunPCA(object = ovca_SS2, features = rownames(ovca_SS2[["RNA"]]@data))
+
+# Examine and visualize PCA results a few different ways
+print(x = ovca_10x[['pca']], dims = 1:5, nfeatures = 5)
+VizDimLoadings(object = ovca_10x, dims = 1:2, reduction = 'pca')
+DimPlot(object = ovca_10x, reduction = 'pca')
+ggsave(glue('{fig.dir}/10X_PCA.png'), width = 12, height = 10)
+ElbowPlot(ovca_10x)
+ggsave(glue('{fig.dir}/10X_PCA_elbow.png'), width = 12, height = 10)
+
+print(x = ovca_SS2[['pca']], dims = 1:5, nfeatures = 5)
+VizDimLoadings(object = ovca_SS2, dims = 1:2, reduction = 'pca')
+DimPlot(object = ovca_SS2, reduction = 'pca')
+ggsave(glue('{fig.dir}/SS2_PCA.png'), width = 12, height = 10)
+ElbowPlot(ovca_SS2)
+ggsave(glue('{fig.dir}/SS2_PCA_elbow.png'), width = 12, height = 10)
+
+mat <- Seurat::GetAssayData(ovca_SS2, assay = "RNA", slot = "scale.data")
+pca <- ovca_SS2[["pca"]]
+
+DimHeatmap(object = ovca_10x, dims = 1:15, cells = 500, balanced = TRUE)
+DimHeatmap(object = ovca_SS2, dims = 1:15, cells = 500, balanced = TRUE)
+```
+
+```{r cluster, fig.height=5, fig.width=7}
+ovca_10x <- FindNeighbors(object = ovca_10x, dims = 1:10)
+ovca_10x <- FindClusters(object = ovca_10x, resolution = 0.5)
+
+# Look at cluster IDs of the first 5 cells
+head(x = Idents(object = ovca_10x), 5)
+
+ovca_SS2 <- FindNeighbors(object = ovca_SS2, dims = 1:10)
+ovca_SS2 <- FindClusters(object = ovca_SS2, resolution = 0.5)
+
+# Look at cluster IDs of the first 5 cells
+head(x = Idents(object = ovca_SS2), 5)
+```
+
+***
+
+### Run non-linear dimensional reduction (UMAP/tSNE)
+
+```{r tsne, fig.height=5, fig.width=7}
+# If you haven't installed UMAP, you can do so via reticulate::py_install(packages = "umap-learn")
+ovca_10x <- RunUMAP(object = ovca_10x, dims = 1:10)
+ovca_SS2 <- RunUMAP(object = ovca_SS2, dims = 1:10)
+```
+
+```{r cell cycle}
+ovca_10x <- CellCycleScoring(ovca_10x, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+ovca_SS2 <- CellCycleScoring(ovca_SS2, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+```
+
+```{r saveobject, eval=FALSE}
+saveRDS(ovca_10x, here("data",proj,glue("10x_preproc_{date}.RDS")))
+saveRDS(ovca_SS2, here("data",proj,glue("SS2_preproc_{date}.RDS")))
+beep(4)
+```
+
