@@ -9,7 +9,7 @@ library(glue)
 library(beepr)
 
 # read in housekeeping gene list
-hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
+hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
 
 # read and save 10x data to Seurat object 
 data_10x = vroom("data/Izar_2020/GSE146026_Izar_HGSOC_ascites_10x_log.tsv.gz")
@@ -59,4 +59,33 @@ seurat_obj <- AddMetaData(object = seurat_obj, metadata = Matrix::colSums(n.expr
 seurat_obj[["percent.mt"]] <- PercentageFeatureSet(object = seurat_obj, pattern = "^MT-")
 
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_SS2.RDS")
+
+# read and save SS2 data to Seurat object 
+data_PDX = vroom("data/Izar_2020/PDX_OvCa_processed.txt.gz")
+data_PDX = column_to_rownames(data_PDX, "...1")
+meta_df = colnames(data_PDX) %>% 
+        strsplit(split = "_") %>% 
+        unlist() %>%
+        matrix(ncol = 3, byrow = T) %>%
+        as.data.frame()
+colnames(meta_df) = c("model_ID","mouse_ID","cell_ID")
+colnames(data_PDX) = as.character(meta_df$cell_ID)
+system.time(seurat_obj <- CreateSeuratObject(counts = data_PDX, project = "Izar 2020: PDX data"))
+
+# assign meta data from rows of matrix to @metadata slot
+for (i in c("mouse_ID","model_ID")){
+  meta = meta_df[[i]]
+  names(meta) = Cells(seurat_obj)
+  seurat_obj[[i]] = meta
+  print(glue("loaded {i} into metadata"))
+}
+
+seurat_obj = subset(seurat_obj, features = rownames(seurat_obj))
+hkgenes.found = which(toupper(rownames(seurat_obj[["RNA"]]@data)) %in% hkgenes)
+n.expressed.hkgenes <- seurat_obj[["RNA"]]@data[hkgenes.found, ] > 0 
+seurat_obj <- AddMetaData(object = seurat_obj, metadata = Matrix::colSums(n.expressed.hkgenes), col.name = "n.exp.hkgenes")
+seurat_obj[["percent.mt"]] <- PercentageFeatureSet(object = seurat_obj, pattern = "^MT-")
+
+saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_PDX.RDS")
+
 beep(4)
