@@ -1,6 +1,8 @@
 ---
 title: "Izar 2020 Cohort1 Metadata Plots"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -19,9 +21,9 @@ library(readxl)
 library(ggplot2)
 
 # Read in Seurat objects
-cohort1 = readRDS(file = "data/Izar_2020/jesslyn_cohort1_processed.RDS")
-cohort1Malignant = readRDS(file="data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
-cohort1NonMalignant = readRDS(file="data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
+cohort1 = readRDS(file = "../data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1Malignant = readRDS(file="..data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+cohort1NonMalignant = readRDS(file="..data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
 ```
 
 #FOR ALL CELLS 
