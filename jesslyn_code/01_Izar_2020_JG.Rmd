@@ -31,8 +31,8 @@ fig.dir = "jesslyn_plots/cohort1"
 cohort1 = readRDS("data/Izar_2020/Izar_2020_10x.RDS")
 
 # Read in gene lists
-hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
-ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
 s.genes <- ccgenes[1:43]
 g2m.genes <- ccgenes[44:97]
 
@@ -238,7 +238,6 @@ ggsave("cohort1_pca_heatmap.jpeg", path = "jesslyn_plots", width = 10)
 ```
 
 ```{r run UMAP for ALL}
-
 #run UMAP, specify dimensions previously determined
 cohort1<- RunUMAP(cohort1, dims=1:15)
 
