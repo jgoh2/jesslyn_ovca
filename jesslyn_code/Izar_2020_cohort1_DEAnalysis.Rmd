@@ -1,0 +1,66 @@
+---
+title: "Izar 2020 cohort1 DE Analysis"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+
+# Read in Seurat objects
+cohort1 = readRDS("data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1Malignant = readRDS("data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+cohort1NonMalignant = readRDS("data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
+```
+
+```{r compute average gene expression}
+#ALL
+celltype.averages <- AverageExpression(cohort1)
+celltype.averages[["RNA"]] #cell type as columns 
+celltype.averages[["RNA"]] %>% as.data.frame() %>% write_csv( "jesslyn_plots/cohort1_averageExpression_byCellType.csv") #missing genes as rows
+
+Idents(cohort1) <- "clst"
+cluster.averages <- AverageExpression(cohort1)
+cluster.averages[["RNA"]] #cluster as columns 
+cluster.averages[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1_averageExpression_byCluster.csv") #missing genes as rows
+
+#MALIGNANT ONLY 
+Idents(cohort1Malignant) <- "seurat_clusters"
+Malcluster.avergaes <- AverageExpression(cohort1Malignant)
+Malcluster.avergaes[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1Malignant_averageExpression_byCluster.csv")
+
+#NON MALIGNANT ONLY
+Idents(cohort1NonMalignant) <- "seurat_clusters"
+NonMalcluster.avergaes <- AverageExpression(cohort1NonMalignant)
+NonMalcluster.avergaes[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1NonMalignant_averageExpression_byCluster.csv")
+```
+
+##ANSWERING RESEARCH QUESTIONS - how does treatment affect the cells?
+```{r Questions about cycling cells}
+#MALIGNANT CELLS
+numMalCellsPerTreatmentPerPhase = table(cohort1Malignant$Phase, cohort1Malignant$treatment.Status) %>% as.data.frame() %>% rename(Phase = Var1, Treatment = Var2, numCells = Freq)
+ggplot(numMalCellsPerTreatmentPerPhase, aes(x=Treatment, y=numCells, fill=Phase)) + geom_bar(position="fill", stat="identity")
+```
+
+```{r Questions about OXPHOS gene expression}
+#load in oxphos genes
+oxphosGenes <- read_csv("jesslyn_ovca/data/gene_lists/Ovarian_Signatures_Combined.csv")["HALLMARK_OXIDATIVE_PHOSPHORYLATION"] %>% pull("HALLMARK_OXIDATIVE_PHOSPHORYLATION")
+oxphosGenes<-oxphosGenes[1:200]
+
+oxphosGenes2<- read_csv("jesslyn_ovca/data/gene_lists/Ovarian_Signatures_Combined.csv")[27] %>% pull("HALLMARK_OXIDATIVE_PHOSPHORYLATION_1")
+oxphosGenes2 <- oxphosGenes[1:200]
+
+DotPlot(cohort1Malignant, group.by = "treatment.Status", features = oxphosGenes[1:20])
+ggsave("oxphosGeneExp.jpeg", width=20, height=5)
+```

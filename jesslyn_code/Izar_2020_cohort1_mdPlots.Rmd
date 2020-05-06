@@ -1,0 +1,145 @@
+---
+title: "Izar 2020 Cohort1 Metadata Plots"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+
+# Read in Seurat objects
+cohort1 = readRDS(file = "data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1Malignant = readRDS(file="data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+cohort1NonMalignant = readRDS(file="data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
+```
+
+#FOR ALL CELLS 
+```{r run clustering}
+#find neighbors first
+cohort1 <- FindNeighbors(cohort1)
+
+#find clusters
+cohort1 <- FindClusters(cohort1)
+#seurat and metadata had different clusters
+#there are multiple clustering algorithms and paramters, and inputs
+```
+
+```{r find marker genes}
+#find differentially expressed genes between every cluster
+cohort1.markers <- FindAllMarkers(cohort1, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+#what does it mean for a marker to be negative?
+#looking for genes that are exclusively expressed in certain clusters 
+#can also look for genes that are exclusively not expressed in clusters
+#pps doesn't consider genes that are not expressed 
+#important to know if a gene is truly zero in 10x data 
+
+#plot top 10 differential gene expression across clusters 
+top5 <- cohort1.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1, features = top5$gene, size = 3, angle = 90)
+ggsave("cohort1_top10_differential_genes.jpeg", path="jesslyn_plots")
+```
+
+```{plot UMAP for metadata}
+
+UMAPPlot(cohort1, group.by="clst")
+
+UMAPPlot(cohort1, group.by = 'ident')
+ggsave("cohort1_umap_celltype.png", path = "jesslyn_plots/cohort1/All")
+
+UMAPPlot(cohort1, group.by = 'patient')
+ggsave("cohort1_umap_patient.png", path = "jesslyn_plots/cohort1/All")
+
+UMAPPlot(cohort1, group.by='sample')
+ggsave("cohort1_umap_patient.png", path = "jesslyn_plots/cohort1/All")
+
+UMAPPlot(cohort1, group.by = 'treatment.Status')
+ggsave("cohort1_umap_treatment.png", path = "jesslyn_plots/cohort1/All")
+
+UMAPPlot(cohort1, group.by='Phase')
+ggsave("cohort1_umap_cellcyle.png", path = "jesslyn_plots/cohort1/All")
+
+bySScore = UMAPPlot(cohort1, group.by = 'S.Score/cohort1/All')
+byG2M.Score = UMAPPlot(cohort1, group.by = 'G2M.Score/cohort1/All')
+```
+
+#FOCUS on Malignant and nonmalignant subsets
+```{r run clustering}
+## MALIGNANT SUBSET
+
+#find neighbors first
+cohort1Malignant <- FindNeighbors(cohort1Malignant)
+
+#find clusters
+cohort1Malignant <- FindClusters(cohort1Malignant)
+
+Idents(cohort1Malignant) <- "seurat_clusters"
+
+## NONMALIGNANT SUBSET
+
+#find neighbors first
+cohort1NonMalignant <- FindNeighbors(cohort1NonMalignant)
+
+#find clusters
+cohort1NonMalignant <- FindClusters(cohort1NonMalignant)
+Idents(cohort1NonMalignant) <- "seurat_clusters"
+
+```
+
+```{r plot UMAP for malignant and nonmalignant}
+
+#MALIGNANT
+
+#umap by sample
+DimPlot(cohort1Malignant, reduction = "umap", group.by="sample")
+
+#umap by patient
+DimPlot(cohort1Malignant, reduction = "umap", group.by="patient")
+
+#umap by treatment
+DimPlot(cohort1Malignant, reduction = "umap", group.by="treatment.Status")
+ggsave("cohort1_umap_Malignant_ColorbyTreatment.png", path = "jesslyn_plots", width = 10)
+
+#umap by cell cycle phase
+DimPlot(cohort1Malignant, reduction = "umap", group.by="Phase")
+
+#NONMALIGNANT 
+
+#patient and treatment overlays
+DimPlot(cohort1NonMalignant, reduction = "umap", group.by="treatment.Status")
+ggsave("cohort1_umap_NonMalignant_ColorbyTreatment.png", path = "jesslyn_plots", width = 10)
+
+```
+
+```{r find marker genes}
+#find marker genes for malignant cells
+cohort1Malignant.markers <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+#plot top 20 differential gene expression across malignant clusters 
+top5Malignant <- cohort1Malignant.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5Malignant$gene)
+ggsave("cohort1Malignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
+
+#find marker genes for nonmalignant cells
+cohort1NonMalignant.markers <- FindAllMarkers(cohort1NonMalignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+#plot top 20 differential gene expression across malignant clusters 
+top20NonMalignant <- cohort1NonMalignant.markers %>% group_by(cluster) %>% top_n(n = 20, wt = avg_logFC)
+
+DoHeatmap(cohort1NonMalignant, features = top20NonMalignant$gene) + NoLegend()
+ggsave("cohort1NonMalignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
+
+```
+
+
+
