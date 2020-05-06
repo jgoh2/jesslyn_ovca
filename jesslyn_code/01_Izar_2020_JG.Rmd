@@ -20,6 +20,7 @@ library(patchwork) # package to combine plots
 library(glue)
 library(beepr)
 library(readxl)
+library(ggplot2)
 
 # saving obj setup
 proj = "Izar_2020"
@@ -27,14 +28,17 @@ date = Sys.Date()
 fig.dir = "jesslyn_plots"
 
 # Read in Seurat objects
-cohort1 = readRDS("data/Izar_2020/Izar_2020_10x.RDS")
-cohort2 = readRDS("data/Izar_2020/Izar_2020_SS2.RDS")
+cohort1 = readRDS("jesslyn_ovca/data/Izar_2020/Izar_2020_10x.RDS")
+cohort2 = readRDS("jesslyn_ovca/data/Izar_2020/Izar_2020_SS2.RDS")
 
 # Read in gene lists
-hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
-ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+hkgenes = read_lines("jesslyn_ovca/data/gene_lists/tirosh_house_keeping.txt", skip = 2)
+ccgenes = read_lines("jesslyn_ovca/data/gene_lists/regev_lab_cell_cycle_genes.txt")
 s.genes <- ccgenes[1:43]
 g2m.genes <- ccgenes[44:97]
+
+#filter out clusters -1, 19-21
+cohort1 <- subset(cohort1, subset = clst > -1 & clst < 19)
 
 beep(4)
 ```
@@ -101,7 +105,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r treatmentInfo}
-supptab1 = read_excel("data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
+supptab1 = read_excel("jesslyn_ovca/data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
 
 #treatment info of cohort 1
 pnt = supptab1 %>% mutate(Patient = parse_number(`Patient ID`)) %>%
@@ -128,8 +132,22 @@ treatment[cohort1$sample.ID == "3290"] <- "Treatment-naive"
 cohort1 <- AddMetaData(cohort1, treatment, col.name = "treatment.Status")
 ```
 
+```{r sample Assignment}
+sample <- rep("0", ncol(cohort1))
+sample[cohort1$sample.ID == "1976"] <- "1"
+sample[cohort1$sample.ID == "3250"] <- "2.0"
+sample[cohort1$sample.ID == "3250.1"] <- "2.1"
+sample[cohort1$sample.ID == "3266"] <- "3"
+sample[cohort1$sample.ID == "3281"] <- "4"
+sample[cohort1$sample.ID == "3288"] <- "5.0"
+sample[cohort1$sample.ID == "3288.1"] <- "5.1"
+sample[cohort1$sample.ID == "3290"] <- "6"
+
+cohort1<- AddMetaData(cohort1, sample, col.name = "sample")
+```
+
 ```{r cellTypeAssignment}
-supptab2 = read_excel("data/Izar_2020/Table_S2.xlsx", skip=2) #make 2nd the header
+supptab2 = read_excel("jesslyn_ovca/data/Izar_2020/Table_S2.xlsx", skip=2) #make 2nd the header
 
 
 celltypes = rep("NA", ncol(cohort1))
@@ -154,34 +172,43 @@ Idents(cohort1) <- "cell.type"
 
 ```
 
+
 ```{r patientMetrics}
 
 #patient metrics for cohort1
 numPatients = length(unique(cohort1@meta.data$patient)) #number of patients in the cohort 
-numCellsPerPatient = table(cohort1@meta.data$patient) %>% as.data.frame() #number of cells per patient 
-write_csv(numCellsPerPatient, "jesslyn_plots/numCellsPerPatient.csv")
-numCellsPerTypePerPatient = table(cohort1$patient, cohort1$cell.type)%>% as.data.frame() #number of cells per type per patient
-write_csv(numCellsPerTypePerPatient, "jesslyn_plots/numCellsPerTypePerPatient.csv")
 
+numCellsPerPatient = table(cohort1@meta.data$patient) %>% as.data.frame() #number of cells per patient 
+#write_csv(numCellsPerPatient, "jesslyn_plots/numCellsPerPatient.csv")
+
+numCellsPerTypePerPatient = table(cohort1$patient, cohort1$cell.type)%>% as.data.frame() %>% rename(patient = Var1, celltype = Var2, numCells = Freq)
+ggplot(numCellsPerTypePerPatient, aes(x=celltype, fill=patient, y=numCells)) + geom_bar(position="fill", stat="identity")
+
+numCellsPerCellTypePerSample = table(cohort1$sample, cohort1$cell.type) %>% as.data.frame() %>% rename(sample = Var1, celltype = Var2, numCells = Freq)
+ggplot(numCellsPerCellTypePerSample, aes(x=celltype, fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity")
+
+
+#write_csv(numCellsPerTypePerPatient, "jesslyn_plots/numCellsPerTypePerPatient.csv")
+numPatientsPerTreatment = table(cohort1$patient, cohort1$treatment.Status)
+
+numCellsPerTreatmentPerCellType = table(cohort1$cell.type, cohort1$treatment.Status) %>% as.data.frame() %>% rename(celltype = Var1, treatment = Var2, numCells = Freq)
+ggplot(numCellsPerTreatmentPerCellType, aes(x=celltype, fill=treatment, y=numCells)) + geom_bar(position="fill", stat="identity")
+
+numCellsPerTreatmentPerSample = table(cohort1$sample, cohort1$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment=Var2, numCells = Freq)
+ggplot(numCellsPerTreatmentPerSample, aes(x=treatment, fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity")
 
 ```
 
 ```{r cellCycle}
 cohort1 <- CellCycleScoring(cohort1, g2m.features = g2m.genes, s.features = s.genes)
+
+#distribution of cells in each cell cycle phase for each cell type 
+table(cohort1$cell.type, cohort1$Phase) %>% as.data.frame() %>% rename(Celltype = Var1, Phase = Var2, numCells = Freq) %>% ggplot(aes(x=Celltype, y=numCells, fill = Phase)) + geom_bar(position="fill", stat="identity")
 ```
 
 ```{r score cells}
 #score house keeping genes
 cohort1 <- AddModuleScore(cohort1, features = list(hkgenes), name = "hkgenes")
-```
-
-```{r plot, echo=FALSE}
-#distribution plots of gene expression by cells 
-
-
-
-#distribution plots of gene expression by genes
-
 ```
 
 ```{r PCA}
@@ -200,6 +227,18 @@ cohort1 <- RunPCA(cohort1, features = VariableFeatures(cohort1))
 PCAPlot(cohort1)
 ggsave("cohort1_pcaplot.jpeg", path="jesslyn_plots")
 
+#separate by treatment? 
+PCAPlot(cohort1, group.by="treatment.Status")
+
+#separate by cellcycle phase?
+PCAPlot(cohort1, group.by="Phase")
+
+#separate by patient?
+PCAPlot(cohort1, group.by="patient")
+
+#separate by cluster? 
+PCAPlot(cohort1, group.by="clst")
+
 #determine dimensionality of data (how many pcs to include)
 ElbowPlot(cohort1)
 #graph shows probably pc1 to pc15 are important
@@ -214,11 +253,12 @@ ggsave("cohort1_pca_heatmap.jpeg", path = "jesslyn_plots", width = 10)
 ```{r run UMAP}
 
 #run UMAP, specify dimensions previously determined
-cohort1<- RunUMAP(cohort1)
+cohort1<- RunUMAP(cohort1, dims=1:15)
 
 #plot UMAP- shows clustering of cohorts
 DimPlot(cohort1, reduction = "umap")
 ggsave("cohort1_umap_celltype_plot.jpeg", path = "jesslyn_plots")
+
 ```
 
 ```{r run clustering}
@@ -241,17 +281,24 @@ cohort1.markers <- FindAllMarkers(cohort1, only.pps = TRUE, min.pct = 0.25, logf
 #important to know if a gene is truly zero in 10x data 
 
 #plot top 10 differential gene expression across clusters 
-top10 <- cohort1.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC)
-DoHeatmap(cohort1, features = top10$gene) + NoLegend()
+top5 <- cohort1.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1, features = top5$gene, size = 3, angle = 90)
 ggsave("cohort1_top10_differential_genes.jpeg", path="jesslyn_plots")
 ```
 
 ```{plot UMAP for metadata}
+
+UMAPPlot(cohort1, group.by="clst")
+
 UMAPPlot(cohort1, group.by = 'ident')
 ggsave("cohort1_umap_celltype.png", path = "jesslyn_plots")
 
 UMAPPlot(cohort1, group.by = 'patient')
 ggsave("cohort1_umap_patient.png", path = "jesslyn_plots")
+
+UMAPPlot(cohort1, group.by='sample')
+ggsave("cohort1_umap_patient.png", path = "jesslyn_plots")
+
 
 UMAPPlot(cohort1, group.by = 'treatment.Status')
 ggsave("cohort1_umap_treatment.png", path = "jesslyn_plots")
@@ -270,7 +317,13 @@ cohort1NonMalignant <- subset(cohort1, subset = (cell.type != "Malignant"))
 ```
 
 ```{r patient metrics}
+numMalCellsPerSample <- table(cohort1Malignant$sample, cohort1Malignant$cell.type) %>% as.data.frame() %>% rename(sample = Var1, numCells=Freq, celltype = Var2)
+ggplot(numMalCellsPerSample, aes(x=celltype, fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill")
+
 numMalCellsPerPatientPerTreatment <- table(cohort1Malignant$patient, cohort1Malignant$treatment.Status)
+
+numMalCellsPerSamplePerTreatment<-table(cohort1Malignant$sample, cohort1Malignant$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment = Var2, numCells = Freq)
+ggplot(numMalCellsPerSamplePerTreatment, aes(x=treatment, fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill")
 
 numNonMalCellsPerPatientPerTreatment <- table(cohort1NonMalignant$patient, cohort1NonMalignant$treatment.Status)
 ```
@@ -330,12 +383,18 @@ DimPlot(cohort1Malignant, reduction = "umap", pt.size = 0.3)
 ggsave("cohort1_umap_Malignant_plot.jpeg", path = "jesslyn_plots")
 
 
-#patient and treatment overlays
-DimPlot(cohort1Malignant, reduction = "umap", shape.by = "treatment.Status", pt.size = 0.5)
-ggsave("cohort1_umap_Malignant_ShapebyTreatment.png", path = "jesslyn_plots", width = 10)
+#cluster by patient/sample? 
+DimPlot(cohort1Malignant, reduction = "umap", group.by="sample")
 
+DimPlot(cohort1Malignant, reduction = "umap", group.by="patient")
+
+
+#cluster by treatment? 
 DimPlot(cohort1Malignant, reduction = "umap", group.by="treatment.Status")
 ggsave("cohort1_umap_Malignant_ColorbyTreatment.png", path = "jesslyn_plots", width = 10)
+
+#cluster by cell cycle phase?
+DimPlot(cohort1Malignant, reduction = "umap", group.by="Phase")
 
 
 #NONMALIGNANT
@@ -359,8 +418,8 @@ ggsave("cohort1_umap_NonMalignant_ColorbyTreatment.png", path = "jesslyn_plots",
 cohort1Malignant.markers <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 
 #plot top 20 differential gene expression across malignant clusters 
-top20Malignant <- cohort1Malignant.markers %>% group_by(cluster) %>% top_n(n = 20, wt = avg_logFC)
-DoHeatmap(cohort1Malignant, features = top20Malignant$gene) + NoLegend()
+top5Malignant <- cohort1Malignant.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5Malignant$gene)
 ggsave("cohort1Malignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
 
 #find marker genes for nonmalignant cells
@@ -394,4 +453,25 @@ Malcluster.avergaes[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/co
 Idents(cohort1NonMalignant) <- "seurat_clusters"
 NonMalcluster.avergaes <- AverageExpression(cohort1NonMalignant)
 NonMalcluster.avergaes[["RNA"]] %>% as.data.frame() %>% write_csv("jesslyn_plots/cohort1NonMalignant_averageExpression_byCluster.csv")
+```
+
+##ANSWERING RESEARCH QUESTIONS - how does treatment affect the cells?
+```{r Questions about cycling cells}
+#MALIGNANT CELLS
+numMalCellsPerTreatmentPerPhase = table(cohort1Malignant$Phase, cohort1Malignant$treatment.Status) %>% as.data.frame() %>% rename(Phase = Var1, Treatment = Var2, numCells = Freq)
+ggplot(numMalCellsPerTreatmentPerPhase, aes(x=Treatment, y=numCells, fill=Phase)) + geom_bar(position="fill", stat="identity")
+```
+
+```{r Questions about OXPHOS gene expression}
+#load in oxphos genes
+oxphosGenes <- read_csv("jesslyn_ovca/data/gene_lists/Ovarian_Signatures_Combined.csv")["HALLMARK_OXIDATIVE_PHOSPHORYLATION"] %>% pull("HALLMARK_OXIDATIVE_PHOSPHORYLATION")
+oxphosGenes<-oxphosGenes[1:200]
+
+oxphosGenes2<- read_csv("jesslyn_ovca/data/gene_lists/Ovarian_Signatures_Combined.csv")[27] %>% pull("HALLMARK_OXIDATIVE_PHOSPHORYLATION_1")
+oxphosGenes2 <- oxphosGenes[1:200]
+
+DotPlot(cohort1Malignant, group.by = "treatment.Status", features = oxphosGenes[1:20])
+ggsave("oxphosGeneExp.jpeg", width=20, height=5)
+
+
 ```
