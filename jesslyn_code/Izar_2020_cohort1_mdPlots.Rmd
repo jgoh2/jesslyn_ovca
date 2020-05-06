@@ -1,6 +1,10 @@
 ---
 title: "Izar 2020 Cohort1 Metadata Plots"
+author: "Jesslyn Goh"
+date: "5/06/2020"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
