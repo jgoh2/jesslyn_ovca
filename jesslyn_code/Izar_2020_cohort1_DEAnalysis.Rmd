@@ -20,6 +20,7 @@ library(glue)
 library(beepr)
 library(readxl)
 library(ggplot2)
+library(ggrepel) # for plot labelling
 
 # Read in Seurat objects
 cohort1 = readRDS("data/Izar_2020/jesslyn_cohort1_processed.RDS")
@@ -39,9 +40,6 @@ for (gene in filterGenes){
 
 ```{r compute average gene expression}
 #MALIGNANT CELLS
-#For All Genes
-cohort1Malignant <- AddModuleScore(cohort1Malignant, features= rownames(cohort1Malignant), name = "AllGenes.Score")
-
 #For Oxphos Genes
 cohort1Malignant <- AddModuleScore(cohort1Malignant, features = list(oxphosGenes), name = "oxphosGenes.Score")
 ```
@@ -91,14 +89,28 @@ Idents(cohort1Malignant) <- "treatment.Status"
 #compute p values for each oxphos genes across each treatment group
 oxphosGenes.markers <- FindAllMarkers(cohort1Malignant, features = oxphosGenes, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 top5oxphosMarkers <- oxphosGenes.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
-DoHeatmap(cohort1Malignant, features = top5oxphosMarkers$gene, size=3)
+DoHeatmap(cohort1Malignant, features = oxphosGenes, size=3) # all oxphos genes
+DoHeatmap(cohort1Malignant, features = top5oxphosMarkers$gene, size=3) # most variable oxphos genes
 
 #compute p values for oxphos genes between on treatment vs. treatment-naive
 oxphosGenesTvsNaive.markers <- FindMarkers(cohort1Malignant, ident.1 = "On-treatment", ident.2 = "Treatment-naive", features = oxphosGenes, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
-#graph volcano plot for p values 
-ggplot(oxphosGenesTvsNaive.markers, aes(x=avg_logFC, y = -log10(p_val_adj)))+ geom_point( )+ ggtitle("Volcano") + xlab("log2 FC") + ylab("-log10 adjusted p-value")
+oxphosGenesTvsNaive.markers = rownames_to_column(oxphosGenesTvsNaive.markers, "Gene")
 
-#compute p values for oxphos genes between on After 1 cycle of chemotherapy vs. treatment-naive
+#graph volcano plot for p values 
+ggplot(oxphosGenesTvsNaive.markers, aes(x=avg_logFC, y = -log10(p_val_adj))) + 
+  geom_point() + 
+  geom_text_repel(aes(label = Gene)) +
+  geom_hline(yintercept = -log10(0.05), color = "red", linetype = "dashed") +
+  geom_vline(xintercept = -1, color = "blue", linetype = "dashed") +
+  geom_vline(xintercept = 1, color = "blue", linetype = "dashed") +
+  labs(title = "Volcano",
+       x = "LFC",
+       y = "-log10(FDR)") +
+  theme_classic()
+ggsave("cohort1Malignant_oxphosGenesTvsNaive.jpeg", path="jesslyn_plots/cohort1/Malignant", height = 12, width = 9)
+
+
+ #compute p values for oxphos genes between on After 1 cycle of chemotherapy vs. treatment-naive
 oxphosGenesCvsNaive.markers <- FindMarkers(cohort1Malignant, ident.1 = "After 1 cycle of chemotherapy", ident.2 = "Treatment-naive", features = oxphosGenes, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
 #graph volcano plot for p values 
 ggplot(oxphosGenesCvsNaive.markers, aes(x=avg_logFC, y = -log10(p_val_adj)))+ geom_point( )+ ggtitle("Volcano") + xlab("log2 FC") + ylab("-log10 adjusted p-value")
