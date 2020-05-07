@@ -8,6 +8,7 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
 ```
@@ -24,7 +25,7 @@ library(readxl)
 library(ggplot2)
 
 # Read in Seurat objects
-cohort1 = readRDS("data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1 = readRDS(file = "data/Izar_2020/jesslyn_cohort1_processed.RDS")
 cohort1Malignant = readRDS(file="data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
 cohort1NonMalignant = readRDS(file="data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
 ```
@@ -128,12 +129,30 @@ ggsave("cohort1_umap_NonMalignant_ColorbyTreatment.png", path = "jesslyn_plots",
 
 ```{r find marker genes}
 #find marker genes for malignant cells
+#based on CLUSTER 
+Idents(cohort1Malignant) <- "seurat_clusters"
 cohort1Malignant.markers <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
-
-#plot top 20 differential gene expression across malignant clusters 
+#plot top 5 differential gene expression across malignant clusters 
 top5Malignant <- cohort1Malignant.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
 DoHeatmap(cohort1Malignant, features = top5Malignant$gene)
 ggsave("cohort1Malignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
+
+#based on SAMPLE
+Idents(cohort1Malignant) <- "sample"
+cohort1Malignant.markersSamp <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+top5MalignantSamp <- cohort1Malignant.markersSamp %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5MalignantSamp$gene, size=3)
+ggsave("cohort1Malignant_top5_differential_genes_S.jpeg", path="jesslyn_plots/cohort1/Malignant", width = 20, height = 15)
+
+#based on TREATMENT
+Idents(cohort1Malignant) <- "treatment.Status"
+cohort1Malignant.markersTS <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+top5MalignantTS <- cohort1Malignant.markersTS %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5MalignantTS$gene, size=3)
+
+ggsave("cohort1Malignant_top5_differential_genes_TS.jpeg", path="jesslyn_plots/cohort1/Malignant", width = 20, height = 15)
+
+#--------------------------------------------------------------------------------------------#
 
 #find marker genes for nonmalignant cells
 cohort1NonMalignant.markers <- FindAllMarkers(cohort1NonMalignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
@@ -141,10 +160,7 @@ cohort1NonMalignant.markers <- FindAllMarkers(cohort1NonMalignant, only.pps = TR
 #plot top 20 differential gene expression across malignant clusters 
 top20NonMalignant <- cohort1NonMalignant.markers %>% group_by(cluster) %>% top_n(n = 20, wt = avg_logFC)
 
-DoHeatmap(cohort1NonMalignant, features = top20NonMalignant$gene) + NoLegend()
+DoHeatmap(cohort1NonMalignant, features = top20NonMalignant$gene)
 ggsave("cohort1NonMalignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
 
 ```
-
-
-
