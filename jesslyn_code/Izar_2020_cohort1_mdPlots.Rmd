@@ -9,6 +9,7 @@ editor_options:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
 ```
 
 ```{r init}
@@ -23,9 +24,9 @@ library(readxl)
 library(ggplot2)
 
 # Read in Seurat objects
-cohort1 = readRDS(file = "../data/Izar_2020/jesslyn_cohort1_processed.RDS")
-cohort1Malignant = readRDS(file="../data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
-cohort1NonMalignant = readRDS(file="../data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
+cohort1 = readRDS("data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1Malignant = readRDS(file="data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+cohort1NonMalignant = readRDS(file="data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
 ```
 
 #FOR ALL CELLS 
