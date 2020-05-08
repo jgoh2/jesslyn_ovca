@@ -210,7 +210,6 @@ cohort1 <- ScaleData(cohort1, features = rownames(cohort1), do.scale = FALSE, do
 cohort1 <- RunPCA(cohort1, features = VariableFeatures(cohort1))
 
 
-
 #plot PCA - shows differential expresison between different cohorts
 PCAPlot(cohort1)
 ggsave("cohort1_pcaplot.jpeg", path="jesslyn_plots/cohort1/All")
@@ -261,6 +260,9 @@ ggplot(numMalCellsPerSamplePerTreatment, aes(x=treatment, fill=sample, y=numCell
 
 numMalCellsPerSamplePerPhase <- table(cohort1Malignant$sample, cohort1Malignant$Phase) %>% as.data.frame() %>% rename(sample= Var1, phase = Var2, numCells= Freq)
 ggplot(numMalCellsPerSamplePerPhase, aes(x=sample, y=numCells, fill=phase)) + geom_bar(position ="fill", stat ="identity")
+
+numMalCellsperTreatment <- table(cohort1Malignant$treatment.Status, cohort1Malignant$cell.type) %>% as.data.frame() %>% rename(celltype = Var2, treatment = Var1, numCells = Freq)
+ggplot(numMalCellsperTreatment, aes(x=celltype, y=numCells, fill=treatment)) + geom_bar(stat = "identity", position = "fill")
 
 numNonMalCellsPerPatientPerTreatment <- table(cohort1NonMalignant$patient, cohort1NonMalignant$treatment.Status)
 
