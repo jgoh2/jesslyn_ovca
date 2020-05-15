@@ -15,7 +15,7 @@ knitr::opts_knit$set(root.dir = here::here())
 
 ## `FindNeighbors()`
 
-##`AddModuleScore()`
+## `AddModuleScore()`
 
 ## `FindAllMarkers()`
 
@@ -23,8 +23,8 @@ knitr::opts_knit$set(root.dir = here::here())
 
 Description: "Identifies features that are outliers"  
 
-
 Inputs:
+
   1. Seurat object (object)
   2. Selection method (selection.method) - algorithm to use to select most variable features
   3. Number of Features (nfeatures) - number of genes to select as top variable, can only use when selection.method is not 'mvp'
