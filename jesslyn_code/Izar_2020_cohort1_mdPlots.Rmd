@@ -112,7 +112,9 @@ DimPlot(cohort1Malignant, reduction = "umap", group.by="sample")
 DimPlot(cohort1Malignant, reduction = "umap", group.by="patient")
 
 #umap by treatment
-DimPlot(cohort1Malignant, reduction = "umap", group.by="treatment.Status")
+Idents(cohort1Malignant) <- "treatment.Status"
+Idents(cohort1Malignant) <- factor(Idents(cohort1Malignant), levels = my_levels)
+DimPlot(cohort1Malignant, reduction = "umap")
 ggsave("cohort1_umap_Malignant_ColorbyTreatment.png", path = "jesslyn_plots", width = 10)
 
 #umap by cell cycle phase
