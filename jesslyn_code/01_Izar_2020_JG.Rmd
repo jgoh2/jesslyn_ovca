@@ -41,126 +41,14 @@ g2m.genes <- ccgenes[44:97]
 cohort1 <- subset(cohort1, subset = clst > -1 & clst < 19)
 
 #load in signature genes dataset
-signaturesData = read_csv("gene_lists/Ovarian_Signatures_combined.csv")
+signaturesData = read_csv("gene_lists/Ovarian_Signatures_combined.csv")[,1:26] %>% 
+  as.list() %>%
+  lapply(function(x) x[!is.na(x)])
 
 #load in oxphos genes
 oxphosGenes<-read_lines("gene_lists/oxphos.txt", skip = 1)
 ```
 
-# Jesslyn Tasks for 4/24/20
-*Run all tasks on datasets separately*
-
-[Dplyr cheatsheet for data transformation](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf)
-
-## Analysis & plots (for 4/29/20)
-  - Read in expression data **done**
-  - Read in gene lists **done**
-  - Read in and wrangle supp tables
-    - *hint1:* might have to make edited version of excel files 
-    - *hint2:* use `read_xlsx()`
-    - Supp table 1 for patient/PDX metadata (treatment info, etc)
-    - Supp table 2 for cell type assignments (can enter this in manaully if you want) **done**
-    - Add relevant metadata to metadata slots of Seurat objects 
-    - Add cell type assignments **done**
-  - Make distribution plots of gene expression by cells and by genes
-  - Add cell cycle state to metadata slot **done**
-  - Patient-specific metrics (*hint:* use `summarize()` and `count`)
-    - Number of patients **done**
-    - Number of cells per patient **done**
-    - Number of cels per type per patient **done**
-  - Run PCA, plot PCA using Seurat functions (dotplot + Heatmaps) **done**
-  - Run UMAP **done**
-  - Run clustering **done**
-  - Run Find Marker genes **done**
-  - Generate UMAP plots for all metadata clumns
-  
-hint: to save plot use `ggsave()`
-
-## (for 4/29/2020)
-COHORT1
-- remove clusters from cohort1 (19-21, maybe -1)
-- run clustering and umap separately for malignant and nonmalignant cells
-   - create patient and treatment status specific overlays
-- score cells using gene list (list describe certain biological functions)
-- maybe run infercnv
-- make heatmap (y = genes, x = cells, cells grouped by cell type) - top20
-- average gene expression per gene per cell type (make a table) 
-  - one for columns that are cell types 
-  - one for columns that are clusters
-- make table: number of cells per treatment status
-- make table: number of cells per treatment status per cell type
-- make table: subset malignant cells --> number of cells per patient per treatment status
-- save tables to csv files
-(important to have a big enough sample size)
-
-#PROCESSING ALL CELLS 
-```{r treatmentInfo}
-supptab1 = read_excel("data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
-
-#treatment info of cohort 1
-pnt = supptab1 %>% mutate(Patient = parse_number(`Patient ID`)) %>%
-                    select(`Patient`, `Treatment status of sample`) %>% filter(`Patient`<=6)
-
-pnt = rbind(pnt[1:2,], c(2.1, "On-treatment"), pnt[-(1:2),])
-pnt = rbind(pnt[1:6,], c(5.1, "After 1 cycle of chemotherapy"), pnt[-(1:6),])
-
-pnt[6,2] = "Treatment-naïve"
-
-pnt = mutate(pnt, sample.ID = c("1976", "3250", "3250.1", "3266", "3281", "3288", "3288.1", "3290"))
-
-#add treatment info to metadata 
-treatment <- rep("treatment", ncol(cohort1))
-treatment[cohort1$sample.ID == "1976"] <- "On-treatment"
-treatment[cohort1$sample.ID == "3250"] <- "On-treatment"
-treatment[cohort1$sample.ID == "3250.1"] <- "On-treatment"
-treatment[cohort1$sample.ID == "3266"] <- "Treatment-naive"
-treatment[cohort1$sample.ID == "3281"] <- "After 1 cycle of chemotherapy"
-treatment[cohort1$sample.ID == "3288"] <- "Treatment-naive"
-treatment[cohort1$sample.ID == "3288.1"] <- "After 1 cycle of chemotherapy"
-treatment[cohort1$sample.ID == "3290"] <- "Treatment-naive"
-
-cohort1 <- AddMetaData(cohort1, treatment, col.name = "treatment.Status")
-```
-
-```{r sample Assignment}
-sample <- rep("0", ncol(cohort1))
-sample[cohort1$sample.ID == "1976"] <- "1"
-sample[cohort1$sample.ID == "3250"] <- "2.0"
-sample[cohort1$sample.ID == "3250.1"] <- "2.1"
-sample[cohort1$sample.ID == "3266"] <- "3"
-sample[cohort1$sample.ID == "3281"] <- "4"
-sample[cohort1$sample.ID == "3288"] <- "5.0"
-sample[cohort1$sample.ID == "3288.1"] <- "5.1"
-sample[cohort1$sample.ID == "3290"] <- "6"
-
-cohort1<- AddMetaData(cohort1, sample, col.name = "sample")
-```
-
-```{r cellTypeAssignment}
-supptab2 = read_excel("data/Izar_2020/Table_S2.xlsx", skip=2) #make 2nd the header
-
-
-celltypes = rep("NA", ncol(cohort1))
-celltypes[cohort1$clst %in% c(1,2,3,4,5)] <- "Malignant" #gives a logical vector for every spot in the cluster vector
-
-celltypes[cohort1$clst == "6"] <- "Fibroblast"
-celltypes[cohort1$clst == "7"] <- "Fibroblast"
-celltypes[cohort1$clst == "8"] <- "Fibroblast"
-celltypes[cohort1$clst == "9"] <- "Fibroblast"
-celltypes[cohort1$clst == "10"] <- "Macrophage"
-celltypes[cohort1$clst == "11"] <- "Macrophage"
-celltypes[cohort1$clst == "12"] <- "Macrophage"
-celltypes[cohort1$clst == "13"] <- "Macrophage"
-celltypes[cohort1$clst == "14"] <- "DC"
-celltypes[cohort1$clst == "15"] <- "DC"
-celltypes[cohort1$clst == "16"] <- "B cells"
-celltypes[cohort1$clst == "17"] <- "T cells"
-celltypes[cohort1$clst == "18"] <- "Erythrocytes"
-
-cohort1 <- AddMetaData(cohort1, celltypes, col.name = "cell.type")
-Idents(cohort1) <- "cell.type"
-
-```
 
 ```{r patientMetrics}
 
@@ -203,18 +91,11 @@ table(cohort1$cell.type, cohort1$Phase) %>% as.data.frame() %>% rename(Celltype 
 
 ```{r score cells}
 #score house keeping genes
-cohort1 <- AddModuleScore(cohort1, features = list(hkgenes), name = "hkgenes")
+cohort1 <- AddModuleScore(cohort1, features = list(hkgenes), name = "hkgenes", nbin = 50, search = T)
 ```
 
 ```{r score cells with each signature}
-signatures <- colnames(signaturesData)
-for (sig in signatures){
-  cohort1 <- AddModuleScore(cohort1, features = list(select(signaturesData, sig)), name = sig)
-}
-```
-
-```{r score cells with oxphos genes}
-cohort1 <- AddModuleScore(cohort1, features = list(oxphosGenes), name = "oxphosGenes.Score")
+cohort1 <- AddModuleScore(cohort1, features = signaturesData, name = names(signaturesData), nbin = 50, search = T)
 ```
 
 ```{r subset malignant cells vs. nonmalignant cells}

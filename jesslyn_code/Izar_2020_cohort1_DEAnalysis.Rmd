@@ -86,7 +86,8 @@ ggplot(numMalCellsPerTreatmentPerPhase, aes(x=Treatment, y=numCells, fill=Phase)
 ```{r Questions about differential gene expression of all genes}
 #TREATMENT-NAIVE VS. ON-TREATMENT 
 #compute differential gene expression of all genes for treatment-naive vs. on-treatment 
-OTvsNaive.markers <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "On-treatment", only.pos = TRUE, min.pct = 0.1, logfc.threshold = 0)
+Idents(cohort1Malignant) <- "treatment.Status"
+OTvsNaive.markers <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "On-treatment", min.pct = 0.1, logfc.threshold = 0)
 
 #plot p value distribution to decide cutoff 
 ggplot(OTvsNaive.markers, aes(x=p_val))+ geom_histogram(fill = "grey", color = "black") + geom_vline(xintercept = 0.05, color = "blue", linetype = "dashed") + geom_hline(yintercept=50, color = "red", linetype = "dashed")
@@ -108,7 +109,7 @@ EnhancedVolcano(OTvsNaive.oxphos,lab= rownames(OTvsNaive.oxphos), x='avg_logFC',
 
 #TREATMENT-NAIVE VS. AFTER 1 CYCLE OF CHEMOTHERAPY 
 #compute differential gene expression of all genes for treatment-naive vs. after 1 cycle of chemotherapy 
-CvsNaive.markers <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "After 1 cycle of chemotherapy", only.pos = TRUE, min.pct = 0.1, logfc.threshold = 0)
+CvsNaive.markers <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "After 1 cycle of chemotherapy", min.pct = 0.1, logfc.threshold = 0)
 
 #plot p value distribution to decide cutoff 
 ggplot(CvsNaive.markers, aes(x=p_val))+ geom_histogram(fill = "grey", color = "black") + geom_vline(xintercept = 0.05, color = "blue", linetype = "dashed") + geom_hline(yintercept=50, color = "red", linetype = "dashed")
