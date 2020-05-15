@@ -18,10 +18,12 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE
 )
+knitr::opts_knit$set(root.dir = here::here())
 ```
 
 ```{r init}
 library(tidyverse)
+library(readxl)
 library(plyr)
 library(reshape2)
 library(Matrix)
@@ -47,107 +49,108 @@ if (!dir.exists(here("mike_plots",proj))){
 
 fig.dir = here("mike_plots",proj,date)
 
-# Read in Seurat objects
-ovca_10x = here("data",proj,"Izar_2020_10x.RDS") %>% readRDS()
-ovca_SS2 = here("data",proj,"Izar_2020_SS2.RDS") %>% readRDS()
-hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
-ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+# read in gene lists and supp tables
+hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
 s.genes <- ccgenes[1:43]
 g2m.genes <- ccgenes[44:97]
+ovca_sigs = read_csv("gene_lists/Ovarian_Signatures_combined.csv")[,1:26] %>% 
+  as.list() %>%
+  lapply(function(x) x[!is.na(x)])
 
-beep(4)
+# Read in Seurat objects
+ovca_10x = here("data",proj,"Izar_2020_10x.RDS") %>% readRDS()
+ovca_10x@project.name = "10x"
+ovca_SS2 = here("data",proj,"Izar_2020_SS2.RDS") %>% readRDS()
+ovca_SS2@project.name = "SS2"
+ovca_PDX = here("data",proj,"Izar_2020_PDX.RDS") %>% readRDS()
+ovca_PDX@project.name = "PDX"
+```
+
+```{r get dims}
+# Turn this into a table:
+con <- file(glue("{fig.dir}/cells_genes_set.log"), open = "wt")
+sink(con, split = T, append = F)
+for (i in list("10x" = ovca_10x, "SS2" = ovca_SS2, "PDX" = ovca_PDX)){
+  print(i@project.name)
+  print(glue("{dim(i)[1]} genes"))
+  print(glue("{dim(i)[2]} cells"))
+}
 ```
 
 
-```{r check normal}
+```{r check dist}
 # distribution plots
-cells_10x = Matrix::colMeans(ovca_10x[["RNA"]]) %>% as.data.frame()
-cells_10x$id = "10X"
-genes_10x = Matrix::rowMeans(ovca_10x[["RNA"]]) %>% as.data.frame()
-genes_10x$id = "10X"
-cells_SS2 = Matrix::colMeans(ovca_SS2[["RNA"]]) %>% as.data.frame()
-cells_SS2$id = "SS2"
-genes_SS2 = Matrix::rowMeans(ovca_SS2[["RNA"]]) %>% as.data.frame()
-genes_SS2$id = "SS2"
+cells = data.frame()
+genes = data.frame()
+features = data.frame()
+expr = data.frame()
+for (i in list("10x" = ovca_10x, "SS2" = ovca_SS2, "PDX" = ovca_PDX)){
+  x = Matrix::colMeans(i[["RNA"]]) %>% as.data.frame()
+  x$dataset = i@project.name
+  cells = rbind(cells, x)
+  y = Matrix::rowMeans(i[["RNA"]]) %>% as.data.frame()
+  y$dataset = i@project.name
+  genes = rbind(genes, y)
+  z = select(i@meta.data, c("orig.ident","nCount_RNA","nFeature_RNA"))
+  z$dataset = i@project.name
+  features = rbind(features, z)
+  w = as.vector(i@assays$RNA@data) %>% as.data.frame()
+  w$dataset = i@project.name
+  expr = rbind(expr, w)
+}
 
-cells = rbind(cells_10x, cells_SS2)
-genes = rbind(genes_10x, genes_SS2)
-
-p1 = ggplot(cells, aes(x = id, y = . , fill = id)) + 
+p1 = ggplot(cells, aes(x = dataset, y = . , fill = dataset)) + 
   geom_violin() +
   labs(x = "cells",
        y = "avg expression") +
   theme_classic()
 
-p2 = ggplot(genes, aes(x = id, y = . , fill = id)) + 
+p2 = ggplot(genes, aes(x = dataset, y = . , fill = dataset)) + 
   geom_violin() +
   labs(x = "genes",
        y = "avg expresion") +
   theme_classic()
 
-p = (p1 + p2) + plot_annotation(title = glue('{proj}: mean expression across cells and genes'),
-                                 caption = date())
-print(p)
-ggsave(glue('{fig.dir}/summary_dist.png'))
+# p3 = ggplot(expr, aes(x = dataset, y = . , fill = dataset)) + 
+#   geom_violin() +
+#   labs(x = "all",
+#        y = "expresion") +
+#   theme_classic()
 
-plot_df = rbind(select(ovca_10x@meta.data, c("orig.ident","nCount_RNA","nFeature_RNA")),
-               select(ovca_SS2@meta.data, c("orig.ident","nCount_RNA","nFeature_RNA")))
+p = (p1 + p2) + plot_layout(guides = "collect") +
+  plot_annotation(title = glue('{proj}: mean expression across cells and genes'),
+                  caption = date())
+ggsave(glue('{fig.dir}/summary_dist.png'),p, height = 7, width = 9)
 
-p1 = ggplot(plot_df, aes(x = orig.ident, y = nFeature_RNA, fill = orig.ident)) + 
+p1 = ggplot(features, aes(x = orig.ident, y = nFeature_RNA, fill = orig.ident)) + 
   geom_violin() + 
-  geom_hline(yintercept = 1000, color = "darkred", linetype = "dashed") + 
-  geom_hline(yintercept = 2000, color = "darkblue", linetype = "dashed") + 
   labs(y = "Genes") +
   theme_classic()
 
-p2 = ggplot(plot_df, aes(x = orig.ident, y = nCount_RNA, fill = orig.ident)) + 
+p2 = ggplot(features, aes(x = orig.ident, y = nCount_RNA, fill = orig.ident)) + 
   geom_violin() + 
-  geom_hline(yintercept = 4000, color = "darkred", linetype = "dashed") + 
   labs(y = "Counts") +
   theme_classic()
 
-p = (p1 + p2) +  plot_annotation(title = glue('{proj}: Genes/Counts per cell'),
-                                 caption =  caption = date())
-print(p)
-ggsave(glue('{fig.dir}/genes_UMIs.png'), width = 10, height = 10)
+p = (p1 + p2) + plot_layout(guides = "collect") +
+  plot_annotation(title = glue('{proj}: Genes/Counts per cell'),
+                  caption = date())
+ggsave(glue('{fig.dir}/genes_UMIs.png'), p, height = 7, width = 9)
 ```
-
- - Looks like SS2 data is centered around 1 for by cell
- - 10X data is not centered, but rather scaled
 
 ```{r scale}
 # do not scale or center data, already done by authors
-ovca_10x = ScaleData(ovca_10x, do.scale = F, do.center = F)
+ovca_10x = ScaleData(ovca_10x, do.scale = F, do.center = T)
 ovca_SS2 = ScaleData(ovca_SS2, do.scale = F, do.center = F)
+ovca_PDX = ScaleData(ovca_PDX, do.scale = F, do.center = F)
 ```
-
-***
 
 ```{r pca,results='hide'}
 # run PCA
 ovca_10x <- RunPCA(object = ovca_10x, features = rownames(ovca_10x[["RNA"]]@data))
 ovca_SS2 <- RunPCA(object = ovca_SS2, features = rownames(ovca_SS2[["RNA"]]@data))
-
-# Examine and visualize PCA results a few different ways
-print(x = ovca_10x[['pca']], dims = 1:5, nfeatures = 5)
-VizDimLoadings(object = ovca_10x, dims = 1:2, reduction = 'pca')
-DimPlot(object = ovca_10x, reduction = 'pca')
-ggsave(glue('{fig.dir}/10X_PCA.png'), width = 12, height = 10)
-ElbowPlot(ovca_10x)
-ggsave(glue('{fig.dir}/10X_PCA_elbow.png'), width = 12, height = 10)
-
-print(x = ovca_SS2[['pca']], dims = 1:5, nfeatures = 5)
-VizDimLoadings(object = ovca_SS2, dims = 1:2, reduction = 'pca')
-DimPlot(object = ovca_SS2, reduction = 'pca')
-ggsave(glue('{fig.dir}/SS2_PCA.png'), width = 12, height = 10)
-ElbowPlot(ovca_SS2)
-ggsave(glue('{fig.dir}/SS2_PCA_elbow.png'), width = 12, height = 10)
-
-mat <- Seurat::GetAssayData(ovca_SS2, assay = "RNA", slot = "scale.data")
-pca <- ovca_SS2[["pca"]]
-
-DimHeatmap(object = ovca_10x, dims = 1:15, cells = 500, balanced = TRUE)
-DimHeatmap(object = ovca_SS2, dims = 1:15, cells = 500, balanced = TRUE)
+ovca_PDX <- RunPCA(object = ovca_PDX, features = rownames(ovca_SS2[["RNA"]]@data))
 ```
 
 ```{r cluster, fig.height=5, fig.width=7}
@@ -162,9 +165,13 @@ ovca_SS2 <- FindClusters(object = ovca_SS2, resolution = 0.5)
 
 # Look at cluster IDs of the first 5 cells
 head(x = Idents(object = ovca_SS2), 5)
-```
 
-***
+ovca_PDX <- FindNeighbors(object = ovca_PDX, dims = 1:10)
+ovca_PDX <- FindClusters(object = ovca_PDX, resolution = 0.5)
+
+# Look at cluster IDs of the first 5 cells
+head(x = Idents(object = ovca_PDX), 5)
+```
 
 ### Run non-linear dimensional reduction (UMAP/tSNE)
 
@@ -172,16 +179,26 @@ head(x = Idents(object = ovca_SS2), 5)
 # If you haven't installed UMAP, you can do so via reticulate::py_install(packages = "umap-learn")
 ovca_10x <- RunUMAP(object = ovca_10x, dims = 1:10)
 ovca_SS2 <- RunUMAP(object = ovca_SS2, dims = 1:10)
+ovca_PDX <- RunUMAP(object = ovca_PDX, dims = 1:10)
 ```
 
 ```{r cell cycle}
 ovca_10x <- CellCycleScoring(ovca_10x, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
 ovca_SS2 <- CellCycleScoring(ovca_SS2, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
+ovca_PDX <- CellCycleScoring(ovca_PDX, s.features = s.genes, g2m.features = g2m.genes, set.ident = TRUE)
 ```
 
+```{r add sigs}
+ovca_10x = AddModuleScore(ovca_10x, features = ovca_sigs, name = names(ovca_sigs), nbin = 50)
+ovca_SS2 = AddModuleScore(ovca_SS2, features = ovca_sigs, name = names(ovca_sigs), nbin = 50)
+ovca_PDX = AddModuleScore(ovca_PDX, features = ovca_sigs, name = names(ovca_sigs), nbin = 50)
+```
+
+
 ```{r saveobject, eval=FALSE}
-saveRDS(ovca_10x, here("data",proj,glue("10x_preproc_{date}.RDS")))
-saveRDS(ovca_SS2, here("data",proj,glue("SS2_preproc_{date}.RDS")))
+saveRDS(ovca_10x, here("data",proj,glue("10x_preproc_MC.RDS")))
+saveRDS(ovca_SS2, here("data",proj,glue("SS2_preproc_MC.RDS")))
+saveRDS(ovca_PDX, here("data",proj,glue("PDX_preproc_MC.RDS")))
 beep(4)
 ```
 

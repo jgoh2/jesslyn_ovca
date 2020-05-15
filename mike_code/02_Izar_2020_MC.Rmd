@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE
 )
+knitr::opts_knit$set(root.dir = here::here())
 ```
 
 ```{r init}
@@ -26,7 +27,7 @@ library(plyr)
 library(reshape2)
 library(Matrix)
 library(Seurat)
-library(infercnv)
+# library(infercnv)
 library(patchwork)
 library(glue)
 library(beepr)
@@ -47,38 +48,37 @@ if (!dir.exists(here("mike_plots",proj))){
 
 fig.dir = here("mike_plots",proj,date)
 
-# Read in most recently processed Seurat objects
-preproc_files = list.files(here("data","Izar_2020")) %>% 
-  grep("preproc",.,value=T)
-newest = str_extract(preproc_files, "\\d\\d\\d\\d-\\d\\d-\\d\\d") %>% 
-  as.Date() %>%
-  sort(decreasing = T) %>%
-  head(1)
+# Signatures
+ovca_sigs = read_csv("gene_lists/Ovarian_Signatures_combined.csv")[,1:26] %>% 
+  as.list() %>%
+  lapply(function(x) x[!is.na(x)])
+sigs = paste0(names(ovca_sigs), 1:length(names(ovca_sigs)))
 
+# Read in most recently processed Seurat objects
 ovca_10x = list.files(here("data","Izar_2020"), full.names = T) %>% 
   grep("preproc",.,value=T) %>%
-  grep(newest,.,value=T) %>%
   grep("10x",.,value=T) %>%
   readRDS()
 ovca_SS2 = list.files(here("data","Izar_2020"), full.names = T) %>% 
   grep("preproc",.,value=T) %>%
-  grep(newest,.,value=T) %>%
   grep("SS2",.,value=T) %>%
   readRDS()
-
-hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
-ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
-celltype_genes = read_delim("data/gene_lists/Izar_2020_celltype_gene.txt", delim = "\t", trim_ws = T)
-s.genes <- ccgenes[1:43]
-g2m.genes <- ccgenes[44:97]
-
+ovca_PDX = list.files(here("data","Izar_2020"), full.names = T) %>% 
+  grep("preproc",.,value=T) %>%
+  grep("PDX",.,value=T) %>%
+  readRDS()
 ```
 
 ```{r tsneplot, fig.height=5, fig.width=7}
 list = list("10x" = list("ovca_10x" = ovca_10x,
-                          "meta_features" = c("patient","sample.ID","time","clst","seurat_clusters","Phase")),
+                          "meta_features" = c("patient","sample.ID","time","clst",
+                                              "seurat_clusters","Phase","cell.type","treatment.status")),
             "SS2" = list("ovca_SS2" = ovca_SS2,
-                         "meta_features" = c("Patient","Time","clst","seurat_clusters", "Phase")))
+                         "meta_features" = c("Patient","Time","clst",
+                                             "seurat_clusters", "Phase", "treatment.status")),
+            "PDX" = list("ovca_PDX" = ovca_PDX,
+                         "meta_features" = c("mouse_ID","model_ID",
+                                             "treatment.status","Phase")))
 
 for (j in 1:length(list)){
   p_list = vector(mode = "list",length = length(list[[j]][["meta_features"]]))
@@ -98,12 +98,45 @@ for (j in 1:length(list)){
 beep(4)
 ```
 
+```{r}
+Idents(ovca_10x) <- "treatment.status"
+ovca_10x@active.ident = factor(x = ovca_10x@active.ident , levels = c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment"))
+Idents(ovca_PDX) <- "treatment.status"
+ovca_PDX@active.ident = factor(x = ovca_PDX@active.ident , levels = c("vehicle","MRD","relapse"))
+for (i in sigs){
+  VlnPlot(subset(ovca_10x, subset = cell.type == "Malignant"), features = i)
+  ggsave(glue('{fig.dir}/10x_sig{i}_malig_ts.png'), width = 10, height = 7)
+  Idents(ovca_SS2) <- "treatment.status"
+  ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("Treatment-naïve","On-treatment"))
+  VlnPlot(ovca_SS2, features = i)
+  ggsave(glue('{fig.dir}/SS2_sig{i}_ts.png'), width = 10, height = 7)
+  Idents(ovca_SS2) <- "Time"
+  ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("0","1","2","3","4","5"))
+  VlnPlot(ovca_SS2, features = i)
+  ggsave(glue('{fig.dir}/SS2_sig{i}_time.png'), width = 10, height = 7)
+  VlnPlot(ovca_PDX, features = i)
+  ggsave(glue('{fig.dir}/PDX_sig{i}_time.png'), width = 10, height = 7)
+}
+
+
+DotPlot(subset(ovca_10x, subset = cell.type == "Malignant"), features = sigs) + coord_flip() + RotatedAxis()  + ggtitle("10X")
+ggsave(glue('{fig.dir}/10x_sigs_malig_ts_dot.png'), width = 10, height = 12) 
+DotPlot(ovca_PDX, features = sigs) + coord_flip() + RotatedAxis() + ggtitle("PDX")
+ggsave(glue('{fig.dir}/PDX_sigs_malig_ts_dot.png'), width = 10, height = 12)
+Idents(ovca_SS2) <- "treatment.status"
+ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("Treatment-naïve","On-treatment"))
+DotPlot(ovca_SS2, features = sigs) + coord_flip() + RotatedAxis() + ggtitle("SS2")
+ggsave(glue('{fig.dir}/SS2_sigs_ts_dot.png'), width = 10, height = 12)
+beep(4)
+```
 
 ```{r}
 div = length(celltype_genes$Gene)%/%16
-list = list("datasets" = list(ovca_10x,ovca_SS2),
-            "names" = c("10x","SS2"),
-            "featuresets" = list())
+Idents(ovca_10x) <- "treatment.status"
+Idents(ovca_SS2) <- "Time"
+list = list("datasets" = list(ovca_10x,ovca_SS2,ovca_PDX),
+            "names" = c("10x","SS2","PDX"),
+            "featuresets" = sigs)
 for(i in 1:div){
   list[["featuresets"]][[i]] = celltype_genes$Gene[(1+(16*(i-1))):(16+(16*(i-1)))]
 }
@@ -112,14 +145,14 @@ list$featuresets[[div+1]] = c("percent.mt","n.exp.hkgenes")
 
 for (i in 1:length(list[["datasets"]])){
   for (j in 1:length(list[["featuresets"]])) {
-    p = FeaturePlot(object = list[["datasets"]][[i]], features = list[["featuresets"]][[j]]) +
+    p1 = FeaturePlot(object = list[["datasets"]][[i]], features = list[["featuresets"]][[j]]) +
       plot_annotation(title = glue("{gsub('_',' ',proj)} {list[['names']][i]}"),
                       caption = date())
-    print(p)
-    if (length(list[["featuresets"]][[j]]) > 10) {
+    if (length(list[["featuresets"]][[j]]) > 6) {
+      print(p1)
       ggsave(glue("{fig.dir}/{list[['names']][i]}_umap_features{j}.png"), width = 16, height = 16)
     } else {
-      ggsave(glue("{fig.dir}/{list[['names']][i]}_umap_features{j}.png"), width = 8, height = 5)
+      ggsave(glue("{fig.dir}/{list[['names']][i]}_umap_features_{list[['featuresets']][j]}.png"), width = 7, height = 7)
     }
   }
 }
@@ -129,59 +162,8 @@ beep(4)
 
 
 
-```{r markersroc, fig.height=8, fig.width=15}
-cluster1.markers <- FindMarkers(object = pbmc, ident.1 = 0, logfc.threshold = 0.25, test.use = "roc", only.pos = TRUE)
-```
-
-We include several tools for visualizing marker expression. `VlnPlot` (shows expression probability distributions across clusters), and `FeaturePlot` (visualizes feature expression on a tSNE or PCA plot) are our most commonly used visualizations. We also suggest exploring `RidgePlot`, `CellScatter`, and `DotPlot` as additional methods to view your dataset.
-
-```{r markerplots, fig.height=8, fig.width=15}
-VlnPlot(object = pbmc, features = c("MS4A1", "CD79A"))
-# you can plot raw counts as well
-VlnPlot(object = pbmc, features = c("NKG7", "PF4"), slot = 'counts', log = TRUE)
-FeaturePlot(object = pbmc, features = c("MS4A1", "GNLY", "CD3E", "CD14", "FCER1A", "FCGR3A", "LYZ", "PPBP", "CD8A"))
-```
-
-`DoHeatmap` generates an expression heatmap for given cells and features. In this case, we are plotting the top 20 markers (or all markers if less than 20) for each cluster.
 
 ```{r clusterHeatmap, fig.height=8, fig.width=15}
 pbmc.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC) -> top10
 DoHeatmap(object = pbmc, features = top10$gene) + NoLegend()
-```
-
-***
-### Assigning cell type identity to clusters
-
-Fortunately in the case of this dataset, we can use canonical markers to easily match the unbiased clustering to known cell types:
-
-Cluster ID | Markers       | Cell Type
------------|---------------|----------
-0          | IL7R, CCR7    | Memory CD4+ 
-1          | CD14, LYZ     | CD14+ Mono
-2          | IL7R, S100A4  | Naive CD4+ T 
-3          | MS4A1         | B 
-4          | CD8A          | CD8+ T 
-5          | FCGR3A, MS4A7 | FCGR3A+ Mono
-6          | GNLY, NKG7    | NK 
-7          | FCER1A, CST3  | DC
-8          | PPBP          | Mk
-
-
-```{r labelplot, fig.height=5, fig.width=9}
-new.cluster.ids <- c("Memory CD4 T", "CD14+ Mono", "Naive CD4 T", "B", "CD8 T", "FCGR3A+ Mono", "NK", "DC", "Mk")
-names(x = new.cluster.ids) <- levels(x = pbmc)
-pbmc <- RenameIdents(object = pbmc, new.cluster.ids)
-DimPlot(object = pbmc, reduction = 'umap', label = TRUE, pt.size = 0.5) + NoLegend()
-```
-
-```{r save.img, include=FALSE}
-library(ggplot2)
-plot <- DimPlot(object = pbmc, reduction = "umap", label = TRUE, label.size = 4.5) + xlab("UMAP 1") + ylab("UMAP 2") + 
-  theme(axis.title = element_text(size = 18), legend.text = element_text(size = 18)) + 
-  guides(colour = guide_legend(override.aes = list(size = 10)))
-ggsave(filename = "../output/images/pbmc3k_umap.png", height = 7, width = 12, plot = plot)
-```
-
-```{r save.rds}
-saveRDS(pbmc, file = "../output/pbmc3k_final.rds")
 ```
