@@ -1,0 +1,45 @@
+---
+title: "DE Methods Notes"
+author: "Mike & Jesslyn"
+date: "5/7/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = here::here())
+```
+
+
+# Understanding Seurat functions 
+
+## `FindNeighbors()`
+
+##`AddModuleScore()`
+
+## `FindAllMarkers()`
+
+## `FindVariableFeatures()` 
+
+Description: "Identifies features that are outliers"  
+
+
+Inputs:
+  1. Seurat object (object)
+  2. Selection method (selection.method) - algorithm to use to select most variable features
+  3. Number of Features (nfeatures) - number of genes to select as top variable, can only use when selection.method is not 'mvp'
+
+selection.method:
+
+  1. **vst** (appears to be similar to DESeq2)
+    - fits a line to $log(variance)$ vs $log(mean)$ using local polynomial regression (loess).
+    - standardizes feature values using observed mean and expected variance
+    - feature variance is calculate on the standarized values after clipping to a maximum 
+      + **clip.max**: After standardization values larger than clip.max will be set to clip.max; default is 'auto' which sets this value to the square root of the number of cells.
+  2. **mean.var.plot (mvp)** (identify variable features whil controlling for relationship between variability and avg expression)
+    - calculates average expression and dispersion for each feature
+    - divides features into num.bin and calculates z-scores for dispersion within each bin
+      + **num.bin**: total number of bins to use in the scaled analysis; default is 20
+  3. **dispersion (disp)** simply selects the genes with the highest dispersion
+
+  
