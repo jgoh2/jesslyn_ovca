@@ -15,9 +15,11 @@ knitr::opts_knit$set(root.dir = here::here())
 
 ## `FindNeighbors()`
 
-## `AddModuleScore()`
+## `AddModuleScore()` (mike)
 
 ## `FindAllMarkers()`
+
+## `FindMarkers()` (jesslyn)
 
 ## `FindVariableFeatures()` 
 
