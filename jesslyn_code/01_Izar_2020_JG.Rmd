@@ -39,6 +39,12 @@ g2m.genes <- ccgenes[44:97]
 
 #filter out clusters -1, 19-21
 cohort1 <- subset(cohort1, subset = clst > -1 & clst < 19)
+
+#load in signature genes dataset
+signaturesData = read_csv("gene_lists/Ovarian_Signatures_combined.csv")
+
+#load in oxphos genes
+oxphosGenes<-read_lines("gene_lists/oxphos.txt", skip = 1)
 ```
 
 # Jesslyn Tasks for 4/24/20
@@ -172,13 +178,19 @@ ggplot(numCellsPerCellTypePerSample, aes(x=celltype, fill=sample, y=numCells)) +
 
 
 #write_csv(numCellsPerTypePerPatient, "jesslyn_plots/numCellsPerTypePerPatient.csv")
+
+#TREATMENT METRICS 
+my_levels <- c("Treatment-naive", "After 1 cycle of chemotherapy", "On-treatment")
+
 numPatientsPerTreatment = table(cohort1$patient, cohort1$treatment.Status)
 
 numCellsPerTreatmentPerCellType = table(cohort1$cell.type, cohort1$treatment.Status) %>% as.data.frame() %>% rename(celltype = Var1, treatment = Var2, numCells = Freq)
-ggplot(numCellsPerTreatmentPerCellType, aes(x=celltype, fill=treatment, y=numCells)) + geom_bar(position="fill", stat="identity")
 
-numCellsPerTreatmentPerSample = table(cohort1$sample, cohort1$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment=Var2, numCells = Freq)
-ggplot(numCellsPerTreatmentPerSample, aes(x=treatment, fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity")
+ggplot(numCellsPerTreatmentPerCellType, aes(x=celltype, fill=factor(treatment, levels = my_levels), y=numCells)) + geom_bar(position="fill", stat="identity") + labs(fill = "treatment")
+
+numCellsPerTreatmentPerSample = table(cohort1$sample, cohort1$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment=Var2, numCells = Freq) 
+
+ggplot(numCellsPerTreatmentPerSample, aes(x=factor(treatment, levels = my_levels), fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity") + xlab("treatment")
 
 ```
 
@@ -192,6 +204,17 @@ table(cohort1$cell.type, cohort1$Phase) %>% as.data.frame() %>% rename(Celltype 
 ```{r score cells}
 #score house keeping genes
 cohort1 <- AddModuleScore(cohort1, features = list(hkgenes), name = "hkgenes")
+```
+
+```{r score cells with each signature}
+signatures <- colnames(signaturesData)
+for (sig in signatures){
+  cohort1 <- AddModuleScore(cohort1, features = list(select(signaturesData, sig)), name = sig)
+}
+```
+
+```{r score cells with oxphos genes}
+cohort1 <- AddModuleScore(cohort1, features = list(oxphosGenes), name = "oxphosGenes.Score")
 ```
 
 ```{r subset malignant cells vs. nonmalignant cells}
@@ -256,7 +279,7 @@ ggplot(numMalCellsPerSample, aes(x=celltype, fill=sample, y=numCells)) + geom_ba
 numMalCellsPerPatientPerTreatment <- table(cohort1Malignant$patient, cohort1Malignant$treatment.Status)
 
 numMalCellsPerSamplePerTreatment<-table(cohort1Malignant$sample, cohort1Malignant$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment = Var2, numCells = Freq)
-ggplot(numMalCellsPerSamplePerTreatment, aes(x=treatment, fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill")
+ggplot(numMalCellsPerSamplePerTreatment, aes(x=factor(treatment,levels = my_levels), fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("treatment")
 
 numMalCellsPerSamplePerPhase <- table(cohort1Malignant$sample, cohort1Malignant$Phase) %>% as.data.frame() %>% rename(sample= Var1, phase = Var2, numCells= Freq)
 ggplot(numMalCellsPerSamplePerPhase, aes(x=sample, y=numCells, fill=phase)) + geom_bar(position ="fill", stat ="identity")
