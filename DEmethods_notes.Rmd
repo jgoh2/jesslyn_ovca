@@ -21,6 +21,53 @@ knitr::opts_knit$set(root.dir = here::here())
 
 ## `FindMarkers()` (jesslyn)
 
+**Description**: Finds differentially expressed genes between two specific groups of cells specified by the ident.1 and ident2 arguments. 
+
+Inputs: 
+
+  1. Seurat object (object) 
+  2. ident.1 - identity class to define markers for
+  3. ident.2 - identity class for comparison (if null, use all other cells for comparison)
+  4. test.use - algorithm to statistically calculate differential expression values for each gene 
+  5. min.pct - only test genes that are expressed in x% cells in either of the two populations (default = 0.1)
+  6. logfc.threshold - only test genes that show at least x-logfold difference between the two idents
+  
+test.use: 
+
+  1. **wilcox** (default)
+      - Uses a Wilcoxon Rank Sum test (aka Mann-Whitney U test)
+      - Non-parametric test 
+      - For continuous variables
+      - Compares a non-normally distributed, but at least ordinally scaled, parameter in two unpaired samples. 
+      
+      How it works:
+        - Have a big expression matrix 
+        - If look at all of the cells together, can rank the cells based on the count you read
+        - Look at the sum of the ranks of all the cells in one cluster, and compare with another cluster 
+  2. **MAST**
+      - Parametric test
+      - Based on a zero-inflated negative binomial model
+      - Uses a hurdle model tailored to scRNA-seq data 
+  3. **DESeq2**
+      - Uses a negative binomial distribution
+      - Normalize raw counts in different samples 
+      - Stabilize/ shrink variance by borrowing info from other genes 
+  4. **bimod**
+      - Likelihood-ratio test for single cell gene expression 
+  5. **roc**
+      - Uses ROC analysis 
+      - Evaluates a classifier for each gene to classify between two groups of cells using AUC values
+      - AUC=1 means that expression values for this gene alone can perfectly classify the two groupings (each cell in cells.1 exhibit a higher level than each cell in cells.2)
+      - AUC=0 also means that there is perfect classification but in the other direction 
+      - AUC=0.5 means that there is no predictive power to classify the two groups 
+      - Returns a ranked matrix of differentially expressed genes
+
+  5. **t**
+      - Uses the Student's t-test 
+  6. **LR**
+      - Uses a logistic regression model 
+
+
 ## `FindVariableFeatures()` 
 
 Description: "Identifies features that are outliers"  
@@ -38,7 +85,7 @@ selection.method:
     - standardizes feature values using observed mean and expected variance
     - feature variance is calculate on the standarized values after clipping to a maximum 
       + **clip.max**: After standardization values larger than clip.max will be set to clip.max; default is 'auto' which sets this value to the square root of the number of cells.
-  2. **mean.var.plot (mvp)** (identify variable features whil controlling for relationship between variability and avg expression)
+  2. **mean.var.plot (mvp)** (identify variable features while controlling for relationship between variability and avg expression)
     - calculates average expression and dispersion for each feature
     - divides features into num.bin and calculates z-scores for dispersion within each bin
       + **num.bin**: total number of bins to use in the scaled analysis; default is 20
