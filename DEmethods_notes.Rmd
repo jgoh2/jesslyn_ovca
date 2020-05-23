@@ -17,6 +17,26 @@ knitr::opts_knit$set(root.dir = here::here())
 
 ## `AddModuleScore()` (mike)
 
+Description: calculate the average expression levels of each program, subtracted by the aggregated expression of controlled feature sets. Analyzed features binned based on average expression, control features randomly selected from each bin 
+
+Inputs:
+
+ 1. object,Seurat object
+ 2. features, List of features to compute module score for
+ - pool = NULL, control features 
+ - nbin = 24, number of bins of aggregarte expression levels for all analzyed features
+
+From [Tirosh 2016](https://doi.org/10.1126/science.aad0501.) for MITF/AXL program scores (100 genes per program)
+
+The top 100 MITF-correlated genes across the entire set of malignant cells were defined as the MITF program, and their average relative expression as the MITF-program cell score. The average expression of the top 100 genes that negatively correlate with the MITF program scores were defined as the AXL program and used to define AXL program cell score. 
+
+To decrease **the effect that the quality and complexity of each cell’s data** might have on its MITF/AXL scores we defined control gene-sets and their average relative expression as control scores, for both the MITF and AXL programs. These control cell scores were subtracted from the respective MITF/AXL cell scores. 
+
+**The control gene-sets were defined by first binning all analyzed genes into 25 bins of aggregate expression levels and then, for each gene in the MITF/AXL gene-set, randomly selecting 100 genes from the same expression bin as that gene.** In this way, a control gene-sets have a comparable distribution of expression levels to that of the MITF/AXL gene-set and the control gene set is 100-fold larger, such that its average expression is analogous to averaging over 100 randomly-selected gene-sets of the same size as the MITF/AXL gene-set. 
+
+To calculate significance of the changes in AXL and MITF programs upon relapse, we defined the expression log2-ratio between matched pre- and post- samples for all AXL and MITF program genes (Fig. 3D). Since AXL and MITF programs are inversely related, we flipped the signs of the log-ratios for MITF program genes and used a t-test to examine if the average of the combined set of AXL program and (sign-flipped) MITF program genes is significantly higher than zero, which was the case for four out of six matched sample pairs (Fig. 3D, black arrows).
+
+
 ## `FindAllMarkers()`
 
 ## `FindMarkers()` (jesslyn)
@@ -31,9 +51,9 @@ Inputs:
   2. Selection method (selection.method) - algorithm to use to select most variable features
   3. Number of Features (nfeatures) - number of genes to select as top variable, can only use when selection.method is not 'mvp'
 
-selection.method:
+selection.methods:
 
-  1. **vst** (appears to be similar to DESeq2)
+  1. **vst** *default* (appears to be similar to DESeq2), 
     - fits a line to $log(variance)$ vs $log(mean)$ using local polynomial regression (loess).
     - standardizes feature values using observed mean and expected variance
     - feature variance is calculate on the standarized values after clipping to a maximum 
