@@ -13,10 +13,12 @@ library(beepr)
 # read in files
 hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
 pat_info = read_excel("data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
-clust_cell = read_excel("data/Izar_2020/Table_S2.xlsx", skip = 2)[1,] %>% 
+clust_cell_10x = read_excel("data/Izar_2020/Table_S2.xlsx", skip = 2)[1,] %>% 
   t() %>% as_tibble() %>% filter(V1 != "Cell type") %>% rownames_to_column()
-names(clust_cell) = c("clst","cell.type")
-clust_cell$clst = as.numeric(clust_cell$clst)
+names(clust_cell_10x) = c("clst","cell.type")
+clust_cell_10x$clst = as.numeric(clust_cell_10x$clst)
+clust_cell_SS2 = data.frame(clst = c(1,2,3,4,5,6,7,8,9),
+                            cell.type = c(rep("Malignant",6),"Fibroblast","Macrophage","Malignant"))
 
 # read and save 10x data to Seurat object 
 data_10x = vroom("data/Izar_2020/GSE146026_Izar_HGSOC_ascites_10x_log.tsv.gz")
@@ -43,7 +45,7 @@ hkgenes.found = which(toupper(rownames(seurat_obj[["RNA"]]@data)) %in% hkgenes)
 n.expressed.hkgenes <- seurat_obj[["RNA"]]@data[hkgenes.found, ] > 0 
 seurat_obj <- AddMetaData(object = seurat_obj, metadata = Matrix::colSums(n.expressed.hkgenes), col.name = "n.exp.hkgenes")
 ## cell type
-seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell)$cell.type, col.name = "cell.type")
+seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell_10x)$cell.type, col.name = "cell.type")
 
 ## patient treatment status
 pnt = pat_info %>% 
@@ -92,6 +94,9 @@ pnt[5,2] = "Treatment-naïve"
 new_meta = left_join(seurat_obj@meta.data, pnt)
 new_meta$`Treatment status of sample`[new_meta$Time == 0] = "Treatment-naïve"
 seurat_obj = AddMetaData(seurat_obj, new_meta$`Treatment status of sample`, col.name = "treatment.status")
+## cell type
+seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell_SS2)$cell.type, col.name = "cell.type")
+
 
 # Save and clear memory
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_SS2.RDS")
