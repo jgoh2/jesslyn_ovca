@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 knitr::opts_knit$set(root.dir = here::here())
+set.seed(1)
 ```
 
 ```{r init}
@@ -33,6 +34,7 @@ library(patchwork)
 library(glue)
 library(beepr)
 library(broom)
+library(gt)
 library(here)
 
 # saving obj setup
@@ -176,7 +178,6 @@ head(x = Idents(object = ovca_PDX), 5)
 ### Run non-linear dimensional reduction (UMAP/tSNE)
 
 ```{r tsne, fig.height=5, fig.width=7}
-# If you haven't installed UMAP, you can do so via reticulate::py_install(packages = "umap-learn")
 ovca_10x <- RunUMAP(object = ovca_10x, dims = 1:10)
 ovca_SS2 <- RunUMAP(object = ovca_SS2, dims = 1:10)
 ovca_PDX <- RunUMAP(object = ovca_PDX, dims = 1:10)
@@ -189,11 +190,48 @@ ovca_PDX <- CellCycleScoring(ovca_PDX, s.features = s.genes, g2m.features = g2m.
 ```
 
 ```{r add sigs}
-ovca_10x = AddModuleScore(ovca_10x, features = ovca_sigs, name = names(ovca_sigs), nbin = 50)
-ovca_SS2 = AddModuleScore(ovca_SS2, features = ovca_sigs, name = names(ovca_sigs), nbin = 50)
-ovca_PDX = AddModuleScore(ovca_PDX, features = ovca_sigs, name = names(ovca_sigs), nbin = 50)
+col = ncol(ovca_10x@meta.data)
+ovca_10x = AddModuleScore(ovca_10x, features = ovca_sigs, name = names(ovca_sigs), nbin = 50, search = T)
+names(ovca_10x@meta.data)[(col+1):ncol(ovca_10x@meta.data)] = names(ovca_sigs)
+
+col = ncol(ovca_SS2@meta.data)
+ovca_SS2 = AddModuleScore(ovca_SS2, features = ovca_sigs, name = names(ovca_sigs), nbin = 50, search = T)
+names(ovca_SS2@meta.data)[(col+1):ncol(ovca_SS2@meta.data)] = names(ovca_sigs)
+
+col = ncol(ovca_PDX@meta.data)
+ovca_PDX = AddModuleScore(ovca_PDX, features = ovca_sigs, name = names(ovca_sigs), nbin = 50, search = T)
+names(ovca_PDX@meta.data)[(col+1):ncol(ovca_PDX@meta.data)] = names(ovca_sigs)
 ```
 
+### Generate summary table for each dataset
+
+ - cells per patient 
+ - cells per patient per cell.type
+ - malignant cells per patient per time
+ - malignant cells per patient per treatment.status
+ 
+
+```{r summary tables}
+# source custom function
+source(here('mike_code','seurat_tab.R'))
+# 10X dataset
+seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", group_var = "treatment.status", title = "# Cells per Patient by Treatment Status") %>%
+ gtsave("10x_celltype_ts_tab.png", expand = 10, path = fig.dir)
+subset(ovca_10x, subset = cell.type == "Malignant") %>%
+ seurat_tab(col_var = "patient", row_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
+ gtsave("10x_malig_ts_tab.png", expand = 10, path = fig.dir)
+
+# SS2 dataset
+seurat_tab(ovca_SS2, col_var = "Patient", row_var = "cell.type", group_var = "treatment.status", title = "# Cells per Patient by Treatment Status") %>%
+ gtsave("SS2_celltype_ts_tab.png", expand = 10, path = fig.dir)
+subset(ovca_SS2, subset = cell.type == "Malignant") %>%
+ seurat_tab(col_var = "Patient", row_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
+ gtsave("SS2_malig_ts_tab.png", expand = 10, path = fig.dir)
+
+# PDX dataset
+seurat_tab(ovca_PDX, col_var = "model_ID", row_var = "treatment.status", title = "#  Cells per Model by Treatment Status") %>%
+ gtsave("PDX_ts_tab.png", expand = 10, path = fig.dir)
+```
 
 ```{r saveobject, eval=FALSE}
 saveRDS(ovca_10x, here("data",proj,glue("10x_preproc_MC.RDS")))
