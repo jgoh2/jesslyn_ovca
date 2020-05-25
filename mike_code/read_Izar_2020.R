@@ -46,6 +46,8 @@ n.expressed.hkgenes <- seurat_obj[["RNA"]]@data[hkgenes.found, ] > 0
 seurat_obj <- AddMetaData(object = seurat_obj, metadata = Matrix::colSums(n.expressed.hkgenes), col.name = "n.exp.hkgenes")
 ## cell type
 seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell_10x)$cell.type, col.name = "cell.type")
+cells_keep = rownames(seurat_obj@meta.data)[!is.na(seurat_obj@meta.data$cell.type)]
+seurat_obj = subset(seurat_obj, cells = cells_keep)
 
 ## patient treatment status
 pnt = pat_info %>% 
