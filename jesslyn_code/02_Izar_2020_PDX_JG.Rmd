@@ -1,0 +1,100 @@
+---
+title: "Izar 2020 PDX Exploratory Analysis"
+author: "Jesslyn Goh"
+date: "5/26/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+
+#Read in PDX RDS object
+PDX = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+```
+
+```{r QC and Normalization}
+#QC 
+#check nCount and nFeature distributions
+ggplot(PDX@meta.data, aes(x=nCount_RNA)) + geom_histogram() + labs(title = "PDX nCount_RNA Distribution")
+ggplot(PDX@meta.data, aes(x=nFeature_RNA)) + geom_histogram() + labs(title = "PDX nFeature_RNA Distribution")
+VlnPlot(PDX, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
+
+#Normalization 
+#check if data is centered and log-normalized
+
+#scale and center data 
+PDX <- ScaleData(PDX, features = rownames(PDX), do.scale = FALSE, do.center = TRUE) #data is already scaled, but have to "scale" it for pca 
+
+#feature selection (prepare for dimensionality reduction)
+PDX <- FindVariableFeatures(PDX, selection.method = "vst")
+```
+
+```{r cell cycle scoring}
+PDX <- CellCycleScoring(PDX, g2m.features = g2m.genes, s.features = s.genes)
+```
+
+```{r dimensionality reduction analysis}
+#run PCA
+PDX <- RunPCA(PDX, features = VariableFeatures(PDX))
+
+#plot PCA - shows differential expresison between different cohorts
+PCAPlot(PDX)
+
+#determine dimensionality of data (how many pcs to include)
+ElbowPlot(PDX)
+```
+
+```{r run UMAP for ALL}
+#run UMAP, specify dimensions previously determined
+PDX<- RunUMAP(PDX, dims=1:15)
+```
+
+```{r metadata metrics}
+#number of cells from each mice in each model 
+model_levels <- c("DF20", "DF101", "DF68")
+numCellsPerMicePerModel = table(PDX$model_ID, PDX$mouse_ID) 
+numCellsPerMicePerModel %>% as.data.frame() %>% rename(model = Var1, mouse = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=mouse, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model")
+#change each 0 to NA
+for (rowName in rownames(numCellsPerMicePerModel)){
+  numCellsPerMicePerModel[rowName,][numCellsPerMicePerModel[rowName,]==0] <- "NA"
+}
+
+#number of cells in each treatment level in each model 
+treatment_levels <- c("vehicle", "MRD", "relapse")
+numCellsPerTreatmentPerModel <- table(PDX$treatment.status, PDX$model_ID)
+numCellsPerTreatmentPerModel %>% as.data.frame() %>% rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=factor(treatmentStatus,levels = treatment_levels), y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model") + labs(fill = "treatmentStatus")
+
+numCellsPerTreatmentPerModel %>% as.data.frame() %>% rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(fill=factor(model, levels = model_levels), x=treatmentStatus, y=numCells)) + geom_bar(stat="identity", position="fill") + labs(fill="model")
+```
+
+```{r clustering}
+#find neighbors first
+PDX <- FindNeighbors(PDX)
+
+#find clusters
+PDX <- FindClusters(PDX)
+```
+
+```{r save SDS}
+saveRDS(PDX, file="data/Izar_2020/jesslyn_PDX_processed.RDS")
+```
