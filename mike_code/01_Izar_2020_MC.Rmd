@@ -35,6 +35,7 @@ library(glue)
 library(beepr)
 library(broom)
 library(gt)
+library(msigdbr)
 library(here)
 
 # saving obj setup
@@ -60,6 +61,17 @@ ovca_sigs = read_csv("gene_lists/Ovarian_Signatures_combined.csv")[,1:26] %>%
   as.list() %>%
   lapply(function(x) x[!is.na(x)])
 
+hallmarks = read_lines("gene_lists/hallmarks.txt")
+hall_sigs = msigdbr(species = "Homo sapiens", category = "H") %>% 
+  filter(gs_name %in% hallmarks) %>% 
+  select(gs_name, gene_symbol) %>% 
+  dlply("gs_name", function(x) pull(x,gene_symbol))
+hall_sigs = msigdbr(species = "Homo sapiens") %>% 
+  filter(gs_name %in% c("GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS","GO_REGULATION_OF_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")) %>% 
+  select(gs_name, gene_symbol) %>% 
+  dlply("gs_name", function(x) pull(x,gene_symbol)) %>%
+  c(hall_sigs)
+
 # Read in Seurat objects
 ovca_10x = here("data",proj,"Izar_2020_10x.RDS") %>% readRDS()
 ovca_10x@project.name = "10x"
@@ -79,7 +91,6 @@ for (i in list("10x" = ovca_10x, "SS2" = ovca_SS2, "PDX" = ovca_PDX)){
   print(glue("{dim(i)[2]} cells"))
 }
 ```
-
 
 ```{r check dist}
 # distribution plots
@@ -190,17 +201,18 @@ ovca_PDX <- CellCycleScoring(ovca_PDX, s.features = s.genes, g2m.features = g2m.
 ```
 
 ```{r add sigs}
+sigs = hall_sigs
 col = ncol(ovca_10x@meta.data)
-ovca_10x = AddModuleScore(ovca_10x, features = ovca_sigs, name = names(ovca_sigs), nbin = 50, search = T)
-names(ovca_10x@meta.data)[(col+1):ncol(ovca_10x@meta.data)] = names(ovca_sigs)
+ovca_10x = AddModuleScore(ovca_10x, features = sigs, name = names(sigs), nbin = 50, search = T)
+names(ovca_10x@meta.data)[(col+1):ncol(ovca_10x@meta.data)] = names(sigs)
 
 col = ncol(ovca_SS2@meta.data)
-ovca_SS2 = AddModuleScore(ovca_SS2, features = ovca_sigs, name = names(ovca_sigs), nbin = 50, search = T)
-names(ovca_SS2@meta.data)[(col+1):ncol(ovca_SS2@meta.data)] = names(ovca_sigs)
+ovca_SS2 = AddModuleScore(ovca_SS2, features = sigs, name = names(sigs), nbin = 50, search = T)
+names(ovca_SS2@meta.data)[(col+1):ncol(ovca_SS2@meta.data)] = names(sigs)
 
 col = ncol(ovca_PDX@meta.data)
-ovca_PDX = AddModuleScore(ovca_PDX, features = ovca_sigs, name = names(ovca_sigs), nbin = 50, search = T)
-names(ovca_PDX@meta.data)[(col+1):ncol(ovca_PDX@meta.data)] = names(ovca_sigs)
+ovca_PDX = AddModuleScore(ovca_PDX, features = sigs, name = names(sigs), nbin = 50, search = T)
+names(ovca_PDX@meta.data)[(col+1):ncol(ovca_PDX@meta.data)] = names(sigs)
 ```
 
 ### Generate summary table for each dataset
@@ -215,25 +227,30 @@ names(ovca_PDX@meta.data)[(col+1):ncol(ovca_PDX@meta.data)] = names(ovca_sigs)
 # source custom function
 source(here('mike_code','seurat_tab.R'))
 # 10X dataset
+ovca_10x$treatment.status = factor(x = ovca_10x$treatment.status, levels = c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment"))
 seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", group_var = "treatment.status", title = "# Cells per Patient by Treatment Status") %>%
- gtsave("10x_celltype_ts_tab.png", expand = 10, path = fig.dir)
+  row_group_order(c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment")) %>%
+  gtsave("10x_celltype_ts_tab.png", expand = 10, path = fig.dir)
 subset(ovca_10x, subset = cell.type == "Malignant") %>%
- seurat_tab(col_var = "patient", row_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
- gtsave("10x_malig_ts_tab.png", expand = 10, path = fig.dir)
+  seurat_tab(col_var = "patient", row_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
+  gtsave("10x_malig_ts_tab.png", expand = 10, path = fig.dir)
 
 # SS2 dataset
+ovca_SS2$Time = factor(x = ovca_SS2$Time , levels = c("0","1","2","3","4","5"))
+ovca_SS2$treatment.status = factor(x = ovca_SS2$treatment.status , levels = c("Treatment-naïve","On-treatment"))
 seurat_tab(ovca_SS2, col_var = "Patient", row_var = "cell.type", group_var = "treatment.status", title = "# Cells per Patient by Treatment Status") %>%
  gtsave("SS2_celltype_ts_tab.png", expand = 10, path = fig.dir)
 subset(ovca_SS2, subset = cell.type == "Malignant") %>%
- seurat_tab(col_var = "Patient", row_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
+ seurat_tab(col_var = "Patient", row_var = "Time", group_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
  gtsave("SS2_malig_ts_tab.png", expand = 10, path = fig.dir)
 
 # PDX dataset
+ovca_PDX$treatment.status = factor(x = ovca_PDX$treatment.status , levels = c("vehicle","MRD","relapse"))
 seurat_tab(ovca_PDX, col_var = "model_ID", row_var = "treatment.status", title = "#  Cells per Model by Treatment Status") %>%
  gtsave("PDX_ts_tab.png", expand = 10, path = fig.dir)
 ```
 
-```{r saveobject, eval=FALSE}
+```{r saveobject}
 saveRDS(ovca_10x, here("data",proj,glue("10x_preproc_MC.RDS")))
 saveRDS(ovca_SS2, here("data",proj,glue("SS2_preproc_MC.RDS")))
 saveRDS(ovca_PDX, here("data",proj,glue("PDX_preproc_MC.RDS")))
