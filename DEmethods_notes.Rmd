@@ -21,10 +21,10 @@ Description: calculate the average expression levels of each program, subtracted
 
 Inputs:
 
- 1. object,Seurat object
- 2. features, List of features to compute module score for
- - pool = NULL, control features 
- - nbin = 24, number of bins of aggregarte expression levels for all analzyed features
+ 1. `object`, Seurat object
+ 2. `features`, List of features to compute module score for
+ - `pool` = NULL, control features 
+ - `nbin` = 24, number of bins of aggregate expression levels for all analyzed features (what effects do higher/lower `nbin` values have?)
 
 From [Tirosh 2016](https://doi.org/10.1126/science.aad0501.) for MITF/AXL program scores (100 genes per program)
 
@@ -45,12 +45,12 @@ To calculate significance of the changes in AXL and MITF programs upon relapse, 
 
 Inputs: 
 
-  1. Seurat object (object) 
-  2. ident.1 - identity class to define markers for
-  3. ident.2 - identity class for comparison (if null, use all other cells for comparison)
-  4. test.use - algorithm to statistically calculate differential expression values for each gene 
-  5. min.pct - only test genes that are expressed in x% cells in either of the two populations (default = 0.1)
-  6. logfc.threshold - only test genes that show at least x-logfold difference between the two idents
+  1. `object` - Seurat object
+  2. `ident.1` - identity class to define markers for
+  3. `ident.2` - identity class for comparison (if null, use all other cells for comparison)
+  4. `test.use` - algorithm to statistically calculate differential expression values for each gene 
+  5. `min.pct` - only test genes that are expressed in x% cells in either of the two populations (default = 0.1)
+  6. `logfc.threshold` - only test genes that show at least x-logfold difference between the two idents
   
 test.use: 
 
@@ -94,9 +94,9 @@ Description: "Identifies features that are outliers"
 
 Inputs:
 
-  1. Seurat object (object)
-  2. Selection method (selection.method) - algorithm to use to select most variable features
-  3. Number of Features (nfeatures) - number of genes to select as top variable, can only use when selection.method is not 'mvp'
+  1. `object` - Seurat object
+  2. `selection.method` - algorithm to use to select most variable features
+  3. `nfeatures` - number of genes to select as top variable, can only use when selection.method is not 'mvp'
 
 selection.methods:
 
