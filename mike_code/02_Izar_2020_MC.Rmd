@@ -1,5 +1,5 @@
 ---
-title: "Izar 2020 scRNAseq data downstream"
+title: "Izar 2020 scRNAseq general plotting"
 author: "Mike Cuoco"
 output:
   html_document:
@@ -33,6 +33,7 @@ library(glue)
 library(beepr)
 library(broom)
 library(here)
+library(msigdbr)
 
 # saving obj setup
 proj = "Izar_2020"
@@ -52,7 +53,17 @@ fig.dir = here("mike_plots",proj,date)
 ovca_sigs = read_csv("gene_lists/Ovarian_Signatures_combined.csv")[,1:26] %>% 
   as.list() %>%
   lapply(function(x) x[!is.na(x)])
-sigs = paste0(names(ovca_sigs), 1:length(names(ovca_sigs)))
+hallmarks = read_lines("gene_lists/hallmarks.txt")
+hall_sigs = msigdbr(species = "Homo sapiens", category = "H") %>% 
+  filter(gs_name %in% hallmarks) %>% 
+  select(gs_name, gene_symbol) %>% 
+  dlply("gs_name", function(x) pull(x,gene_symbol))
+hall_sigs = msigdbr(species = "Homo sapiens") %>% 
+  filter(gs_name %in% c("GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS","GO_REGULATION_OF_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")) %>% 
+  select(gs_name, gene_symbol) %>% 
+  dlply("gs_name", function(x) pull(x,gene_symbol)) %>%
+  c(hall_sigs)
+sigs = names(hall_sigs)
 
 # Read in most recently processed Seurat objects
 ovca_10x = list.files(here("data","Izar_2020"), full.names = T) %>% 
@@ -75,7 +86,7 @@ list = list("10x" = list("ovca_10x" = ovca_10x,
                                               "seurat_clusters","Phase","cell.type","treatment.status")),
             "SS2" = list("ovca_SS2" = ovca_SS2,
                          "meta_features" = c("Patient","Time","clst",
-                                             "seurat_clusters", "Phase", "treatment.status")),
+                                             "seurat_clusters", "Phase","cell.type", "treatment.status")),
             "PDX" = list("ovca_PDX" = ovca_PDX,
                          "meta_features" = c("mouse_ID","model_ID",
                                              "treatment.status","Phase")))
@@ -94,76 +105,31 @@ for (j in 1:length(list)){
   }
   ggsave(glue('{fig.dir}/{names(list)[j]}_umap_all-meta.png'),plot, width = 15, height = 10)
 }
-
-beep(4)
 ```
 
-```{r}
+# Plot all gene signatures 
+
+```{r geme signatures}
+# treatment versus gene signature for each dataset
+## 10x
 Idents(ovca_10x) <- "treatment.status"
 ovca_10x@active.ident = factor(x = ovca_10x@active.ident , levels = c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment"))
+p = DotPlot(subset(ovca_10x, subset = cell.type == "Malignant"), features = sigs) + coord_flip() + RotatedAxis()  + labs(title = "10X data", x = "Gene Signature", y = "Treatment Status") + theme(axis.text.y = element_text(size = 10))
+ggsave(glue('{fig.dir}/10x_sigs_malig_ts_dot.png'),p,width = 10, height = 12) 
+## PDX
 Idents(ovca_PDX) <- "treatment.status"
 ovca_PDX@active.ident = factor(x = ovca_PDX@active.ident , levels = c("vehicle","MRD","relapse"))
-for (i in sigs){
-  VlnPlot(subset(ovca_10x, subset = cell.type == "Malignant"), features = i)
-  ggsave(glue('{fig.dir}/10x_sig{i}_malig_ts.png'), width = 10, height = 7)
-  Idents(ovca_SS2) <- "treatment.status"
-  ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("Treatment-naïve","On-treatment"))
-  VlnPlot(ovca_SS2, features = i)
-  ggsave(glue('{fig.dir}/SS2_sig{i}_ts.png'), width = 10, height = 7)
-  Idents(ovca_SS2) <- "Time"
-  ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("0","1","2","3","4","5"))
-  VlnPlot(ovca_SS2, features = i)
-  ggsave(glue('{fig.dir}/SS2_sig{i}_time.png'), width = 10, height = 7)
-  VlnPlot(ovca_PDX, features = i)
-  ggsave(glue('{fig.dir}/PDX_sig{i}_time.png'), width = 10, height = 7)
-}
-
-
-DotPlot(subset(ovca_10x, subset = cell.type == "Malignant"), features = sigs) + coord_flip() + RotatedAxis()  + ggtitle("10X")
-ggsave(glue('{fig.dir}/10x_sigs_malig_ts_dot.png'), width = 10, height = 12) 
-DotPlot(ovca_PDX, features = sigs) + coord_flip() + RotatedAxis() + ggtitle("PDX")
-ggsave(glue('{fig.dir}/PDX_sigs_malig_ts_dot.png'), width = 10, height = 12)
+p = DotPlot(ovca_PDX, features = sigs) + coord_flip() + RotatedAxis() + labs(title = "PDX data", x = "Gene Signature", y = "Treatment Status")  + theme(axis.text.y = element_text(size = 10))
+ggsave(glue('{fig.dir}/PDX_sigs_ts_dot.png'), p,width = 10, height = 12)
+# SS2
 Idents(ovca_SS2) <- "treatment.status"
 ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("Treatment-naïve","On-treatment"))
-DotPlot(ovca_SS2, features = sigs) + coord_flip() + RotatedAxis() + ggtitle("SS2")
-ggsave(glue('{fig.dir}/SS2_sigs_ts_dot.png'), width = 10, height = 12)
-beep(4)
-```
-
-```{r}
-div = length(celltype_genes$Gene)%/%16
-Idents(ovca_10x) <- "treatment.status"
+p = DotPlot(subset(ovca_SS2, subset = cell.type == "Malignant"), features = sigs) + coord_flip() + RotatedAxis() + labs(title = "SS2 data", x = "Gene Signature",  y = "Treatment Status") + theme(axis.text.y = element_text(size = 10))
+ggsave(glue('{fig.dir}/SS2_sigs_malig_ts_dot.png'), p, width = 10, height = 12)
 Idents(ovca_SS2) <- "Time"
-list = list("datasets" = list(ovca_10x,ovca_SS2,ovca_PDX),
-            "names" = c("10x","SS2","PDX"),
-            "featuresets" = sigs)
-for(i in 1:div){
-  list[["featuresets"]][[i]] = celltype_genes$Gene[(1+(16*(i-1))):(16+(16*(i-1)))]
-}
-
-list$featuresets[[div+1]] = c("percent.mt","n.exp.hkgenes")
-
-for (i in 1:length(list[["datasets"]])){
-  for (j in 1:length(list[["featuresets"]])) {
-    p1 = FeaturePlot(object = list[["datasets"]][[i]], features = list[["featuresets"]][[j]]) +
-      plot_annotation(title = glue("{gsub('_',' ',proj)} {list[['names']][i]}"),
-                      caption = date())
-    if (length(list[["featuresets"]][[j]]) > 6) {
-      print(p1)
-      ggsave(glue("{fig.dir}/{list[['names']][i]}_umap_features{j}.png"), width = 16, height = 16)
-    } else {
-      ggsave(glue("{fig.dir}/{list[['names']][i]}_umap_features_{list[['featuresets']][j]}.png"), width = 7, height = 7)
-    }
-  }
-}
-
+ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c("0","1","2","3","4","5"))
+p = DotPlot(subset(ovca_SS2, subset = cell.type == "Malignant"), features = sigs) + coord_flip() + RotatedAxis() + labs(title = "SS2 data", x = "Gene Signature", y = "Time of Collection") + theme(axis.text.y = element_text(size = 10))
+ggsave(glue('{fig.dir}/SS2_sigs_malig_time_dot.png'), p, width = 10, height = 12)
 beep(4)
 ```
 
-
-
-
-```{r clusterHeatmap, fig.height=8, fig.width=15}
-pbmc.markers %>% group_by(cluster) %>% top_n(n = 10, wt = avg_logFC) -> top10
-DoHeatmap(object = pbmc, features = top10$gene) + NoLegend()
-```
