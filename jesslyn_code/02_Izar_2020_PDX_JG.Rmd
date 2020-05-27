@@ -37,13 +37,20 @@ g2m.genes <- ccgenes[44:97]
 #check nCount and nFeature distributions
 ggplot(PDX@meta.data, aes(x=nCount_RNA)) + geom_histogram() + labs(title = "PDX nCount_RNA Distribution")
 ggplot(PDX@meta.data, aes(x=nFeature_RNA)) + geom_histogram() + labs(title = "PDX nFeature_RNA Distribution")
-VlnPlot(PDX, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2)
-
+p = VlnPlot(PDX, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2, combine = F) 
+p[[1]] = p[[1]] + ylim(0,14000)
+p[[2]] = p[[2]] + ylim(0,25000)
+p[[1]] + p[[2]] + plot_layout(guides = 'collect')
 #Normalization 
 #check if data is centered and log-normalized
 
 #scale and center data 
-PDX <- ScaleData(PDX, features = rownames(PDX), do.scale = FALSE, do.center = TRUE) #data is already scaled, but have to "scale" it for pca 
+PDX <- ScaleData(PDX, features = rownames(PDX), do.scale = F, do.center = T) #data is already scaled, but have to "scale" it for pca 
+plot_df = GetAssayData(object = PDX, slot = 'counts') %>% colSums() %>% as.data.frame()
+names(plot_df) = "counts"
+plot_df$scaled.data = GetAssayData(object = PDX, slot = 'scale.data') %>% colSums()
+plot_df = reshape2::melt(plot_df, value.name = "count")
+ggplot(plot_df, aes(x = variable, y = count)) + geom_violin() + theme_bw()
 
 #feature selection (prepare for dimensionality reduction)
 PDX <- FindVariableFeatures(PDX, selection.method = "vst")

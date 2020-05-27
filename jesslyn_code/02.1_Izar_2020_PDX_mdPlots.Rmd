@@ -29,23 +29,25 @@ PDX = readRDS(file = "data/Izar_2020/jesslyn_PDX_processed.RDS")
 
 ```{r UMAP for metadata}
 #group by clusters
-UMAPPlot(PDX, group.by="seurat_clusters")
+p1 = UMAPPlot(PDX, group.by="seurat_clusters")
 
 #group by model 
 model_levels <- c("DF20", "DF101", "DF68")
 Idents(PDX) <- "model_ID"
 Idents(PDX) <- factor(Idents(PDX), levels = model_levels)
-UMAPPlot(PDX)
+p2 = UMAPPlot(PDX)
 
 #group by mouse 
-UMAPPlot(PDX, group.by="mouse_ID")
+p3 = UMAPPlot(PDX, group.by="mouse_ID")
 
 #group by treatment status 
 treatment_levels <- c("vehicle", "MRD", "relapse")
 Idents(PDX) <- "treatment.status"
 Idents(PDX) <- factor(Idents(PDX), levels = treatment_levels)
-UMAPPlot(PDX)
+p4 = UMAPPlot(PDX)
 
 #group by cell cycle phase 
-UMAPPlot(PDX, group.by = "Phase")
+p5 = UMAPPlot(PDX, group.by = "Phase")
+
+p1 + p2 + p3 + p4 + p5
 ```
