@@ -1,0 +1,73 @@
+---
+title: "Izar 2020 PDX DE Analysis"
+author: "Jesslyn Goh"
+date: "5/28/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+library(gt)
+library(msigdbr)
+library(here)
+library(dplyr)
+
+# Read in Seurat objects
+PDX = readRDS(file = "data/Izar_2020/jesslyn_PDX_processed.RDS")
+
+#load in a list of hallmark names that we are interested in 
+hallmark_names = read_lines("gene_lists/hallmarks.txt")
+#load in all hallmarks, category H stands for hallmark geneset 
+#filter out genesets we're interested in, and only select for columns with the geneset name and gene symbols
+hallmark = msigdbr(species = "Homo sapiens", category = "H") %>% filter(gs_name %in% hallmark_names) %>% select(gs_name, gene_symbol) 
+#convert hallmark into a list
+hallmark.list = vector(mode = "list")
+for(hm in unique(hallmark$gs_name)){
+  hallmark.list = c(hallmark.list, select(filter(hallmark, gs_name %in% hm),gene_symbol) %>% as.list())
+}
+names(hallmark.list) <- unique(hallmark$gs_name)
+```
+
+```{r hallmark expression}
+#examining whether certain hallmarks are expressed differentially across models and treatment groups
+#across models
+Idents(PDX) <- "model_ID"
+hallmark_names = names(PDX@meta.data)[12:45]
+DotPlot(PDX, features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Models", y = "Model ID", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5)) 
+ggsave("PDX_hallmark_DEAnalysis_AcrossModels.png", path = "jesslyn_plots/PDX", width = 10, height = 10)
+
+VlnPlot(PDX, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25")
+
+#across treatment conditions
+Idents(PDX) <- "treatment.status"
+DotPlot(PDX, features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment.png", path = "jesslyn_plots/PDX", width = 10, height = 10)
+
+#specific for DF20, see effect of treatment
+subset(PDX, subset = (model_ID == "DF20")) %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF20 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment(DF20).png", path = "jesslyn_plots/PDX", width = 10, height = 10)
+
+#specific for DF101, see effect of treatment
+subset(PDX, subset = (model_ID == "DF101")) %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF101 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment(DF101).png", path = "jesslyn_plots/PDX", width = 10, height = 10)
+
+#specific for DF68, see effect of treatment
+subset(PDX, subset = (model_ID == "DF68")) %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF68 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment(DF68).png", path = "jesslyn_plots/PDX", width = 10, height = 10)
+
+```

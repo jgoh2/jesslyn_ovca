@@ -22,6 +22,11 @@ library(glue)
 library(beepr)
 library(readxl)
 library(ggplot2)
+library(gt)
+library(msigdbr)
+library(here)
+library(plyr)
+library(webshot)
 
 # saving obj setup
 proj = "Izar_2020"
@@ -51,6 +56,8 @@ oxphosGenes<-read_lines("gene_lists/oxphos.txt", skip = 1)
 
 
 ```{r patientMetrics}
+#generate tables for dataset using Mike's function 
+source(here('mike_code','seurat_tab.R'))
 
 #patient metrics for cohort1
 numPatients = length(unique(cohort1@meta.data$patient)) #number of patients in the cohort 
@@ -64,13 +71,15 @@ ggplot(numCellsPerTypePerPatient, aes(x=celltype, fill=patient, y=numCells)) + g
 numCellsPerCellTypePerSample = table(cohort1$sample, cohort1$cell.type) %>% as.data.frame() %>% rename(sample = Var1, celltype = Var2, numCells = Freq)
 ggplot(numCellsPerCellTypePerSample, aes(x=celltype, fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity")
 
+#create table using Mike's function
+seurat_tab(cohort1, col_var = "sample.ID", row_var = "cell.type", group_var = "treatment.status", title = "Number of cells per celltype per sample per treatment status") %>% 
+    gtsave("10X_numCellsPerCelltypePerSamplePerTreatment.png", path = "jesslyn_plots/cohort1")
 
-#write_csv(numCellsPerTypePerPatient, "jesslyn_plots/numCellsPerTypePerPatient.csv")
 
 #TREATMENT METRICS 
 my_levels <- c("Treatment-naive", "After 1 cycle of chemotherapy", "On-treatment")
 
-numPatientsPerTreatment = table(cohort1$patient, cohort1$treatment.Status)
+numPatientsPerTreatment = table(cohort1$patient, cohort1$treatment.status)
 
 numCellsPerTreatmentPerCellType = table(cohort1$cell.type, cohort1$treatment.Status) %>% as.data.frame() %>% rename(celltype = Var1, treatment = Var2, numCells = Freq)
 
