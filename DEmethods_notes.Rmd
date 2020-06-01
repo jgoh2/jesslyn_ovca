@@ -2,7 +2,9 @@
 title: "DE Methods Notes"
 author: "Mike & Jesslyn"
 date: "5/7/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -46,12 +48,13 @@ From [Tirosh 2016](https://doi.org/10.1126/science.aad0501.) for MITF/AXL progra
 
 >To decrease **the effect that the quality and complexity of each cell’s data** might have on its MITF/AXL scores we defined control gene-sets and their average relative expression as control scores, for both the MITF and AXL programs. These control cell scores were subtracted from the respective MITF/AXL cell scores. 
 
+Mean or sum??
 >**The control gene-sets were defined by first binning all analyzed genes into 25 bins of aggregate expression levels and then, for each gene in the MITF/AXL gene-set, randomly selecting 100 genes from the same expression bin as that gene.** In this way, a control gene-sets have a comparable distribution of expression levels to that of the MITF/AXL gene-set and the control gene set is 100-fold larger, such that its average expression is analogous to averaging over 100 randomly-selected gene-sets of the same size as the MITF/AXL gene-set. 
 
 >To calculate significance of the changes in AXL and MITF programs upon relapse, we defined the expression log2-ratio between matched pre- and post- samples for all AXL and MITF program genes (Fig. 3D). Since AXL and MITF programs are inversely related, we flipped the signs of the log-ratios for MITF program genes and used a t-test to examine if the average of the combined set of AXL program and (sign-flipped) MITF program genes is significantly higher than zero, which was the case for four out of six matched sample pairs (Fig. 3D, black arrows).
 
 
-## `FindAllMarkers()` (jesslyn)
+## `FindAllMarkers()`
 
 **Description**: Finds differentially expressed genes for each identity class in the dataset. 
 
@@ -63,7 +66,7 @@ Inputs:
   4. `test.use` - specify which statistical test to use to identify differentially expressed genes and report p values. 
   5. `min.pct` - only test genes that are expressed in x% cells in either of the two populations (default = 0.1)
 
-## `FindMarkers`
+## `FindMarkers()`
 
 **Description**: Finds differentially expressed genes between two specific groups of cells specified by the ident.1 and ident2 arguments. 
 

@@ -20,11 +20,19 @@ library(glue)
 library(readxl)
 library(here)
 library(dplyr)
+library(vroom)
 
 # load in raw counts (.csv)
-TST_counts <- read_csv("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_scale_data.csv", col_names = TRUE)
-rownames(TST_counts) <- TST_counts$X1
-TST_counts <- select(TST_counts, -X1)
+TST_scaled <- vroom("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_scale_data.csv", delim = ",") %>%
+  column_to_rownames("...1")
+TST_md <- vroom("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_meta_data.csv", delim = ",") %>% 
+  column_to_rownames("...1")
+TST_genes <- vroom("data/HTAPP/geneNames/HTAPP-316-SMP-991_TST_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x)
+TST_raw <- readMM("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_data.mtx")
+colnames(TST_raw) = colnames(TST_scaled)
+rownames(TST_raw) = TST_genes
+TST <- CreateSeuratObject(counts = TST_raw, project = "HTAPP TST", meta.data = TST_md)
+
 
 freshCD45neg_counts <- read_csv("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_scale_data.csv", col_names = TRUE)
 rownames(freshCD45neg_counts) <- freshCD45neg_counts$X1
@@ -33,11 +41,6 @@ freshCD45neg_counts <- select(freshCD45neg_counts, -X1)
 fresh2_counts <- read_csv("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_scale_data.csv", col_names = TRUE)
 rownames(fresh2_counts) <- fresh2_counts$X1
 fresh2_counts <- select(fresh2_counts, -X1)
-
-#load in metadata 
-TST_md <- read_csv("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_meta_data.csv") #rows are cell names, and columns are additional metadata fields 
-rownames(TST_md) <- TST_md$X1
-TST_md <- select(TST_md, -X1)
 
 freshCD45neg_md <- read_csv("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_meta_data.csv")
 rownames(freshCD45neg_md) <- freshCD45neg_md$X1
@@ -48,7 +51,6 @@ rownames(fresh2_md) <- fresh2_md$X1
 fresh2_md <- select(fresh2_md, -X1)
 
 #create Seurat Object 
-TST <- CreateSeuratObject(counts = TST_counts, project = "HTAPP TST", meta.data = TST_md)
 freshCD45neg <- CreateSeuratObject(counts = freshCD45neg_counts, project = "HTAPP Fresh CD45-", meta.data = freshCD45neg_md) 
 fresh2 <- CreateSeuratObject(counts = fresh2_counts, project = "HTAPP Fresh", meta.data = fresh2_md)
 ```

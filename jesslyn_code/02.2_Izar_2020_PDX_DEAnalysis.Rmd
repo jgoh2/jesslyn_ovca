@@ -10,6 +10,7 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE)
+set.seed(10)
 ```
 
 ```{r init}
@@ -27,8 +28,7 @@ library(msigdbr)
 library(here)
 library(dplyr)
 library(devtools)
-library(DESeq2)
-#devtools::install_github("immunogenomics/presto")
+# devtools::install_github("immunogenomics/presto")
 library(presto)
 library(fgsea)
 
