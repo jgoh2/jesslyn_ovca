@@ -26,6 +26,12 @@ library(gt)
 library(msigdbr)
 library(here)
 library(dplyr)
+library(devtools)
+library(DESeq2)
+#devtools::install_github("immunogenomics/presto")
+library(presto)
+library(fgsea)
+
 
 # Read in Seurat objects
 PDX = readRDS(file = "data/Izar_2020/jesslyn_PDX_processed.RDS")
@@ -43,6 +49,7 @@ for(hm in unique(hallmark$gs_name)){
 names(hallmark.list) <- unique(hallmark$gs_name)
 ```
 
+Visualize differential expression of each hallmark across models and treatment groups, generally. 
 ```{r hallmark expression}
 #examining whether certain hallmarks are expressed differentially across models and treatment groups
 #across models
@@ -51,7 +58,7 @@ hallmark_names = names(PDX@meta.data)[12:45]
 DotPlot(PDX, features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Models", y = "Model ID", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5)) 
 ggsave("PDX_hallmark_DEAnalysis_AcrossModels.png", path = "jesslyn_plots/PDX", width = 10, height = 10)
 
-VlnPlot(PDX, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25")
+VlnPlot(PDX, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25", split.by = "treatment.status")
 
 #across treatment conditions
 Idents(PDX) <- "treatment.status"
@@ -59,15 +66,153 @@ DotPlot(PDX, features = hallmark_names) + coord_flip() + labs(title = "DE Expres
 ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment.png", path = "jesslyn_plots/PDX", width = 10, height = 10)
 
 #specific for DF20, see effect of treatment
-subset(PDX, subset = (model_ID == "DF20")) %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF20 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+DF20 <- subset(PDX, subset = (model_ID == "DF20"))
+DF20 %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF20 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
 ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment(DF20).png", path = "jesslyn_plots/PDX", width = 10, height = 10)
 
 #specific for DF101, see effect of treatment
-subset(PDX, subset = (model_ID == "DF101")) %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF101 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+DF101 <- subset(PDX, subset = (model_ID == "DF101"))
+DF101 %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF101 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
 ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment(DF101).png", path = "jesslyn_plots/PDX", width = 10, height = 10)
 
 #specific for DF68, see effect of treatment
-subset(PDX, subset = (model_ID == "DF68")) %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF68 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
+DF68 <- subset(PDX, subset = (model_ID == "DF68"))
+DF68 %>% DotPlot(features = hallmark_names) + coord_flip() + labs(title = "DE Expression of Hallmark Signatures across Treatment Statuses for DF68 Mouse Model", y = "Treatment Status", x = "Hallmarks") + theme(plot.title = element_text(hjust = 0.5))
 ggsave("PDX_hallmark_DEAnalysis_AcrossTreatment(DF68).png", path = "jesslyn_plots/PDX", width = 10, height = 10)
+```
 
+Interested in seeing how oxphos and upr genes are differentially expressed across models and treatment conditions. Qualitative results above shows that there is some difference. Now, we want to use quantitative measures to determine how significant this difference is. 
+```{r GSEA across treatment statuses}
+#step 1. run statistical test on all genes for each condition
+PDX_treatment.genes <- wilcoxauc(PDX, 'treatment.status') #across treatment statuses 
+
+#step 2. filter out gene sets to test (oxphos and utr)
+fgsea_genesets <- hallmark.list[c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")]
+
+#step 3. create a ranked vector for each condition
+vehicle.genes <- PDX_treatment.genes %>% filter(group == "vehicle") %>% arrange(desc(auc)) %>% select(feature, auc)
+vehicle.ranks <- deframe(vehicle.genes) #deframe converts two-column data frames to a named vector or list, using the first column as name and the second column as value
+
+MRD.genes <- PDX_treatment.genes %>% filter(group == "MRD") %>% arrange(desc(auc)) %>% select(feature, auc)
+MRD.ranks<- deframe(MRD.genes) 
+
+relapse.genes <- PDX_treatment.genes %>% filter(group == "relapse") %>% arrange(desc(auc)) %>% select(feature, auc)
+relapse.ranks <- deframe(relapse.genes)
+
+#step 4. run fgsea
+vehicle.results<- fgsea(fgsea_genesets, stats = vehicle.ranks, nperm = 1000) %>% as_tibble() %>% select(-leadingEdge, -ES, -nMoreExtreme) %>% arrange(desc(NES), padj)
+
+MRD.results<- fgsea(fgsea_genesets, stats = MRD.ranks, nperm = 1000) %>% as_tibble() %>% select(-leadingEdge, -ES, -nMoreExtreme) %>% arrange(desc(NES), padj)
+
+relapse.results<- fgsea(fgsea_genesets, stats = relapse.ranks, nperm = 1000) %>% as_tibble() %>% select(-leadingEdge, -ES, -nMoreExtreme) %>% arrange(desc(NES), padj)
+
+#step 5. GSEA result plot
+#VEHICLE
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], vehicle.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR VEHICLE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], vehicle.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR VEHICLE")
+
+#MRD
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], MRD.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR MRD")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], MRD.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR MRD")
+
+#relapse
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], relapse.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR RELAPSE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], relapse.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR RELAPSE")
+```
+
+```{r GSEA for each treatment condition within each model}
+source(here('jesslyn_code','GSEA_code.R'))
+#for model DF20
+DF20_vehicle.results <- GSEA_code(DF20, group.by = "treatment.status", fgsea_genesets, "vehicle")
+DF20_vehicle.ranks <- GSEA_code(DF20, group.by = "treatment.status", fgsea_genesets, "vehicle", ranks = TRUE)
+
+DF20_MRD.results <- GSEA_code(DF20, group.by = "treatment.status", fgsea_genesets, "MRD")
+DF20_MRD.ranks <- GSEA_code(DF20, group.by = "treatment.status", fgsea_genesets, "MRD", ranks = TRUE)
+
+DF20_relapse.results <- GSEA_code(DF20, group.by = "treatment.status", fgsea_genesets, "relapse")
+DF20_relapse.ranks <- GSEA_code(DF20, group.by = "treatment.status", fgsea_genesets, "relapse", ranks = TRUE)
+
+#for model DF101
+DF101_vehicle.results <- GSEA_code(DF101, group.by = "treatment.status", fgsea_genesets, "vehicle")
+DF101_vehicle.ranks <- GSEA_code(DF101, group.by = "treatment.status", fgsea_genesets, "vehicle", ranks = TRUE)
+
+DF101_MRD.results <- GSEA_code(DF101, group.by = "treatment.status", fgsea_genesets, "MRD")
+DF101_MRD.ranks <- GSEA_code(DF101, group.by = "treatment.status", fgsea_genesets, "MRD", ranks = TRUE)
+
+DF101_relapse.results <- GSEA_code(DF101, group.by = "treatment.status", fgsea_genesets, "relapse")
+DF101_relapse.ranks <- GSEA_code(DF101, group.by = "treatment.status", fgsea_genesets, "relapse", ranks = TRUE)
+
+#for model DF68
+DF68_vehicle.results <- GSEA_code(DF68, group.by = "treatment.status", fgsea_genesets, "vehicle")
+DF68_vehicle.ranks <- GSEA_code(DF68, group.by = "treatment.status", fgsea_genesets, "vehicle", ranks = TRUE)
+
+DF68_MRD.results <- GSEA_code(DF68, group.by = "treatment.status", fgsea_genesets, "MRD")
+DF68_MRD.ranks <- GSEA_code(DF68, group.by = "treatment.status", fgsea_genesets, "MRD", ranks = TRUE)
+
+DF68_relapse.results <- GSEA_code(DF68, group.by = "treatment.status", fgsea_genesets, "relapse")
+DF68_relapse.ranks <- GSEA_code(DF68, group.by = "treatment.status", fgsea_genesets, "relapse", ranks = TRUE)
+
+#graphs 
+#model DF20 
+#VEHICLE
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF20_vehicle.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF20 VEHICLE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF20_vehicle.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF20 VEHICLE")
+
+#MRD
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF20_MRD.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF20 MRD")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF20_MRD.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF20 MRD")
+
+#relapse
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF20_relapse.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR  DF20 RELAPSE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF20_relapse.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF20 RELAPSE")
+
+#model DF101
+#VEHICLE
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF101_vehicle.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF101 VEHICLE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF101_vehicle.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF101 VEHICLE")
+
+#MRD
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF101_MRD.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF101 MRD")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF101_MRD.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF101 MRD")
+
+#relapse
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF101_relapse.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR  DF101 RELAPSE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF101_relapse.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF101 RELAPSE")
+
+#model DF68
+#VEHICLE
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF68_vehicle.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF68 VEHICLE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF68_vehicle.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF68 VEHICLE")
+
+#MRD
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF68_MRD.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF68 MRD")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF68_MRD.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF68 MRD")
+
+#relapse
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF68_relapse.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR  DF68 RELAPSE")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF68_relapse.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF68 RELAPSE")
+```
+
+```{r GSEA across models}
+DF20.results <- GSEA_code(PDX, group.by = "model_ID", fgsea_genesets, condition = "DF20")
+DF20.ranks <- GSEA_code(PDX, group.by = "model_ID", fgsea_genesets, condition = "DF20", ranks = TRUE)
+
+DF101.results <- GSEA_code(PDX, group.by = "model_ID", fgsea_genesets, condition = "DF101")
+DF101.ranks <- GSEA_code(PDX, group.by = "model_ID", fgsea_genesets, condition = "DF101", ranks = TRUE)
+
+DF68.results <- GSEA_code(PDX, group.by = "model_ID", fgsea_genesets, condition = "DF68")
+DF68.ranks <- GSEA_code(PDX, group.by = "model_ID", fgsea_genesets, condition = "DF68", ranks = TRUE)
+
+#graphs 
+#DF20
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF20.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF20")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF20.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF20")
+
+#DF101
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF101.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF101")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF101.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF101")
+
+#DF68
+plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF68.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF68")
+plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF68.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF68")
 ```
