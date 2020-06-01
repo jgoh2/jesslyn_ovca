@@ -37,7 +37,17 @@ To decrease **the effect that the quality and complexity of each cell’s data**
 To calculate significance of the changes in AXL and MITF programs upon relapse, we defined the expression log2-ratio between matched pre- and post- samples for all AXL and MITF program genes (Fig. 3D). Since AXL and MITF programs are inversely related, we flipped the signs of the log-ratios for MITF program genes and used a t-test to examine if the average of the combined set of AXL program and (sign-flipped) MITF program genes is significantly higher than zero, which was the case for four out of six matched sample pairs (Fig. 3D, black arrows).
 
 
-## `FindAllMarkers()`
+## `FindAllMarkers()` (jesslyn)
+
+**Description**: Finds differentially expressed genes for each identity class in the dataset. 
+
+Inputs: 
+
+  1. `object` - Seurat object 
+  2. `features` - genes to test. Uses all genes by default 
+  3. `logfc.threshold` - only test genes that show at least x-logfold difference on average between the two groups of cells. (0.25 by defualt)
+  4. `test.use` - specify which statistical test to use to identify differentially expressed genes and report p values. 
+  5. `min.pct` - only test genes that are expressed in x% cells in either of the two populations (default = 0.1)
 
 ## `FindMarkers()` (jesslyn)
 
@@ -86,8 +96,7 @@ test.use:
       - Uses the Student's t-test 
   6. **LR**
       - Uses a logistic regression model 
-
-
+  
 ## `FindVariableFeatures()` 
 
 Description: "Identifies features that are outliers"  
@@ -111,4 +120,10 @@ selection.methods:
       + **num.bin**: total number of bins to use in the scaled analysis; default is 20
   3. **dispersion (disp)** simply selects the genes with the highest dispersion
 
-  
+## `wilcoxauc()`
+
+**Description**: A fast wilcoxon rank sum test that computes auROC and Wilcoxon p-value based on Gaussian approximation. 
+
+Inputs: 
+  1. `X` - Seurat object 
+  2. `group_by` - metadata condition to group cells by (ex. cluster, treatment.status, or cell.type)
