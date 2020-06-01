@@ -10,14 +10,28 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_knit$set(root.dir = here::here())
 ```
 
-
-# Understanding Seurat functions 
+Objective: Understand statistical tests that underlie Seurat functions
 
 ## `FindNeighbors()`
 
-## `AddModuleScore()` (mike)
+**Description:** Constructs a Shared Nearest Neighbor (SNN) Graph for a given dataset. We first determine the k-nearest neighbors of each cell. We use this knn graph to construct the SNN graph by calculating the neighborhood overlap (Jaccard index) between every cell and its k.param nearest neighbors.
 
-Description: calculate the average expression levels of each program, subtracted by the aggregated expression of controlled feature sets. Analyzed features binned based on average expression, control features randomly selected from each bin 
+**Arguments:**
+
+  1. `object`, Seurat object
+  2. `reduction`, default = "pca"
+  3. `dims`, default = 1:10
+  4. `distance.matrix`, 
+  5. `k.param`, defines k for KNN algorithm, default = 20
+  6. `compute.SNN`, also compute SNN algorithm, default = TRUE
+  7. `prune.SNN`, sets cutoff for Jaccard index acceptable for computing the neighborhood overlap for the SNN construction. 0 = prune nothing, 1 = prune everything. default = 1/15.
+  8. `nn.method`, method for nearest neighbor finding. options are "annoy" and "rann". default = "rann"
+  9. `nn.eps`, Error bound when performing nearest neighbor search using RANN, default = 0.0, implies exact nearest neighbor search
+  10. `features`, Features to use as inpute for building the SNN
+
+## `AddModuleScore()` 
+
+**Description:** calculate the average expression levels of each program, subtracted by the aggregated expression of controlled feature sets. Analyzed features binned based on average expression, control features randomly selected from each bin 
 
 Inputs:
 
@@ -28,18 +42,18 @@ Inputs:
 
 From [Tirosh 2016](https://doi.org/10.1126/science.aad0501.) for MITF/AXL program scores (100 genes per program)
 
-The top 100 MITF-correlated genes across the entire set of malignant cells were defined as the MITF program, and their average relative expression as the MITF-program cell score. The average expression of the top 100 genes that negatively correlate with the MITF program scores were defined as the AXL program and used to define AXL program cell score. 
+>The top 100 MITF-correlated genes across the entire set of malignant cells were defined as the MITF program, and their average relative expression as the MITF-program cell score. The average expression of the top 100 genes that negatively correlate with the MITF program scores were defined as the AXL program and used to define AXL program cell score. 
 
-To decrease **the effect that the quality and complexity of each cell’s data** might have on its MITF/AXL scores we defined control gene-sets and their average relative expression as control scores, for both the MITF and AXL programs. These control cell scores were subtracted from the respective MITF/AXL cell scores. 
+>To decrease **the effect that the quality and complexity of each cell’s data** might have on its MITF/AXL scores we defined control gene-sets and their average relative expression as control scores, for both the MITF and AXL programs. These control cell scores were subtracted from the respective MITF/AXL cell scores. 
 
-**The control gene-sets were defined by first binning all analyzed genes into 25 bins of aggregate expression levels and then, for each gene in the MITF/AXL gene-set, randomly selecting 100 genes from the same expression bin as that gene.** In this way, a control gene-sets have a comparable distribution of expression levels to that of the MITF/AXL gene-set and the control gene set is 100-fold larger, such that its average expression is analogous to averaging over 100 randomly-selected gene-sets of the same size as the MITF/AXL gene-set. 
+>**The control gene-sets were defined by first binning all analyzed genes into 25 bins of aggregate expression levels and then, for each gene in the MITF/AXL gene-set, randomly selecting 100 genes from the same expression bin as that gene.** In this way, a control gene-sets have a comparable distribution of expression levels to that of the MITF/AXL gene-set and the control gene set is 100-fold larger, such that its average expression is analogous to averaging over 100 randomly-selected gene-sets of the same size as the MITF/AXL gene-set. 
 
-To calculate significance of the changes in AXL and MITF programs upon relapse, we defined the expression log2-ratio between matched pre- and post- samples for all AXL and MITF program genes (Fig. 3D). Since AXL and MITF programs are inversely related, we flipped the signs of the log-ratios for MITF program genes and used a t-test to examine if the average of the combined set of AXL program and (sign-flipped) MITF program genes is significantly higher than zero, which was the case for four out of six matched sample pairs (Fig. 3D, black arrows).
+>To calculate significance of the changes in AXL and MITF programs upon relapse, we defined the expression log2-ratio between matched pre- and post- samples for all AXL and MITF program genes (Fig. 3D). Since AXL and MITF programs are inversely related, we flipped the signs of the log-ratios for MITF program genes and used a t-test to examine if the average of the combined set of AXL program and (sign-flipped) MITF program genes is significantly higher than zero, which was the case for four out of six matched sample pairs (Fig. 3D, black arrows).
 
 
 ## `FindAllMarkers()`
 
-## `FindMarkers()` (jesslyn)
+## `FindMarkers`
 
 **Description**: Finds differentially expressed genes between two specific groups of cells specified by the ident.1 and ident2 arguments. 
 

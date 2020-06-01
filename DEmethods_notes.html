@@ -387,28 +387,105 @@ summary {
 <div id="findneighbors" class="section level2">
 <h2><code>FindNeighbors()</code></h2>
 </div>
-<div id="addmodulescore" class="section level2">
-<h2><code>AddModuleScore()</code></h2>
+<div id="addmodulescore-mike" class="section level2">
+<h2><code>AddModuleScore()</code> (mike)</h2>
+<p>Description: calculate the average expression levels of each program, subtracted by the aggregated expression of controlled feature sets. Analyzed features binned based on average expression, control features randomly selected from each bin</p>
+<p>Inputs:</p>
+<ol style="list-style-type: decimal">
+<li><code>object</code>, Seurat object</li>
+<li><code>features</code>, List of features to compute module score for</li>
+</ol>
+<ul>
+<li><code>pool</code> = NULL, control features</li>
+<li><code>nbin</code> = 24, number of bins of aggregate expression levels for all analyzed features (what effects do higher/lower <code>nbin</code> values have?)</li>
+</ul>
+<p>From <a href="https://doi.org/10.1126/science.aad0501.">Tirosh 2016</a> for MITF/AXL program scores (100 genes per program)</p>
+<p>The top 100 MITF-correlated genes across the entire set of malignant cells were defined as the MITF program, and their average relative expression as the MITF-program cell score. The average expression of the top 100 genes that negatively correlate with the MITF program scores were defined as the AXL program and used to define AXL program cell score.</p>
+<p>To decrease <strong>the effect that the quality and complexity of each cell’s data</strong> might have on its MITF/AXL scores we defined control gene-sets and their average relative expression as control scores, for both the MITF and AXL programs. These control cell scores were subtracted from the respective MITF/AXL cell scores.</p>
+<p><strong>The control gene-sets were defined by first binning all analyzed genes into 25 bins of aggregate expression levels and then, for each gene in the MITF/AXL gene-set, randomly selecting 100 genes from the same expression bin as that gene.</strong> In this way, a control gene-sets have a comparable distribution of expression levels to that of the MITF/AXL gene-set and the control gene set is 100-fold larger, such that its average expression is analogous to averaging over 100 randomly-selected gene-sets of the same size as the MITF/AXL gene-set.</p>
+<p>To calculate significance of the changes in AXL and MITF programs upon relapse, we defined the expression log2-ratio between matched pre- and post- samples for all AXL and MITF program genes (Fig. 3D). Since AXL and MITF programs are inversely related, we flipped the signs of the log-ratios for MITF program genes and used a t-test to examine if the average of the combined set of AXL program and (sign-flipped) MITF program genes is significantly higher than zero, which was the case for four out of six matched sample pairs (Fig. 3D, black arrows).</p>
 </div>
 <div id="findallmarkers" class="section level2">
 <h2><code>FindAllMarkers()</code></h2>
+</div>
+<div id="findmarkers-jesslyn" class="section level2">
+<h2><code>FindMarkers()</code> (jesslyn)</h2>
+<p><strong>Description</strong>: Finds differentially expressed genes between two specific groups of cells specified by the ident.1 and ident2 arguments.</p>
+<p>Inputs:</p>
+<ol style="list-style-type: decimal">
+<li><code>object</code> - Seurat object</li>
+<li><code>ident.1</code> - identity class to define markers for</li>
+<li><code>ident.2</code> - identity class for comparison (if null, use all other cells for comparison)</li>
+<li><code>test.use</code> - algorithm to statistically calculate differential expression values for each gene</li>
+<li><code>min.pct</code> - only test genes that are expressed in x% cells in either of the two populations (default = 0.1)</li>
+<li><code>logfc.threshold</code> - only test genes that show at least x-logfold difference between the two idents</li>
+</ol>
+<p>test.use:</p>
+<ol style="list-style-type: decimal">
+<li><strong>wilcox</strong> (default)
+<ul>
+<li>Uses a Wilcoxon Rank Sum test (aka Mann-Whitney U test)</li>
+<li>Non-parametric test</li>
+<li>For continuous variables</li>
+<li>Compares a non-normally distributed, but at least ordinally scaled, parameter in two unpaired samples.</li>
+</ul>
+How it works:
+<ul>
+<li>Have a big expression matrix</li>
+<li>If look at all of the cells together, can rank the cells based on the count you read</li>
+<li>Look at the sum of the ranks of all the cells in one cluster, and compare with another cluster</li>
+</ul></li>
+<li><strong>MAST</strong>
+<ul>
+<li>Parametric test</li>
+<li>Based on a zero-inflated negative binomial model</li>
+<li>Uses a hurdle model tailored to scRNA-seq data</li>
+</ul></li>
+<li><strong>DESeq2</strong>
+<ul>
+<li>Uses a negative binomial distribution</li>
+<li>Normalize raw counts in different samples</li>
+<li>Stabilize/ shrink variance by borrowing info from other genes</li>
+</ul></li>
+<li><strong>bimod</strong>
+<ul>
+<li>Likelihood-ratio test for single cell gene expression</li>
+</ul></li>
+<li><strong>roc</strong>
+<ul>
+<li>Uses ROC analysis</li>
+<li>Evaluates a classifier for each gene to classify between two groups of cells using AUC values</li>
+<li>AUC=1 means that expression values for this gene alone can perfectly classify the two groupings (each cell in cells.1 exhibit a higher level than each cell in cells.2)</li>
+<li>AUC=0 also means that there is perfect classification but in the other direction</li>
+<li>AUC=0.5 means that there is no predictive power to classify the two groups</li>
+<li>Returns a ranked matrix of differentially expressed genes</li>
+</ul></li>
+<li><strong>t</strong>
+<ul>
+<li>Uses the Student’s t-test</li>
+</ul></li>
+<li><strong>LR</strong>
+<ul>
+<li>Uses a logistic regression model</li>
+</ul></li>
+</ol>
 </div>
 <div id="findvariablefeatures" class="section level2">
 <h2><code>FindVariableFeatures()</code></h2>
 <p>Description: “Identifies features that are outliers”</p>
 <p>Inputs:</p>
 <ol style="list-style-type: decimal">
-<li>Seurat object (object)</li>
-<li>Selection method (selection.method) - algorithm to use to select most variable features</li>
-<li>Number of Features (nfeatures) - number of genes to select as top variable, can only use when selection.method is not ‘mvp’</li>
+<li><code>object</code> - Seurat object</li>
+<li><code>selection.method</code> - algorithm to use to select most variable features</li>
+<li><code>nfeatures</code> - number of genes to select as top variable, can only use when selection.method is not ‘mvp’</li>
 </ol>
-<p>selection.method:</p>
+<p>selection.methods:</p>
 <ol style="list-style-type: decimal">
-<li><strong>vst</strong> (appears to be similar to DESeq2) - fits a line to <span class="math inline">\(log(variance)\)</span> vs <span class="math inline">\(log(mean)\)</span> using local polynomial regression (loess). - standardizes feature values using observed mean and expected variance - feature variance is calculate on the standarized values after clipping to a maximum
+<li><strong>vst</strong> <em>default</em> (appears to be similar to DESeq2), - fits a line to <span class="math inline">\(log(variance)\)</span> vs <span class="math inline">\(log(mean)\)</span> using local polynomial regression (loess). - standardizes feature values using observed mean and expected variance - feature variance is calculate on the standarized values after clipping to a maximum
 <ul>
 <li><strong>clip.max</strong>: After standardization values larger than clip.max will be set to clip.max; default is ‘auto’ which sets this value to the square root of the number of cells.</li>
 </ul></li>
-<li><strong>mean.var.plot (mvp)</strong> (identify variable features whil controlling for relationship between variability and avg expression) - calculates average expression and dispersion for each feature - divides features into num.bin and calculates z-scores for dispersion within each bin
+<li><strong>mean.var.plot (mvp)</strong> (identify variable features while controlling for relationship between variability and avg expression) - calculates average expression and dispersion for each feature - divides features into num.bin and calculates z-scores for dispersion within each bin
 <ul>
 <li><strong>num.bin</strong>: total number of bins to use in the scaled analysis; default is 20</li>
 </ul></li>
