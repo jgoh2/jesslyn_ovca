@@ -58,11 +58,11 @@ hall_sigs = msigdbr(species = "Homo sapiens", category = "H") %>%
   filter(gs_name %in% hallmarks) %>% 
   select(gs_name, gene_symbol) %>% 
   dlply("gs_name", function(x) pull(x,gene_symbol))
-hall_sigs = msigdbr(species = "Homo sapiens") %>% 
-  filter(gs_name %in% c("GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS","GO_REGULATION_OF_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")) %>% 
-  select(gs_name, gene_symbol) %>% 
-  dlply("gs_name", function(x) pull(x,gene_symbol)) %>%
-  c(hall_sigs)
+# hall_sigs = msigdbr(species = "Homo sapiens") %>%
+#   filter(gs_name %in% c("GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS","GO_REGULATION_OF_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")) %>%
+#   select(gs_name, gene_symbol) %>%
+#   dlply("gs_name", function(x) pull(x,gene_symbol)) %>%
+#   c(hall_sigs)
 sigs = names(hall_sigs)
 
 # Read in most recently processed Seurat objects
@@ -80,7 +80,40 @@ ovca_PDX = list.files(here("data","Izar_2020"), full.names = T) %>%
   readRDS()
 ```
 
-```{r tsneplot, fig.height=5, fig.width=7}
+### Generate summary table for each dataset
+
+```{r summary tables}
+# source custom function
+source(here('mike_code','seurat_tab.R'))
+# 10X dataset
+ovca_10x$treatment.status = factor(x = ovca_10x$treatment.status, levels = c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment"))
+seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", group_var = "treatment.status", title = "# Cells per Patient by Treatment Status") %>%
+  row_group_order(c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment")) %>%
+  gtsave("10x_celltype_ts_tab.png", expand = 10, path = fig.dir)
+subset(ovca_10x, subset = cell.type == "Malignant") %>%
+  seurat_tab(col_var = "patient", row_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
+  gtsave("10x_malig_ts_tab.png", expand = 10, path = fig.dir)
+
+# SS2 dataset
+ovca_SS2$Time = factor(x = ovca_SS2$Time , levels = c("0","1","2","3","4","5"))
+ovca_SS2$treatment.status = factor(x = ovca_SS2$treatment.status , levels = c("Treatment-naïve","On-treatment"))
+seurat_tab(ovca_SS2, col_var = "Patient", row_var = "cell.type", group_var = "treatment.status", title = "# Cells per Patient by Treatment Status") %>%
+ gtsave("SS2_celltype_ts_tab.png", expand = 10, path = fig.dir)
+subset(ovca_SS2, subset = cell.type == "Malignant") %>%
+ seurat_tab(col_var = "Patient", row_var = "Time", group_var = "treatment.status", title = "# Malignant Cells per Patient by Treatment Status") %>%
+ gtsave("SS2_malig_ts_tab.png", expand = 10, path = fig.dir)
+
+# PDX dataset
+ovca_PDX$treatment.status = factor(x = ovca_PDX$treatment.status , levels = c("vehicle","MRD","relapse"))
+seurat_tab(ovca_PDX, col_var = "model_ID", row_var = "treatment.status", title = "#  Cells per Model by Treatment Status") %>%
+ gtsave("PDX_ts_tab.png", expand = 10, path = fig.dir)
+```
+
+```{r pcaplot}
+
+```
+
+```{r umapplot, fig.height=5, fig.width=7}
 list = list("10x" = list("ovca_10x" = ovca_10x,
                           "meta_features" = c("patient","sample.ID","time","clst",
                                               "seurat_clusters","Phase","cell.type","treatment.status")),
@@ -98,18 +131,17 @@ for (j in 1:length(list)){
    p_list[[i]] = DimPlot(object = list[[j]][[1]], reduction = 'umap', group.by = i) + 
      labs(color = i) +
     plot_annotation(glue("{gsub('_',' ',proj)} {names(list)[j]}: {ncol(list[[j]][[1]]@assays$RNA@scale.data)} cells {nrow(list[[j]][[1]]@assays$RNA@scale.data)} genes"), caption = date())
-   print(p_list[[i]])
-   ggsave(glue('{fig.dir}/{names(list)[j]}_umap_{i}.png'), width = 7, height = 7)
+   ggsave(glue('{fig.dir}/{names(list)[j]}_umap_{i}.png'), width = 7, height = 7, plot = p_list[[i]])
    if (i == list[[j]][["meta_features"]][1]){plot = p_list[[i]]}
    else {plot = plot + p_list[[i]]}
   }
-  ggsave(glue('{fig.dir}/{names(list)[j]}_umap_all-meta.png'),plot, width = 15, height = 10)
+  ggsave(glue('{fig.dir}/{names(list)[j]}_umap_all-meta.png'),plot =plot, width = 15, height = 10)
 }
 ```
 
 # Plot all gene signatures 
 
-```{r geme signatures}
+```{r gene signatures}
 # treatment versus gene signature for each dataset
 ## 10x
 Idents(ovca_10x) <- "treatment.status"

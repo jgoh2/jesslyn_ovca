@@ -29,10 +29,14 @@ library(Matrix)
 library(Seurat)
 library(patchwork)
 library(glue)
+library(gt)
 library(beepr)
 library(broom)
 library(here)
 library(msigdbr)
+library(presto)
+library(fgsea)
+source(here('mike_code','DotPlot2.R'))
 
 # saving obj setup
 proj = "Izar_2020"
@@ -57,11 +61,11 @@ hall_sigs = msigdbr(species = "Homo sapiens", category = "H") %>%
   filter(gs_name %in% hallmarks) %>% 
   select(gs_name, gene_symbol) %>% 
   dlply("gs_name", function(x) pull(x,gene_symbol))
-hall_sigs = msigdbr(species = "Homo sapiens") %>% 
-  filter(gs_name %in% c("GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS","GO_REGULATION_OF_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")) %>% 
-  select(gs_name, gene_symbol) %>% 
-  dlply("gs_name", function(x) pull(x,gene_symbol)) %>%
-  c(hall_sigs)
+# hall_sigs = msigdbr(species = "Homo sapiens") %>%
+#   filter(gs_name %in% c("GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS","GO_REGULATION_OF_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")) %>%
+#   select(gs_name, gene_symbol) %>%
+#   dlply("gs_name", function(x) pull(x,gene_symbol)) %>%
+#   c(hall_sigs)
 sigs = names(hall_sigs)
 
 # Read in processed SS2 and PDX Seurat objects
@@ -76,48 +80,214 @@ ovca_PDX = list.files(here("data","Izar_2020"), full.names = T) %>%
 ```
 
 
-# 1. PDX ER stress 
+# 1. PDX
 
 by treatment status and model
 
-```{r ER response vln}
+```{r PDX}
 # by signature
-feats = c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","GO_RESPONSE_TO_ENDOPLASMIC_RETICULUM_STRESS")
+feats = c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","HALLMARK_OXIDATIVE_PHOSPHORYLATION","ATF3","ATF4","JUN")
 Idents(ovca_PDX) <- "model_ID"
 ovca_PDX$treatment.status = factor(x = ovca_PDX$treatment.status , levels = c("vehicle","MRD","relapse"))
 
-p = VlnPlot(ovca_PDX, features = feats, split.by = "treatment.status", same.y.lims = T, combine = F) 
-p = lapply(p, function(x) x + guides(fill=guide_legend("treatment.status")) + labs(x = "model", y = "gene module score") + theme(plot.title = element_text(size = 12)))
-ggsave(glue('{fig.dir}/PDX_ERstressreg_vln.png'), p[[1]], width = 10, height = 8)
-ggsave(glue('{fig.dir}/PDX_ERstress_vln.png'), p[[2]], width = 10, height = 8)
-p = p[[1]] + p[[2]] + patchwork::plot_layout(guides = 'collect')
-ggsave(glue('{fig.dir}/PDX_ERboth_vln.png'), p, width = 16, height = 8)
+# Vln Plots
+plots = VlnPlot(ovca_PDX, features = feats, split.by = "treatment.status", combine = F) 
+names(plots) = feats
+plots = lapply(feats, function(x) {
+      plots[[x]] = plots[[x]] + 
+        guides(fill=guide_legend("treatment.status")) + 
+        labs(x = "model") + theme(plot.title = element_text(size = 10))
+      })
+names(plots) = feats
+lapply(feats, function(x) {
+  p = plots[[x]] + theme(plot.title = element_text(size = 14))
+  ggsave(glue('{fig.dir}/PDX_{x}_vln.png'), p, width = 8, height = 6)
+  })
+p = wrap_plots(plots) + plot_layout(guides = "collect") 
+ggsave(glue('{fig.dir}/PDX_vlns.png'), width = 12, height = 12, plot = p)
 
-# by gene
-feats = c("ATF3","JUN")
-p = VlnPlot(ovca_PDX, features = feats, split.by = "treatment.status", same.y.lims = T, combine = F) 
-p = lapply(p, function(x) x + guides(fill=guide_legend("treatment.status")) + labs(x = "model", y = "normalized/scaled gene expression") + theme(plot.title = element_text(size = 12)))
-ggsave(glue('{fig.dir}/PDX_ATF3_vln.png'), p[[1]], width = 10, height = 8)
-ggsave(glue('{fig.dir}/PDX_JUN_vln.png'), p[[2]], width = 10, height = 8)
-p = p[[1]] + p[[2]] + patchwork::plot_layout(guides = 'collect')
-ggsave(glue('{fig.dir}/PDX_ATF3_JUN_vln.png'), p, width = 16, height = 8)
+
+# Dot Plots
+## Use custom function
+ovca_PDX$treatment.status = factor(ovca_PDX$treatment.status, levels = c("vehicle","MRD","relapse"))
+plots = DotPlot2(ovca_PDX, features = feats, group1 = "treatment.status", group2 = "model_ID")
+plots = lapply(plots, function(x) {
+                x = x + theme(plot.title = element_text(size = 12))
+                })
+wrap_plots(plots, ncol = 1, guides = "collect") %>% ggsave(glue('{fig.dir}/PDX_dotplots.png'), width = 7, height = 14, plot = .)
+
+# GSEA
+gsea_sigs = hall_sigs[c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","HALLMARK_OXIDATIVE_PHOSPHORYLATION")]
+group1 = unique(ovca_PDX$model_ID)
+group2 = unique(ovca_PDX$treatment.status)
+data.gsea = lapply(group1, function(x) {
+  # DE between treatment statuses within each model
+  data.use = subset(ovca_PDX, subset = model_ID == x) %>% 
+    wilcoxauc("treatment.status", assay = 'scale.data')
+  data.list = lapply(group2, function(y){
+      data.use = dplyr::filter(data.use, group == y) %>%
+        dplyr::arrange(desc(logFC)) %>%
+        dplyr::select(feature, logFC)
+      ranks = deframe(data.use)
+      gseaRes = fgsea(gsea_sigs, ranks, minSize = 15, maxSize = 500, nperm=1000) %>%
+        as.tibble() %>%
+        dplyr::arrange(desc(NES))
+      return(list("ranks" = ranks, "res" = gseaRes))
+    })
+})
+data.gsea = setNames(lapply(data.gsea, setNames, group2), group1)
+plots = lapply(group1, function(x) {
+  data.use = data.gsea[[x]]
+  plots = lapply(group2, function(y){
+    ranks = data.use[[y]]$ranks
+    fgseaRes = data.use[[y]]$res
+    lapply(names(gsea_sigs), function(z){
+      p = plotEnrichment(gsea_sigs[[z]], ranks) + 
+          labs(title = z,subtitle = glue("model_ID: {x} | treatment.status: {y}"))
+      ggsave(glue('{fig.dir}/PDX_{x}_{y}_{z}_GSEA-LE.png'), plot = p, width = 10, height = 8)
+      return(NULL)
+    })
+  })
+})
+
+## Summarize GSEA with tables for each pathway
+data.plot = lapply(data.gsea, function(x) ldply(x, function(y) y$res, .id = "treatment.status")) %>% 
+    ldply(., .id = "model_ID") %>%
+    dplyr::select(-leadingEdge, -nMoreExtreme,  -pval) %>%
+    group_by(model_ID)
+data.plot$treatment.status = factor(data.plot$treatment.status, levels = c("vehicle","MRD","relapse"))
+lapply(names(gsea_sigs), function(y) {
+    data.use = filter(data.plot, pathway == y) %>% 
+      dplyr::select(-pathway)
+    size = unique(data.use$size)
+    data.use %>% 
+      dplyr::select(-size) %>%
+      dplyr::arrange(treatment.status) %>%
+      gt(rowname_col = "treatment.status") %>%
+      tab_header(title = glue("Gene Set Enrichment Analysis"),  subtitle = glue("PDX data: {y} ({size} genes)")) %>%
+      tab_footnote("GSEA was performed on wilcoxauc DE log-fold-change values comparing treatments within each model", cells_stub()) %>%
+      tab_footnote("Enrichment Score", cells_column_labels(c("ES"))) %>%
+      tab_footnote("Normalized Enrichment Score", cells_column_labels(c("NES"))) %>%
+      data_color(vars(NES), colors = RColorBrewer::brewer.pal(9, "YlOrRd")) %>%
+      fmt_number(vars(padj, ES,NES),decimals = 3) %>%
+      tab_style(style = list(cell_fill(color = "lightcyan"),cell_text(weight = "bold")),
+                locations = cells_body(columns = vars(padj),rows = padj < 0.05)) %>%
+      tab_options(
+        row_group.background.color = "lightgray",
+        heading.title.font.size = 20 ,
+        heading.title.font.weight = "bold",
+        column_labels.background.color = "#B4DCF7",
+        column_labels.font.size = 20,
+        column_labels.font.weight = "bold"
+      ) %>%
+      gtsave(glue("PDX_GSEA_{y}_tab.png"), expand = 10, path = fig.dir)
+})
+
 ```
 
 # 2. SS2 Oxphos 
 
 ```{r oxphos SS2}
-feats =  c("HALLMARK_OXIDATIVE_PHOSPHORYLATION","HALLMARK_GLYCOLYSIS")
+feats = c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","HALLMARK_OXIDATIVE_PHOSPHORYLATION","ATF3","ATF4","JUN")
+pats = c(8,9)
+ovca_SS2 = subset(ovca_SS2, subset = cell.type == "Malignant") %>%  subset(subset = Patient %in% pats) 
 Idents(ovca_SS2) = "Patient"
 ovca_SS2@active.ident = factor(x = ovca_SS2@active.ident , levels = c(sort(unique(ovca_SS2$Patient))))
 
-for (i in c("treatment.status","Time")){
-  p = subset(ovca_SS2, subset = cell.type == "Malignant") %>%
-    VlnPlot(features = feats, split.by = i, combine = F)
-  p = lapply(p, function(x) x + guides(fill=guide_legend(i)) + labs(x = "patient", y = "gene module score") + theme(plot.title = element_text(size = 12)))
-  ggsave(glue('{fig.dir}/SS2_oxphos_{i}_vln.png'), p[[1]], width = 10, height = 8)
-  ggsave(glue('{fig.dir}/SS2_glycol_{i}_vln.png'), p[[2]], width = 10, height = 8)
-  p = p[[1]] + p[[2]] + patchwork::plot_layout(guides = 'collect') + patchwork::plot_annotation(title = "SS2 data: Malignant Cells Only")
-  ggsave(glue('{fig.dir}/SS2_metab_{i}_vln.png'), p, width = 16, height = 8)
-}
+# Vln Plots
+plots = VlnPlot(ovca_SS2,features = feats, split.by = "Time", combine = F)
+names(plots) = feats
+plots = lapply(feats, function(x) {
+      plots[[x]] = plots[[x]] + 
+        guides(fill=guide_legend("Time")) + 
+        labs(x = "Patient") + theme(plot.title = element_text(size = 10))
+      })
+names(plots) = feats
+lapply(feats, function(x) {
+  p = plots[[x]] + theme(plot.title = element_text(size = 14))
+  ggsave(glue('{fig.dir}/SS2_{x}_vln.png'), p, width = 8, height = 6)
+  })
+p = wrap_plots(plots) + plot_layout(guides = "collect") 
+ggsave(glue('{fig.dir}/SS2_vlns.png'), width = 12, height = 12, plot = p)
+
+
+
+# Dot Plots
+# Dot Plots
+## Use custom function
+ovca_SS2$Time = factor(ovca_SS2$Time, levels = c("0","1","2"))
+plots = DotPlot2(ovca_SS2, features = feats, group1 = "Time", group2 = "Patient")
+plots = lapply(plots, function(x) {
+                x = x + theme(plot.title = element_text(size = 12))
+                })
+wrap_plots(plots, ncol = 1) %>% ggsave(glue('{fig.dir}/SS2_dotplots.png'), width = 7, height = 14, plot = .)
+
+
+# GSEA
+gsea_sigs = hall_sigs[c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","HALLMARK_OXIDATIVE_PHOSPHORYLATION")]
+group1 = unique(ovca_SS2$Patient) %>% as.character()
+group2 = unique(ovca_SS2$Time) %>% as.character()
+data.gsea = lapply(group1, function(x) {
+  # DE between treatment statuses within each model
+  data.use = subset(ovca_SS2, subset = Patient == x) %>% 
+    wilcoxauc("Time", assay = 'scale.data')
+  data.list = lapply(group2, function(y){
+      data.use = dplyr::filter(data.use, group == y) %>%
+        dplyr::arrange(desc(logFC)) %>%
+        dplyr::select(feature, logFC)
+      ranks = deframe(data.use)
+      gseaRes = fgsea(gsea_sigs, ranks, minSize = 15, maxSize = 500, nperm=1000) %>%
+        as.tibble() %>%
+        dplyr::arrange(desc(NES))
+      return(list("ranks" = ranks, "res" = gseaRes))
+    })
+})
+data.gsea = setNames(lapply(data.gsea, setNames, group2), group1)
+plots = lapply(group1, function(x) {
+  data.use = data.gsea[[x]]
+  plots = lapply(group2, function(y){
+    ranks = data.use[[y]]$ranks
+    fgseaRes = data.use[[y]]$res
+    lapply(names(gsea_sigs), function(z){
+      p = plotEnrichment(gsea_sigs[[z]], ranks) + 
+          labs(title = z,subtitle = glue("Patient: {x} | Time: {y}"))
+      ggsave(glue('{fig.dir}/SS2_Patient{x}_Time{y}_{z}_GSEA-LE.png'), plot = p, width = 10, height = 8)
+      return(NULL)
+    })
+  })
+})
+
+## Summarize GSEA with tables for each pathway
+data.plot = lapply(data.gsea, function(x) ldply(x, function(y) y$res, .id = "Time")) %>% 
+    ldply(., .id = "Patient") %>%
+    dplyr::select(-leadingEdge, -nMoreExtreme,  -pval) %>%
+    group_by(Patient)
+data.plot$Time = factor(data.plot$Time, levels = c("0","1","2"))
+lapply(names(gsea_sigs), function(y) {
+    data.use = filter(data.plot, pathway == y) %>% 
+      dplyr::select(-pathway)
+    size = unique(data.use$size)
+    data.use %>% 
+      dplyr::select(-size) %>%
+      dplyr::arrange(Time) %>%
+      gt(rowname_col = "Time") %>%
+      tab_header(title = glue("Gene Set Enrichment Analysis"),  subtitle = glue("SS2 data: {y} ({size} genes)")) %>%
+      tab_footnote("GSEA was performed on wilcoxauc DE log-fold-change values comparing Time within each Patient", cells_stub()) %>%
+      tab_footnote("Enrichment Score", cells_column_labels(c("ES"))) %>%
+      tab_footnote("Normalized Enrichment Score", cells_column_labels(c("NES"))) %>%
+      data_color(vars(NES), colors = RColorBrewer::brewer.pal(9, "YlOrRd")) %>%
+      fmt_number(vars(padj, ES,NES),decimals = 3) %>%
+      tab_style(style = list(cell_fill(color = "lightcyan"),cell_text(weight = "bold")),
+                locations = cells_body(columns = vars(padj),rows = padj < 0.05)) %>%
+      tab_options(
+        row_group.background.color = "lightgray",
+        heading.title.font.size = 20 ,
+        heading.title.font.weight = "bold",
+        column_labels.background.color = "#B4DCF7",
+        column_labels.font.size = 20,
+        column_labels.font.weight = "bold"
+      ) %>%
+      gtsave(glue("SS2_GSEA_{y}_tab.png"), expand = 10, path = fig.dir)
+})
 
 ```
