@@ -22,41 +22,59 @@ library(here)
 library(dplyr)
 library(vroom)
 
-# load in raw counts (.csv)
+#TST DATA
+# load in scaled and filtered TST data
 TST_scaled <- vroom("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_scale_data.csv", delim = ",") %>%
   column_to_rownames("...1")
+# load in TST data metadata
 TST_md <- vroom("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_meta_data.csv", delim = ",") %>% 
-  column_to_rownames("...1")
-TST_genes <- vroom("data/HTAPP/geneNames/HTAPP-316-SMP-991_TST_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x)
+  column_to_rownames("...1") 
+TST_genes <- vroom("data/HTAPP/geneNames/HTAPP-316-SMP-991_TST_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x) 
+# load in raw TST data
 TST_raw <- readMM("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_data.mtx")
 colnames(TST_raw) = colnames(TST_scaled)
 rownames(TST_raw) = TST_genes
-TST <- CreateSeuratObject(counts = TST_raw, project = "HTAPP TST", meta.data = TST_md)
+TST_Seurat_scaled <- CreateSeuratObject(counts = TST_scaled, project = "HTAPP TST Scaled", meta.data = TST_md)
+TST_Seurat_raw <- CreateSeuratObject(counts = TST_raw, project = "HTAPP TST Raw", meta.data = TST_md)
 
+#FRESH ASCITES CD45- DATA 
+# load in scaled and filtered data
+freshCD45neg_scaled <- vroom("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_scale_data.csv", delim = ",") %>%
+  column_to_rownames("...1")
+# load in fresh cd45- data metadata
+freshCD45neg_md <- vroom("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_meta_data.csv", delim = ",") %>% 
+  column_to_rownames("...1") 
+freshCD45neg_genes <- vroom("data/HTAPP/geneNames/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x) 
+# load in raw freshCD45neg data
+freshCD45neg_raw <- readMM("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_data.mtx")
+colnames(freshCD45neg_raw) = colnames(freshCD45neg_scaled)
+rownames(freshCD45neg_raw) = freshCD45neg_genes
+freshCD45neg_Seurat_scaled <- CreateSeuratObject(counts = freshCD45neg_scaled, project = "HTAPP Fresh CD45- Scaled", meta.data = freshCD45neg_md)
+freshCD45neg_Seurat_raw <- CreateSeuratObject(counts = freshCD45neg_raw, project = "HTAPP Fresh CD45- Raw", meta.data = freshCD45neg_md)
 
-freshCD45neg_counts <- read_csv("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_scale_data.csv", col_names = TRUE)
-rownames(freshCD45neg_counts) <- freshCD45neg_counts$X1
-freshCD45neg_counts <- select(freshCD45neg_counts, -X1)
-
-fresh2_counts <- read_csv("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_scale_data.csv", col_names = TRUE)
-rownames(fresh2_counts) <- fresh2_counts$X1
-fresh2_counts <- select(fresh2_counts, -X1)
-
-freshCD45neg_md <- read_csv("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_meta_data.csv")
-rownames(freshCD45neg_md) <- freshCD45neg_md$X1
-freshCD45neg_md <- select(freshCD45neg_md, -X1)
-
-fresh2_md <- read_csv("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_meta_data.csv")
-rownames(fresh2_md) <- fresh2_md$X1
-fresh2_md <- select(fresh2_md, -X1)
-
-#create Seurat Object 
-freshCD45neg <- CreateSeuratObject(counts = freshCD45neg_counts, project = "HTAPP Fresh CD45-", meta.data = freshCD45neg_md) 
-fresh2 <- CreateSeuratObject(counts = fresh2_counts, project = "HTAPP Fresh", meta.data = fresh2_md)
+#FRESH RESECTION DATA
+# load in scaled and filtered data
+fresh2_scaled <- vroom("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_scale_data.csv", delim = ",") %>%
+  column_to_rownames("...1")
+# load in fresh resection metadata
+fresh2_md <- vroom("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_meta_data.csv", delim = ",") %>% 
+  column_to_rownames("...1") 
+fresh2_genes <- vroom("data/HTAPP/geneNames/HTAPP-624-SMP-3212_fresh_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x) 
+# load in raw fresh resection data
+fresh2_raw <- readMM("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_data.mtx")
+colnames(fresh2_raw) = colnames(fresh2_scaled)
+rownames(fresh2_raw) = fresh2_genes
+fresh2_Seurat_scaled <- CreateSeuratObject(counts = fresh2_scaled, project = "HTAPP Fresh Resection Scaled", meta.data = fresh2_md)
+fresh2_Seurat_raw <- CreateSeuratObject(counts = fresh2_raw, project = "HTAPP Fresh Resection Raw", meta.data = fresh2_md)
 ```
 
 ```{r save RDS}
-saveRDS(TST, file="data/HTAPP/jesslyn_TST_prepoc.RDS")
-saveRDS(freshCD45neg, file="data/HTAPP/jesslyn_freshCD45neg_preproc.RDS")
-saveRDS(fresh2, file="data/HTAPP/jesslyn_fresh2_preproc.RDS")
+saveRDS(TST_Seurat_scaled, file="data/HTAPP/jesslyn_TST_scaled_prepoc.RDS")
+saveRDS(TST_Seurat_raw, file="data/HTAPP/jesslyn_TST_raw_prepoc.RDS")
+
+saveRDS(freshCD45neg_Seurat_scaled, file="data/HTAPP/jesslyn_freshCD45neg_scaled_preproc.RDS")
+saveRDS(freshCD45neg_Seurat_raw, file="data/HTAPP/jesslyn_freshCD45neg_raw_preproc.RDS")
+
+saveRDS(fresh2_Seurat_scaled, file="data/HTAPP/jesslyn_fresh2_scaled_preproc.RDS")
+saveRDS(fresh2_Seurat_raw, file="data/HTAPP/jesslyn_fresh2_raw_preproc.RDS")
 ```

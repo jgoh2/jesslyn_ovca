@@ -49,6 +49,7 @@ for(hm in unique(hallmark$gs_name)){
 names(hallmark.list) <- unique(hallmark$gs_name)
 ```
 
+DE ANALYSIS TYPE #1. TEST DIFFERENTIAL EXPRESSION ON A PREDEFINED GO GENESET
 Visualize differential expression of each hallmark across models and treatment groups, generally. 
 ```{r hallmark expression}
 #examining whether certain hallmarks are expressed differentially across models and treatment groups
@@ -215,4 +216,95 @@ plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF101.ran
 #DF68
 plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], DF68.ranks) + labs(title="OXIDATIVE PHOSPHORYLATION GSEA RESULTS FOR DF68")
 plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], DF68.ranks) + labs(title="UNFOLDED PROTEIN RESPONSE GSEA RESULTS FOR DF68")
+```
+
+DE ANALYSIS TYPE #2. FIND DIFFERENTIALLY EXPRESSED GENES FROM SCRATCH AND EVALUATE IF THEY MAKE UP A GO TERM COLLECTIVELY
+
+```{r DE Analysis between treatment conditions}
+source(here('jesslyn_code','DEAnalysis_code.R'))
+
+#VEHICLE VS. MRD
+vehicleVsMDR.markers <- DEAnalysis_code(PDX, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(PDX, markers =vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(PDX, markers =vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(PDX, markers =vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+
+#VEHICLE VS. RELAPSE
+vehicleVsrelapse.markers <- DEAnalysis_code(PDX, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(PDX, markers =vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(PDX, markers =vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(PDX, markers =vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+```
+
+```{r DE Analysis between treatment conditions within each model}
+#DF20 
+#vehicle VS. mrd
+DF20vehicleVsMDR.markers <- DEAnalysis_code(DF20, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(DF20, markers =DF20vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(DF20, markers =DF20vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(DF20, markers =DF20vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+
+#vehicle vs. relapse
+DF20vehicleVsrelapse.markers <- DEAnalysis_code(DF20, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(DF20, markers =DF20vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(DF20, markers =DF20vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(DF20, markers =DF20vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+
+#DF101 
+#vehicle VS. mrd
+DF101vehicleVsMDR.markers <- DEAnalysis_code(DF101, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(DF101, markers =DF101vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(DF101, markers =DF101vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(DF101, markers =DF101vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+
+#vehicle vs. relapse
+DF101vehicleVsrelapse.markers <- DEAnalysis_code(DF101, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(DF101, markers =DF101vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(DF101, markers =DF101vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(DF101, markers =DF101vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+
+#DF68
+#vehicle VS. mrd
+DF68vehicleVsMDR.markers <- DEAnalysis_code(DF68, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(DF68, markers =DF68vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(DF68, markers =DF68vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(DF68, markers =DF68vehicleVsMDR.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "MRD", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
+
+#vehicle vs. relapse
+DF68vehicleVsrelapse.markers <- DEAnalysis_code(DF68, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse")
+#Volcano plots 
+#all markers 
+DEAnalysis_code(DF68, markers =DF68vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", graph = TRUE)
+#oxphos Genes
+DEAnalysis_code(DF68, markers =DF68vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
+#UTR Genes
+DEAnalysis_code(DF68, markers =DF68vehicleVsrelapse.markers, group.by = "treatment.status", group.1 = "vehicle", group.2 = "relapse", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
 ```
