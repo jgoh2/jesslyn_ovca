@@ -22,126 +22,80 @@ library(readxl)
 library(here)
 library(plyr)
 library(patchwork)
+library(ggplot2)
 
 # Read in Seurat objects
-TST_Seurat_scaled = readRDS(file = "data/HTAPP/jesslyn_TST_scaled_prepoc.RDS")
-TST_Seurat_raw = readRDS(file = "data/HTAPP/jesslyn_TST_raw_prepoc.RDS")
+TST = readRDS(file = "data/HTAPP/jesslyn_TST_prepoc.RDS")
 
-freshCD45neg_Seurat_scaled = readRDS(file = "data/HTAPP/jesslyn_freshCD45neg_scaled_preproc.RDS")
-freshCD45neg_Seurat_raw = readRDS(file = "data/HTAPP/jesslyn_freshCD45neg_raw_preproc.RDS")
+freshCD45neg = readRDS(file = "data/HTAPP/jesslyn_freshCD45neg_preproc.RDS")
 
-fresh2_Seurat_scaled = readRDS(file = "data/HTAPP/jesslyn_fresh2_scaled_preproc.RDS")
-fresh2_Seurat_raw = readRDS(file = "data/HTAPP/jesslyn_fresh2_raw_preproc.RDS")
+fresh2 = readRDS(file = "data/HTAPP/jesslyn_fresh2__preproc.RDS")
 
 ```
 
-```{r QC Scaled Data}
-#VlnPlot of nUMI, nCount_RNA, nFeature_RNA, nGene, nReads, and percent_mito to see if filtered using those parameters 
+```{r Metadata Metrics}
+#VlnPlot of nUMI, nCount_RNA, nFeature_RNA, nGene, nReads, and percent_mito. 
 
-#TST SCALED DATA
-TST_scaled_p = VlnPlot(TST_Seurat_scaled, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F) 
-TST_scaled_p[[1]] = TST_scaled_p[[1]] + ylim(-100, 800) + labs(title = "TST Scaled nFeature_RNA")
-TST_scaled_p[[2]] = TST_scaled_p[[2]] + ylim(-600, 2000) + labs(title = "TST Scaled nCount_RNA")
-TST_scaled_p[[3]] = TST_scaled_p[[3]] + ylim(-100, 30000) + labs(title = "TST Scaled nUMI")
-TST_scaled_p[[4]] = TST_scaled_p[[4]] + ylim(-100, 6000) + labs(title = "TST Scaled nGene")
-TST_scaled_p[[5]] = TST_scaled_p[[5]] + ylim(-100, 60000) + labs(title = "TST Scaled nReads")
-TST_scaled_p[[6]] = TST_scaled_p[[6]] + ylim(-0.2, 0.5) + labs(title = "TST Scaled percent_mito")
+Seurat_objects <- c(TST, freshCD45neg, fresh2)
+names <- c("TST", "freshCD45neg", "fresh2")
+index = 1
+for (obj in Seurat_objects){
+plot = VlnPlot(obj, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F)
 
-TST_scaled_p[[1]] + TST_scaled_p[[2]] + plot_layout(guides = 'collect') #nFeature vs nCount
-TST_scaled_p[[2]] + TST_scaled_p[[3]] + TST_scaled_p[[5]]  + plot_layout(guides = 'collect') #nCount vs. nUMI vs. nReads
-TST_scaled_p[[1]] + TST_scaled_p[[4]] + plot_layout(guides = 'collect') #nFeature vs nGene 
-TST_scaled_p[[6]] #percent mito
+name <- names[index]
 
-#FRESH ASCITES CD45- SCALED DATA
-freshCD45neg_scaled_p = VlnPlot(freshCD45neg_Seurat_scaled, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F) 
-freshCD45neg_scaled_p[[1]] = freshCD45neg_scaled_p[[1]] + ylim(0, 2000) + labs(title = "Fresh CD45- Scaled nFeature_RNA")
-freshCD45neg_scaled_p[[2]] = freshCD45neg_scaled_p[[2]] + ylim(-2000, 2000) + labs(title = "Fresh CD45- Scaled nCount_RNA")
-freshCD45neg_scaled_p[[3]] = freshCD45neg_scaled_p[[3]] + ylim(-100, 100000) + labs(title = "Fresh CD45- Scaled nUMI")
-freshCD45neg_scaled_p[[4]] = freshCD45neg_scaled_p[[4]] + ylim(0, 8000) + labs(title = "Fresh CD45- Scaled nGene")
-freshCD45neg_scaled_p[[5]] = freshCD45neg_scaled_p[[5]] + ylim(-100, 200000) + labs(title = "Fresh CD45- Scaled nReads")
-freshCD45neg_scaled_p[[6]] = freshCD45neg_scaled_p[[6]] + ylim(-0.2, 0.5) + labs(title = "Fresh CD45- Scaled percent_mito")
+plot[[1]] = plot[[1]] + labs(title = paste(name, "Raw nFeature_RNA"))
+plot[[2]] = plot[[2]] + labs(title = paste(name, "Raw nCount_RNA"))
+plot[[3]] = plot[[3]] + labs(title = paste(name, "Raw nUMI"))
+plot[[4]] = plot[[4]] + labs(title = paste(name, "Raw nGene"))
+plot[[5]] = plot[[5]] + labs(title = paste(name,"Raw nReads"))
+plot[[6]] = plot[[6]] + ylim(-0.2, 0.5) + labs(title = paste(name,"Raw percent mito"))
 
-freshCD45neg_scaled_p[[1]] + freshCD45neg_scaled_p[[2]] + plot_layout(guides = 'collect') #nFeature vs nCount
-freshCD45neg_scaled_p[[2]] + freshCD45neg_scaled_p[[3]] + freshCD45neg_scaled_p[[5]]  + plot_layout(guides = 'collect') #nCount vs. nUMI vs. nReads
-freshCD45neg_scaled_p[[1]] + freshCD45neg_scaled_p[[4]] + plot_layout(guides = 'collect') #nFeature vs nGene 
-freshCD45neg_scaled_p[[6]]
+plot[[1]] + plot[[2]] + plot_layout(guides = 'collect') #nFeature vs nCount
+ggsave(glue("{name}_nFeatureVSnCount.png"), path = "jesslyn_plots/HTAPP", width = 10, height = 8)
 
-#FRESH RESECTION SCALED DATA 
-fresh2_scaled_p = VlnPlot(fresh2_Seurat_scaled, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F)
-fresh2_scaled_p[[1]] = fresh2_scaled_p[[1]] + ylim(-100, 1000) + labs(title = "Fresh Resection Scaled nFeature_RNA")
-fresh2_scaled_p[[2]] = fresh2_scaled_p[[2]] + ylim(-2000, 3000) + labs(title = "Fresh Resection Scaled nCount_RNA")
-fresh2_scaled_p[[3]] = fresh2_scaled_p[[3]] + ylim(-100, 100000) + labs(title = "Fresh Resection Scaled nUMI")
-fresh2_scaled_p[[4]] = fresh2_scaled_p[[4]] + ylim(0, 8000) + labs(title = "Fresh Resection Scaled nGene")
-fresh2_scaled_p[[5]] = fresh2_scaled_p[[5]] + ylim(-100, 60000) + labs(title = "Fresh Resection Scaled nReads")
-fresh2_scaled_p[[6]] = fresh2_scaled_p[[6]] + ylim(-0.2, 0.5) + labs(title = "Fresh Resection Scaled percent_mito")
+plot[[2]] +plot[[3]] + plot[[5]]  + plot_layout(guides = 'collect') #nCount vs. nUMI vs. nReads
+ggsave(glue("{name}_nCount_nUMI_nReads.png"), path = "jesslyn_plots/HTAPP", width = 10, height = 8)
 
-fresh2_scaled_p[[1]] + fresh2_scaled_p[[2]] + plot_layout(guides = 'collect') #nFeature vs nCount
-fresh2_scaled_p[[2]] + fresh2_scaled_p[[3]] + fresh2_scaled_p[[5]]  + plot_layout(guides = 'collect') #nCount vs. nUMI vs. nReads
-fresh2_scaled_p[[1]] + fresh2_scaled_p[[4]] + plot_layout(guides = 'collect') #nFeature vs nGene 
-fresh2_scaled_p[[6]]
+plot[[1]] + plot[[4]] + plot_layout(guides = 'collect') #nFeature vs nGene 
+ggsave(glue("{name}_nFeatureVSnGene.png"), path = "jesslyn_plots/HTAPP", width = 10, height = 8)
+
+plot[[6]] #percent_mito
+ggsave(glue("{name}_percentMito.png"),plot[[6]], path = "jesslyn_plots/HTAPP")
+
+index = index +1 
+}
+
+index = 1
+
 ```
 
-```{r QC Raw Data vs. Scaled Data}
-#VlnPlot of nUMI, nCount_RNA, nFeature_RNA, nGene, nReads, and percent_mito. Compare with scaled plots. 
+```{r QC}
+#examine how doublets or empty droplets were detected
 
-#TST 
-TST_raw_p = VlnPlot(TST_Seurat_raw, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F)
-TST_raw_p[[1]] = TST_raw_p[[1]] + ylim(-100, 6000) + labs(title = "TST Raw nFeature_RNA")
-TST_raw_p[[2]] = TST_raw_p[[2]] + ylim(-100, 15000) + labs(title = "TST Raw nCount_RNA")
-TST_raw_p[[3]] = TST_raw_p[[3]] + ylim(-100, 30000) + labs(title = "TST Raw nUMI")
-TST_raw_p[[4]] = TST_raw_p[[4]] + ylim(-100, 6000) + labs(title = "TST Raw nGene")
-TST_raw_p[[5]] = TST_raw_p[[5]] + ylim(-100, 60000) + labs(title = "TST Raw nReads")
-TST_raw_p[[6]] = TST_raw_p[[6]] + ylim(-0.2, 0.5) + labs(title = "TST Raw percent mito")
-#compare QC with scaled data 
-TST_scaled_p[[1]] + TST_raw_p[[1]] + plot_layout(guides = 'collect') #nFeature
-TST_scaled_p[[2]] + TST_raw_p[[2]] + plot_layout(guides = 'collect') #nCount 
-TST_scaled_p[[3]] + TST_raw_p[[3]] + plot_layout(guides = 'collect') #nUMI
-TST_scaled_p[[4]] + TST_raw_p[[4]] + plot_layout(guides = 'collect') #nGene
-TST_scaled_p[[5]] + TST_raw_p[[5]] + plot_layout(guides = 'collect') #nReads
-TST_scaled_p[[6]] + TST_raw_p[[6]] + plot_layout(guides = 'collect') #percent_mito
+index = 1
+for (obj in Seurat_objects){
+  name <- names[index]
 
-#FRESH ASCITES CD45- SCALED DATA
-freshCD45neg_raw_p = VlnPlot(freshCD45neg_Seurat_raw, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F) 
-freshCD45neg_raw_p[[1]] = freshCD45neg_raw_p[[1]] + ylim(0, 10000) + labs(title = "Fresh CD45- Raw nFeature_RNA")
-freshCD45neg_raw_p[[2]] = freshCD45neg_raw_p[[2]] + ylim(-100, 20000) + labs(title = "Fresh CD45- Raw nCount_RNA")
-freshCD45neg_raw_p[[3]] = freshCD45neg_raw_p[[3]] + ylim(-100, 100000) + labs(title = "Fresh CD45- Raw nUMI")
-freshCD45neg_raw_p[[4]] = freshCD45neg_raw_p[[4]] + ylim(0, 8000) + labs(title = "Fresh CD45- Raw nGene")
-freshCD45neg_raw_p[[5]] = freshCD45neg_raw_p[[5]] + ylim(-100, 200000) + labs(title = "Fresh CD45- Raw nReads")
-freshCD45neg_raw_p[[6]] = freshCD45neg_raw_p[[6]] + ylim(-0.2, 0.5) + labs(title = "Fresh CD45- Raw percent_mito")
-#compare QC with scaled data 
-freshCD45neg_scaled_p[[1]] + freshCD45neg_raw_p[[1]] + plot_layout(guides = 'collect') #nFeature
-freshCD45neg_scaled_p[[2]] + freshCD45neg_raw_p[[2]] + plot_layout(guides = 'collect') #nCount 
-freshCD45neg_scaled_p[[3]] + freshCD45neg_raw_p[[3]] + plot_layout(guides = 'collect') #nUMI
-freshCD45neg_scaled_p[[4]] + freshCD45neg_raw_p[[4]] + plot_layout(guides = 'collect') #nGene
-freshCD45neg_scaled_p[[5]] + freshCD45neg_raw_p[[5]] + plot_layout(guides = 'collect') #nReads
-freshCD45neg_scaled_p[[6]] + freshCD45neg_raw_p[[6]] + plot_layout(guides = 'collect') #percent_mito
-
-#FRESH RESECTION DATA
-fresh2_raw_p = VlnPlot(fresh2_Seurat_raw, features = c("nFeature_RNA", "nCount_RNA", "nUMI", "nGene", "nReads", "percent_mito"), pt.size = 0.5, combine = F) 
-fresh2_raw_p[[1]] = fresh2_raw_p[[1]] + ylim(0, 10000) + labs(title = "Fresh Resection Raw nFeature_RNA")
-fresh2_raw_p[[2]] = fresh2_raw_p[[2]] + ylim(0, 20000) + labs(title = "Fresh Resection Raw nCount_RNA")
-fresh2_raw_p[[3]] = fresh2_raw_p[[3]] + ylim(-100, 100000) + labs(title = "Fresh Resection Raw nUMI")
-fresh2_raw_p[[4]] = fresh2_raw_p[[4]] + ylim(0, 8000) + labs(title = "Fresh Resection Raw nGene")
-fresh2_raw_p[[5]] = fresh2_raw_p[[5]] + ylim(-100, 60000) + labs(title = "Fresh Resection Raw nReads")
-fresh2_raw_p[[6]] = fresh2_raw_p[[6]] + ylim(-0.2, 0.5) + labs(title = "Fresh Resection Raw percent_mito")
-
-#compare QC with scaled data 
-fresh2_scaled_p[[1]] + fresh2_raw_p[[1]] + plot_layout(guides = 'collect') #nFeature
-fresh2_scaled_p[[2]] + fresh2_raw_p[[2]] + plot_layout(guides = 'collect') #nCount 
-fresh2_scaled_p[[3]] + fresh2_raw_p[[3]] + plot_layout(guides = 'collect') #nUMI
-fresh2_scaled_p[[4]] + fresh2_raw_p[[4]] + plot_layout(guides = 'collect') #nGene
-fresh2_scaled_p[[5]] + fresh2_raw_p[[5]] + plot_layout(guides = 'collect') #nReads
-fresh2_scaled_p[[6]] + fresh2_raw_p[[6]] + plot_layout(guides = 'collect') #percent_mito
+  obj$doublet_or_empty = as.logical(obj$doublet + obj$emptydrop)
+  
+  ggplot(obj@meta.data, aes(x = nFeature_RNA, y = nCount_RNA, color = doublet_or_empty, alpha =0.5)) + geom_point() + labs(x = "nFeature", y = "nCount", title = paste(name, "nFeature and nCount Metrics of Low Quality Droplets"))
+  
+  ggsave(glue("{name}_nFeatureXnCountByDrop.png"), path = "jesslyn_plots/HTAPP")
+  
+  index = index +1 
+}
+index = 1
 ```
 
 ```{r metadata metrics}
 source(here('mike_code','seurat_tab.R'))
 
 #graph distribution of cell types 
-seurat_tab(TST_Seurat_scaled, col_var = "annotate", row_var = "Condition", title = "Number of cells per cell type for TST scaled")
+seurat_tab(TST, col_var = "annotate", row_var = "Condition", title = "Number of cells per cell type for TST")
 
-seurat_tab(freshCD45neg_Seurat_scaled, col_var = "annotate", row_var = "Condition", title = "Number of cells per cell type for freshCD45neg scaled")
+seurat_tab(freshCD45neg, col_var = "annotate", row_var = "Condition", title = "Number of cells per cell type for freshCD45neg")
 
-seurat_tab(fresh2_Seurat_scaled, col_var = "annotate", row_var = "Condition", title = "Number of cells per cell type for fresh2 scaled")
+seurat_tab(fresh2, col_var = "annotate", row_var = "Condition", title = "Number of cells per cell type for fresh2")
 
 ```
