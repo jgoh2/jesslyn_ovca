@@ -95,8 +95,9 @@ plots = VlnPlot(ovca_PDX, features = feats, split.by = "treatment.status", combi
 names(plots) = feats
 plots = lapply(feats, function(x) {
       plots[[x]] = plots[[x]] + 
-        guides(fill=guide_legend("treatment.status")) + 
-        labs(x = "model") + theme(plot.title = element_text(size = 10))
+        guides(fill=guide_legend("Treatment Status")) + 
+        labs(x = "model", y = "normalized expression") + 
+        theme(plot.title = element_text(size = 10))
       })
 names(plots) = feats
 lapply(feats, function(x) {
@@ -110,35 +111,37 @@ ggsave(glue('{fig.dir}/PDX_vlns.png'), width = 12, height = 12, plot = p)
 # Dot Plots
 ## Use custom function
 ovca_PDX$treatment.status = factor(ovca_PDX$treatment.status, levels = c("vehicle","MRD","relapse"))
+# add option to normalize within groups to DotPlot2()
 plots = DotPlot2(ovca_PDX, features = feats, group1 = "treatment.status", group2 = "model_ID")
 plots = lapply(plots, function(x) {
                 x = x + theme(plot.title = element_text(size = 12))
                 })
-wrap_plots(plots, ncol = 1, guides = "collect") %>% ggsave(glue('{fig.dir}/PDX_dotplots.png'), width = 7, height = 14, plot = .)
+wrap_plots(plots, ncol = 1, guides = "collect") %>% 
+  ggsave(glue('{fig.dir}/PDX_dotplots.png'), width = 7, height = 14, plot = .)
 
 # GSEA
 gsea_sigs = hall_sigs[c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","HALLMARK_OXIDATIVE_PHOSPHORYLATION")]
 group1 = unique(ovca_PDX$model_ID)
-group2 = unique(ovca_PDX$treatment.status)
-data.gsea = lapply(group1, function(x) {
+group2 = levels(ovca_PDX$treatment.status)
+data.gsea = lapply(group1, function(x) { # iteratee through models
   # DE between treatment statuses within each model
   data.use = subset(ovca_PDX, subset = model_ID == x) %>% 
     wilcoxauc("treatment.status", assay = 'scale.data')
-  data.list = lapply(group2, function(y){
+  data.list = lapply(group2, function(y){ # iterates through treatment statuses
       data.use = dplyr::filter(data.use, group == y) %>%
         dplyr::arrange(desc(logFC)) %>%
         dplyr::select(feature, logFC)
       ranks = deframe(data.use)
-      gseaRes = fgsea(gsea_sigs, ranks, minSize = 15, maxSize = 500, nperm=1000) %>%
-        as.tibble() %>%
+      gseaRes = fgsea(gsea_sigs, ranks, minSize = 15, maxSize = 500, nperm=10000) %>%
+        as_tibble() %>%
         dplyr::arrange(desc(NES))
       return(list("ranks" = ranks, "res" = gseaRes))
     })
 })
 data.gsea = setNames(lapply(data.gsea, setNames, group2), group1)
-plots = lapply(group1, function(x) {
+lapply(group1, function(x) {
   data.use = data.gsea[[x]]
-  plots = lapply(group2, function(y){
+  lapply(group2, function(y){
     ranks = data.use[[y]]$ranks
     fgseaRes = data.use[[y]]$res
     lapply(names(gsea_sigs), function(z){
@@ -169,7 +172,7 @@ lapply(names(gsea_sigs), function(y) {
       tab_footnote("Enrichment Score", cells_column_labels(c("ES"))) %>%
       tab_footnote("Normalized Enrichment Score", cells_column_labels(c("NES"))) %>%
       data_color(vars(NES), colors = RColorBrewer::brewer.pal(9, "YlOrRd")) %>%
-      fmt_number(vars(padj, ES,NES),decimals = 3) %>%
+      fmt_number(vars(padj, ES,NES),decimals = 4) %>%
       tab_style(style = list(cell_fill(color = "lightcyan"),cell_text(weight = "bold")),
                 locations = cells_body(columns = vars(padj),rows = padj < 0.05)) %>%
       tab_options(
@@ -187,7 +190,7 @@ lapply(names(gsea_sigs), function(y) {
 
 # 2. SS2 Oxphos 
 
-```{r oxphos SS2}
+```{r SS2}
 feats = c("HALLMARK_UNFOLDED_PROTEIN_RESPONSE","HALLMARK_OXIDATIVE_PHOSPHORYLATION","ATF3","ATF4","JUN")
 pats = c(8,9)
 ovca_SS2 = subset(ovca_SS2, subset = cell.type == "Malignant") %>%  subset(subset = Patient %in% pats) 
