@@ -88,7 +88,7 @@ for (i in c(1,2)){
 
 #make DotPlot with mike's code
 source(here('mike_code','DotPlot2.R'))
-Dotplots = DotPlot2(PDX, features = sigs_of_interest, group1 = "treatment.status", group2 = "model_ID")
+Dotplots = DotPlot2(PDX, features = sigs_of_interest, group1 = "model_ID", group2 = "treatment.status")
 Dotplots[[1]] = Dotplots[[1]] + theme(plot.title = element_text(size = 10))
 Dotplots[[2]] = Dotplots[[2]] + theme(plot.title = element_text(size = 10))
 Dotplots[[1]] + Dotplots[[2]] + plot_layout(guides = 'collect')
@@ -96,16 +96,19 @@ ggsave(glue("PDX_SummaryDotPlot.png"), path = "jesslyn_plots/PDX", width = 10, h
 ```
 
 Interested in seeing how oxphos and upr genes are differentially expressed across models and treatment conditions. Qualitative results above shows that there is some difference. Now, we want to use quantitative measures to determine how significant this difference is. 
+
+##UNPAIRED GSEA - testing across all three conditions at once
+#SPECIFIC FOR OXPHOS AND UTR
 ```{r GSEA across treatment statuses}
 source(here('jesslyn_code','GSEA_code.R'))
 conditions <- levels(PDX$treatment.status)
 fgsea_genesets <- hallmark.list[c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")]
 
 for(condition in conditions){
-  PDX_condition.results <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition) #calculate enrichment score for each gene set you're interested in 
+  PDX_condition.results <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition) #calculate enrichment score for each gene set you're interested in for this particular condition relative to all other conditions
   PDX_condition.ranks <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition, ranks = TRUE)
     
-    #graph fgsea results for each treatment condition 
+    #graph fgsea results for each hallmark of interest for this particular condition relative to all other condition
     plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], PDX_condition.ranks) + labs(title = glue("Oxidative Phosphorylation GSEA Results For PDX {condition}"))
     ggsave(glue("PDX_All_{condition}_Oxphos_GSEA_EnrichmentPlot.png"), path = "jesslyn_plots/PDX")
     
@@ -136,6 +139,57 @@ for(model in models){
     ggsave(glue("PDX_{model}_{condition}_UTR_GSEA_EnrichmentPlot.png"), path = "jesslyn_plots/PDX")
   }
 }
+```
+
+##PAIRED GSEA - testing MRD vs. vehicle and MRD vs. Relapse separately 
+#FOR ALL HALLMARKS IN THE LIST
+```{r paired GSEA}
+#ACROSS TREATMENT STATUSES
+conditions <- c("vehicle", "relapse")
+hallmarks_names <- names(hallmark.list)
+condition.results <- vector("list", length(conditions))
+names(condition.results) <- conditions
+
+for(condition in conditions){
+  #calculate the enrichment score for each hallmark specifically for group.1 in comparison to group.2
+  condition.ranks <- GSEA_code(PDX, group.by = "treatment.status", hallmark.list, paired = TRUE, group.1 = "MRD", group.2 = condition, ranks = NULL)
+  
+  condition.results[[condition]] <- GSEA_code(PDX, group.by = "treatment.status", hallmark.list, ranks = condition.ranks) 
+  
+  #graph fgsea for each hallmark for group.1 in comparison to group.2
+  for(hallmark in hallmarks_names){
+    plotEnrichment(hallmark.list[[hallmark]], condition.ranks) + labs(title = glue("{hallmark} GSEA results for PDX MRD vs. {condition}")) + theme(plot.title = element_text(size = 8))
+    ggsave(glue("PDX_PAIRED_MRDvs.{condition}_{hallmark}_GSEA.png"), path = "jesslyn_plots/PDX/GSEA_paired/All")
+  }
+}
+names(condition.results) <- c("MRD vs. vehicle", "MRD vs. relapse")
+
+#WITHIN EACH MODEL 
+models <- levels(PDX$model_ID)
+obj.results <- vector("list", length(models))
+names(obj.results) <- levels(PDX$model_ID)
+obj.condition.results <- vector("list", length(conditions))
+names(obj.condition.results) <- conditions
+
+for(model in models){
+  #subset Seurat object to contain only one model ID
+  obj <- subset(PDX, subset = (model_ID == model))
+  
+  #within each model, calculate fgsea results for MRD vs. vehicle and MRD vs. relapse
+  for (condition in conditions){
+    obj.condition.ranks <- GSEA_code(obj, group.by = "treatment.status", hallmark.list, paired = TRUE, group.1 = "MRD", group.2 = condition, ranks = NULL)
+  
+  obj.condition.results[[condition]] <- GSEA_code(obj, group.by = "treatment.status", hallmark.list, ranks = obj.condition.ranks) 
+  
+  #graph fgsea for each hallmark for each specified comparison within specified model
+    for(hallmark in hallmarks_names){
+      plotEnrichment(hallmark.list[[hallmark]], obj.condition.ranks) + labs(title = glue("{hallmark} GSEA results for {model} MRD vs. {condition}")) + theme(plot.title = element_text(size = 8))
+      ggsave(glue("{model}_PAIRED_MRDvs.{condition}_{hallmark}_GSEA.png"), path = glue("jesslyn_plots/PDX/GSEA_paired/{model}"))
+    }
+  }
+  obj.results[[model]] <- obj.condition.results #save all gsea results into a nested list
+}
+
 ```
 
 DE ANALYSIS TYPE #2. FIND DIFFERENTIALLY EXPRESSED GENES FROM SCRATCH AND EVALUATE IF THEY MAKE UP A GO TERM COLLECTIVELY
