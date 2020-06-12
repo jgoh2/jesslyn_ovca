@@ -16,6 +16,7 @@ DotPlot2 <- function(
   scale.min = NA,
   scale.max = NA
 ) {
+  # fetch/coerce data
   data.features <- FetchData(object = object, vars = features)
   data.features$grp1 <- object[[group1, drop = TRUE]]
   data.features$grp2 <- object[[group2, drop = TRUE]]
@@ -30,8 +31,8 @@ DotPlot2 <- function(
   data.features$grp1 <- as.vector(x = data.features$grp1)
   data.features$grp2 <- as.vector(x = data.features$grp2)
   
-  data.plot <- lapply(grp1.levels,
-    function(grp1) {
+  # get average + natural-log transform of each condition
+  data.plot <- lapply(grp1.levels, function(grp1) {
       lapply(grp2.levels, function(grp2) {
         data.use <- data.features[data.features$grp1 == grp1 & data.features$grp2 == grp2, 1:(ncol(x = data.features) - 2), drop = FALSE]
         avg.exp <- apply(
@@ -45,38 +46,44 @@ DotPlot2 <- function(
       })
     }
   )
-  data.plot = setNames(lapply(data.plot, setNames, grp2.levels), grp1.levels) %>% unlist(recursive = F)
+  data.plot = setNames(lapply(data.plot, setNames, grp2.levels), grp1.levels) %>% 
+    unlist(recursive = F)
   
-  data.plot <- lapply(
-    X = names(x = data.plot),
+  # reshape
+  data.plot <- lapply(names(data.plot),
     FUN = function(x) {
-      data.use <- as.data.frame(x = data.plot[[x]])
-      data.use$features.plot <- rownames(x = data.use)
+      data.use <- as.data.frame(data.plot[[x]])
+      data.use$features.plot <- rownames(data.use)
       data.use$id <- x
       return(data.use)
     }
   )
   
+  # combine
   data.plot <- do.call(what = 'rbind', args = data.plot)
+  # reseparate groups
+  data.plot$grp1 = sapply(data.plot$id, function(x) strsplit(x, split = "\\.")[[1]][1]) %>% factor(levels = grp1.levels)
+  data.plot$grp2 = sapply(data.plot$id, function(x) strsplit(x, split = "\\.")[[1]][2]) %>% factor(levels = grp2.levels)
   if (length(x = levels(x = data.plot$id)) == 1) {
     scale <- FALSE
     warning("Only one identity present, the expression values will be not scaled.")
   }
-  avg.exp.scaled <- sapply(
-    X = unique(x = data.plot$features.plot),
-    FUN = function(x) {
-      data.use <- data.plot[data.plot$features.plot == x, 'avg.exp']
-      if (scale) {
-        data.use <- scale(x = data.use)
-        data.use <- MinMax(data = data.use, min = col.min, max = col.max)
-      } else {
-        data.use <- log(x = data.use)
-      }
-      return(data.use)
-    }
-  )
   
-  avg.exp.scaled <- as.vector(x = t(x = avg.exp.scaled))
+  avg.exp.scaled <- sapply(unique(data.plot$features.plot),
+    function(x) {
+      sapply(grp1.levels, function(y) { 
+        data.use <- filter(data.plot, features.plot == x, grp1 == y) %>% select(avg.exp)
+        if (scale) {
+          data.use <- scale(x = data.use)
+          data.use <- MinMax(data = data.use, min = col.min, max = col.max)
+        } else {
+          data.use <- log(x = data.use)
+        }
+        return(data.use)
+      })
+    })
+  
+  avg.exp.scaled <- as.vector(t(x = avg.exp.scaled))
   data.plot$avg.exp.scaled <- avg.exp.scaled
   data.plot$features.plot <- factor(
     x = data.plot$features.plot,
@@ -92,8 +99,6 @@ DotPlot2 <- function(
   if (!is.na(x = scale.max)) {
     data.plot[data.plot$pct.exp > scale.max, 'pct.exp'] <- scale.max
   }
-  data.plot$grp1 = sapply(data.plot$id, function(x) strsplit(x, split = "\\.")[[1]][1]) %>% factor(levels = grp1.levels)
-  data.plot$grp2 = sapply(data.plot$id, function(x) strsplit(x, split = "\\.")[[1]][2]) %>% factor(levels = grp2.levels)
   plots <- lapply(features, 
                   function(x) {
                     data.use = data.plot[data.plot$features.plot == x,]
