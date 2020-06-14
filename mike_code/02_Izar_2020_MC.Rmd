@@ -19,22 +19,10 @@ knitr::opts_chunk$set(
   warning = FALSE
 )
 knitr::opts_knit$set(root.dir = here::here())
+source(here('packages.R'))
 ```
 
 ```{r init}
-library(tidyverse)
-library(plyr)
-library(reshape2)
-library(Matrix)
-library(Seurat)
-# library(infercnv)
-library(patchwork)
-library(glue)
-library(beepr)
-library(broom)
-library(here)
-library(msigdbr)
-
 # saving obj setup
 proj = "Izar_2020"
 date = Sys.Date()
