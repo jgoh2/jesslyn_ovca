@@ -1,0 +1,126 @@
+---
+title: "Izar 2020 SS2 Load Seurat"
+author: "Jesslyn Goh"
+date: "6/15/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+set.seed(1)
+```
+
+```{r init}
+# Load packages
+source(here::here('packages.R'))
+
+# Read in Seurat objects
+SS2 = readRDS(file = "data/Izar_2020/Izar_2020_SS2.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#load in updated hallmark list 
+hallmark_names = read_lines("gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+```
+
+```{r QC and Normalization}
+VlnPlot(SS2, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2) 
+#VlnPlots show that the SS2 has not been centered 
+#shape of nCount seems like it has been normalized
+SS2 <- ScaleData(SS2, features = rownames(SS2), do.scale = F, do.center = T)
+
+plot_df = GetAssayData(object = SS2, slot = 'counts') %>% colSums() %>% as.data.frame()
+names(plot_df) = "counts"
+plot_df$scaled.data = GetAssayData(object = SS2, slot = 'scale.data') %>% colSums()
+plot_df = reshape2::melt(plot_df, value.name = "count")
+ggplot(plot_df, aes(x = variable, y = count)) + geom_violin() + theme_bw()
+
+#feature selection (prepare for dimensionality reduction)
+SS2 <- FindVariableFeatures(SS2, selection.method = "vst")
+```
+
+```{r add metadata}
+#cell cycle scoring
+SS2 <- CellCycleScoring(SS2, g2m.features = g2m.genes, s.features = s.genes)
+
+#hallmark scoring
+SS2 <- AddModuleScore(SS2, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+
+#add sample
+sample_ID <- rep("NA", ncol(SS2))
+for(patient in unique(SS2$Patient)){
+  for (time in unique(SS2$Time)){
+    sample_ID[SS2$Patient == patient & SS2$Time == time] <- glue("{patient}.{time}")
+  }
+}
+SS2 <- AddMetaData(SS2, sample_ID, col.name = "sample")
+
+#add BRAC status
+BRAC.status <- rep("NA", ncol(SS2))
+BRAC.status[SS2$Patient %in% c(5,8,9,10,122)] <- "WT"
+BRAC.status[SS2$Patient == 7] <- "BRCA2 MUT"
+
+SS2 <- AddMetaData(SS2, BRAC.status, col.name = "BRAC.status")
+```
+
+```{r metadata metrics}
+#numCellsPerPatientPerTreatment
+SS2$treatment.status = factor(SS2$treatment.status, levels = c("Treatment-naïve", "On-treatment"))
+seurat_tab(SS2, col_var = "Patient", row_var = "treatment.status", title = "Number of cells per Patient per treatment status") %>% 
+  gtsave("SS2_numCellsPerPatientPerTreatment.png", path = "jesslyn_plots/SS2")
+
+#numCellsPerSamplePerTreatment
+SS2$sample = factor(SS2$sample, levels = trimws(sort(formatC(unique(SS2$sample)))))
+numCellsPerSamplePerTreatment <- table(SS2$treatment.status, SS2$sample) %>% as.data.frame() %>% dplyr::rename(treatmentStatus = Var1, sample = Var2, numCells = Freq) %>% ggplot(aes(x=treatmentStatus, fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("treatmentStatus") + labs(fill = "sample")
+
+seurat_tab(SS2, col_var = "treatment.status", row_var = "sample", title = "Number of cells per Sample per treatment status") %>% 
+  gtsave("SS2_numCellsPerSamplePerTreatment.png", path = "jesslyn_plots/SS2")
+```
+
+```{r subset Malignant cells}
+SS2Malignant <- subset(SS2, subset = (cell.type == "Malignant"))
+
+#numMalignantCellsPerSample
+numMalignantCellsPerSample <- table(SS2Malignant$sample, SS2Malignant$cell.type, SS2Malignant$treatment.status) %>% as.data.frame() %>% dplyr::rename(sample = Var1, celltype = Var2, treatment = Var3, numCells = Freq) %>% filter(`celltype` == "Malignant")
+ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)) + geom_bar(stat = "identity") + labs(title = "Number of Malignant Cells Per Sample in SS2 Data")
+ggsave("numMalignantCellsPerSample.png", path = "jesslyn_plots/SS2", width = 8, height = 8)
+
+seurat_tab(SS2Malignant, col_var = "sample", row_var = "treatment.status", title = "Number of Malignant cells per Sample per treatment status")
+```
+
+Focusing on Malignant cells from now on: 
+```{r PCA for Malignant Cells}
+#data has already been scaled and centered above
+SS2Malignant <- FindVariableFeatures(SS2Malignant, selection.method = "vst")
+
+SS2Malignant <- RunPCA(SS2Malignant, features = VariableFeatures(SS2Malignant))
+PCAPlot(SS2Malignant)
+ElbowPlot(SS2Malignant)
+
+```
+
+```{r run UMAP for Malignant Cells}
+SS2Malignant<- RunUMAP(SS2Malignant, dims=1:15)
+UMAPPlot(SS2Malignant, group.by = "sample")
+ggsave("SS2_UMAP_bySample.png", path = "jesslyn_plots/SS2", width = 8, height = 8)
+
+UMAPPlot(SS2Malignant, group.by = "treatment.status")
+ggsave("SS2_UMAP_byTreatment.png", path = "jesslyn_plots/SS2", width = 8, height = 8)
+```
+
+```{r save SDS}
+saveRDS(SS2, file="data/Izar_2020/jesslyn_SS2_processed.RDS")
+saveRDS(SS2Malignant, file="data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
+```

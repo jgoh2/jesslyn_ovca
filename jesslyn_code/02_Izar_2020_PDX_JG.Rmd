@@ -14,19 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r init}
 # Load packages
-library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
-library(Matrix) # interact with sparse data
-library(Seurat)
-library(patchwork) # package to combine plots
-library(glue)
-library(beepr)
-library(readxl)
-library(ggplot2)
-library(gt)
-library(msigdbr)
-library(plyr)
-library(webshot)
-library(here)
+source(here::here('packages.R'))
 
 #Read in PDX RDS object
 PDX = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
@@ -75,7 +63,9 @@ hallmark = msigdbr(species = "Homo sapiens", category = "H") %>% filter(gs_name 
 #convert hallmark into a list
 hallmark.list = vector(mode = "list")
 for(hm in unique(hallmark$gs_name)){
-  hallmark.list = c(hallmark.list, select(filter(hallmark, gs_name %in% hm),gene_symbol) %>% as.list())
+  update = select(filter(hallmark, gs_name %in% hm),gene_symbol) %>% as.list()
+  update[["gene_symbol"]] <- update[["gene_symbol"]] %>% UpdateSymbolList(several.ok = TRUE)
+  hallmark.list = c(hallmark.list, update)
 }
 names(hallmark.list) <- unique(hallmark$gs_name)
 
@@ -106,7 +96,7 @@ source(here('mike_code','seurat_tab.R'))
 #number of cells from each mice in each model 
 model_levels <- c("DF20", "DF101", "DF68")
 numCellsPerMicePerModel = table(PDX$model_ID, PDX$mouse_ID) 
-numCellsPerMicePerModel %>% as.data.frame() %>% rename(model = Var1, mouse = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=mouse, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model")
+numCellsPerMicePerModel %>% as.data.frame() %>% dplyr::rename(model = Var1, mouse = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=mouse, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model")
 #change each 0 to NA
 for (rowName in rownames(numCellsPerMicePerModel)){
   numCellsPerMicePerModel[rowName,][numCellsPerMicePerModel[rowName,]==0] <- "NA"
@@ -114,10 +104,10 @@ for (rowName in rownames(numCellsPerMicePerModel)){
 
 #number of cells in each treatment level in each model 
 treatment_levels <- c("vehicle", "MRD", "relapse")
-table(PDX$treatment.status, PDX$model_ID)
-numCellsPerTreatmentPerModel %>% as.data.frame() %>% rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=factor(treatmentStatus,levels = treatment_levels), y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model") + labs(fill = "treatmentStatus")
+numCellsPerTreatmentPerModel = table(PDX$treatment.status, PDX$model_ID)
+numCellsPerTreatmentPerModel %>% as.data.frame() %>% dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=factor(treatmentStatus,levels = treatment_levels), y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model") + labs(fill = "treatmentStatus")
 
-numCellsPerTreatmentPerModel %>% as.data.frame() %>% rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(fill=factor(model, levels = model_levels), x=treatmentStatus, y=numCells)) + geom_bar(stat="identity", position="fill") + labs(fill="model")
+numCellsPerTreatmentPerModel %>% as.data.frame() %>% dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(fill=factor(model, levels = model_levels), x=factor(treatmentStatus, levels = treatment_levels), y=numCells)) + geom_bar(stat="identity", position="fill") + labs(fill="model", x = "treatment")
 
 #create table 
 PDX$model_ID = factor(PDX$model_ID, levels = model_levels)

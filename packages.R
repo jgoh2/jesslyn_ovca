@@ -19,6 +19,7 @@ p_load(fgsea)
 p_load_gh("immunogenomics/presto")
 
 source(here('mike_code','DotPlot2.R'))
-source(here('mike_code','DotPlot3.R'))
+#source(here('mike_code','DotPlot3.R'))
 source(here('jesslyn_code','DEAnalysis_code.R'))
 source(here('jesslyn_code','GSEA_code.R'))
+source(here('mike_code','seurat_tab.R'))

@@ -10,43 +10,25 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE)
-set.seed(10)
+set.seed(1)
 ```
 
 ```{r init}
 # Load packages
-library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
-library(Matrix) # interact with sparse data
-library(Seurat)
-library(patchwork) # package to combine plots
-library(glue)
-library(beepr)
-library(readxl)
-library(ggplot2)
-library(gt)
-library(msigdbr)
-library(here)
-library(dplyr)
-#library(devtools)
-# devtools::install_github("immunogenomics/presto")
-library(presto)
-library(fgsea)
-
+source(here::here('packages.R'))
 
 # Read in Seurat objects
 PDX = readRDS(file = "data/Izar_2020/jesslyn_PDX_processed.RDS")
 
 #load in a list of hallmark names that we are interested in 
 hallmark_names = read_lines("gene_lists/hallmarks.txt")
-#load in all hallmarks, category H stands for hallmark geneset 
-#filter out genesets we're interested in, and only select for columns with the geneset name and gene symbols
-hallmark = msigdbr(species = "Homo sapiens", category = "H") %>% filter(gs_name %in% hallmark_names) %>% select(gs_name, gene_symbol) 
-#convert hallmark into a list
-hallmark.list = vector(mode = "list")
-for(hm in unique(hallmark$gs_name)){
-  hallmark.list = c(hallmark.list, select(filter(hallmark, gs_name %in% hm),gene_symbol) %>% as.list())
+#load updated hallmarks 
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
 }
-names(hallmark.list) <- unique(hallmark$gs_name)
 ```
 
 DE ANALYSIS TYPE #1. TEST DIFFERENTIAL EXPRESSION ON A PREDEFINED GO GENESET
@@ -82,7 +64,7 @@ plots <- VlnPlot(PDX, features = sigs_of_interest, split.by = "treatment.status"
 plot_names <- c("Oxphos", "UTR")
 for (i in c(1,2)){
   name <- plot_names[i]
-  plots[[i]] + labs(title = glue("Comparing of {name} Gene Expression Across Treatment Conditions witin Each Model"), x = "Model", fill = "Treatment Status") + theme(plot.title = element_text(size = 6))
+  plots[[i]]<- plots[[i]] + labs(title = glue("Comparing of {name} Gene Expression Across Treatment Conditions witin Each Model"), x = "Model", fill = "Treatment Status") + theme(plot.title = element_text(size = 6))
   ggsave(glue("PDX_{name}_VlnPlot.png"), path = "jesslyn_plots/PDX")
 }
 
@@ -103,17 +85,19 @@ Interested in seeing how oxphos and upr genes are differentially expressed acros
 source(here('jesslyn_code','GSEA_code.R'))
 conditions <- levels(PDX$treatment.status)
 fgsea_genesets <- hallmark.list[c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")]
+gs <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
 
 for(condition in conditions){
-  PDX_condition.results <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition) #calculate enrichment score for each gene set you're interested in for this particular condition relative to all other conditions
-  PDX_condition.ranks <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition, ranks = TRUE)
+  PDX_condition.ranks <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition)
+  
+  PDX_condition.results <- GSEA_code(PDX, group.by = "treatment.status", fgsea_genesets, condition, ranks = PDX_condition.ranks) #calculate enrichment score for each gene set you're interested in for this particular condition relative to all other conditions
     
     #graph fgsea results for each hallmark of interest for this particular condition relative to all other condition
-    plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], PDX_condition.ranks) + labs(title = glue("Oxidative Phosphorylation GSEA Results For PDX {condition}"))
-    ggsave(glue("PDX_All_{condition}_Oxphos_GSEA_EnrichmentPlot.png"), path = "jesslyn_plots/PDX")
+  for (geneset in gs){
+    plotEnrichment(hallmark.list[[geneset]], PDX_condition.ranks) + labs(title = glue("{geneset} GSEA Results For PDX {condition}")) + theme(plot.title = element_text(size = 8))
+    ggsave(glue("PDX_UNPAIRED_All_{condition}_{geneset}_GSEA.png"), path = "jesslyn_plots/PDX/GSEA_unpaired")
     
-    plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], PDX_condition.ranks) + labs(title = glue("Unfolded Protein Response GSEA Results For PDX {condition}"))
-    ggsave(glue("PDX_All_{condition}_UTR_GSEA_EnrichmentPlot.png"), path = "jesslyn_plots/PDX")
+  }
 }
 
 ```
@@ -128,20 +112,20 @@ for(model in models){
   
   #fgsea results for each treatment condition (relative to each other) within each model 
   for (condition in conditions){
-    obj_condition.results <- GSEA_code(obj, group.by = "treatment.status", fgsea_genesets, condition)
-    obj_condition.ranks <- GSEA_code(obj, group.by = "treatment.status", fgsea_genesets, condition, ranks = TRUE)
+    obj_condition.ranks <- GSEA_code(obj, group.by = "treatment.status", fgsea_genesets, condition)
+    
+    obj_condition.results <- GSEA_code(obj, group.by = "treatment.status", fgsea_genesets, condition, ranks = obj_condition.ranks)
     
     #graph fgsea results for each treatment condition 
-    plotEnrichment(fgsea_genesets[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]], obj_condition.ranks) + labs(title = glue("Oxidative Phosphorylation GSEA Results For {model} {condition}")) + theme(plot.title = element_text(size = 10))
-    ggsave(glue("PDX_{model}_{condition}_Oxphos_GSEA_EnrichmentPlot.png"), path = "jesslyn_plots/PDX")
-    
-    plotEnrichment(fgsea_genesets[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]], obj_condition.ranks) + labs(title = glue("Unfolded Protein Response GSEA Results For {model} {condition}")) + theme(plot.title = element_text(size = 10))
-    ggsave(glue("PDX_{model}_{condition}_UTR_GSEA_EnrichmentPlot.png"), path = "jesslyn_plots/PDX")
+    for (geneset in gs){
+    plotEnrichment(hallmark.list[[geneset]], obj_condition.ranks) + labs(title = glue("{geneset} GSEA Results For {model} {condition}")) + theme(plot.title = element_text(size = 10))
+    ggsave(glue("PDX_UNPAIRED_{model}_{condition}_{geneset}_GSEA.png"), path = "jesslyn_plots/PDX/GSEA_unpaired")
+    }
   }
 }
 ```
 
-##PAIRED GSEA - testing MRD vs. vehicle and MRD vs. Relapse separately 
+##PAIRED GSEA - testing MRD vs. vehicle, MRD vs. relapse and vehicle vs. relapse separately 
 #FOR ALL HALLMARKS IN THE LIST
 ```{r paired GSEA}
 #ACROSS TREATMENT STATUSES
@@ -163,6 +147,7 @@ for(condition in conditions){
   }
 }
 names(condition.results) <- c("MRD vs. vehicle", "MRD vs. relapse")
+condition.results
 
 #WITHIN EACH MODEL 
 models <- levels(PDX$model_ID)
@@ -171,6 +156,7 @@ names(obj.results) <- levels(PDX$model_ID)
 obj.condition.results <- vector("list", length(conditions))
 names(obj.condition.results) <- conditions
 
+#MRD vs. vehicle and MRD vs. relapse
 for(model in models){
   #subset Seurat object to contain only one model ID
   obj <- subset(PDX, subset = (model_ID == model))
@@ -190,38 +176,81 @@ for(model in models){
   obj.results[[model]] <- obj.condition.results #save all gsea results into a nested list
 }
 
+#vehicle vs. relapse within each model
+models <- levels(PDX$model_ID)
+obj.vrresults <- vector("list", length(models))
+genesetsOI <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
+
+for (model in models){
+  obj <- subset(PDX, subset = (model_ID == model))
+  #within each model, calculate GSEA for vehicle vs. relapse 
+  obj.ranks <- GSEA_code(obj, group.by = "treatment.status", fgseaGS = hallmark.list, paired = TRUE, group.1 = "vehicle", group.2 = "relapse", ranks = NULL)
+  
+  obj.vrresults[[model]] <- GSEA_code(obj, group.by = "treatment.status", fgseaGS= hallmark.list, ranks = obj.ranks) 
+  
+  #graph fgsea results for vehicle vs. relapse (oxphos and UTR)
+  for (geneset in genesetsOI){
+    plotEnrichment(hallmark.list[[geneset]], obj.ranks) + labs(title = glue("{geneset} GSEA Results For {model} vehicle vs. relapse")) + theme(plot.title = element_text(size = 10))
+    ggsave(glue("{model}_vehicleVSrelapse_{geneset}_GSEA.png"), path = "jesslyn_plots/PDX/GSEA_paired")
+  }
+}
+```
+
+# TRYING OUT DIFFERENT STATISTICAL TESTS ON OXPHOS and UTR GENES FOR DF20 MRD VS. VEHICLE
+```{r try diff stat tests}
+tests <- c("wilcox", "t", "MAST", "LR")
+DF20.results <- vector("list", length(tests))
+names(DF20.results) <- tests
+DF20 <- subset(PDX, subset = (model_ID == "DF20"))
+
+for (test in tests){
+  DF20.ranks <- GSEA_code(DF20, stattest = test, group.by = "treatment.status", fgseaGS = hallmark.list, paired = TRUE, group.1 = "MRD", group.2 = "vehicle", ranks = NULL)
+  
+  DF20.results[[test]] <- GSEA_code(DF20, group.by = "treatment.status", fgseaGS= hallmark.list, ranks = DF20.ranks) 
+  
+  #graph fgsea results for MRD vs. vehicle (oxphos and UTR)
+  for (geneset in genesetsOI){
+    plotEnrichment(hallmark.list[[geneset]], DF20.ranks) + labs(title = glue("{geneset} GSEA Results For DF20 MRD vs. vehicle {test}")) + theme(plot.title = element_text(size = 10))
+    ggsave(glue("DF20_{test}_MRDVSvehicle_{geneset}_GSEA.png"), path = "jesslyn_plots/PDX/GSEA_paired")
+  }
+}
+
+#print results 
+for(test in tests){
+  print(DF20.results[[test]] %>% filter(`pathway` == "HALLMARK_OXIDATIVE_PHOSPHORYLATION"))
+  print(DF20.results[[test]] %>% filter(`pathway` == "HALLMARK_UNFOLDED_PROTEIN_RESPONSE"))
+}
 ```
 
 DE ANALYSIS TYPE #2. FIND DIFFERENTIALLY EXPRESSED GENES FROM SCRATCH AND EVALUATE IF THEY MAKE UP A GO TERM COLLECTIVELY
 
 ```{r DE Analysis between treatment conditions}
 source(here('jesslyn_code','DEAnalysis_code.R'))
+genesets <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
 
 #DE Analysis between PDX Treatment conditions Vehicle vs. MRD and MRD vs. Relapse
 conditions <- c("vehicle", "relapse")
 for(condition in conditions){
   #find all DE genes
   DEgenes <- DEAnalysis_code(PDX, group.by= "treatment.status", group.1 = condition, group.2 = "MRD")
+  
   #volcano plot of all genes
   DEAnalysis_code(PDX, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", graph = TRUE)
-  ggsave(glue("PDX_{condition}vs.MRD_allDEGenes.png"), path= "jesslyn_plots/PDX", width = 15)
+  ggsave(glue("PDX_{condition}vs.MRD_allDEGenes.png"), path= "jesslyn_plots/PDX/Volcano/All", width = 15)
   
-  #volcano plots with only oxphos genes (from all DE genes)
-  DEAnalysis_code(PDX, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
-  ggsave(glue("PDX_{condition}vs.MRD_oxphosDEGenes.png"), path= "jesslyn_plots/PDX", width = 15)
-  
-  #volcano plots with only UTR genes (from all DE genes)
-  DEAnalysis_code(PDX, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
-  ggsave(glue("PDX_{condition}vs.MRD_utrDEGenes.png"), path= "jesslyn_plots/PDX", width = 15)
+  #volcano plots for specific genesets
+  for (geneset in genesets){
+  DEAnalysis_code(PDX, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", geneset = hallmark.list[[geneset]]) + labs(title = glue("PDX {condition} vs. MRD DE Genes for {geneset}"))
+  ggsave(glue("PDX_{condition}vs.MRD_{geneset}DEGenes.png"), path= "jesslyn_plots/PDX/Volcano/All", width = 15)
+  }
 }
-
-beep(3)
 ```
 
 ```{r DE Analysis between treatment conditions within each model}
 
 models <- levels(PDX$model_ID)
 conditions <- c("vehicle", "relapse")
+genesets <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
 
 for(model in models){
   #subset Seurat object to contain only one model ID
@@ -232,17 +261,14 @@ for(model in models){
     #find all DE genes
     DEgenes <- DEAnalysis_code(obj, group.by= "treatment.status", group.1 = condition, group.2 = "MRD")
     #volcano plot of all genes
-    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", graph = TRUE)
-    ggsave(glue("PDX_{model}_{condition}vs.MRD_allDEGenes.png"), path= "jesslyn_plots/PDX", width = 15)
+    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", graph = TRUE) + labs(title = glue("PDX {model} {condition} vs. MRD All DE Genes"))
+    ggsave(glue("PDX_{model}_{condition}vs.MRD_allDEGenes.png"), path= glue( "jesslyn_plots/PDX/Volcano/{model}"), width = 15)
   
-    #volcano plots with only oxphos genes (from all DE genes)
-    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", oxphosGenes = hallmark.list$HALLMARK_OXIDATIVE_PHOSPHORYLATION)
-    ggsave(glue("PDX_{model}_{condition}vs.MRD_oxphosDEGenes.png"), path= "jesslyn_plots/PDX", width = 15)
-  
-    #volcano plots with only UTR genes (from all DE genes)
-    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", utrGenes = hallmark.list$HALLMARK_UNFOLDED_PROTEIN_RESPONSE)
-    ggsave(glue("PDX_{model}_{condition}vs.MRD_utrDEGenes.png"), path= "jesslyn_plots/PDX", width = 15)
+    #volcano plots for specific genesets 
+    for(geneset in genesets){
+    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = condition, group.2 = "MRD", geneset = hallmark.list[[geneset]]) + labs(title = glue("PDX {model} {condition} vs. MRD {geneset} DE Genes"))
+    ggsave(glue("PDX_{model}_{condition}vs.MRD_{geneset}DEGenes.png"), path= glue("jesslyn_plots/PDX/Volcano/{model}"), width = 15)
+    }
   }
 }
-
 ```

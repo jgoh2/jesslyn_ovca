@@ -2,20 +2,7 @@
 # Date: 05/25/2020
 # Author: Jesslyn Goh
 
-library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
-library(Seurat)
-library(readxl)
-library(ggplot2)
-library(msigdbr)
-library(here)
-library(dplyr)
-library(devtools)
-#library(DESeq2)
-#devtools::install_github("immunogenomics/presto")
-library(presto)
-library(fgsea)
-
-GSEA_code <- function(seurat_object, group.by, fgseaGS, condition = NULL, ranks = NULL, paired = FALSE, group.1 = NULL, group.2 = NULL){
+GSEA_code <- function(seurat_object, group.by, fgseaGS, condition = NULL, ranks = NULL, paired = FALSE, group.1 = NULL, group.2 = NULL, stattest = "wilcox"){
 
   if (is.null(ranks)){
   #if didn't input ranks, we need to compute the ranks first
@@ -28,7 +15,7 @@ GSEA_code <- function(seurat_object, group.by, fgseaGS, condition = NULL, ranks 
   
     else{
       Idents(seurat_object) <- group.by
-      seurat.genes <- FindMarkers(seurat_object, ident.1 = group.1 , ident.2 = group.2, logfc.threshold = 0)
+      seurat.genes <- FindMarkers(seurat_object, test.use = stattest, ident.1 = group.1 , ident.2 = group.2, logfc.threshold = 0)
       #returns a single result that encompasses both conditions (group1 vs. group2), so the 
       #enrichment plot will be for group.1 vs. group2 instead of only for group1 relative to the other groups
       condition.genes <- seurat.genes %>% rownames_to_column %>% arrange(desc(avg_logFC)) %>% select(rowname, avg_logFC) 
