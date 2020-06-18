@@ -1,0 +1,146 @@
+---
+title: "PDX Exploratory Analysis (test version)"
+author: "Jesslyn Goh"
+date: "6/18/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# PART 1. PDX DATA EXPLORATORY ANALYSIS 
+In this R Markdown file, we will: 
+  - Load in the normalized but uncentered PDX Seurat Object 
+  - Subset the PDX Seurat Object for each model (DF20, DF101, DF68)
+  - Process and Analyze **each** Seurat Object **separately** 
+      - Normalize and center data for each model 
+      - AddModuleScore for each hallmark and AddCellCycleScore 
+      - Dimensionality reduction (PCA) and UMAPP 
+      - DE Analysis 
+          - VlnPlot and DotPlot to visualize expression score for each hallmark of interest 
+          - Volcano Plot to look for individual DE genes 
+          - GSEA to look for enrichment of entire genesets / hallmarks 
+          
+This is a modified version of our previous PDX Analysis, since we subsetted each PDX model after normalizing and centering data across all cells. We noticed that this might have caused issues in our downstream DE analyses, as the differences between models are so drastic that it may have masked over the smaller differences between treatment conditions within each model. Instead of doing only one workflow for all of the cells in the PDX experiment, we therefore decided to do four identical workflows in parallel for each Seurat object (All models, DF20, DF101, DF68) to detect differences aross models (using the 'PDX_All" object) and also within models (using 'PDX_{model}' objects). 
+
+## STEP 1. LOAD PACKAGES, SEURAT OBJECTS, AND GENESETS + SUBSET SEURAT OBJECTS FOR EACH MODEL
+
+```{r init, message = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX_All = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
+
+#Read in genelists 
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+#Subset Seurat Object for each model 
+PDX_DF20 <- subset(PDX_All, subset = (model_ID == "DF20"))
+PDX_DF101 <- subset(PDX_All, subset = (model_ID == "DF101"))
+PDX_DF68 <- subset(PDX_All, subset = (model_ID == "DF68"))
+```
+
+## STEP 2. NORMALIZE AND SCALE EACH SEURAT OBJECT 
+Normalize and scale each Seurat Object separately so that differences within models is not masked by differences across models. 
+
+Purpose of normalization and scaling:
+    - **Normalization** attempts to make the zero-inflated distribution **normal** by bringing outliers closer to the mean 
+    - **Scaling and Centering** standardizes the normal distribution with mean 0 and sd 1 
+        - do.center centers the expression for each feature by subtracting the average expression for that feature (mean expression at 0)
+        - do.scale divides the centered feature expression by their sd (sd of 1) if center is TRUE
+
+```{r Normalization and scaling, message = FALSE}
+#feature selection (prepare for dimensionality reduction)
+PDX_All <- FindVariableFeatures(PDX_All, selection.method = "vst")
+PDX_DF20 <- FindVariableFeatures(PDX_DF20, selection.method = "vst")
+PDX_DF101 <- FindVariableFeatures(PDX_DF101, selection.method = "vst")
+PDX_DF68 <- FindVariableFeatures(PDX_DF68, selection.method = "vst")
+
+#normalize data 
+PDX_All <- NormalizeData(PDX_All)
+PDX_DF20 <- NormalizeData(PDX_DF20)
+PDX_DF101 <- NormalizeData(PDX_DF101)
+PDX_DF68 <- NormalizeData(PDX_DF68)
+
+#scale data
+PDX_All <- ScaleData(PDX_All, features = rownames(PDX_All), do.scale = T, do.center = T)
+PDX_DF20 <- ScaleData(PDX_DF20, features = rownames(PDX_DF20), do.scale = T, do.center = T)
+PDX_DF101 <- ScaleData(PDX_DF101, features = rownames(PDX_DF101), do.scale = T, do.center = T)
+PDX_DF68 <- ScaleData(PDX_DF68, features = rownames(PDX_DF68), do.scale = T, do.center = T)
+```
+
+# STEP 3. DIMENSIONALITY REDUCTION (PCA, message = FALSE)
+This step helps reduce all of our features to ones that contribute most to the variability between cells. 
+  1) We would first need to find the Variable Features by running FindVariableFeatures 
+  2) run PCA 
+```{r PCA}
+#PCA
+PDX_All <- RunPCA(PDX_All, features = VariableFeatures(PDX_All))
+PDX_DF20 <- RunPCA(PDX_DF20, features = VariableFeatures(PDX_DF20))
+PDX_DF101 <- RunPCA(PDX_DF101, features = VariableFeatures(PDX_DF101))
+PDX_DF68 <- RunPCA(PDX_DF68, features = VariableFeatures(PDX_DF68))
+```
+
+## STEP 4. CELLCYCLE AND HALLMARK SCORING
+Scoring each cell by their level expression of all the genes in a specified geneset. Prepares for future DE analysis of GO hallmarks. 
+```{r cell scoring, message = FALSE}
+# cell cycle scoring 
+PDX_All <- CellCycleScoring(PDX_All, g2m.features = g2m.genes, s.features = s.genes)
+PDX_DF20 <- CellCycleScoring(PDX_DF20, g2m.features = g2m.genes, s.features = s.genes)
+PDX_DF101 <- CellCycleScoring(PDX_DF101, g2m.features = g2m.genes, s.features = s.genes)
+PDX_DF68 <- CellCycleScoring(PDX_DF68, g2m.features = g2m.genes, s.features = s.genes)
+
+#hallmark scoring
+PDX_All <- AddModuleScore(PDX_All, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+PDX_DF20 <- AddModuleScore(PDX_DF20, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+PDX_DF101 <- AddModuleScore(PDX_DF101, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+PDX_DF68 <- AddModuleScore(PDX_DF68, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+```
+
+## STEP 5. EXAMINE HOW CELLS CLUSTER IN UMAP SPACE 
+Exploring how cells clusters - whether treatment conditions result in DE that makes cells cluster in a certain way. 
+
+```{r UMAPP}
+#cluster by model? 
+PDX_All<- RunUMAP(PDX_All, dims=1:15)
+UMAPPlot(PDX_All, group.by = "model_ID")
+ggsave("PDX_All_UMAP.png", path = "jesslyn_plots/PDX_test")
+
+#cluster by treatment within each model? 
+PDX_DF20<- RunUMAP(PDX_DF20, dims=1:15)
+UMAPPlot(PDX_DF20, group.by = "treatment.status")
+ggsave("DF20_UMAP.png", path = "jesslyn_plots/PDX_test")
+
+PDX_DF101<- RunUMAP(PDX_DF101, dims=1:15)
+UMAPPlot(PDX_DF101, group.by = "treatment.status")
+ggsave("DF101_UMAP.png", path = "jesslyn_plots/PDX_test")
+
+
+PDX_DF68<- RunUMAP(PDX_DF68, dims=1:15)
+UMAPPlot(PDX_DF68, group.by = "treatment.status")
+ggsave("DF68_UMAP.png", path = "jesslyn_plots/PDX_test")
+```
+Results from UMAPs show that they do cluster pretty clearly by model, but not by treatment. 
+
+```{r save RDS}
+saveRDS(PDX_All, file="data/Izar_2020/test/jesslyn_PDX_All_processed.RDS")
+saveRDS(PDX_DF20, file="data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
+saveRDS(PDX_DF101, file="data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
+saveRDS(PDX_DF68, file="data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
+```
