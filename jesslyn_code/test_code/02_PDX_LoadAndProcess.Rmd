@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # PART 1. PDX DATA EXPLORATORY ANALYSIS 
+This is a modified version of our previous PDX Analysis. Previously, we subsetted each PDX model after normalizing and centering data across all cells. We noticed that this might have caused issues in our downstream DE analyses, as the differences between models are so drastic that it may have masked over the smaller differences between treatment conditions within each model. Instead of doing only one workflow for all of the cells in the PDX experiment, we therefore decided to do four identical workflows in parallel for each Seurat object (All models, DF20, DF101, DF68) to detect differences aross models (using the 'PDX_All" object) and also within models (using 'PDX_{model}' objects). 
+
 In this R Markdown file, we will: 
   - Load in the normalized but uncentered PDX Seurat Object 
   - Subset the PDX Seurat Object for each model (DF20, DF101, DF68)
@@ -24,8 +26,6 @@ In this R Markdown file, we will:
           - VlnPlot and DotPlot to visualize expression score for each hallmark of interest 
           - Volcano Plot to look for individual DE genes 
           - GSEA to look for enrichment of entire genesets / hallmarks 
-          
-This is a modified version of our previous PDX Analysis, since we subsetted each PDX model after normalizing and centering data across all cells. We noticed that this might have caused issues in our downstream DE analyses, as the differences between models are so drastic that it may have masked over the smaller differences between treatment conditions within each model. Instead of doing only one workflow for all of the cells in the PDX experiment, we therefore decided to do four identical workflows in parallel for each Seurat object (All models, DF20, DF101, DF68) to detect differences aross models (using the 'PDX_All" object) and also within models (using 'PDX_{model}' objects). 
 
 ## STEP 1. LOAD PACKAGES, SEURAT OBJECTS, AND GENESETS + SUBSET SEURAT OBJECTS FOR EACH MODEL
 
@@ -85,11 +85,11 @@ PDX_DF101 <- ScaleData(PDX_DF101, features = rownames(PDX_DF101), do.scale = T, 
 PDX_DF68 <- ScaleData(PDX_DF68, features = rownames(PDX_DF68), do.scale = T, do.center = T)
 ```
 
-# STEP 3. DIMENSIONALITY REDUCTION (PCA, message = FALSE)
+# STEP 3. DIMENSIONALITY REDUCTION (PCA)
 This step helps reduce all of our features to ones that contribute most to the variability between cells. 
   1) We would first need to find the Variable Features by running FindVariableFeatures 
   2) run PCA 
-```{r PCA}
+```{r PCA, message = FALSE}
 #PCA
 PDX_All <- RunPCA(PDX_All, features = VariableFeatures(PDX_All))
 PDX_DF20 <- RunPCA(PDX_DF20, features = VariableFeatures(PDX_DF20))
@@ -116,7 +116,7 @@ PDX_DF68 <- AddModuleScore(PDX_DF68, features = hallmark.list, name = names(hall
 ## STEP 5. EXAMINE HOW CELLS CLUSTER IN UMAP SPACE 
 Exploring how cells clusters - whether treatment conditions result in DE that makes cells cluster in a certain way. 
 
-```{r UMAPP}
+```{r UMAPP, message = FALSE}
 #cluster by model? 
 PDX_All<- RunUMAP(PDX_All, dims=1:15)
 UMAPPlot(PDX_All, group.by = "model_ID")

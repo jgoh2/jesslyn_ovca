@@ -18,7 +18,7 @@ GSEA_code <- function(seurat_object, group.by, fgseaGS, condition = NULL, ranks 
       seurat.genes <- FindMarkers(seurat_object, test.use = stattest, ident.1 = group.1 , ident.2 = group.2, logfc.threshold = 0)
       #returns a single result that encompasses both conditions (group1 vs. group2), so the 
       #enrichment plot will be for group.1 vs. group2 instead of only for group1 relative to the other groups
-      condition.genes <- seurat.genes %>% rownames_to_column %>% arrange(desc(avg_logFC)) %>% select(rowname, avg_logFC) 
+      condition.genes <- seurat.genes %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC) 
     }
   
     #step 3. create a ranked vector for specified condition using logFC
