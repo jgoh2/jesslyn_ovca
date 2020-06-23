@@ -1,0 +1,128 @@
+---
+title: "Scaling Testing"
+author: "Jesslyn Goh & Mike Cuoco"
+date: "6/19/2020"
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+```
+
+
+**Mike & Jesslyn 6/19:**
+(1) Question, (2) Solution, (3) How to conduct solution
+
+  1. How does scaling/centering affect our data? Examine distribution after each step, compare by VlnPlot
+    - don't run ScaleData
+    - ScaleData(do.scale = F, do.center = T)
+    - ScaleData(do.scale = T, do.center = F)
+    - ScaleData(do.scale = T, do.center = T) *
+
+  2. What slot does AddModuleScore() use? Pick 2 examples from above to run AddModuleScore() and compare by VlnPlot
+  3. For ScaleData(do.scale = T, do.center = T), compare splitting by model after this step to splitting before this step
+  4. For AddModuleScore(), compare splitting by model after this step to splitting before this step
+  
+
+Histogram, Boxplot, or VlnPlot:
+  
+  1. Don't separate by treatment.status, only by model_ID
+  2. Oxphos, UPR, and JUN
+
+To try:
+
+???
+
+
+```{r 1}
+
+PDX_orig = ScaleData(PDX, do.scale = F, do.center = F)
+PDX_center = ScaleData(PDX, do.scale = F, do.center = T)
+PDX_scale = ScaleData(PDX, do.scale = T, do.center = F)
+PDX_scale_center = ScaleData(PDX, do.scale = T, do.center = T)
+
+df = data.frame(
+    "orig" = colMeans(PDX_orig[["RNA"]]@scale.data),
+    "center" = colMeans(PDX_center[["RNA"]]@scale.data),
+    "scale" = colMeans(PDX_scale[["RNA"]]@scale.data),
+    "scale-center" = colMeans(PDX_scale_center[["RNA"]]@scale.data)
+) 
+
+plot.df = reshape2::melt(df)
+
+p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "PDX data norm type", y = "mean expression/cell", title = "expression/cell") +
+  theme_bw()
+
+df = data.frame(
+    "orig" = rowMeans(PDX_orig[["RNA"]]@scale.data),
+    "center" = rowMeans(PDX_center[["RNA"]]@scale.data),
+    "scale" = rowMeans(PDX_scale[["RNA"]]@scale.data),
+    "scale-center" = rowMeans(PDX_scale_center[["RNA"]]@scale.data)
+) 
+
+plot.df = reshape2::melt(df)
+
+p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "PDX data norm type", y = "mean expression/gene", title = "evaluate centering") +
+  ylim(-5,10) +
+  theme_bw()
+
+sd.df = data.frame(
+    "orig" = apply(PDX_orig[["RNA"]]@scale.data,1,sd),
+    "center" = apply(PDX_center[["RNA"]]@scale.data,1,sd),
+    "scale" = apply(PDX_scale[["RNA"]]@scale.data,1,sd),
+    "scale-center" = apply(PDX_scale_center[["RNA"]]@scale.data,1,sd)
+)
+
+plot.df = reshape2::melt(sd.df)
+
+p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "PDX data norm type", y = "SD/gene", title = "evaluate scaling") +
+  theme_bw()
+
+p = p1+p2+p3 + patchwork::plot_layout(nrow = 1)
+if(!dir.exists("jesslyn_plots/PDX_test")){dir.create("jesslyn_plots/PDX_test")}
+ggsave(p, filename = "PDX_data_scaletest.png", path = "jesslyn_plots/PDX_test", width = 15, height = 5)
+```
+
+
+```{r split}
+PDX_list(DF101 = subset(PDX, subset = model_ID == "DF101"),
+         DF68 = subset(PDX, subset = model_ID == "DF68"),
+         DF20 = subset(PDX, subset = model_ID == "DF20"))
+
+map(PDX_list, function(.x){
+    data.frame("orig" = colmeans(.x[["RNA"]]@scaled.data),
+               "center" = colmeans(.x[["RNA"]]@scaled.data),
+               "scale" = colmeans(.x[["RNA"]]@scaled.data),
+               "scale-center" = colmeans(.x[["RNA"]]@scaled.data))
+})
+```
