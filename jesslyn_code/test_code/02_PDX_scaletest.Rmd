@@ -59,6 +59,7 @@ To try:
 
 
 ```{r 1}
+#Deciding ScaleData() arguments 
 
 PDX_orig = ScaleData(PDX, do.scale = F, do.center = F)
 PDX_center = ScaleData(PDX, do.scale = F, do.center = T)
@@ -113,16 +114,142 @@ if(!dir.exists("jesslyn_plots/PDX_test")){dir.create("jesslyn_plots/PDX_test")}
 ggsave(p, filename = "PDX_data_scaletest.png", path = "jesslyn_plots/PDX_test", width = 15, height = 5)
 ```
 
+```{r scale or subset}
+#Decided to go with do.scale = do.center = T. Now, we decide whether to scale before subsetting or subset by model before scaling each individually 
 
-```{r split}
-PDX_list(DF101 = subset(PDX, subset = model_ID == "DF101"),
-         DF68 = subset(PDX, subset = model_ID == "DF68"),
-         DF20 = subset(PDX, subset = model_ID == "DF20"))
+#Examine PDX DF20 as an example
+scale_center_DF20 <- subset(PDX_scale_center, subset = (model_ID == "DF20")) #scale first then subset
 
-map(PDX_list, function(.x){
-    data.frame("orig" = colmeans(.x[["RNA"]]@scaled.data),
-               "center" = colmeans(.x[["RNA"]]@scaled.data),
-               "scale" = colmeans(.x[["RNA"]]@scaled.data),
-               "scale-center" = colmeans(.x[["RNA"]]@scaled.data))
-})
+DF20 <- subset(PDX, subset = model_ID == "DF20") #subset first, then scale
+DF20_scale_center <- ScaleData(DF20, do.scale = T, do.center = T)
+
+scale_center_DF20_scale_center <- ScaleData(scale_center_DF20, do.scale = T, do.center = T)
+
+#graph distribution and compare between the two Seurat objects 
+#mean expression per cell 
+cell.mean.df = data.frame(
+    "scale-center-DF20" = colMeans(scale_center_DF20[["RNA"]]@scale.data),
+    "DF20-scale-center" = colMeans(DF20_scale_center[["RNA"]]@scale.data), 
+    "before-DF20-after" = colMeans(scale_center_DF20_scale_center[["RNA"]]@scale.data)
+) 
+
+plot.df = reshape2::melt(cell.mean.df)
+
+p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "PDX scale vs. subset sequence", y = "mean expression/cell", title = "expression/cell") +
+  theme_bw()
+
+#mean expression per gene 
+gene.mean.df = data.frame(
+    "scale-center-DF20" = rowMeans(scale_center_DF20[["RNA"]]@scale.data),
+    "DF20-scale-center" = rowMeans(DF20_scale_center[["RNA"]]@scale.data),
+    "before-DF20-after" = rowMeans(scale_center_DF20_scale_center[["RNA"]]@scale.data)
+) 
+
+plot.df = reshape2::melt(gene.mean.df)
+
+p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "PDX scale vs. subset sequence", y = "mean expression/gene", title = "evaluate the mean expression per gene") +
+  theme_bw()
+
+#standard deviation per gene
+sd.df = data.frame(
+    "scale-center-DF20" = apply(scale_center_DF20[["RNA"]]@scale.data,1,sd),
+    "DF20-scale-center" = apply(DF20_scale_center[["RNA"]]@scale.data,1,sd), 
+    "before-DF20-after" = apply(scale_center_DF20_scale_center[["RNA"]]@scale.data,1,sd)
+) 
+
+plot.df = reshape2::melt(sd.df)
+
+p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "PDX scale vs. subset sequence", y = "variance/gene", title = "evaluate the variance in expression per gene") +
+  theme_bw()
+
+p = p1+p2+p3 + patchwork::plot_layout(nrow = 1)
+if(!dir.exists("jesslyn_plots/PDX_test")){dir.create("jesslyn_plots/PDX_test")}
+ggsave(p, filename = "PDX_data_scaleVSsubset.png", path = "jesslyn_plots/PDX_test", width = 15, height = 5)
+```
+
+```{r AddModuleScore}
+#investigate which slot AddModuleScore uses, and if there's a difference in calling AddModuleScore before or after subsetting 
+
+#1. investigate which slot AddModuleScore calls from
+PDX_orig <- AddModuleScore(PDX_orig, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T) #unscaled PDX, add module score
+p1 <- VlnPlot(PDX_orig, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25") + labs(title = "oxphos orig.score distribution", x = "PDX_orig")
+
+PDX_scale_center <- AddModuleScore(PDX_scale_center, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+p2 <- VlnPlot(PDX_scale_center, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25") + labs(title = "oxphos scale.center.score distribution", x = "PDX_scale_center")
+
+plots = p1 + p2 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
+ggsave(plots, filename = "PDX_data_addScoreTest.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
+
+#2. investigate difference between calling AddModuleScore before or after subsetting
+
+#PDX --> scale --> add module score --> subset
+score_DF20 <- subset(PDX_scale_center, subset = (model_ID == "DF20"))
+p3 <- VlnPlot(score_DF20, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25") + labs(title = "OXPHOS score first subset later (DF20)") + theme(plot.title = element_text(size = 8))
+
+#PDX --> subset --> scale --> add module score
+DF20_score <- AddModuleScore(DF20_scale_center, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+p4 <- VlnPlot(DF20_score, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25") + labs(title = "OXPHOS subset first score individually (DF20)") + theme(plot.title = element_text(size = 8))
+
+plots <- p3 + p4 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
+ggsave(plots, filename = "PDX_data_scoreVSsubset.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
+
+```
+
+```{r LogNormalize}
+p1 = VlnPlot(DF20, features = "JUN", slot = "data") + labs(title = "JUN expression across cells in DF20", subtitle ="Normalized before subsetting") + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size =8))
+
+DF20.normalized <- NormalizeData(DF20)
+p2 = VlnPlot(DF20.normalized,features = "JUN", slot = "data") + labs(title = "JUN expression across cells in DF20", subtitle ="Normalized before and after subsetting") + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size =8))
+
+plots <- p1 + p2 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
+ggsave(plots, filename = "PDX_data_normalizationTest.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
+
+#graph distribution of the 'data' slot and compare between the two Seurat objects 
+#mean expression per cell 
+cell.mean.df = data.frame(
+    "n-DF20" = colMeans(DF20[["RNA"]]@data),
+    "n-DF20-n" = colMeans(DF20.normalized[["RNA"]]@data)
+) 
+
+plot.df = reshape2::melt(cell.mean.df)
+
+p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "DF20 log normalize scenarios", y = "mean expression/cell", title = "DF20 expression/cell") +
+  theme_bw()
+
+#mean expression per gene 
+gene.mean.df = data.frame(
+    "n-DF20" = rowMeans(DF20[["RNA"]]@data),
+    "n-DF20-n" = rowMeans(DF20.normalized[["RNA"]]@data)
+) 
+
+plot.df = reshape2::melt(gene.mean.df)
+
+p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "DF20 log normalize scenarios", y = "mean expression/gene", title = "DF20 mean expression per gene") +
+  theme_bw()
+
+#standard deviation per gene
+sd.df = data.frame(
+    "n-DF20" = apply(DF20[["RNA"]]@data,1,sd),
+    "n-DF20-n" = apply(DF20.normalized[["RNA"]]@data,1,sd)
+) 
+
+plot.df = reshape2::melt(sd.df)
+
+p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = "DF20 scale vs. subset sequence", y = "variance/gene", title = "DF20 variance in expression per gene") +
+  theme_bw()
+
+p = p1+p2+p3 + patchwork::plot_layout(nrow = 1)
+ggsave(p, filename = "DF20_data_normalization.png", path = "jesslyn_plots/PDX_test", width = 15, height = 5)
 ```
