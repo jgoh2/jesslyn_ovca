@@ -199,6 +199,22 @@ p4 <- VlnPlot(DF20_score, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25") + l
 plots <- p3 + p4 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
 ggsave(plots, filename = "PDX_data_scoreVSsubset.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 
+#3. force AddModuleScore to use "scale.data" slot 
+
+#PDX --> subset --> scale --> AddModuleScore (still "data" slot)
+p4 <- p4 + labs(title = "OXPHOS score DF20 'data' slot") + theme(plot.title = element_text(size = 8))
+
+#PDX --> subset --> scale --> SetAssayData --> AddModuleScore ("scale.data" slot)
+scale.data <- GetAssayData(object = DF20_scale_center, slot = "scale.data")
+DF20_scale_center_forced <- SetAssayData(object = DF20_scale_center, slot = "data", new.data = scale.data, assay = "RNA")
+
+identical(DF20_scale_center_forced@assays$RNA@data, DF20_scale_center_forced@assays$RNA@scale.data) #check if data and scale.data slots are now the same
+
+DF20_scale_center_forced <- AddModuleScore(DF20_scale_center_forced, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+p5 <- VlnPlot(DF20_scale_center_forced, features = "HALLMARK_OXIDATIVE_PHOSPHORYLATION25") + labs(title = "OXPHOS score DF20 'scale.data' slot") + theme(plot.title = element_text(size = 8))
+
+plots <- p4 + p5 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
+ggsave(plots, filename = "PDX_data_dataVSscaleDataScore.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
 ```{r LogNormalize}

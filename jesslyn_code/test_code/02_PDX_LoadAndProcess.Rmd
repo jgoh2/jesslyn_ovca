@@ -19,7 +19,8 @@ In this R Markdown file, we will:
   - Load in the normalized but uncentered PDX Seurat Object 
   - Subset the PDX Seurat Object for each model (DF20, DF101, DF68)
   - Process and Analyze **each** Seurat Object **separately** 
-      - Normalize and center data for each model 
+      - Scale and center data for each model (do.scale = do.center = T)
+      - SetAssayData to replace data in "data" slot with "scale.data"
       - AddModuleScore for each hallmark and AddCellCycleScore 
       - Dimensionality reduction (PCA) and UMAPP 
       - DE Analysis 
@@ -66,23 +67,40 @@ Purpose of normalization and scaling:
         - do.scale divides the centered feature expression by their sd (sd of 1) if center is TRUE
 
 ```{r Normalization and scaling, message = FALSE}
+#scale data
+PDX_All <- ScaleData(PDX_All, features = rownames(PDX_All), do.scale = T, do.center = T)
+PDX_DF20 <- ScaleData(PDX_DF20, features = rownames(PDX_DF20), do.scale = T, do.center = T)
+PDX_DF101 <- ScaleData(PDX_DF101, features = rownames(PDX_DF101), do.scale = T, do.center = T)
+PDX_DF68 <- ScaleData(PDX_DF68, features = rownames(PDX_DF68), do.scale = T, do.center = T)
+
 #feature selection (prepare for dimensionality reduction)
 PDX_All <- FindVariableFeatures(PDX_All, selection.method = "vst")
 PDX_DF20 <- FindVariableFeatures(PDX_DF20, selection.method = "vst")
 PDX_DF101 <- FindVariableFeatures(PDX_DF101, selection.method = "vst")
 PDX_DF68 <- FindVariableFeatures(PDX_DF68, selection.method = "vst")
 
-#normalize data 
-PDX_All <- NormalizeData(PDX_All)
-PDX_DF20 <- NormalizeData(PDX_DF20)
-PDX_DF101 <- NormalizeData(PDX_DF101)
-PDX_DF68 <- NormalizeData(PDX_DF68)
+#SetAssayData 
+scale.data <- GetAssayData(object = PDX_All, slot = "scale.data")
+PDX_All <- SetAssayData(PDX_All, slot = "data", new.data =scale.data, assay = "RNA")
 
-#scale data
-PDX_All <- ScaleData(PDX_All, features = rownames(PDX_All), do.scale = T, do.center = T)
-PDX_DF20 <- ScaleData(PDX_DF20, features = rownames(PDX_DF20), do.scale = T, do.center = T)
-PDX_DF101 <- ScaleData(PDX_DF101, features = rownames(PDX_DF101), do.scale = T, do.center = T)
-PDX_DF68 <- ScaleData(PDX_DF68, features = rownames(PDX_DF68), do.scale = T, do.center = T)
+scale.data <- GetAssayData(object = PDX_DF20, slot = "scale.data")
+PDX_DF20 <- SetAssayData(PDX_DF20, slot = "data", new.data =scale.data, assay = "RNA")
+
+scale.data <- GetAssayData(object = PDX_DF101, slot = "scale.data")
+PDX_DF101 <- SetAssayData(PDX_DF101, slot = "data", new.data =scale.data, assay = "RNA")
+
+scale.data <- GetAssayData(object = PDX_DF68, slot = "scale.data")
+PDX_DF68 <- SetAssayData(PDX_DF68, slot = "data", new.data =scale.data, assay = "RNA")
+
+beep(3)
+```
+
+```{r set treatment levels}
+treatment_levels <- c("vehicle", "MRD", "relapse")
+PDX_All$treatment.status = factor(PDX_All$treatment.status, levels = treatment_levels)
+PDX_DF20$treatment.status = factor(PDX_DF20$treatment.status, levels = treatment_levels)
+PDX_DF101$treatment.status = factor(PDX_DF101$treatment.status, levels = treatment_levels)
+PDX_DF68$treatment.status = factor(PDX_DF68$treatment.status, levels = treatment_levels)
 ```
 
 # STEP 3. DIMENSIONALITY REDUCTION (PCA)
@@ -107,10 +125,12 @@ PDX_DF101 <- CellCycleScoring(PDX_DF101, g2m.features = g2m.genes, s.features = 
 PDX_DF68 <- CellCycleScoring(PDX_DF68, g2m.features = g2m.genes, s.features = s.genes)
 
 #hallmark scoring
-PDX_All <- AddModuleScore(PDX_All, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
-PDX_DF20 <- AddModuleScore(PDX_DF20, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
-PDX_DF101 <- AddModuleScore(PDX_DF101, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
-PDX_DF68 <- AddModuleScore(PDX_DF68, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+PDX_All <- AddModuleScore(PDX_All, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+PDX_DF20 <- AddModuleScore(PDX_DF20, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+PDX_DF101 <- AddModuleScore(PDX_DF101, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+PDX_DF68 <- AddModuleScore(PDX_DF68, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+
+beep(3)
 ```
 
 ## STEP 5. EXAMINE HOW CELLS CLUSTER IN UMAP SPACE 

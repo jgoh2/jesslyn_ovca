@@ -77,17 +77,19 @@ for(i in 1:length(PDXs)){
 ## STEP 3. DE ANALYSIS TYPE #2. TEST DIFFERENTIAL EXPRESSION ON PREDEFINED GO GENESETS
 Visualize differential expression of each hallmark across treatment groups within each model 
 ```{r DE hallmark visualization}
-hms <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33")
+hms <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25")
 
 #DF20 
-VlnPlot(PDX_DF20, features = hms, group.by = "treatment.status") #not centered because AddModuleScore uses normalized but unscaled, uncentered data
-#try to scale module score afterwards and reassign it back to the Seurat object, then plot VlnPlot
-oxphos.scaled <- scale(PDX_DF20$HALLMARK_OXIDATIVE_PHOSPHORYLATION25)
-PDX_DF20 <- AddMetaData(PDX_DF20, oxphos.scaled, col.name = "oxphos.scaled")
-VlnPlot(PDX_DF20, features = "oxphos.scaled", group.by = "treatment.status")
+p1 <- VlnPlot(PDX_DF20, features = hms, group.by = "treatment.status") + labs(title = "DF20 OXPHOS score", x= "Treatment Status")
 
 #DF101
+p2 <- VlnPlot(PDX_DF101, features = hms, group.by = "treatment.status")  + labs(title = "DF101 OXPHOS score", x= "Treatment Status")
 
+#DF68
+p3 <- VlnPlot(PDX_DF68, features = hms, group.by = "treatment.status")  + labs(title = "DF68 OXPHOS score", x= "Treatment Status")
+
+plots <- p1 + p2 + p3 + plot_layout(guides= 'collect', nrow = 1, ncol = 3)
+ggsave(plots, filename = "PDX_VlnPlot.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
 ```{r paired GSEA}
