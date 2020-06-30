@@ -1,0 +1,122 @@
+---
+title: "PDX DE Analysis (test version)"
+author: "Jesslyn Goh"
+date: "6/18/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# PART 2. PDX DIFFERENTIAL GENE EXPRESSION ANALYSIS
+In this R Markdown file, we will examine Differential Expression across **treatment statuses** within each **model** by: 
+    1) Type #1 DE Analysis: Finding DE Genes from scratch and evaluate if they make up a GO term collectively using **Volcano Plots**
+    2) Type #2 DE Analysis: Visualizing and Quantifying DE on **predefined** GO Genesets through: 
+        a) Violin and Dot Plots 
+        b) Gene Set Enrichment Analysis (GSEA)
+
+## STEP 1. LOAD IN PROCESSED PDX SEURAT OBJECTS AND HALLMARK GENESETS
+```{r init, message= FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX_All = readRDS("data/Izar_2020/test/jesslyn_PDX_All_processed.RDS")
+PDX_DF20 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
+PDX_DF101 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
+PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+```
+
+## STEP 2. DE ANALYSIS TYPE #1. FINDING DE GENES FROM SCRATCH 
+  - Find DE genes using the FindMarkers function, which uses the wilcox rank sum test and the 'data' slot of Seurat
+  - Graph those genes on a Volcano Plot and label those that are within the padj and logFC cutoff 
+  - Subset oxphos and UTR genes from the list of DE genes and graph them on a Volcano Plot as well 
+  
+```{r volcano plots}
+#Volcano plots for MRD vs. vehicle and MRD vs. relapse within each model
+conditions <- c("vehicle", "relapse")
+genesets <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
+PDXs <- c(PDX_DF20, PDX_DF101, PDX_DF68)
+modelNames <- c("DF20", "DF101", "DF68")
+
+for(i in 1:length(PDXs)){
+    obj <- PDXs[[i]]
+    modelName <- modelNames[[i]]
+    
+  for (condition in conditions){
+    #find all DE genes between MRD and group.2 (vehicle or relapse) for this specific model
+    DEgenes <- DEAnalysis_code(obj, group.by= "treatment.status", group.1 = "MRD", group.2 = condition)
+    
+    #volcano plot of all genes
+    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = "MRD", group.2 = condition, graph = TRUE) + labs(title = glue("PDX {modelName} MRD vs. {condition} All DE Genes"))
+    ggsave(glue("PDX_{modelName}_MRDvs.{condition}_allDEGenes.png"), path= glue( "jesslyn_plots/PDX_test/Volcano/{modelName}"), width = 15)
+  
+    #volcano plots for specific genesets 
+    for(geneset in genesets){
+    DEAnalysis_code(obj, markers = DEgenes, group.by = "treatment.status", group.1 = "MRD", group.2 = condition, geneset = hallmark.list[[geneset]]) + labs(title = glue("PDX {modelName} MRD vs. {condition} {geneset} DE Genes"))
+    ggsave(glue("PDX_{modelName}_MRDvs.{condition}_{geneset}DEGenes.png"), path= glue("jesslyn_plots/PDX_test/Volcano/{modelName}"), width = 15)
+    }
+  }
+}
+
+```
+
+## STEP 3. DE ANALYSIS TYPE #2. TEST DIFFERENTIAL EXPRESSION ON PREDEFINED GO GENESETS
+Visualize differential expression of each hallmark across treatment groups within each model 
+```{r DE hallmark visualization}
+hms <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25")
+
+#DF20 
+p1 <- VlnPlot(PDX_DF20, features = hms, group.by = "treatment.status") + labs(title = "DF20 OXPHOS score", x= "Treatment Status")
+
+#DF101
+p2 <- VlnPlot(PDX_DF101, features = hms, group.by = "treatment.status")  + labs(title = "DF101 OXPHOS score", x= "Treatment Status")
+
+#DF68
+p3 <- VlnPlot(PDX_DF68, features = hms, group.by = "treatment.status")  + labs(title = "DF68 OXPHOS score", x= "Treatment Status")
+
+plots <- p1 + p2 + p3 + plot_layout(guides= 'collect', nrow = 1, ncol = 3)
+ggsave(plots, filename = "PDX_VlnPlot.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
+```
+
+```{r paired GSEA}
+#paired GSEA within each model 
+models.results <- vector("list", length(PDXs))
+names(models.results) <- modelNames
+model.conditions.results <- vector("list", length(conditions))
+names(model.conditions.results) <- conditions
+
+for(i in 1:length(PDXs)){
+  obj <- PDXs[[i]]
+  modelName <- modelNames[[i]]
+  
+  #within each model, calculate fgsea results for MRD vs. vehicle and MRD vs. relapse
+  for (condition in conditions){
+    model.condition.ranks <- GSEA_code(obj, group.by = "treatment.status", hallmark.list, paired = TRUE, group.1 = "MRD", group.2 = condition, ranks = NULL)
+  
+  model.conditions.results[[condition]] <- GSEA_code(obj, group.by = "treatment.status", hallmark.list, ranks = model.condition.ranks) 
+  
+  #graph fgsea for each hallmark for each specified comparison within specified model
+    for(hallmark in hallmarks_names){
+      padj = model.conditions.results[[condition]] %>% filter(pathway == hallmark) %>% select(padj) %>% deframe() %>% round(digits = 3)
+      NES = model.conditions.results[[condition]] %>% filter(pathway == hallmark) %>% select(NES) %>% deframe() %>% round(digits = 3)
+      plotEnrichment(hallmark.list[[hallmark]], model.condition.ranks) + labs(title = glue("{hallmark} GSEA results for {modelName} MRD vs. {condition} (NES = {NES}, padj = {padj})")) + theme(plot.title = element_text(size = 8))
+      ggsave(glue("{modelName}_MRDvs.{condition}_{hallmark}_GSEA.png"), path = glue("jesslyn_plots/PDX_test/GSEA_paired/{modelName}"), width = 8)
+    }
+  }
+  models.results[[modelName]] <- model.conditions.results #save all gsea results into a nested list
+}
+```

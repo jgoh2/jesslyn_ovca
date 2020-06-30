@@ -98,6 +98,10 @@ ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)
 ggsave("numMalignantCellsPerSample.png", path = "jesslyn_plots/SS2", width = 8, height = 8)
 
 seurat_tab(SS2Malignant, col_var = "sample", row_var = "treatment.status", title = "Number of Malignant cells per Sample per treatment status")
+
+seurat_tab(SS2Malignant, col_var = "Patient", row_var = "treatment.status", title = "Number of Malignant cells per Sample per Patient")
+
+seurat_tab(SS2Malignant, col_var = "Patient", row_var = "Time", title = "Number of Malignant cells per Sample per Patient")
 ```
 
 Focusing on Malignant cells from now on: 
