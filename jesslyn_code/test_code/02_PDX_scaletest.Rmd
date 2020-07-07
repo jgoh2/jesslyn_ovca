@@ -1,14 +1,19 @@
 ---
 title: "PDX Choices Documentation"
 author: "Jesslyn Goh & Mike Cuoco"
-date: "6/28/2020"
+date: "7/7/2020"
 editor_options: 
   chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
 ```
 
 # OVERVIEW
@@ -62,12 +67,25 @@ if(!dir.exists("jesslyn_plots/PDX_test")){dir.create("jesslyn_plots/PDX_test")}
 
 # PART 1. NORMALIZATION AND SCALING 
 
-### 1.1 SCALING - DECIDING ScaleData() ARGUMENTS
-How does scaling/centering affect our data? Examine distribution after each step, compare by VlnPlot
+### 1.1 SCALING - DECIDING ScaleData( ) ARGUMENTS
+* **QUESTION**: How does scaling/centering affect our data? We will be testing four scenarios: 
     - don't run ScaleData
     - ScaleData(do.scale = F, do.center = T)
     - ScaleData(do.scale = T, do.center = F)
     - **ScaleData(do.scale = T, do.center = T)**
+    
+* **IMPORTANCE**: scaling makes count data more comparable across cells and across genes, and how we scale our data affects downstream analysis such as dimensional reduction (PCA). 
+
+* **HYPOTHESIS**: we hypothesize that the **do.scale = do.center = T** scenario is best for our data, as it would make our data more comparable across cells and genes by centering the count distribution of each gene at zero, and controlling the standard deviation at 1. 
+  - do.center: center the expression of each gene at 0 by subtracting the average expression for that gene
+  - do.scale: if do.center = TRUE, scales the expression level for each gene so that the sd is controlled at 1 (by dividing the centered gene expression levels by their standard deviations).  
+
+* **APPROACH**: 
+  1. Scale the normalized counts for each of the four scenarios listed above. 
+  2. Compute summary metrics for each scenario. Visualize the distribution of each summary metric with Violin Plots. 
+      i) Mean expression per cell 
+      ii) Mean expression per gene 
+      iii) Standard deviation per gene 
 
 ```{r Deciding ScaleData() arguments, message = FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 
@@ -90,7 +108,7 @@ plot.df = reshape2::melt(df)
 
 p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
   geom_violin() + 
-  labs(x = "PDX data norm type", y = "mean expression/cell", title = "expression/cell") +
+  labs(x = "PDX data norm type", y = "mean expression/cell", title = "expression/cell (Plot #1)") +
   theme_bw()
 
 #compute and plot the mean expression per gene in each scenario
@@ -105,7 +123,7 @@ plot.df = reshape2::melt(df)
 
 p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
   geom_violin() + 
-  labs(x = "PDX data norm type", y = "mean expression/gene", title = "evaluate centering") +
+  labs(x = "PDX data norm type", y = "mean expression/gene", title = "evaluate centering (Plot #2)") +
   ylim(-5,10) +
   theme_bw()
 
@@ -121,23 +139,37 @@ plot.df = reshape2::melt(sd.df)
 
 p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
   geom_violin() + 
-  labs(x = "PDX data norm type", y = "SD/gene", title = "evaluate scaling") +
+  labs(x = "PDX data norm type", y = "SD/gene", title = "evaluate scaling (Plot #3)") +
   theme_bw()
 
 p1+p2+p3 + patchwork::plot_layout(nrow = 1)
 ggsave(filename = "PDX_data_scaletest.png", path = "jesslyn_plots/PDX_test", width = 15, height = 5)
 ```
 
-* Normalization
-    - Data has been log normalized considering the range of expression (0 - 1), and the shape of the distribution is reasonably normal. 
+* **CONCLUSIONS**: 
+  1. Normalization
+      i) Data has been log normalized considering the range of expression (0 - 1), and the shape of the distribution is reasonably normal. 
 
-* ScaleData() Arguments 
-    - do.scale = do.center = TRUE is the best option because while center looks similar to scale.center when evaluating expression/cell and /gene, the variance of center is not controlled. It is important that we control for the variance for DE analysis so that the gene expression is comparable across cells (standardizing the units to mean 0 and sd 1). 
+  2. ScaleData() Arguments 
+      i) do.scale = do.center = TRUE is the best option because while **center** looks similar to **scale.center** for plots 1 and 2, the variance of **center** is not controlled. 
 
 ### 1.2 SCALING - DECIDING TO SCALE FIRST OR SUBSET BY MODEL FIRST
 We previously decided the parameters for **ScaleData (do.scale = do.center = T)**. Now, we'd like to see the effect of scaling before subsetting vs. scaling each model individually after subsetting by model, to decide which scenario is best. 
 
-**we will focus on DF20 as an example**
+* **QUESTION**: Should we scale our data before subsetting by model, or should we subset by model first? 
+
+* **IMPORTANCE**: We are interested in comparing gene expression between treatment conditions **within** each model. Considering that the difference between models are so drastic, using count data that is scaled so that it is comparable across models would mask over the smaller differences between treatment conditions **within** a specific model. It is therefore a significant step to make sure that our count data in each model is scaled so that it is comparable across all cells **within** a specific model, instead of **across** models. 
+
+* **HYPOTHESIS**: We hypothesize that we should subset by model first, before scaling the data in each model separately, so that the data for each model would be scaled across all cells **within** the specific model itself. 
+
+* **APPROACH**: focus on DF20
+  1. **Scenario #1**: Subset the **PDX_scale_center** Seurat object from above for DF20. 
+  2. **Scenario #2**: Subset the original **PDX** object for DF20. Scale the subsetted object (do.center = do.scale = T)
+  3. **Scenario #3**: Subset the **PDX_scale_center** Seurat object for DF20, and scale the object again. 
+  4. Compute summary metrics for each scenario. Visualize the distribution of each summary metric with Violin Plots. 
+      i) Mean expression per cell 
+      ii) Mean expression per gene 
+      iii) Standard deviation per gene 
 
 ```{r scale or subset, message = FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 #scenario 1: scale first then subset (PDX -> scale -> subset)
@@ -201,75 +233,24 @@ ggsave(filename = "PDX_data_scaleVSsubset.png", path = "jesslyn_plots/PDX_test",
 * **DF20.scale.center** = subset by model first before scaling and centering across all cells within an individual model
 * **before.DF20.after** = scale and center across all cells, subset by model, scale and center within each model again
 
-* Graphs for the mean expression and variance per gene suggest that we should subset first, and scale each model separately. We could also scale everything first across all models, subset, and scale everything again within each model, since the distribution looks the same for all three criteria between the green and the blue scenarios. However, we decide to subset first because scaling twice might add bias. 
-    - By scaling each model separately, we were able to control for the mean expression per gene (centered at 0), and were also able to control for the variance per gene (mostly sd of 1). 
-    - Subsetting first and scaling afterwards therefore makes our data more comparable across cells within each model 
-
-### 1.3 NORMALIZATION - SHOULD WE LOG NORMALIZE BY MODEL AS WELL? 
-Since it seems like the data works better when scale it by model. Although we know from the distribution of PDX_orig above, that the data has already been log normalized once, we investigate the effect of log normalizing by model as well.
-
-```{r LogNormalize, message = FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
-#Graph distribution of JUN counts in DF20 from the "data" slot if we don't log normalize again after subsetting vs. if we do
-p1 = VlnPlot(DF20, features = "JUN", slot = "data") + labs(title = "JUN expression across cells in DF20", subtitle ="Normalized before subsetting") + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size =8))
-
-DF20.normalized <- NormalizeData(DF20)
-p2 = VlnPlot(DF20.normalized,features = "JUN", slot = "data") + labs(title = "JUN expression across cells in DF20", subtitle ="Normalized before and after subsetting") + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size =8))
-
-p1 + p2 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
-ggsave(filename = "PDX_data_normalizationTest.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
-
-#Compare summary distributions from 'data' slot between the scenarios
-#mean expression per cell 
-cell.mean.df = data.frame(
-    "n-DF20" = colMeans(DF20[["RNA"]]@data),
-    "n-DF20-n" = colMeans(DF20.normalized[["RNA"]]@data)
-) 
-
-plot.df = reshape2::melt(cell.mean.df)
-
-p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
-  geom_violin() + 
-  labs(x = "DF20 log normalize scenarios", y = "mean expression/cell", title = "DF20 expression/cell") +
-  theme_bw()
-
-#mean expression per gene 
-gene.mean.df = data.frame(
-    "n-DF20" = rowMeans(DF20[["RNA"]]@data),
-    "n-DF20-n" = rowMeans(DF20.normalized[["RNA"]]@data)
-) 
-
-plot.df = reshape2::melt(gene.mean.df)
-
-p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
-  geom_violin() + 
-  labs(x = "DF20 log normalize scenarios", y = "mean expression/gene", title = "DF20 mean expression per gene") +
-  theme_bw()
-
-#standard deviation per gene
-sd.df = data.frame(
-    "n-DF20" = apply(DF20[["RNA"]]@data,1,sd),
-    "n-DF20-n" = apply(DF20.normalized[["RNA"]]@data,1,sd)
-) 
-
-plot.df = reshape2::melt(sd.df)
-
-p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
-  geom_violin() + 
-  labs(x = "DF20 scale vs. subset sequence", y = "variance/gene", title = "DF20 variance in expression per gene") +
-  theme_bw()
-
-p1+p2+p3 + patchwork::plot_layout(nrow = 1)
-ggsave(filename = "DF20_data_normalization.png", path = "jesslyn_plots/PDX_test", width = 15, height = 5)
-```
-
-Normalizing the counts again after subsetting the model makes the data a lot more compact. Doesn't seem like this is what we would want, since it seems like it is reducing the difference across cells within a model when we actually want to enhance it. We therefore decide not to Log Normalize the data twice. 
+* **CONCLUSIONS**: 
+  - Graphs for the mean expression and variance per gene suggest that we should subset first, and scale each model separately. We could also scale everything first across all models, subset, and scale everything again within each model, since the distribution looks the same for all three criteria between the green and the blue scenarios. However, we decide to subset first because scaling twice might add bias. 
+    i) By scaling each model separately, we were able to control for the mean expression per gene (centered at 0), and were also able to control for the variance per gene (mostly sd of 1). 
+    ii) Subsetting first and scaling afterwards therefore makes our data more comparable across cells within each model 
 
 # PART 2. SCORING CELLS
 
 ### 2.1 AddModuleScore - INVESTIGATE WHICH SLOT IT CALLS FROM 
-Investigate which slot **AddModuleScore** uses by comparing the distribution of OXPHOS scores computed on the: 
-  - normalized but unscaled, uncentered PDX data (PDX_orig)
-  - normalized, scaled, and centered PDX data (PDX_scale_center)
+* **QUESTION**: Which data slot does **AddModuleScore** use? 
+
+* **IMPORTANCE**: The type of data we use to score our cells will drastically affect downstream DE analysis.
+
+* **HYPOTHESIS**: we hypothesize that **AddModuleScore** uses the normalized but unscaled, uncentered "data" slot. 
+
+* **APPROACH**: 
+  1. Call AddModuleScore on the original normalized but unscaled, uncentered PDX Seurat object (**PDX_orig**) for **OXPHOS** 
+  2. Call AddModuleScore on the normalized, scaled, and centered PDX Seurat object (**PDX_scale_center**) for **OXPHOS**
+  3. **VlnPlot**: Plot and compare the distribution of OXPHOS scores between the two Seurat objects. 
 
 ```{r AddModuleScore slot, message = FALSE, warning= FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 
@@ -285,15 +266,27 @@ p1 + p2 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
 ggsave(filename = "PDX_data_addScoreTest.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
-Distribution of oxphos score is exactly the same between the unscaled and scaled PDX objects. Suggests that **AddModuleScore()** scores cells using the **‘data’** slot instead of the **‘scale.data’** slot
+* **CONCLUSIONS**:
+  - Distribution of oxphos score is exactly the same between the unscaled and scaled PDX objects.
+  - Suggests that **AddModuleScore()** scores cells using the **‘data’** slot instead of the **‘scale.data’** slot
 
 ### 2.2 AddModuleScore - DECIDING TO SCORE CELLS FIRST OR SUBSET BY MODEL FIRST
-Our current workflow is: **PDX -> subset -> scale and center separately**
+Our current workflow: **PDX -> subset -> scale and center separately**
 
-Since we’ve confirmed that AddModuleScore uses the unnormalized data slot, our question now turns to whether we should call AddModuleScore before or after subsetting: 
-    - PDX -> AddModuleScore → subset → scale and center or 
-    - PDX -> subset → AddModuleScore separately → scale and center separately 
+* **QUESTION**: Should we call AddModuleScore before or after subsetting by model: 
+  - PDX → AddModuleScore → subset → scale and center or 
+  - PDX → subset → AddModuleScore separately → scale and center separately 
+  
+* **IMPORTANCE**: Since we are interested in detecting differential expression across treatment conditions **within** each model, it is important to investigate whether there are significant differences between scoring cells before vs. after subsetting by model, and to determine which workflow would be better. 
 
+* **HYPOTHESIS**: We hypothesize that we should call AddModuleScore **after** subsetting by model, since we are interested in comparing differential expression **within** each model. 
+  - We hypothesize that by calling AddModuleScore() before subsetting by model, the score for an individual cell would be relative to all other cells across all models. This would possibly mask the difference between cells within models, since the difference across models is much larger. We therefore thought that calling AddModuleScore() individually by model should have resulted in a score for an individual cell that is relative to all other cells within the same model.
+  
+* **APPROACH**: focus on model DF20 and scoring for **OXPHOS**
+  1. **Scenario #1**: Call AddModuleScore on the entire PDX dataset before subsetting for DF20 
+  2. **Scenario #2**: Subset for DF20, then call AddModuleScore on the subsetted object
+  3. **VlnPlot**: Graph and compare the distribution of OXPHOS scores between the two scenario. 
+  
 ```{r AddModuleScore or subset, message = FALSE, warning= FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 
 #Scenario 1: PDX -> scale -> add module score -> subset
@@ -309,16 +302,29 @@ p3 + p4 + plot_layout(guides= 'collect', nrow = 1, ncol = 2)
 ggsave(filename = "PDX_data_scoreVSsubset.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
-We hypothesize that, by calling AddModuleScore() before subsetting by model, we hypothesized that the score for an individual cell would be relative to all other cells across all models. This would mask the difference between cells within models, since the difference across models is much larger. We therefore thought that calling AddModuleScore() individually by model should have resulted in a score for an individual cell that is relative to all other cells within the same model. However, this was not what the results showed us: 
+* **CONCLUSIONS**: 
+  - The results rejected our hypothesis 
+  - **Calling AddModuleScore() before or after subsetting by model actually leads to the same distribution of oxphos gene scores**
+  - This is possibly because **AddModuleScore()** is using the ‘data’ slot, which is the same whether we subset by model first or later. The expression of each gene within a cell is therefore still relative to all cells across models even after we subsetted for DF20. In addition, the distribution of OXPHOS scores are not centered at 0, which we'd like to have in order to understand the positive and negative relationship of the scores.  
 
-**Calling AddModuleScore() before or after subsetting by model leads to the same distribution of oxphos gene scores**
+We wonder if it would be better to "force" AddModuleScore in using the "scale.data" slot (scaled and centered by model) instead, since the counts in the "scale.data" slot is relative to all cells within DF20, instead of across all models.
 
-It is possible that since **AddModuleScore()** is using the ‘data’ slot, which is the same whether we subset by model first or later, the expression of each gene within a cell is still relative to all cells across models even after we subsetted. In addition, the distribution of OXPHOS scores are not centered at 0, which we'd like to have in order to understand the positive and negative relationship of the scores.  
+### 2.3 AddModuleScore - WHAT TYPE OF DATA IS BEST FOR SCORING CELLS
 
-We wonder if it would be better to "force" AddModuleScore in using the "scale.data" slot (scaled and centered by model) instead. We therefore compare the distribution of OXPHOS, UPR, and p53 scores in DF20 between the following three workflows to decide which slot is best for AddModuleScore:
-  - Using “data” slot 
-  - Using “scale.data” slot 
-  - Using "data" slot on DF20, center the scores afterwards
+* **QUESTION**: Which type of data is best for AddModuleScore? 
+  - "data" slot
+  - "scale.data" slot 
+  - Using "data" slot to score, center scores afterwards
+
+* **IMPORTANCE**: The type of data we use to score our cells may drastically affect downstream DE analysis.
+
+* **HYPOTHESIS**: We hypothesize that using the "scale.data" slot would be best, since it is scaled across all cells within a specific model.  
+
+* **APPROACH**: 
+  1. We compare the distribution of OXPHOS, UPR, and p53 scores in DF20 between the following three workflows to decide which slot is best for AddModuleScore:
+    i) Using “data” slot 
+    ii) Using “scale.data” slot 
+    iii) Using "data" slot on DF20, center the scores afterwards
 
 ```{r AddModuleScore slots, message = FALSE, warning= FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 hms <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33", "HALLMARK_P53_PATHWAY26")
@@ -364,9 +370,10 @@ p1[[3]] + p3[[3]] + p2[[3]] + plot_layout(guides= 'collect', nrow = 1, ncol = 3)
 ggsave(filename = "DF20_AddModuleScore_p53.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
-By using the scale.data slot, the distributions of module scores are now centered at 0, and the shape of the distribution (variance) also shifted. We're not sure if this change in shape is because the scores are now calculated relative to all other cells within the same model, rather than across all models. 
-
-Centering the scores calculated from normalized but unscaled, uncentered "data" simply shifted the whole violin plot to a mean of 0, but conserved the shape of the distribution (same variance). By looking at these plots, we're still not very sure which scenario is the best for AddModuleScore, since AddModuleScore forces us to use the "data" slot, "scale.data" might not be the right slot to use. However, at the same time, by using the "data" slot, the expression per gene across cells is still relative to all cells in the PDX instead instead of only cells within DF20. Both scenarios may have led to bias in our results. 
+* **CONCLUSIONS**: 
+  - By using the **scale.data** slot, the distributions of module scores are now centered at 0, and the shape of the distribution (variance) also shifted. This change in shape is possibly because the scores are now calculated relative to all other cells within the same model, rather than across all models. Since the scale.data slot scales the expression of each gene within DF20 to a sd of 1,it explains why graphs for the **scale.data** scenario look tighter.  
+  - Centering the scores calculated from normalized but unscaled, uncentered "data" simply shifted the whole violin plot to a mean of 0, but conserved the shape of the distribution (same variance). 
+  - By looking at these plots, we're still not very sure which scenario is best for AddModuleScore, since AddModuleScore forces us to use the "data" slot, "scale.data" might not be the right slot to use. However, at the same time, by using the "data" slot, the expression per gene across cells is still not scaled to be relative across all cells within DF20, but is relative across all models instead. Both scenarios may have led to bias in our results. 
 
 To look into this more, we compare the variance in module score between the scenarios. 
 
@@ -390,7 +397,11 @@ ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() +
 ggsave(filename = "DF20_AddModuleScore_variance.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
-It seems like the variance is a lot tighter when we use the scale.data slot. To further investigate this issue, we now split the violin plot by **treatment status** to examine if the trends we see are similar in each scenario (still focusing on DF20)
+* It seems like the variance is a lot tighter when we use the **scale.data** slot. This is expected because the standard deviation of each gene is controlled at 1 for the **scale.data** slot. 
+* However, we wonder if using the **scale.data** slot would diminish intra-model differences instead of enhancing them.  
+
+To further investigate this issue, we now split the violin plot (still focusing solely on DF20) by **treatment status** to examine if the trends we see are similar between using the **data** vs. **scale.data** slot. 
+* We hypothesize that we should see clear trends where the **MRD** treatment condition differentially overexpress OXPHOS, UPR, and p53 genes, especially when using the **scale.data** slot. 
 
 ```{r VlnPlot by treatment, message = FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 #Scenario 1: Using the "data" slot
@@ -422,20 +433,145 @@ p1[[3]] + p3[[3]] + p2[[3]] + plot_layout(guides= 'collect', nrow = 1, ncol = 3)
 ggsave(filename = "DF20_AddModuleScore_p53ByT.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
 
-Although similar trends are seen between the three scenarios, it seems like the trends are more obvious when calculating module score with the **scale.data** slot. However, for the UPR plot, it seems like MRD expresses a highest level when using the "data" slot, but not when using the "scale.data" slot. 
+Although similar trends are seen between the three scenarios, there are also some inconsistencies between them. For example: 
+* It seems like the trends are more obvious when calculating module score with the **scale.data** slot. 
+  - This is what we hoped/ expected because the **scale.data** slot scales the counts across cells within the same model, rather than across all models (which would have masked intra-model differences due to the large inter-model differences)
+* For the UPR plot, it seems like MRD has the highest expression level when using the "data" slot, but not when using the "scale.data" slot. This is weird because scaling the data shouldn't affect the relative position of the count data. For example, if a cell in treatment condition A expresses a higher level of gene A than condition B, scaling the data and controlling for the standard deviation should still make condition A express higher levels of fene A than condition B. 
+* The results from this graph therefore tells us that there are significant differences depending on the slot we use for AddModuleScore considering how they resulted in different trends. 
 
 # PART 3. DE ANALYSIS 
 
-### 3.1 INVESTIGATE HOW SLOT FOR FINDMARKERS AFFECT GSEA RESULTS 
+### 3.1 INVESTIGATE WHICH SLOT IS BEST FOR FINDMARKERS
+* **QUESTION**: Which data slot is best for FindMarkers? 
 
-Here, we investigate which type of data is best for FindMarkers,
-* "data" slot 
-* "scale.data" slot
-and how this decision affects our GSEA results:
-* padj 
-* NES
+* **IMPORTANCE**: Possible that we will get different DE genes, LogFC, and pvalues, depending on the data slot we use. This may drastically affect downstream DE Analysis such as GSEA and Volcano Plots, which both rely on the FindMarkers function. 
 
-We will focus on comparing **OXPHOS** and **UPR** GSEA results for **MRD vs. vehicle** between the two data slots for **DF20**
+* **HYPOTHESIS**: We hypothesize that it would be better to use the "**data**" slot because the "**scale.data**" slot are already z-scores. 
+
+* **APPROACH**: Focus on DE genes between MRD and vehicle in DF20 (default test = "wilcox")
+  1. Call FindMarkers on DF20 using the "data" slot
+  2. Call FindMarkers on DF20 using the "scale.data" slot
+  3. Arrange the DE gene list from step #1 and #2 in ascending order for padj (genes w/ the smallest padj value on top) and then in descending order for avg_logFC / avg_diff depending on the data slot used (genes w/ the highest logFC on top)
+  
+```{r FindMarkers data slot, warning = FALSE, message=FALSE, fig.align='center'}
+
+data_slot <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0) %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+
+scale.data.slot <- FindMarkers(DF20_score, group.by = "treatment.status", slot = "scale.data", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold =  0) %>% rownames_to_column %>% arrange(p_val_adj, -avg_diff) %>% select(rowname, avg_diff, p_val_adj) 
+
+head(data_slot,10)
+head(scale.data.slot, 10)
+
+identical(data_slot$rowname, scale.data.slot$rowname)
+length(which(data_slot$rowname != scale.data.slot$rowname))/13893
+
+#compare padj values 
+fc.diff = data.frame(
+    "avg_logFC" = data_slot$p_val_adj,
+    "avg_diff" = scale.data.slot$p_val_adj
+)
+
+plot.df = reshape2::melt(fc.diff)
+
+ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
+  labs(x = "'data' vs. 'scale.data'", y = "logFC or diff", title = "Comparing the distribution of padj values") +
+  theme_bw()
+```
+
+* **CONCLUSIONS**: 
+  - padj values associated with each gene is the same between the two slots 
+    - This makes sense because the wilcoxon rank sum test is used here, so the unscaled vs. scaled count data should be given the same rank in each scenario to calculate the p values. 
+  - Ranks between the two scenarios are the same in the beginning but begin to diverge significantly starting from the 680th gene all the way to the end of the ranked lists. Only **95%** of the rankings are the same. 
+    - We ranked by padj first, then by avg_logFC or avg_diff. Since the padj value associated with a gene is the same, the difference in rank depends on the latter metric. 
+    - Unexpected because although the scale.data slot are z-scores, the scaling shouldn't have changed the relative expression across cells for a single gene. For example, if a condition expresses more a gene A than the other condition, while they expresses gene B at the same level, scaling the counts should not change the fact that gene A is differentially expressed while gene B is not. The avg_logFC of gene A relative to gene B should therefore be identical to the avg_diff of gene A relative to gene B. 
+    - Although it could be possible that FindMarkers may have scaled the counts in the **scale.data** slot again, which may have tightened the spread of the data even more and mask differences between conditions, the fact that FindMarkers report values in **avg_diff** instead of **avg_logFC** imply that the function should already know that it is working with z-scores when slot is set to **scale.data**. 
+    - We therefore investigate how the distribution of avg_logFC when using the "data" slot compares to the distribution of avg_diff when using the "scale.data" slot for FindMarkers. 
+
+```{r logFC vs. diff, message=FALSE, warning = FALSE, fig.align= 'center'}
+fc.diff = data.frame(
+    "avg_logFC" = data_slot$avg_logFC,
+    "avg_diff" = scale.data.slot$avg_diff
+)
+
+plot.df = reshape2::melt(fc.diff)
+
+ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
+  labs(x = "'data' vs. 'scale.data'", y = "logFC or diff", title = "Comparing the distribution of avg_logFC vs. avg_diff") +
+  theme_bw()
+```
+
+* **OBSERVATIONS**
+  - Both are normally distributed and centered at 0. Makes sense because most genes are not differentially expressed. 
+  - The distribution of avg_diff is a lot tighter than that of avg_logFC. There are a lot more genes that are deemed not DE when using **scale.data** than **data**. 
+    - This makes sense because the count data for each gene in **scale.data** is scaled to a sd of 1, which explains why less variation is detected when we use **scale.data** 
+    - Not sure if using the **scale.data** slot actually reduces false positives, since less DE genes are detected, or increases false negatives. 
+  - This graph therefore explains why the ranked list differ depending on the slot we use- because there are a lot more overlaps in avg_diff than avg_logFC. 
+
+### 3.1.2 INVESTIGATE WHICH STATISTICAL TEST IS BEST FOR FINDMARKERS
+* **QUESTION**: Which statistical test is best for FindMarkers? 
+  - wilcoxon rank sum test 
+  - t test 
+  - MAST 
+  - LR
+
+* **IMPORTANCE**: Different statistical tests use different approximations and assumptions, which may slightly affect the resulting DE genes they detect. 
+
+* **HYPOTHESIS**: We hypothesize that the wilcox rank sum test would be the best test to use. 
+
+* **APPROACH**: Focus on DE genes between MRD and vehicle in DF20 
+  1. Call FindMarkers on DF20 with the four statistical tests
+  2. Arrange the DE gene list from step #1 in ascending order for padj (genes w/ the smallest padj value on top) and then in descending order for avg_logFC (genes w/ the highest logFC on top)
+  3. Compare
+
+```{r FindMarkers statistical test, warning= FALSE, message= FALSE}
+
+wilcox <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "wilcox") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+
+t.test <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "t") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+
+MAST <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "MAST") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+
+LR <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "LR") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+
+head(wilcox)
+head(t.test)
+head(MAST)
+head(LR)
+
+identical(wilcox$rowname, t.test$rowname) || identical(wilcox$rowname, MAST$rowname) || identical(wilcox$rowname, LR$rowname) || identical(t.test$rowname, MAST$rowname) || identical(t.test$rowname, LR$rowname) || identical(MAST$rowname, LR$rowname)
+
+which.diff = data.frame(
+    "wilcox.vs.t" = length(which(wilcox$rowname != t.test$rowname))/13893,
+    "wilcox.vs.MAST" = length(which(wilcox$rowname != MAST$rowname))/13893, 
+    "wilcox.vs.LR" = length(which(wilcox$rowname != LR$rowname))/13893,
+    "t.vs.MAST" = length(which(t.test$rowname != MAST$rowname))/13893,
+    "t.vs.LR" = length(which(t.test$rowname != LR$rowname))/13893,
+    "MAST.vs.LR" = length(which(MAST$rowname != LR$rowname))/13893
+) 
+rownames(which.diff) <- "% Different"
+
+which.diff
+```
+
+* **CONCLUSIONS**: 
+  - None of the statistical tests yielded the same gene ranks. All of them are 99.9% different from each other. 
+  - Although different statistical tests use different approximations and assumptions, the drastic difference between the results make it hard to decide which statistical test is the most appropriate one. 
+
+### 3.2 INVESTIGATE HOW SLOT FOR FINDMARKERS AFFECT GSEA RESULTS 
+
+* **QUESTION**: How does the slot we use for FindMarkers affect GSEA results?
+  - "data" slot 
+  - "scale.data" slot
+
+* **IMPORTANCE**: We've seen earlier that the rankings and padj values are fairly identical in the beginning, but start to diverge towards the end of the ranked list. We now investigate how the slot we use affect GSEA results. 
+
+* **HYPOTHESIS**: Since GSEA simply walks down the ranked genes and adds to a running sum of enrichment score when a gene in the list corresponds to the gene in the geneset, we hypothesize that we will get drastically different GSEA results considering how the ranked lists diverge towards the end. 
+
+* **APPROACH**: Focus on  **OXPHOS** and **UPR** GSEA results for **MRD vs. vehicle** treatment conditions in DF20
+  1. Run GSEA with the "data" slot 
+  2. Run GSEA by specifying the "scale.data" slot 
+  3. Compare GSEA results: NES and padj values for the genesets between using the "data" vs. "scale.data" slot 
+  4. Compare GSEA plots. 
 
 ```{r GSEA slot, message = FALSE, warning = FALSE, fig.width = 20, fig.height = 20}
 slots <- c("data", "scale.data")
@@ -464,20 +600,23 @@ for (st in slots){
 plots[[1]] + plots[[2]] + plots[[3]] + plots[[4]] + plot_layout(nrow = 2, ncol = 2)
 ```
 
-Drastic differences between using the **scale.data** slot vs. the **data** slot. Although GSEA plots constructed using the **"data"** slot agrees with our hypothesis more (MRD upregulates oxphos and UPR), the p values are more significant when using the **"scale.data"** slot. 
+* **CONCLUSIONS**: 
+- Drastic differences between using the **scale.data** slot vs. the **data** slot. Although GSEA plots constructed using the **"data"** slot agrees with our hypothesis more (MRD upregulates oxphos and UPR), the p values are more significant when using the **"scale.data"** slot. 
+- According to the GSEA results, the **data** slot tells us that the OXPHOS geneset is **enriched**, while the **scale.data** slot tells us the opposite. This means that OXPHOS genes are higher up in the ranked list (upregulated) when we called FindMarkers with **slot = "data"**, while the OXPHOS genes are at the lower end of the ranked list (downregulated) when computed with **slot = scale.data**.
+  * This phenomenon agrees with what we saw when we compared the ranked list in section **3.1**, where only **95%** of the rankings were identical out of the 13,893 genes tested. 
 
-### 3.1.1 INVESTIGATE HOW STATISTICAL TEST FOR FINDMARKERS AFFECT GSEA RESULTS 
+### 3.2.1 INVESTIGATE HOW STATISTICAL TEST FOR FINDMARKERS AFFECT GSEA RESULTS 
 
-We investigate which statistical test is best for our data,
-  - wilcoxon rank sum test
-  - t-test 
-  - MAST 
-  - LR
-and how this decision affects our GSEA results:
-  - padj 
-  - NES
-  
-We continue to focus our comparion on **OXPHOS** and **UPR** GSEA results for **MRD vs. vehicle** between the two data slots for **DF20**
+* **QUESTION**: How does the statistical test we use when calling FindMarkers affect GSEA results? 
+
+* **IMPORTANCE**: Since we saw that each statistical test yielded different rankings, we would like to investigate how this affects our GSEA results. 
+
+* **HYPOTHESIS**: Since GSEA computes the enrichment score of a geneset by walking down a ranked list and adds to the running sum when a gene in the ranked list corresponds to a gene in the geneset, we hypothesize that GSEA results and plots will look drastically different between different statistical tests considering that different statistical test used for FindMarkers yielded different ranks. 
+
+* **APPROACH**: Focus on  **OXPHOS** and **UPR** GSEA results for **MRD vs. vehicle** treatment conditions in DF20
+  1. Run GSEA with the each statistical test 
+  2. Compare GSEA the NES and padj values for the genesets between each statistical test
+  3. Compare GSEA plots. 
 
 ```{r GSEA test, message = FALSE, warning = FALSE, fig.width=20, fig.height=20}
 tests <- c("wilcox", "t", "MAST", "LR")
@@ -504,15 +643,25 @@ for (test in tests){
 plots[[1]] + plots[[2]] + plots[[3]] + plots[[4]] + plots[[5]] + plots[[6]] + plots[[7]] + plots[[8]]+ plot_layout(nrow = 4, ncol = 2)
 ```
 
-GSEA results does not seem to be affected by the statistical test used. Very similar NES and padj values. 
+* **CONCLUSIONS**: 
+  - GSEA results does not seem to be affected by the statistical test used. They yielded GSEA plots with very similar shapes, and also computed very similar NES and padj values. 
+  - This was unexpected because the rankings between any two statistical test were different by 99.9%. 
+    * Although I am tempted to say that the 0.01% similarity might be the ranks of OXPHOS genes,this reasoning does not make sense because we see the same results when we compare GSEA results for the UPR geneset.   
 
-### 3.2 INVESTIGATE HOW SLOT FOR FINDMARKERS AFFECT VOLCANO PLOT 
+### 3.3 INVESTIGATE HOW SLOT FOR FINDMARKERS AFFECT VOLCANO PLOT 
 
-We investigate which type of data is best for FindMarkers,and how this decision affects our GSEA results (whether we will detect more or less DE genes):
-  * "data" slot 
-  * "scale.data" slot
+* **QUESTION**: How does the slot we use for FindMarkers affect our Volcano Plot? 
 
-We focus on detecting DE genes for **MRD vs. vehicle** in DF20 for our comparison between statistical tests
+* **IMPORTANCE**: Volcano plots help us detect individual DE genes via logFC and padj cutoffs. Although different data slots used for FindMarkers give us similar p values, they yielded different gene ranks. Furthermore, while the "data" slot report DE genes in avg_logFC, the "scale.data" slot reports values in avg_diff. We are interested in seeing whether we can detect different / more DE genes depending on the metric we use. 
+
+* **HYPOTHESIS**: We should be able to detect different DE genes depending on the data slot we use. However we're not sure which one would be more accurate. 
+
+* **APPROACH**: Focus on detecting DE genes between **MRD vs. vehicle** in DF20 
+  1. Run **DEAnalysis_code** for each slot between **MRD** and **vehicle**. This returns a list of DE genes for each slot. 
+  2. Graph the DE genes on a volcano plot for: 
+    i) All genes 
+    ii) Only oxphos genes 
+    iii) Only UPR genes
 
 ```{r volcano plots slot, message = FALSE, warning = FALSE, fig.width=20, fig.height = 20}
 plots <- vector("list", length = 6)
@@ -539,9 +688,25 @@ for (slt in slots){
 plots[[1]] + plots[[2]] + plots[[3]] + plots[[4]] + plots[[5]] + plots[[6]] + plot_layout(nrow = 2, ncol = 3)
 ```
 
-Volcano plots do not seem to be affected by the type of data used. 
+* **CONCLUSIONS**: 
+  - There are slight differences between the DE genes detected when using the **data** slot vs. the **scale.data** slot when we were plotting ALL genes. 
+    * This could be because the logFC cutoffs we used for the **data** and **scale.data** volcano plots are the same, even though the **scale.data** slot reports values in **avg_diff**. 
+  - However, the DE gene detected for **OXPHOS** (ACADVL gene) and **UPR** (none) reamined the same. 
 
-### 3.2.1 INVESTIGATE HOW STATISTICAL TEST FOR FINDMARKERS AFFECT VOLCANO PLOT
+### 3.3.1 INVESTIGATE HOW STATISTICAL TEST FOR FINDMARKERS AFFECT VOLCANO PLOT
+
+* **QUESTION**: How does the statistical test we use for FindMarkers affect our Volcano Plot? 
+
+* **IMPORTANCE**: Volcano plots help us detect individual DE genes via logFC and padj cutoffs. Since different statistical tests yielded different logFC and padj values as demonstrated above in section #3.1.1, we are interested in visualizing whether a particular statistical test detects different / more DE genes than others. 
+
+* **HYPOTHESIS**: We should be able to detect different DE genes depending on the statistical test we use. However we're not sure which one would be more accurate. 
+
+* **APPROACH**: Focus on detecting DE genes between **MRD vs. vehicle** in DF20 
+  1. Run **DEAnalysis_code** for for each statistical test.
+  2. Graph the DE genes on a volcano plot for: 
+    i) All genes 
+    ii) Only oxphos genes 
+    iii) Only UPR genes
 
 ```{r volcano plots statistical test, message = FALSE, warning = FALSE, fig.width=20, fig.height= 20}
 plots <- vector("list", length = 12)
@@ -567,4 +732,7 @@ for (test in tests){
 plots[[1]] + plots[[2]] + plots[[3]] + plots[[4]] + plots[[5]] + plots[[6]] + plots[[7]] + plots[[8]]+ plots[[9]] + plots[[10]] + plots[[11]] + plots[[12]] + plot_layout(nrow = 4, ncol = 3)
 ```
 
-Volcano plots do not seem to be affected by the statistical test used. 
+* **CONCLUSIONS**: 
+  - Different numbers of DE genes detected. However, there are a few DE genes that are consistent across all statistical tests. 
+  - DE gene detected for **OXPHOS** (ACADVL) and **UPR** (none) remained the same. 
+  - The DE gene detected for OXPHOS is **downregulated** in **MRD** vs. **vehicle**, which is not the behavior we hypothesized (MRD should upregulate oxphos genes in comparison to vehicle and relapse treatment conditions)
