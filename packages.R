@@ -2,6 +2,7 @@
 if (!require(pacman)) install.packages("pacman"); library(pacman)
 
 p_load(tidyverse)
+p_load(renv)
 p_load(readxl)
 p_load(plyr)
 p_load(reshape2)
@@ -16,7 +17,7 @@ p_load(gt)
 p_load(msigdbr)
 p_load(here)
 p_load(fgsea)
-p_load_gh("immunogenomics/presto")
+# p_load_gh("immunogenomics/presto")
 
 source(here('mike_code','DotPlot2.R'))
 #source(here('mike_code','DotPlot3.R'))
