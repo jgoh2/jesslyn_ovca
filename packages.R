@@ -16,6 +16,8 @@ p_load(gt)
 p_load(msigdbr)
 p_load(here)
 p_load(fgsea)
+p_load(GGally)
+p_load(ggpubr)
 p_load_gh("immunogenomics/presto")
 
 source(here('mike_code','DotPlot2.R'))

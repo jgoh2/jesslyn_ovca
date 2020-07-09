@@ -455,36 +455,46 @@ Although similar trends are seen between the three scenarios, there are also som
   
 ```{r FindMarkers data slot, warning = FALSE, message=FALSE, fig.align='center'}
 
-data_slot <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0) %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+data_slot <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0) %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj) 
+data_slot <- data_slot %>% mutate("data.rank" = seq(from=1, to=length(data_slot$rowname))) %>% mutate("data.DE" = (data_slot$avg_logFC > 0.5 | data_slot$avg_logFC < -0.5) & (data_slot$p_val_adj < 0.05))
 
 scale.data.slot <- FindMarkers(DF20_score, group.by = "treatment.status", slot = "scale.data", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold =  0) %>% rownames_to_column %>% arrange(p_val_adj, -avg_diff) %>% select(rowname, avg_diff, p_val_adj) 
+scale.data.slot <- scale.data.slot %>% mutate("scale_data.rank" = seq(from=1, to=length(scale.data.slot$rowname))) %>% mutate("scale.data.DE" = (scale.data.slot$avg_diff > 0.5 | scale.data.slot$avg_diff < -0.5) & (scale.data.slot$p_val_adj < 0.05))
 
-head(data_slot,10)
-head(scale.data.slot, 10)
+both <- merge(data_slot, scale.data.slot, by="rowname") 
+both <- both %>% mutate("both.DE" = (both$data.DE & both$scale.data.DE))
 
 identical(data_slot$rowname, scale.data.slot$rowname)
 length(which(data_slot$rowname != scale.data.slot$rowname))/13893
 
-#compare padj values 
-fc.diff = data.frame(
-    "avg_logFC" = data_slot$p_val_adj,
-    "avg_diff" = scale.data.slot$p_val_adj
-)
+#compare ranks 
+ggplot(both, aes(x = data.rank, y = scale_data.rank)) + geom_point(aes(alpha = 0.5, colour = factor(both.DE))) + labs(title = "Comparing gene ranks when using data vs. scale.data", x = "data", y = "scale.data", colour = "DE for both slots", alpha = "Transparency") + stat_cor(method = "pearson")
+ggsave("DF20_FindMarkers_slot_ranks.png", path = "jesslyn_plots/PDX_test")
+```
 
-plot.df = reshape2::melt(fc.diff)
+* Ranks between the two scenarios are the same in the beginning but begin to diverge significantly starting from the 680th gene all the way to the end of the ranked lists. Only **95%** of the rankings are the same. 
+* Only genes in the beginning of the ranked list are detected as DE in both scenarios. 
+  - Not what we expected, because DE genes should be detected both at the beginning (significantly upregulated) **and** the end (significantly downregulated) of the ranked list
 
-ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
-  labs(x = "'data' vs. 'scale.data'", y = "logFC or diff", title = "Comparing the distribution of padj values") +
-  theme_bw()
+We examine how padj and logFC (or avg_diff) values correlate between the two scenarios:
+
+```{r FindMarkers data slot padj, warning = FALSE, message=FALSE, fig.align='center'}
+#compare padj 
+ggscatter(both, x = "p_val_adj.x", y = "p_val_adj.y", add = "reg.line", add.params = list(color = "grey")) + labs(title = "Comparing the padj values of using data vs. scale.data", x = "data", y = "scale.data") + stat_cor(method = "pearson")
+ggsave("DF20_FindMarkers_slot_padj.png", path = "jesslyn_plots/PDX_test")
+
+
+#compare avg_logfc vs. avg_diff
+ggplot(both, aes(x = avg_logFC, y = avg_diff)) + geom_point(aes(alpha = 0.5, colour = factor(both.DE))) + labs(title = "Comparing the logFC and avg_diff values of using data vs. scale.data", x = "data", y = "scale.data", colour = "DE for both slots", alpha = "Transparency")
+ggsave("DF20_FindMarkers_slot_logFC.png", path = "jesslyn_plots/PDX_test")
 ```
 
 * **CONCLUSIONS**: 
-  - padj values associated with each gene is the same between the two slots 
+  - padj values associated with each gene is identical regardless of the slot used (correlation coefficient = 1)
     - This makes sense because the wilcoxon rank sum test is used here, so the unscaled vs. scaled count data should be given the same rank in each scenario to calculate the p values. 
-  - Ranks between the two scenarios are the same in the beginning but begin to diverge significantly starting from the 680th gene all the way to the end of the ranked lists. Only **95%** of the rankings are the same. 
-    - We ranked by padj first, then by avg_logFC or avg_diff. Since the padj value associated with a gene is the same, the difference in rank depends on the latter metric. 
+  - The ranks therefore differ depending on the slot used for FindMarkers due to **avg_logFC** (or avg_diff)
     - Unexpected because although the scale.data slot are z-scores, the scaling shouldn't have changed the relative expression across cells for a single gene. For example, if a condition expresses more a gene A than the other condition, while they expresses gene B at the same level, scaling the counts should not change the fact that gene A is differentially expressed while gene B is not. The avg_logFC of gene A relative to gene B should therefore be identical to the avg_diff of gene A relative to gene B. 
-    - Although it could be possible that FindMarkers may have scaled the counts in the **scale.data** slot again, which may have tightened the spread of the data even more and mask differences between conditions, the fact that FindMarkers report values in **avg_diff** instead of **avg_logFC** imply that the function should already know that it is working with z-scores when slot is set to **scale.data**. 
+    - Although it could be possible that FindMarkers may have scaled the counts in the **scale.data** slot again, which may have tightened the spread of the data even more and obscure differences between conditions, the fact that FindMarkers report values in **avg_diff** instead of **avg_logFC** imply that the function should already know that it is working with z-scores when slot is set to **scale.data**. 
     - We therefore investigate how the distribution of avg_logFC when using the "data" slot compares to the distribution of avg_diff when using the "scale.data" slot for FindMarkers. 
 
 ```{r logFC vs. diff, message=FALSE, warning = FALSE, fig.align= 'center'}
@@ -498,14 +508,20 @@ plot.df = reshape2::melt(fc.diff)
 ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
   labs(x = "'data' vs. 'scale.data'", y = "logFC or diff", title = "Comparing the distribution of avg_logFC vs. avg_diff") +
   theme_bw()
+ggsave("DF20_FindMarkers_slot_logFC2.png", path = "jesslyn_plots/PDX_test")
 ```
 
 * **OBSERVATIONS**
   - Both are normally distributed and centered at 0. Makes sense because most genes are not differentially expressed. 
   - The distribution of avg_diff is a lot tighter than that of avg_logFC. There are a lot more genes that are deemed not DE when using **scale.data** than **data**. 
     - This makes sense because the count data for each gene in **scale.data** is scaled to a sd of 1, which explains why less variation is detected when we use **scale.data** 
-    - Not sure if using the **scale.data** slot actually reduces false positives, since less DE genes are detected, or increases false negatives. 
-  - This graph therefore explains why the ranked list differ depending on the slot we use- because there are a lot more overlaps in avg_diff than avg_logFC. 
+    - Not sure if using the **scale.data** slot actually reduces false positives, since less DE genes are detected, or increases false negatives (obscures differences between cells). 
+
+We now build MAPlots to try to determine whether avg_logFC or avg_diff would be a better metric to use. 
+
+```{r FindMarkers logFC MAPlots}
+#pending
+```
 
 ### 3.1.2 INVESTIGATE WHICH STATISTICAL TEST IS BEST FOR FINDMARKERS
 * **QUESTION**: Which statistical test is best for FindMarkers? 
@@ -525,20 +541,25 @@ ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() +
 
 ```{r FindMarkers statistical test, warning= FALSE, message= FALSE}
 
-wilcox <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "wilcox") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+wilcox <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "wilcox") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj) 
+wilcox <- wilcox %>% mutate("wilcox.rank" = seq(from=1, to=length(wilcox$rowname)))
+colnames(wilcox) <- c("rowname", "wilcox.logFC", "wilcox.padj", "wilcox.rank")
 
-t.test <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "t") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+t.test <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "t") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj) 
+t.test <- t.test %>% mutate("t.rank" = seq(from=1, to=length(t.test$rowname)))
+colnames(t.test) <- c("rowname", "t.logFC", "t.padj", "t.rank")
 
-MAST <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "MAST") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+MAST <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "MAST") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj) 
+MAST <- MAST %>% mutate("MAST.rank" = seq(from=1, to=length(MAST$rowname)))
+colnames(MAST) <- c("rowname", "MAST.logFC", "MAST.padj", "MAST.rank")
 
-LR <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "LR") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj)
+LR <- FindMarkers(DF20_score, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0, test.use = "LR") %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC, p_val_adj) 
+LR <- LR %>% mutate("LR.rank" = seq(from=1, to=length(LR$rowname)))
+colnames(LR) <- c("rowname", "LR.logFC", "LR.padj", "LR.rank")
 
-head(wilcox)
-head(t.test)
-head(MAST)
-head(LR)
-
-identical(wilcox$rowname, t.test$rowname) || identical(wilcox$rowname, MAST$rowname) || identical(wilcox$rowname, LR$rowname) || identical(t.test$rowname, MAST$rowname) || identical(t.test$rowname, LR$rowname) || identical(MAST$rowname, LR$rowname)
+wilcox.t <- merge(wilcox, t.test, by = "rowname")
+MAST.LR <- merge(MAST, LR, by = "rowname")
+all <- merge(wilcox.t, MAST.LR, by = "rowname")
 
 which.diff = data.frame(
     "wilcox.vs.t" = length(which(wilcox$rowname != t.test$rowname))/13893,
@@ -551,12 +572,25 @@ which.diff = data.frame(
 rownames(which.diff) <- "% Different"
 
 which.diff
+
+#compare padj 
+ggpairs(all, columns = c("wilcox.padj", "t.padj", "MAST.padj", "LR.padj"), diag = "blank") + labs(title = "Comparing padj values between statistical tests")
+ggsave("DF20_FindMarkers_test_padj.png", path = "jesslyn_plots/PDX_test")
+
+#compare logFC
+ggpairs(all, columns = c("wilcox.logFC", "t.logFC", "MAST.logFC", "LR.logFC"), diag = "blank") + labs(title = "Comparing logFC values between statistical tests")
+ggsave("DF20_FindMarkers_test_logFC.png", path = "jesslyn_plots/PDX_test")
+
+#compare ranks
+ggpairs(all, columns = c("wilcox.rank", "t.rank", "MAST.rank", "LR.rank"), diag = "blank") + labs(title = "Comparing gene ranks between statistical tests")
+ggsave("DF20_FindMarkers_test_ranks.png", path = "jesslyn_plots/PDX_test")
 ```
 
 * **CONCLUSIONS**: 
-  - None of the statistical tests yielded the same gene ranks. All of them are 99.9% different from each other. 
-  - Although different statistical tests use different approximations and assumptions, the drastic difference between the results make it hard to decide which statistical test is the most appropriate one. 
-
+  - The logFC value associated with each gene is **identical** regardless of the statistical test used (correlation coefficient = 1). 
+  - However, padj values differ significantly between statistical tests. The best correlation is between LR and the t.test, which has a correlation coefficient of **0.957**. 
+  - Despite the significant differences in padj values between statistical tests, gene ranks between statistical test are strongly correlated, the strongest being the correlation between LR and the t.test (**0.987**).
+  
 ### 3.2 INVESTIGATE HOW SLOT FOR FINDMARKERS AFFECT GSEA RESULTS 
 
 * **QUESTION**: How does the slot we use for FindMarkers affect GSEA results?
