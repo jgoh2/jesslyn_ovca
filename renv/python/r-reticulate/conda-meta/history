@@ -1,0 +1,27 @@
+==> 2020-07-09 17:49:12 <==
+# cmd: /Users/mcuoco/Library/r-miniconda/bin/conda create --yes --prefix /Users/mcuoco/OneDrive/Work/Projects/jesslyn_ovca/renv/python/r-reticulate python=3.6 numpy -c conda-forge
+# conda version: 4.8.3
++conda-forge/noarch::pip-20.1.1-py_1
++conda-forge/noarch::wheel-0.34.2-py_1
++conda-forge/osx-64::ca-certificates-2020.6.20-hecda079_0
++conda-forge/osx-64::certifi-2020.6.20-py36h9f0ad1d_0
++conda-forge/osx-64::libblas-3.8.0-17_openblas
++conda-forge/osx-64::libcblas-3.8.0-17_openblas
++conda-forge/osx-64::libcxx-10.0.0-h1af66ff_2
++conda-forge/osx-64::libffi-3.2.1-h4a8c4bd_1007
++conda-forge/osx-64::libgfortran-4.0.0-2
++conda-forge/osx-64::liblapack-3.8.0-17_openblas
++conda-forge/osx-64::libopenblas-0.3.10-h3d69b6c_0
++conda-forge/osx-64::llvm-openmp-10.0.0-h28b9765_0
++conda-forge/osx-64::ncurses-6.1-h0a44026_1002
++conda-forge/osx-64::numpy-1.18.5-py36hdc5ca10_0
++conda-forge/osx-64::openssl-1.1.1g-h0b31af3_0
++conda-forge/osx-64::python-3.6.10-h4334963_1011_cpython
++conda-forge/osx-64::python_abi-3.6-1_cp36m
++conda-forge/osx-64::readline-8.0-hed1e85f_1
++conda-forge/osx-64::setuptools-49.1.0-py36h9f0ad1d_0
++conda-forge/osx-64::sqlite-3.32.3-h93121df_1
++conda-forge/osx-64::tk-8.6.10-hbbe82c9_0
++conda-forge/osx-64::xz-5.2.5-h0b31af3_1
++conda-forge/osx-64::zlib-1.2.11-h0b31af3_1006
+# update specs: ['numpy', 'python=3.6']
