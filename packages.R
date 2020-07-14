@@ -1,26 +1,38 @@
 # R packages --------------------------------------------------------------
+# pacman and BiocManager for easy loading/installation
 if (!require(pacman)) install.packages("pacman"); library(pacman)
+if (!require(BiocManager)) install.packages("BiocManager"); library(BiocManager)
 
-p_load(tidyverse)
+# reproducibility tools
 p_load(renv)
+p_load(here)
+p_load(rrtools)
+p_load(workflowr)
+p_load(styler)
+
+# data analysis
+p_load(tidyverse)
 p_load(readxl)
 p_load(plyr)
 p_load(reshape2)
 p_load(Matrix)
-p_load(Seurat)
-p_load(infercnv)
-p_load(patchwork)
 p_load(glue)
-p_load(beepr)
 p_load(broom)
-p_load(gt)
-p_load(msigdbr)
-p_load(here)
-p_load(fgsea)
-# p_load_gh("immunogenomics/presto")
+p_load(vroom)
 
-source(here('mike_code','DotPlot2.R'))
-#source(here('mike_code','DotPlot3.R'))
-source(here('jesslyn_code','DEAnalysis_code.R'))
-source(here('jesslyn_code','GSEA_code.R'))
-source(here('mike_code','seurat_tab.R'))
+# biology
+p_load(msigdbr)
+p_load(Seurat)
+p_load(fgsea)
+
+# visualization
+p_load(gt)
+
+# other
+p_load(beepr)
+
+# custom scripts
+source(here::here('code','DotPlot2.R'))
+source(here::here('code','DEAnalysis_code.R'))
+source(here::here('code','GSEA_code.R'))
+source(here::here('code','seurat_tab.R'))
