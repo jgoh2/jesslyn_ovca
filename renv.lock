@@ -299,6 +299,20 @@
       "Repository": "CRAN",
       "Hash": "b3158a579ecef0e8f7626f4dadc369d0"
     },
+    "bit": {
+      "Package": "bit",
+      "Version": "1.1-15.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "eb6c52d8cc44463085a4cde1c63df163"
+    },
+    "bit64": {
+      "Package": "bit64",
+      "Version": "0.9-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3338d4a9b1352f5a613e2bdcefe784ea"
+    },
     "bitops": {
       "Package": "bitops",
       "Version": "1.0-6",
@@ -1002,13 +1016,6 @@
       "Repository": "CRAN",
       "Hash": "b3209c62052922b6c629544d94c8fa8a"
     },
-    "pacman": {
-      "Package": "pacman",
-      "Version": "0.5.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b37932b67288bc62bb81686b2f337a7d"
-    },
     "patchwork": {
       "Package": "patchwork",
       "Version": "1.0.1",
@@ -1148,13 +1155,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "c66b930d20bb6d858cd18e1cebcfae5c"
-    },
-    "remotes": {
-      "Package": "remotes",
-      "Version": "2.1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "57c3009534f805f0f6476ffee68483cc"
     },
     "renv": {
       "Package": "renv",
@@ -1398,6 +1398,20 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "ce4f6271baa94776db692f1cb2055bee"
+    },
+    "vroom": {
+      "Package": "vroom",
+      "Version": "1.2.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5f341c32a91bcf79aca8287822b3d8da"
+    },
+    "webshot": {
+      "Package": "webshot",
+      "Version": "0.5.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "e99d80ad34457a4853674e89d5e806de"
     },
     "whisker": {
       "Package": "whisker",

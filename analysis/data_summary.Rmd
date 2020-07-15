@@ -12,6 +12,8 @@ knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(Seurat)
+library(plyr)
+library(gt)
 ```
 
 # Read data and glimpse
@@ -39,6 +41,7 @@ dims = map_dfr(list("10x" = ovca_10x, "SS2" = ovca_SS2, "PDX" = ovca_PDX),
                )
 gt(dims)
 
+source(here::here('code','seurat_tab.R'))
 # create summary tables using Mike's function
 seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", title = "Patient cells")
 # seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", group_var = "treatment.status", title = "Patient cells by treatment status") %>% row_group_order(c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment"))
