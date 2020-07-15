@@ -21,8 +21,6 @@
 .Rproj.user/
 
 # produced vignettes
-vignettes/*.html
-vignettes/*.pdf
 vignettes/
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
@@ -39,17 +37,13 @@ vignettes/
 # R Environment Variables
 .Renviron
 
-# pkgdown site
-docs/
-
 #ignore data directory 
-data/ 
+data/HTAPP
+data/Izar_2020
 
 #ignore plot directories 
 jesslyn_plots/ 
 mike_plots/
 
-#ignore renv directories
-renv/library/
-renv/python/
-renv/staging/
+#ignore default.profaw
+default.profaw
