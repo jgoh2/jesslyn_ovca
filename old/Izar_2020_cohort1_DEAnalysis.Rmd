@@ -1,0 +1,155 @@
+---
+title: "Izar 2020 cohort1 DE Analysis"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+library(ggrepel) # for plot labelling
+library(EnhancedVolcano)
+
+# Read in Seurat objects
+cohort1 = readRDS("data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1Malignant = readRDS("data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+cohort1NonMalignant = readRDS("data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
+
+#load in oxphos genes
+oxphosGenes<-read_lines("gene_lists/oxphos.txt", skip = 1)
+
+#filter out genes that are not in the cells 
+filterGenes <- c("TOMM70", "ATP6V0C", "ATP5PO", "ATP5PF", "ATP5PD", "ATP5PB", "ATP5MG", "ATP5MF", "ATP5ME", "ATP5MC3", "ATP5MC2", "ATP5MC1", "ATP5F1E", "ATP5F1D", "ATP5F1C", "ATP5F1B", "ATP5F1A")
+for (gene in filterGenes){
+  oxphosGenes <- oxphosGenes[oxphosGenes!=gene]
+}
+
+```
+
+```{r compute average gene expression}
+#MALIGNANT CELLS
+#For Oxphos Genes
+cohort1Malignant <- AddModuleScore(cohort1Malignant, features = list(oxphosGenes), name = "oxphosGenes.Score")
+```
+
+```{r find marker genes}
+#find marker genes for malignant cells
+#based on CLUSTER 
+Idents(cohort1Malignant) <- "seurat_clusters"
+cohort1Malignant.markers <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+#plot top 5 differential gene expression across malignant clusters 
+top5Malignant <- cohort1Malignant.markers %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5Malignant$gene)
+ggsave("cohort1Malignant_top20_differential_genes.jpeg", path="jesslyn_plots", width = 20, height = 15)
+
+#based on SAMPLE
+Idents(cohort1Malignant) <- "sample"
+cohort1Malignant.markersSamp <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+top5MalignantSamp <- cohort1Malignant.markersSamp %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5MalignantSamp$gene, size=3)
+ggsave("cohort1Malignant_top5_differential_genes_S.jpeg", path="jesslyn_plots/cohort1/Malignant", width = 20, height = 15)
+
+#based on TREATMENT
+Idents(cohort1Malignant) <- "treatment.Status"
+my_levels <- c("Treatment-naive", "After 1 cycle of chemotherapy", "On-treatment")
+Idents(cohort1Malignant) <- factor(Idents(cohort1Malignant), levels = my_levels)
+
+cohort1Malignant.markersTS <- FindAllMarkers(cohort1Malignant, only.pps = TRUE, min.pct = 0.25, logfc.threshold = 0.25)
+
+#heatmap for top marker genes across treatment
+
+top5MalignantTS <- cohort1Malignant.markersTS %>% group_by(cluster) %>% top_n(n = 5, wt = avg_logFC)
+DoHeatmap(cohort1Malignant, features = top5MalignantTS$gene, size=3)
+ggsave("cohort1Malignant_top5_differential_genes_TS.jpeg", path="jesslyn_plots/cohort1/Malignant", width = 20, height = 15)
+```
+
+##ANSWERING RESEARCH QUESTIONS - how does treatment affect MALIGNANT cells?
+```{r Questions about # of cycling cells}
+#MALIGNANT CELLS
+numMalCellsPerTreatmentPerPhase = table(cohort1Malignant$Phase, cohort1Malignant$treatment.Status) %>% as.data.frame() %>% rename(Phase = Var1, Treatment = Var2, numCells = Freq)
+ggplot(numMalCellsPerTreatmentPerPhase, aes(x=Treatment, y=numCells, fill=Phase)) + geom_bar(position="fill", stat="identity")
+```
+
+```{r Questions about differential gene expression of all genes}
+#TREATMENT-NAIVE VS. ON-TREATMENT 
+#compute differential gene expression of all genes for treatment-naive vs. on-treatment 
+Idents(cohort1Malignant) <- "treatment.Status"
+OTvsNaive.markersW <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "On-treatment", min.pct = 0.1, logfc.threshold = 0) #test = wilcox
+
+OTvsNaive.markersM <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "On-treatment", min.pct = 0.1, logfc.threshold = 0, test.use = "MAST") #test = MAST
+
+#plot p value distribution to decide cutoff 
+ggplot(OTvsNaive.markers, aes(x=p_val))+ geom_histogram(fill = "grey", color = "black") + geom_vline(xintercept = 0.05, color = "blue", linetype = "dashed") + geom_hline(yintercept=50, color = "red", linetype = "dashed") #not sure how to make use of this information 
+
+#volcano plot for p values of ALL genes and label ALL GENES
+#wilcox 
+EnhancedVolcano(OTvsNaive.markersW, lab=rownames(OTvsNaive.markersW), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. On-treatment Differential Gene Expression Results (Wilcox)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#MAST
+EnhancedVolcano(OTvsNaive.markersM, lab=rownames(OTvsNaive.markersM), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. On-treatment Differential Gene Expression Results (MAST)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#label just OXPHOS genes 
+EnhancedVolcano(OTvsNaive.markersW, lab= rownames(OTvsNaive.markersW), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), selectLab=oxphosGenes, title="Treatment-naive vs. On-treatment Differential Oxphos Gene Expression", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#SUBSET OXPHOS GENES 
+OTvsNaive.oxphosW = OTvsNaive.markersW %>% rownames_to_column("Gene") %>% filter(Gene %in% oxphosGenes)
+OTvsNaive.oxphosM = OTvsNaive.markersM %>% rownames_to_column("Gene") %>% filter(Gene %in% oxphosGenes)
+
+#volcano plot with just OXPHOS genes 
+OTvsNaive.oxphosW = column_to_rownames(OTvsNaive.oxphosW, "Gene")
+OTvsNaive.oxphosM = column_to_rownames(OTvsNaive.oxphosM, "Gene")
+
+#wilcox
+EnhancedVolcano(OTvsNaive.oxphosW,lab= rownames(OTvsNaive.oxphosW), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. On-treatment Differential OXPHOS Gene Expression Results (Wilcox)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#MAST
+EnhancedVolcano(OTvsNaive.oxphosM,lab= rownames(OTvsNaive.oxphosM), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. On-treatment Differential OXPHOS Gene Expression Results (MAST)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#TREATMENT-NAIVE VS. AFTER 1 CYCLE OF CHEMOTHERAPY 
+#compute differential gene expression of all genes for treatment-naive vs. after 1 cycle of chemotherapy 
+CvsNaive.markersW <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "After 1 cycle of chemotherapy", min.pct = 0.1, logfc.threshold = 0) #wilcox 
+
+CvsNaive.markersM <- FindMarkers(cohort1Malignant, ident.1 = "Treatment-naive", ident.2 = "After 1 cycle of chemotherapy", min.pct = 0.1, logfc.threshold = 0, test.use = "MAST") #mast 
+
+
+#plot p value distribution to decide cutoff 
+ggplot(CvsNaive.markers, aes(x=p_val))+ geom_histogram(fill = "grey", color = "black") + geom_vline(xintercept = 0.05, color = "blue", linetype = "dashed") + geom_hline(yintercept=50, color = "red", linetype = "dashed")
+
+#volcano plot for p values of ALL genes and label ALL GENES
+#wilcox
+EnhancedVolcano(CvsNaive.markersW, lab=rownames(CvsNaive.markersW), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. After 1 Cycle of Chemotherapy Differential Gene Expression Results (Wilcox)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#mast
+EnhancedVolcano(CvsNaive.markersM, lab=rownames(CvsNaive.markersM), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. After 1 Cycle of Chemotherapy Differential Gene Expression Results (MAST)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#label just OXPHOS genes
+EnhancedVolcano(CvsNaive.markers, lab= rownames(CvsNaive.markers), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), selectLab=oxphosGenes, title="Treatment-naive vs. After 1 Cycle of Chemotherapy Differential Oxphos Gene Expression", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5")
+
+#SUBSET OXPHOS GENES 
+CvsNaive.oxphosW = CvsNaive.markersW %>% rownames_to_column("Gene") %>% filter(Gene %in% oxphosGenes)
+CvsNaive.oxphosM = CvsNaive.markersM %>% rownames_to_column("Gene") %>% filter(Gene %in% oxphosGenes)
+
+#volcano plot with just OXPHOS genes 
+CvsNaive.oxphosW = column_to_rownames(CvsNaive.oxphosW, "Gene")
+CvsNaive.oxphosM = column_to_rownames(CvsNaive.oxphosM, "Gene")
+
+#wilcox
+EnhancedVolcano(CvsNaive.oxphosW,lab= rownames(CvsNaive.oxphosW), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. After 1 Cycle of Chemotherapy Differential OXPHOS Gene Expression Results (Wilcox)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5", titleLabSize = 15)
+
+EnhancedVolcano(CvsNaive.oxphosM,lab= rownames(CvsNaive.oxphosM), x='avg_logFC', y='p_val_adj', xlim= c(-4,6), pCutoff = 10e-5, col = c("black", "black", "black", "red2"), title="Treatment-naive vs. After 1 Cycle of Chemotherapy Differential OXPHOS Gene Expression Results (MAST)", subtitle= "FC cutoff: 1.0, p cutoff: 10e-5",titleLabSize = 15)
+
+
+```

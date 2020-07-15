@@ -1,0 +1,79 @@
+---
+title: "HTAPP Load in Seurat Object and Metadata"
+author: "Jesslyn Goh"
+date: "5/31/2020"
+output: html_documenteditor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(glue)
+library(readxl)
+library(here)
+library(dplyr)
+library(vroom)
+
+#TST DATA
+# load in scaled and filtered TST data
+TST_scaled <- vroom("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_scale_data.csv", delim = ",") %>%
+  column_to_rownames("...1") %>% as.matrix()
+# load in TST data metadata
+TST_md <- vroom("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_meta_data.csv", delim = ",") %>% 
+  column_to_rownames("...1") 
+TST_genes <- vroom("data/HTAPP/geneNames/HTAPP-316-SMP-991_TST_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x) 
+# load in raw TST data
+TST_raw <- readMM("data/HTAPP/HTAPP-316-SMP-991_TST_channel1_Seurat_data.mtx")
+colnames(TST_raw) = colnames(TST_scaled)
+rownames(TST_raw) = TST_genes
+TST <- CreateSeuratObject(counts = TST_raw, project = "HTAPP TST Raw", meta.data = TST_md)
+TST@assays$RNA@scale.data <- TST_scaled #load scaled data into the scaled slot of the same Seurat object
+
+#FRESH ASCITES CD45- DATA 
+# load in scaled and filtered data
+freshCD45neg_scaled <- vroom("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_scale_data.csv", delim = ",") %>%
+  column_to_rownames("...1") %>% as.matrix()
+# load in fresh cd45- data metadata
+freshCD45neg_md <- vroom("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_meta_data.csv", delim = ",") %>% 
+  column_to_rownames("...1") 
+freshCD45neg_genes <- vroom("data/HTAPP/geneNames/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x) 
+# load in raw freshCD45neg data
+freshCD45neg_raw <- readMM("data/HTAPP/HTAPP-727-SMP-3781_fresh-CD45neg-T1_channel1_Seurat_data.mtx")
+colnames(freshCD45neg_raw) = colnames(freshCD45neg_scaled)
+rownames(freshCD45neg_raw) = freshCD45neg_genes
+
+freshCD45neg <- CreateSeuratObject(counts = freshCD45neg_raw, project = "HTAPP Fresh CD45- Raw", meta.data = freshCD45neg_md)
+freshCD45neg@assays$RNA@scale.data <- freshCD45neg_scaled
+
+#FRESH RESECTION DATA
+# load in scaled and filtered data
+fresh2_scaled <- vroom("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_scale_data.csv", delim = ",") %>%
+  column_to_rownames("...1") %>% as.matrix()
+# load in fresh resection metadata
+fresh2_md <- vroom("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_meta_data.csv", delim = ",") %>% 
+  column_to_rownames("...1") 
+fresh2_genes <- vroom("data/HTAPP/geneNames/HTAPP-624-SMP-3212_fresh_channel1_Seurat_data_geneNames.csv", delim = ",") %>% pull(x) #pull takes a column and makes it into a vector
+# load in raw fresh resection data
+fresh2_raw <- readMM("data/HTAPP/HTAPP-624-SMP-3212_fresh_channel1_Seurat_data.mtx")
+colnames(fresh2_raw) = colnames(fresh2_scaled)
+rownames(fresh2_raw) = fresh2_genes
+
+fresh2<- CreateSeuratObject(counts = fresh2_raw, project = "HTAPP Fresh Resection Raw", meta.data = fresh2_md)
+fresh2@assays$RNA@scale.data <- fresh2_scaled
+```
+
+```{r save RDS}
+saveRDS(TST, file="data/HTAPP/jesslyn_TST_prepoc.RDS")
+
+saveRDS(freshCD45neg, file="data/HTAPP/jesslyn_freshCD45neg_preproc.RDS")
+
+saveRDS(fresh2, file="data/HTAPP/jesslyn_fresh2_preproc.RDS")
+```

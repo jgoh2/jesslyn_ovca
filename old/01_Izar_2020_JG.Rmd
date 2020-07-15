@@ -1,0 +1,231 @@
+---
+title: "01 Izar 2020"
+author: "Jesslyn Goh"
+date: "4/17/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+library(gt)
+library(msigdbr)
+library(here)
+library(plyr)
+library(webshot)
+
+# saving obj setup
+proj = "Izar_2020"
+date = Sys.Date()
+fig.dir = "jesslyn_plots/cohort1"
+
+# Read in Seurat objects
+cohort1 = readRDS("data/Izar_2020/Izar_2020_10x.RDS")
+
+# Read in gene lists
+hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#filter out clusters -1, 19-21
+cohort1 <- subset(cohort1, subset = clst > -1 & clst < 19)
+
+#load in signature genes dataset
+signaturesData = read_csv("gene_lists/Ovarian_Signatures_combined.csv")[,1:26] %>% 
+  as.list() %>%
+  lapply(function(x) x[!is.na(x)])
+
+#load in oxphos genes
+oxphosGenes<-read_lines("gene_lists/oxphos.txt", skip = 1)
+```
+
+
+```{r patientMetrics}
+#generate tables for dataset using Mike's function 
+source(here('mike_code','seurat_tab.R'))
+
+#patient metrics for cohort1
+numPatients = length(unique(cohort1@meta.data$patient)) #number of patients in the cohort 
+
+numCellsPerPatient = table(cohort1@meta.data$patient) %>% as.data.frame() #number of cells per patient 
+#write_csv(numCellsPerPatient, "jesslyn_plots/numCellsPerPatient.csv")
+
+numCellsPerTypePerPatient = table(cohort1$patient, cohort1$cell.type)%>% as.data.frame() %>% rename(patient = Var1, celltype = Var2, numCells = Freq)
+ggplot(numCellsPerTypePerPatient, aes(x=celltype, fill=patient, y=numCells)) + geom_bar(position="fill", stat="identity")
+
+numCellsPerCellTypePerSample = table(cohort1$sample, cohort1$cell.type) %>% as.data.frame() %>% rename(sample = Var1, celltype = Var2, numCells = Freq)
+ggplot(numCellsPerCellTypePerSample, aes(x=celltype, fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity")
+
+#create table using Mike's function
+seurat_tab(cohort1, col_var = "sample.ID", row_var = "cell.type", group_var = "treatment.status", title = "Number of cells per celltype per sample per treatment status") %>% 
+    gtsave("10X_numCellsPerCelltypePerSamplePerTreatment.png", path = "jesslyn_plots/cohort1")
+
+
+#TREATMENT METRICS 
+my_levels <- c("Treatment-naive", "After 1 cycle of chemotherapy", "On-treatment")
+
+numPatientsPerTreatment = table(cohort1$patient, cohort1$treatment.status)
+
+numCellsPerTreatmentPerCellType = table(cohort1$cell.type, cohort1$treatment.Status) %>% as.data.frame() %>% rename(celltype = Var1, treatment = Var2, numCells = Freq)
+
+ggplot(numCellsPerTreatmentPerCellType, aes(x=celltype, fill=factor(treatment, levels = my_levels), y=numCells)) + geom_bar(position="fill", stat="identity") + labs(fill = "treatment")
+
+numCellsPerTreatmentPerSample = table(cohort1$sample, cohort1$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment=Var2, numCells = Freq) 
+
+ggplot(numCellsPerTreatmentPerSample, aes(x=factor(treatment, levels = my_levels), fill=sample, y=numCells)) + geom_bar(position="fill", stat="identity") + xlab("treatment")
+
+```
+
+```{r cellCycle}
+cohort1 <- CellCycleScoring(cohort1, g2m.features = g2m.genes, s.features = s.genes)
+
+#distribution of cells in each cell cycle phase for each cell type 
+table(cohort1$cell.type, cohort1$Phase) %>% as.data.frame() %>% rename(Celltype = Var1, Phase = Var2, numCells = Freq) %>% ggplot(aes(x=Celltype, y=numCells, fill = Phase)) + geom_bar(position="fill", stat="identity")
+```
+
+```{r score cells}
+#score house keeping genes
+cohort1 <- AddModuleScore(cohort1, features = list(hkgenes), name = "hkgenes", nbin = 50, search = T)
+```
+
+```{r score cells with each signature}
+cohort1 <- AddModuleScore(cohort1, features = signaturesData, name = names(signaturesData), nbin = 50, search = T)
+```
+
+```{r subset malignant cells vs. nonmalignant cells}
+cohort1Malignant <- subset(cohort1, subset = (cell.type == "Malignant"))
+cohort1NonMalignant <- subset(cohort1, subset = (cell.type != "Malignant"))
+```
+
+```{r PCA for ALL}
+#identify highly variable genes 
+cohort1 <- FindVariableFeatures(cohort1, selection.method = "vst") #wasn't sure if this was already done
+
+#scale data 
+cohort1 <- ScaleData(cohort1, features = rownames(cohort1), do.scale = FALSE, do.center = TRUE) #data is already scaled, but have to "scale" it for pca 
+
+#run PCA
+cohort1 <- RunPCA(cohort1, features = VariableFeatures(cohort1))
+
+
+#plot PCA - shows differential expresison between different cohorts
+PCAPlot(cohort1)
+ggsave("cohort1_pcaplot.jpeg", path="jesslyn_plots/cohort1/All")
+
+#separate by treatment? 
+PCAPlot(cohort1, group.by="treatment.Status")
+
+#separate by cellcycle phase?
+PCAPlot(cohort1, group.by="Phase")
+
+#separate by patient?
+PCAPlot(cohort1, group.by="patient")
+
+#separate by cluster? 
+PCAPlot(cohort1, group.by="clst")
+
+#determine dimensionality of data (how many pcs to include)
+ElbowPlot(cohort1)
+#graph shows probably pc1 to pc15 are important
+ggsave("cohort1_pcaDim.jpeg", path="jesslyn_plots")
+
+DotPlot(cohort1, features = VariableFeatures(cohort1)[1:5])
+ggsave("cohort1_pca_dotplot.jpeg", path = "jesslyn_plots")
+DoHeatmap(cohort1, features = VariableFeatures(cohort1)[1:10], group.by = 'ident', size = 2)
+ggsave("cohort1_pca_heatmap.jpeg", path = "jesslyn_plots", width = 10)
+```
+
+```{r run UMAP for ALL}
+#run UMAP, specify dimensions previously determined
+cohort1<- RunUMAP(cohort1, dims=1:15)
+
+#plot UMAP- shows clustering of cohorts
+DimPlot(cohort1, reduction = "umap")
+ggsave("cohort1_umap_celltype_plot.jpeg", path = "jesslyn_plots/cohort1/All")
+
+```
+
+#FOCUS ON MALIGNANT CELLS vs. NONMALIGNANT CELLS
+
+```{r patient metrics}
+numMalCellsPerSample <- table(cohort1Malignant$sample, cohort1Malignant$cell.type) %>% as.data.frame() %>% rename(sample = Var1, numCells=Freq, celltype = Var2)
+ggplot(numMalCellsPerSample, aes(x=celltype, fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill")
+
+numMalCellsPerPatientPerTreatment <- table(cohort1Malignant$patient, cohort1Malignant$treatment.Status)
+
+numMalCellsPerSamplePerTreatment<-table(cohort1Malignant$sample, cohort1Malignant$treatment.Status) %>% as.data.frame() %>% rename(sample = Var1, treatment = Var2, numCells = Freq)
+ggplot(numMalCellsPerSamplePerTreatment, aes(x=factor(treatment,levels = my_levels), fill=sample, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("treatment")
+
+numMalCellsPerSamplePerPhase <- table(cohort1Malignant$sample, cohort1Malignant$Phase) %>% as.data.frame() %>% rename(sample= Var1, phase = Var2, numCells= Freq)
+ggplot(numMalCellsPerSamplePerPhase, aes(x=sample, y=numCells, fill=phase)) + geom_bar(position ="fill", stat ="identity")
+
+numMalCellsperTreatment <- table(cohort1Malignant$treatment.Status, cohort1Malignant$cell.type) %>% as.data.frame() %>% rename(celltype = Var2, treatment = Var1, numCells = Freq)
+ggplot(numMalCellsperTreatment, aes(x=celltype, y=numCells, fill=treatment)) + geom_bar(stat = "identity", position = "fill")
+
+numNonMalCellsPerPatientPerTreatment <- table(cohort1NonMalignant$patient, cohort1NonMalignant$treatment.Status)
+
+```
+
+```{r identify variable genes and run PCA for MALIGNANT an NONMALIGNANT subsets}
+#MALIGNANT
+
+#identify highly variable genes 
+cohort1Malignant <- FindVariableFeatures(cohort1Malignant, selection.method = "vst") 
+#scale data 
+cohort1Malignant <- ScaleData(cohort1Malignant, features = rownames(cohort1Malignant), do.scale = FALSE, do.center = TRUE) 
+
+cohort1Malignant <- RunPCA(cohort1Malignant, features = VariableFeatures(cohort1Malignant))
+
+PCAPlot(cohort1Malignant)
+ggsave("cohort1Malignant_pcaplot.jpeg", path="jesslyn_plots/cohort1/Malignant")
+
+#NONMALIGNANT 
+
+cohort1NonMalignant <- FindVariableFeatures(cohort1NonMalignant, selection.method = "vst") 
+cohort1NonMalignant <- ScaleData(cohort1NonMalignant, features = rownames(cohort1NonMalignant), do.scale = FALSE, do.center = TRUE) #data is already scaled, but have to "scale" it for pca 
+
+cohort1NonMalignant <- RunPCA(cohort1NonMalignant, features = VariableFeatures(cohort1NonMalignant))
+PCAPlot(cohort1NonMalignant)
+ggsave("cohort1NonMalignant_pcaplot.jpeg", path="jesslyn_plots/cohort1/NonMalignant")
+```
+
+```{r run UMAP for Malignant and Nonmalignant subsets}
+
+#MALIGNANT 
+#run UMAP, specify dimensions previously determined
+
+cohort1Malignant<- RunUMAP(cohort1Malignant, dims = 1:15)
+#plot UMAP- shows clustering
+DimPlot(cohort1Malignant, reduction = "umap", pt.size = 0.3)
+ggsave("cohort1_umap_Malignant_plot.jpeg", path = "jesslyn_plots/cohort1/Malignant")
+
+#NONMALIGNANT
+#run UMAP, specify dimensions previously determined
+cohort1NonMalignant<- RunUMAP(cohort1NonMalignant, dims = 1:15)
+
+#plot UMAP- shows clustering of cohorts
+DimPlot(cohort1NonMalignant, reduction = "umap")
+
+ggsave("cohort1_umap_Nonmalignant_plot.jpeg", path = "jesslyn_plots/cohort1/NonMalignant")
+```
+
+```{r save SDS}
+saveRDS(cohort1, file="data/Izar_2020/jesslyn_cohort1_processed.RDS")
+saveRDS(cohort1Malignant, file="data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+saveRDS(cohort1NonMalignant, file="data/Izar_2020/jesslyn_cohort1NonMalignant_processed.RDS")
+```

@@ -1,0 +1,54 @@
+---
+title: "Izar 2020 PDX Metadata Plots Analysis"
+author: "Jesslyn Goh"
+date: "5/26/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+library(tidyverse) # ggplot, dplyr, read_r (read_xlsx)
+library(Matrix) # interact with sparse data
+library(Seurat)
+library(patchwork) # package to combine plots
+library(glue)
+library(beepr)
+library(readxl)
+library(ggplot2)
+
+# Read in Seurat objects
+PDX = readRDS(file = "data/Izar_2020/jesslyn_PDX_processed.RDS")
+```
+
+```{r UMAP for metadata}
+#group by clusters
+p1 = UMAPPlot(PDX, group.by="seurat_clusters")
+
+#group by model 
+model_levels <- c("DF20", "DF101", "DF68")
+Idents(PDX) <- "model_ID"
+Idents(PDX) <- factor(Idents(PDX), levels = model_levels)
+p2 = UMAPPlot(PDX)
+
+#group by mouse 
+p3 = UMAPPlot(PDX, group.by="mouse_ID")
+
+#group by treatment status 
+treatment_levels <- c("vehicle", "MRD", "relapse")
+Idents(PDX) <- "treatment.status"
+Idents(PDX) <- factor(Idents(PDX), levels = treatment_levels)
+p4 = UMAPPlot(PDX)
+
+
+#group by cell cycle phase 
+p5 = UMAPPlot(PDX, group.by = "Phase")
+
+p1 + p2 + p3 + p4 + p5
+```

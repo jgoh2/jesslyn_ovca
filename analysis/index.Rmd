@@ -1,0 +1,19 @@
+---
+title: "Home"
+site: workflowr::wflow_site
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+
+## Project Overview
+
+The purpose of this project is to identify gene expression signatures from ovarian cancer RNA-seq data that are associated with a drug tolerant state that is characteristic of cancer persister cells.
+
+1. [A summary of the data from Izar 2020 et al.](data_summary.html)
+
+## Credits
+
+Developed by [Jesslyn Goh](https://github.com/jgoh2) and [Mike Cuoco](https://github.com/mikecuoco)

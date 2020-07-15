@@ -1,0 +1,130 @@
+---
+title: "Izar 2020 data summary"
+author: "Mike Cuoco"
+date: "7/14/2020"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+source(here::here("packages.R"))
+```
+
+# Read data and glimpse
+```{r read-data}
+ovca_10x = here::here("data","Izar_2020","Izar_2020_10x.RDS") %>% readRDS()
+glimpse(ovca_10x@meta.data)
+ovca_SS2 = here::here("data","Izar_2020","Izar_2020_SS2.RDS") %>% readRDS()
+glimpse(ovca_SS2@meta.data)
+ovca_PDX = here::here("data","Izar_2020","Izar_2020_PDX.RDS") %>% readRDS()
+glimpse(ovca_PDX@meta.data)
+```
+
+# Descriptive tables
+```{r some-tables}
+dims = map_dfr(list("10x" = ovca_10x, "SS2" = ovca_SS2, "PDX" = ovca_PDX),
+               function(i){
+                 x = tibble(.rows = 1)
+                 x$dataset = i@project.name
+                 x$genes = dim(i)[1]
+                 x$cells = dim(i)[2]
+                 x$patients = try_default(length(unique(select(i@meta.data, matches("patient"))[[1]])), NA)
+                 x$mouse_models = try_default(length(unique(i$model_ID)),NA)
+                 return(x)
+                 }
+               )
+gt(dims)
+
+# create summary tables using Mike's function
+seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", title = "Patient cells")
+# seurat_tab(ovca_10x, col_var = "patient", row_var = "cell.type", group_var = "treatment.status", title = "Patient cells by treatment status") %>% row_group_order(c("Treatment-naïve","After 1 cycle of chemotherapy","On-treatment"))
+seurat_tab(ovca_SS2, col_var = "Patient", row_var = "cell.type", title = "Patient cells")
+# seurat_tab(ovca_SS2, col_var = "Patient", row_var = "cell.type", group_var = "treatment.status", title = "Patient cells by treatment status")
+seurat_tab(ovca_PDX, col_var = "model_ID", row_var = "treatment.status", title = "Mouse model cells by Treatment Status")
+```
+
+# Scale and Center
+```{r scale-and-center}
+ovca_10x = ScaleData(ovca_10x, do.scale = T, do.center = T)
+ovca_SS2 = ScaleData(ovca_SS2, do.scale = T, do.center = T)
+ovca_PDX = ScaleData(ovca_PDX, do.scale = T, do.center = T)
+```
+
+# Visualize cell-wise and gene-wise distributions
+```{r visualize-data}
+cells = tibble(); geneMeans = tibble(); geneSDs = tibble(); features = tibble()
+
+for (i in list("10x" = ovca_10x, "SS2" = ovca_SS2, "PDX" = ovca_PDX)){
+  x = Matrix::colMeans(i[["RNA"]]@data) %>% as_tibble()
+  names(x) = "normalized"
+  x$scaled_centered = Matrix::colMeans(i[["RNA"]]@scale.data) 
+  x$dataset = i@project.name
+  cells = rbind(cells, x)
+  
+  y = Matrix::rowMeans(i[["RNA"]]@data) %>% as_tibble()
+  names(y) = "normalized"
+  y$scaled_centered = Matrix::rowMeans(i[["RNA"]]@scale.data)
+  y$dataset = i@project.name
+  geneMeans = rbind(geneMeans, y)
+
+  w = apply(i[["RNA"]]@data, 1, sd) %>% as_tibble()
+  names(w) = "normalized"
+  w$scaled_centered = Matrix::rowMeans(i[["RNA"]]@scale.data)
+  w$dataset = i@project.name
+  geneSDs = rbind(geneSDs, w)
+  
+  z = select(i@meta.data, c("orig.ident","nCount_RNA","nFeature_RNA"))
+  features = rbind(features, z)
+}
+
+melt(cells) %>%
+  ggplot(aes(x = dataset, y = value)) +
+  geom_violin(aes(fill = variable), trim = FALSE, position = position_dodge(0.9) ) +
+  geom_boxplot(aes(position = variable), width = 0.15, position = position_dodge(0.9), alpha = 0.3) +
+  labs(title = "Mean expression across cells",
+       x = "dataset",
+       y = "expression value",
+       fill = NULL) +
+  theme_bw()
+
+melt(geneMeans) %>%
+  ggplot(aes(x = dataset, y = value)) +
+  geom_violin(aes(fill = variable), trim = FALSE, position = position_dodge(0.9) ) +
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3) +
+  facet_wrap(. ~ variable, scales = "free") +
+  labs(title = "Mean expression across genes",
+       x = "dataset",
+       y = "expression value",
+       fill = NULL) +
+  guides(fill = F) +
+  theme_bw()
+
+melt(geneSDs) %>%
+  ggplot(aes(x = dataset, y = value)) +
+  geom_violin(aes(fill = variable), trim = FALSE, position = position_dodge(0.9) ) +
+  geom_boxplot(aes(position = variable), width = 0.15, position = position_dodge(0.9), alpha = 0.3) +
+  geom_violin(aes(fill = variable), trim = FALSE, position = position_dodge(0.9) ) +
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3) +
+  facet_wrap(. ~ variable, scales = "free") +
+  labs(title = "SD across genes",
+       x = "dataset",
+       y = "expression value",
+       fill = NULL) +
+  guides(fill = F) +
+  theme_bw()
+
+melt(features) %>%
+  ggplot(aes(x = orig.ident, y = value)) + 
+  geom_violin(aes(fill = variable), trim = FALSE, position = position_dodge(0.9) ) +
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3) +
+  facet_wrap(. ~ variable, scales = "free") +
+  labs(title = "UMIs (nCount) and Genes (nFeature) per cell",
+       x = "dataset",
+       y = "expression value",
+       fill = NULL) +
+  guides(fill = F) +
+  theme_bw()
+```

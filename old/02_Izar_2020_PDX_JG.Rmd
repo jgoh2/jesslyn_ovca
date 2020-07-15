@@ -1,0 +1,129 @@
+---
+title: "Izar 2020 PDX Exploratory Analysis"
+author: "Jesslyn Goh"
+date: "5/26/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r init}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+```
+
+```{r QC and Normalization}
+#QC 
+#check nCount and nFeature distributions
+ggplot(PDX@meta.data, aes(x=nCount_RNA)) + geom_histogram() + labs(title = "PDX nCount_RNA Distribution")
+ggplot(PDX@meta.data, aes(x=nFeature_RNA)) + geom_histogram() + labs(title = "PDX nFeature_RNA Distribution")
+p = VlnPlot(PDX, features = c("nFeature_RNA", "nCount_RNA"), ncol = 2, combine = F) 
+p[[1]] = p[[1]] + ylim(0,14000)
+p[[2]] = p[[2]] + ylim(0,25000)
+p[[1]] + p[[2]] + plot_layout(guides = 'collect') #we see that there are blunt ends at specific cutoffs, so data has been filtered
+
+#Normalization 
+#check if data is centered and log-normalized
+
+#scale and center data 
+PDX <- ScaleData(PDX, features = rownames(PDX), do.scale = F, do.center = T) #don't really know if data has been scaled
+plot_df = GetAssayData(object = PDX, slot = 'counts') %>% colSums() %>% as.data.frame()
+names(plot_df) = "counts"
+plot_df$scaled.data = GetAssayData(object = PDX, slot = 'scale.data') %>% colSums()
+plot_df = reshape2::melt(plot_df, value.name = "count")
+ggplot(plot_df, aes(x = variable, y = count)) + geom_violin() + theme_bw()
+
+#feature selection (prepare for dimensionality reduction)
+PDX <- FindVariableFeatures(PDX, selection.method = "vst")
+```
+
+```{r cell cycle scoring}
+PDX <- CellCycleScoring(PDX, g2m.features = g2m.genes, s.features = s.genes)
+```
+
+```{r hallmark scoring}
+#load in a list of hallmark names that we are interested in 
+hallmark_names = read_lines("gene_lists/hallmarks.txt")
+#load in all hallmarks, category H stands for hallmark geneset 
+#filter out genesets we're interested in, and only select for columns with the geneset name and gene symbols
+hallmark = msigdbr(species = "Homo sapiens", category = "H") %>% filter(gs_name %in% hallmark_names) %>% select(gs_name, gene_symbol) 
+#convert hallmark into a list
+hallmark.list = vector(mode = "list")
+for(hm in unique(hallmark$gs_name)){
+  update = select(filter(hallmark, gs_name %in% hm),gene_symbol) %>% as.list()
+  update[["gene_symbol"]] <- update[["gene_symbol"]] %>% UpdateSymbolList(several.ok = TRUE)
+  hallmark.list = c(hallmark.list, update)
+}
+names(hallmark.list) <- unique(hallmark$gs_name)
+
+#AddModuleScore for each hallmark
+PDX <- AddModuleScore(PDX, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+```
+
+```{r dimensionality reduction analysis}
+#run PCA
+PDX <- RunPCA(PDX, features = VariableFeatures(PDX))
+
+#plot PCA - shows differential expresison between different cohorts
+PCAPlot(PDX)
+
+#determine dimensionality of data (how many pcs to include)
+ElbowPlot(PDX)
+```
+
+```{r run UMAP for ALL}
+#run UMAP, specify dimensions previously determined
+PDX<- RunUMAP(PDX, dims=1:15)
+```
+
+```{r metadata metrics}
+#generate tables for dataset using Mike's function 
+source(here('mike_code','seurat_tab.R'))
+
+#number of cells from each mice in each model 
+model_levels <- c("DF20", "DF101", "DF68")
+numCellsPerMicePerModel = table(PDX$model_ID, PDX$mouse_ID) 
+numCellsPerMicePerModel %>% as.data.frame() %>% dplyr::rename(model = Var1, mouse = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=mouse, y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model")
+#change each 0 to NA
+for (rowName in rownames(numCellsPerMicePerModel)){
+  numCellsPerMicePerModel[rowName,][numCellsPerMicePerModel[rowName,]==0] <- "NA"
+}
+
+#number of cells in each treatment level in each model 
+treatment_levels <- c("vehicle", "MRD", "relapse")
+numCellsPerTreatmentPerModel = table(PDX$treatment.status, PDX$model_ID)
+numCellsPerTreatmentPerModel %>% as.data.frame() %>% dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(x=factor(model, levels = model_levels), fill=factor(treatmentStatus,levels = treatment_levels), y=numCells)) + geom_bar(stat="identity", position="fill") + xlab("model") + labs(fill = "treatmentStatus")
+
+numCellsPerTreatmentPerModel %>% as.data.frame() %>% dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% ggplot(aes(fill=factor(model, levels = model_levels), x=factor(treatmentStatus, levels = treatment_levels), y=numCells)) + geom_bar(stat="identity", position="fill") + labs(fill="model", x = "treatment")
+
+#create table 
+PDX$model_ID = factor(PDX$model_ID, levels = model_levels)
+PDX$treatment.status = factor(PDX$treatment.status, levels = treatment_levels)
+seurat_tab(PDX, col_var = "model_ID", row_var = "treatment.status", title = "Number of cells per model per treatment status") %>% 
+  gtsave("PDX_numCellsPerTreatmentPerModel.png", path = "jesslyn_plots/PDX")
+```
+
+```{r clustering}
+#find neighbors first
+PDX <- FindNeighbors(PDX)
+
+#find clusters
+PDX <- FindClusters(PDX)
+```
+
+```{r save SDS}
+saveRDS(PDX, file="data/Izar_2020/jesslyn_PDX_processed.RDS")
+```

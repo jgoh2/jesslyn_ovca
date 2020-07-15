@@ -1,0 +1,121 @@
+---
+title: "Assign SS2 cell types"
+author: "Michael Cuoco"
+output:
+  html_document:
+    theme: united
+    df_print: kable
+date: 'Compiled: `r format(Sys.Date(), "%B %d, %Y")`'
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  tidy = TRUE,
+  tidy.opts = list(width.cutoff = 120),
+  message = FALSE,
+  warning = FALSE
+)
+knitr::opts_knit$set(root.dir = here::here())
+```
+
+## Outline
+
+1. Assign cell types (with `FindMarkers()`)
+2. Verify epithelial cells with `infercnv()`
+
+```{r init}
+library(tidyverse)
+library(readxl)
+library(plyr)
+library(reshape2)
+library(Matrix)
+library(Seurat)
+library(infercnv)
+library(vroom)
+library(patchwork)
+library(glue)
+library(beepr)
+library(broom)
+library(here)
+
+# saving obj setup
+proj = "Izar_2020"
+date = Sys.Date()
+
+# setup directories
+if (!dir.exists(here("mike_plots",proj))){
+  dir.create(here("mike_plots",proj))
+} else if (!dir.exists(here("mike_plots",proj,"SS2_celltypes"))){
+  dir.create(here("mike_plots",proj,"SS2_celltypes"))
+}
+
+fig.dir = here("mike_plots",proj,"SS2_celltypes")
+
+# Read in Seurat objects
+ovca_SS2 = here("data",proj,"Izar_2020_SS2.RDS") %>% readRDS()
+ovca_SS2@project.name = "SS2"
+```
+
+
+```{r cluster and find markers, message=FALSE}
+# takes a while to run
+ovca_SS2 = ScaleData(ovca_SS2, do.scale = F, do.center = F)
+ovca_SS2 = RunPCA(object = ovca_SS2, features = rownames(ovca_SS2[["RNA"]]@data))
+ovca_SS2 = FindNeighbors(object = ovca_SS2, dims = 1:10)
+ovca_SS2 = FindClusters(object = ovca_SS2, resolution = 0.5)
+ovca_SS2 <- RunUMAP(object = ovca_SS2, dims = 1:10)
+DimPlot(ovca_SS2, reduction = "umap", group.by = c("clst","seurat_clusters"))
+
+SS2.seurat.markers <- FindAllMarkers(ovca_SS2, only.pos = TRUE, 
+                                     min.pct = 0.25, logfc.threshold = 0.25)
+```
+
+Markers from Izar 2020:
+
+cell type   | markers
+------------|---------------------------------
+epithelial  | EPCAM, cytokeratins, kallikreins
+Macrophages | CD14, AIF1, CSF1R, CD163
+CAFs        | PDPN, DCN and THY1 
+DCs         | CD1C, CD1E, CCR7, CD83
+B cells     | CD19, CD79A/B
+T cells     | CD2, CD3D/E/G
+erythrocytes| GATA1, hemoglobin
+
+```{r marker plots}
+markers = list(epi = c("EPCAM"), maccro = c("CD14", "AIF1", "CSF1R", "CD163"), 
+               cafs = c("PDPN", "DCN", "THY1"), dcs = c("CD1C", "CD1E", "CCR7", "CD83"),
+               bcells = c("CD19", "CD79A", "CD79B"), 
+               tcells = c("CD2", "CD3D", "CD3E", "CD3G"))
+
+Idents(ovca_SS2) <- "seurat_clusters"
+for (i in 1:length(markers)){
+  p = VlnPlot(ovca_SS2, markers[[i]])
+  ggsave(glue("{fig.dir}/{names(markers)[i]}-genes_seuratclst.png"))
+}
+
+Idents(ovca_SS2) <- "clst"
+for (i in 1:length(markers)){
+  p = VlnPlot(ovca_SS2, markers[[i]])
+  ggsave(glue("{fig.dir}/{names(markers)[i]}-genes_clst.png"))
+}
+```
+
+cell type assignments
+
+seurat_clusters | cell-type  | markers
+----------------|------------|---------------------------------
+ 0,1,2,3,4,6,7  | epithelial | EPCAM, cytokeratins, kallikreins
+      8         | Macrophages| CD14, AIF1, CSF1R, CD163
+      5         |    CAFs    | PDPN, DCN and THY1 
+
+    clst        | cell-type  | markers
+----------------|------------|---------------------------------
+ 1,2,3,4,5,6,9  | epithelial | EPCAM, cytokeratins, kallikreins
+      8         | Macrophages| CD14, AIF1, CSF1R, CD163
+      7         |    CAFs    | PDPN, DCN and THY1 
+
+

@@ -1,0 +1,22 @@
+name: jesslyn_ovca
+output_dir: ../docs
+navbar:
+  title: jesslyn_ovca
+  left:
+  - text: Home
+    href: index.html
+  - text: Coding convention
+    href: coding.html
+  - text: License
+    href: license.html
+  right:
+  - icon: fa-github
+    text: Source code
+    href: https://github.com/mikecuoco/jesslyn_ovca
+output:
+  workflowr::wflow_html:
+    toc: yes
+    toc_float: yes
+    theme: readable
+    highlight: textmate
+    code_folding: show
