@@ -48,3 +48,8 @@ data/
 #ignore plot directories 
 jesslyn_plots/ 
 mike_plots/
+
+#ignore renv directories
+renv/library/
+renv/python/
+renv/staging/
