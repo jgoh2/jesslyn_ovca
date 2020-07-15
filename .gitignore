@@ -21,8 +21,6 @@
 .Rproj.user/
 
 # produced vignettes
-vignettes/*.html
-vignettes/*.pdf
 vignettes/
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
@@ -49,7 +47,5 @@ data/
 jesslyn_plots/ 
 mike_plots/
 
-#ignore renv directories
-renv/library/
-renv/python/
-renv/staging/
+#ignore default.profaw
+default.profaw

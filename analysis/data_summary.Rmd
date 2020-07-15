@@ -10,7 +10,8 @@ editor_options:
 ```{r setup, include=FALSE}
 knitr::opts_knit$set(root.dir = here::here())
 knitr::opts_chunk$set(echo = TRUE)
-source(here::here("packages.R"))
+library(tidyverse)
+library(Seurat)
 ```
 
 # Read data and glimpse
