@@ -38,8 +38,7 @@ vignettes/
 .Renviron
 
 #ignore data directory 
-data/HTAPP
-data/Izar_2020
+data/
 
 #ignore plot directories 
 jesslyn_plots/ 
