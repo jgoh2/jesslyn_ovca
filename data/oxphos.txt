@@ -1,0 +1,137 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:1349215	Abcd1	ATP-binding cassette, sub-family D (ALD), member 1	X		regulation of oxidative phosphorylation			IMP		J:199135 	
+MGI:99678	Actn3	actinin alpha 3	19		negative regulation of oxidative phosphorylation	happens in UBERON:0006908		IMP		J:133465 	
+MGI:99678	Actn3	actinin alpha 3	19		negative regulation of oxidative phosphorylation	happens in muscle tissue		IMP		J:207120 	
+MGI:2148801	Afg1l	AFG1 like ATPase	10		mitochondrial electron transport, cytochrome c to oxygen			ISO	Q8WV93 	J:164563 	
+MGI:87979	Ak4	adenylate kinase 4	4		regulation of oxidative phosphorylation			ISO	P27144 	J:164563 	
+MGI:88055	Apoc3	apolipoprotein C-III	9		negative regulation of oxidative phosphorylation			ISO	RGD:2136 	J:155856 	
+MGI:88115	Atp5a1	ATP synthase, H+ transporting, mitochondrial F1 complex, alpha subunit 1	18		mitochondrial ATP synthesis coupled proton transport			ISO	P25705 	J:164563 	
+MGI:107801	Atp5b	ATP synthase, H+ transporting mitochondrial F1 complex, beta subunit	10		mitochondrial ATP synthesis coupled proton transport			IBA	PTN000390017 	J:265628 	
+MGI:107801	Atp5b	ATP synthase, H+ transporting mitochondrial F1 complex, beta subunit	10		mitochondrial ATP synthesis coupled proton transport			ISO	P06576 	J:164563 	
+MGI:1261437	Atp5c1	ATP synthase, H+ transporting, mitochondrial F1 complex, gamma polypeptide 1	2		mitochondrial ATP synthesis coupled proton transport			ISO	P36542 	J:164563 	
+MGI:1913293	Atp5d	ATP synthase, H+ transporting, mitochondrial F1 complex, delta subunit	10		mitochondrial ATP synthesis coupled proton transport			ISO	P30049 	J:164563 	
+MGI:1918929	Atp5h	ATP synthase, H+ transporting, mitochondrial F0 complex, subunit D	11		mitochondrial ATP synthesis coupled proton transport			ISO	O75947 	J:164563 	
+MGI:107777	Atp5j	ATP synthase, H+ transporting, mitochondrial F0 complex, subunit F	16		mitochondrial ATP synthesis coupled proton transport			ISO	P18859 	J:164563 	
+MGI:1927558	Atp5j2	ATP synthase, H+ transporting, mitochondrial F0 complex, subunit F2	5		mitochondrial ATP synthesis coupled proton transport			ISO	P56134 	J:164563 	
+MGI:1351597	Atp5l	ATP synthase, H+ transporting, mitochondrial F0 complex, subunit G	9		mitochondrial ATP synthesis coupled proton transport			ISO	O75964 	J:164563 	
+MGI:106341	Atp5o	ATP synthase, H+ transporting, mitochondrial F1 complex, O subunit	16		mitochondrial ATP synthesis coupled proton transport			ISO	P48047 	J:164563 	
+MGI:1100495	Atp5pb	ATP synthase peripheral stalk-membrane subunit b	3		mitochondrial ATP synthesis coupled proton transport			ISO	P24539 	J:164563 	
+MGI:99400	Atp7a	ATPase, Cu++ transporting, alpha polypeptide	X		regulation of oxidative phosphorylation			IMP	MGI:1856098 	J:30532 	
+MGI:1915323	Atpsckmt	ATP synthase C subunit lysine N-methyltransferase	15		regulation of mitochondrial ATP synthesis coupled proton transport			IMP		J:283179 	
+MGI:1915323	Atpsckmt	ATP synthase C subunit lysine N-methyltransferase	15		regulation of mitochondrial ATP synthesis coupled proton transport			ISO	Q6P4H8 	J:164563 	
+MGI:88145	Bdnf	brain derived neurotrophic factor	2		mitochondrial electron transport, NADH to ubiquinone			ISO	RGD:2202 	J:155856 	
+MGI:108093	Bid	BH3 interacting domain death agonist	6		mitochondrial ATP synthesis coupled electron transport			IMP	MGI:5428930 	J:224442 	
+MGI:88302	Ccnb1	cyclin B1	13		positive regulation of mitochondrial ATP synthesis coupled electron transport			ISO	P14635 	J:164563 	
+MGI:88351	Cdk1	cyclin-dependent kinase 1	10		positive regulation of mitochondrial ATP synthesis coupled electron transport			ISO	P06493 	J:164563 	
+MGI:2143558	Chchd10	coiled-coil-helix-coiled-coil-helix domain containing 10	10		oxidative phosphorylation			ISO	Q8WYQ3 	J:164563 	
+MGI:107207	Coq7	demethyl-Q 7	7		mitochondrial ATP synthesis coupled electron transport			IMP	MGI:2157003 	J:142006 	
+MGI:1915164	Coq9	coenzyme Q9	8		mitochondrial electron transport, NADH to ubiquinone	happens in cerebellum|happens in telencephalon		IMP	MGI:5473628 	J:193288 	
+MGI:88473	Cox4i1	cytochrome c oxidase subunit 4I1	8		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000076140 	J:265628 	
+MGI:2135755	Cox4i2	cytochrome c oxidase subunit 4I2	2		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000076140 	J:265628 	
+MGI:88474	Cox5a	cytochrome c oxidase subunit 5A	9		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000367750 	J:265628 	
+MGI:88475	Cox5b	cytochrome c oxidase subunit 5B	1		mitochondrial ATP synthesis coupled proton transport			IBA	PTN000012880 	J:265628 	
+MGI:88475	Cox5b	cytochrome c oxidase subunit 5B	1		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000012880 	J:265628 	
+MGI:103099	Cox6a1	cytochrome c oxidase subunit 6A1	5		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000161400 	J:265628 	
+MGI:104649	Cox6a2	cytochrome c oxidase subunit 6A2	7		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000161400 	J:265628 	
+MGI:1316714	Cox7a1	cytochrome c oxidase subunit 7A1	7		regulation of oxidative phosphorylation			IBA	PTN000828143 	J:265628 	
+MGI:1316715	Cox7a2	cytochrome c oxidase subunit 7A2	9		regulation of oxidative phosphorylation			IBA	PTN000828143 	J:265628 	
+MGI:106015	Cox7a2l	cytochrome c oxidase subunit 7A2 like	17		regulation of oxidative phosphorylation			IBA	PTN000828143 	J:265628 	
+MGI:106015	Cox7a2l	cytochrome c oxidase subunit 7A2 like	17		regulation of oxidative phosphorylation			IMP		J:215964 	
+MGI:103226	Cox7c	cytochrome c oxidase subunit 7C	13		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000329966 	J:265628 	
+MGI:1913695	Cyc1	cytochrome c-1	15		mitochondrial ATP synthesis coupled proton transport			IBA	PTN000030137 	J:265628 	
+MGI:1913695	Cyc1	cytochrome c-1	15		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000030137 	J:265628 	
+MGI:88578	Cycs	cytochrome c, somatic	6		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000238899 	J:265628 	
+MGI:88578	Cycs	cytochrome c, somatic	6		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000238899 	J:265628 	
+MGI:88579	Cyct	cytochrome c, testis	2		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000238899 	J:265628 	
+MGI:88579	Cyct	cytochrome c, testis	2		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000238899 	J:265628 	
+MGI:1351602	Dguok	deoxyguanosine kinase	6		mitochondrial ATP synthesis coupled electron transport			ISO	RGD:1304799 	J:155856 	
+MGI:107450	Dld	dihydrolipoamide dehydrogenase	12		mitochondrial electron transport, NADH to ubiquinone			IMP	MGI:2182403 	J:107994 	
+MGI:1913398	Dnajc15	DnaJ heat shock protein family (Hsp40) member C15	14		negative regulation of mitochondrial electron transport, NADH to ubiquinone	happens in heart,regulates a function/process that happens in heart		IMP	MGI:4329547 	J:204025 	
+MGI:1913364	Dnajc30	DnaJ heat shock protein family (Hsp40) member C30	5		regulation of mitochondrial ATP synthesis coupled proton transport			IMP		J:266469 	
+MGI:1096879	Fxn	frataxin	19		oxidative phosphorylation	happens in liver,happens in hepatocyte		IMP	MGI:2176228 MGI:2177176 	J:104119 	
+MGI:1096879	Fxn	frataxin	19		oxidative phosphorylation	happens in adipose tissue		IMP	MGI:2177176 MGI:2182103 	J:120849 	
+MGI:1914947	Gadd45gip1	growth arrest and DNA-damage-inducible, gamma interacting protein 1	8		positive regulation of oxidative phosphorylation			IGI	MGI:2681853 	J:223336 	
+MGI:1913633	Iscu	iron-sulfur cluster assembly enzyme	5		positive regulation of mitochondrial electron transport, NADH to ubiquinone			ISO	Q9H1K1 	J:164563 	
+MGI:2681853	Lexm	lymphocyte expansion molecule	4		positive regulation of oxidative phosphorylation			IGI	MGI:1914947 	J:223336 	
+MGI:99918	Mecp2	methyl CpG binding protein 2	X		mitochondrial electron transport, ubiquinol to cytochrome c			IMP	MGI:2137311 	J:110323 	
+MGI:1927999	Mlxipl	MLX interacting protein-like	5		negative regulation of oxidative phosphorylation			ISO	Q9NP71 	J:164563 	
+MGI:101816	Msh2	mutS homolog 2	17		oxidative phosphorylation	happens in hippocampus|happens in cerebral cortex		IMP	MGI:1857940 	J:110435 	
+MGI:99927	mt-Atp6	mitochondrially encoded ATP synthase 6	MT		mitochondrial ATP synthesis coupled proton transport			ISO	P00846 	J:164563 	
+MGI:102504	mt-Co1	mitochondrially encoded cytochrome c oxidase I	MT		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN000046096 	J:265628 	
+MGI:102503	mt-Co2	mitochondrially encoded cytochrome c oxidase II	MT		ATP synthesis coupled electron transport			IBA	PTN000527128 	J:265628 	
+MGI:102502	mt-Co3	mitochondrially encoded cytochrome c oxidase III	MT		mitochondrial electron transport, cytochrome c to oxygen			IBA	PTN001685539 	J:265628 	
+MGI:102501	mt-Cytb	mitochondrially encoded cytochrome b	MT		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000444161 	J:265628 	
+MGI:102500	mt-Nd2	mitochondrially encoded NADH dehydrogenase 2	MT		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR003917 IPR010933 	J:72247 	
+MGI:102498	mt-Nd4	mitochondrially encoded NADH dehydrogenase 4	MT		ATP synthesis coupled electron transport			IEA	IPR003918 IPR010227 	J:72247 	
+MGI:102498	mt-Nd4	mitochondrially encoded NADH dehydrogenase 4	MT		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR000260 	J:72247 	
+MGI:102497	mt-Nd4l	mitochondrially encoded NADH dehydrogenase 4L	MT		ATP synthesis coupled electron transport			IEA	IPR001133 	J:72247 	
+MGI:102496	mt-Nd5	mitochondrially encoded NADH dehydrogenase 5	MT		ATP synthesis coupled electron transport			IEA	IPR003945 IPR010934 	J:72247 	
+MGI:1929260	Mtch2	mitochondrial carrier 2	2		mitochondrial ATP synthesis coupled electron transport	happens in hematopoietic stem cell		IMP	MGI:2449949 MGI:5566664 	J:224442 	
+MGI:97250	Myc	myelocytomatosis oncogene	15		positive regulation of oxidative phosphorylation			ISO	RGD:3130 	J:155856 	
+MGI:97250	Myc	myelocytomatosis oncogene	15		regulation of oxidative phosphorylation			ISO	RGD:3130 	J:155856 	
+MGI:97276	Myog	myogenin	1		positive regulation of oxidative phosphorylation			ISO	RGD:620432 	J:155856 	
+MGI:1913666	Ndufa7	NADH:ubiquinone oxidoreductase subunit A7	17		ATP synthesis coupled electron transport			IEA	IPR009947 	J:72247 	
+MGI:1913666	Ndufa7	NADH:ubiquinone oxidoreductase subunit A7	17		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000968153 	J:265628 	
+MGI:1915625	Ndufa8	NADH:ubiquinone oxidoreductase subunit A8	2		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR016680 	J:72247 	
+MGI:1914523	Ndufa10	NADH:ubiquinone oxidoreductase subunit A10	1		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000828201 	J:265628 	
+MGI:1914523	Ndufa10	NADH:ubiquinone oxidoreductase subunit A10	1		mitochondrial electron transport, NADH to ubiquinone			IDA		J:209583 	
+MGI:1913664	Ndufa12	NADH:ubiquinone oxidoreductase subunit A12	10		mitochondrial ATP synthesis coupled electron transport			ISO	Q9UI09 	J:164563 	
+MGI:1916952	Ndufaf1	NADH:ubiquinone oxidoreductase complex assembly factor 1	2		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000324265 	J:265628 	
+MGI:2684983	Ndufb6	NADH:ubiquinone oxidoreductase subunit B6	4		mitochondrial ATP synthesis coupled electron transport			IBA	PTN000386993 	J:265628 	
+MGI:2684983	Ndufb6	NADH:ubiquinone oxidoreductase subunit B6	4		mitochondrial ATP synthesis coupled electron transport			ISO	O95139 	J:164563 	
+MGI:2684983	Ndufb6	NADH:ubiquinone oxidoreductase subunit B6	4		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR019174 	J:72247 	
+MGI:1914514	Ndufb8	NADH:ubiquinone oxidoreductase subunit B8	19		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR016551 	J:72247 	
+MGI:1913468	Ndufb9	NADH:ubiquinone oxidoreductase subunit B9	15		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR033034 	J:72247 	
+MGI:1344370	Ndufc2	NADH:ubiquinone oxidoreductase subunit C2	7		mitochondrial electron transport, NADH to ubiquinone			IEA	IPR009423 	J:72247 	
+MGI:2443241	Ndufs1	NADH:ubiquinone oxidoreductase core subunit S1	1		ATP synthesis coupled electron transport			IEA	IPR000283 	J:72247 	
+MGI:2385112	Ndufs2	NADH:ubiquinone oxidoreductase core subunit S2	1		mitochondrial ATP synthesis coupled electron transport			ISO	O75306 	J:164563 	
+MGI:2385112	Ndufs2	NADH:ubiquinone oxidoreductase core subunit S2	1		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000241916 	J:265628 	
+MGI:107932	Ndufs6	NADH:ubiquinone oxidoreductase core subunit S6	13		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000322556 	J:265628 	
+MGI:2385079	Ndufs8	NADH:ubiquinone oxidoreductase core subunit S8	19		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000091257 	J:265628 	
+MGI:107851	Ndufv1	NADH:ubiquinone oxidoreductase core subunit V1	19		mitochondrial ATP synthesis coupled electron transport			ISO	P49821 	J:164563 	
+MGI:107851	Ndufv1	NADH:ubiquinone oxidoreductase core subunit V1	19		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000207233 	J:265628 	
+MGI:1920150	Ndufv2	NADH:ubiquinone oxidoreductase core subunit V2	17		mitochondrial electron transport, NADH to ubiquinone			IBA	PTN000042666 	J:265628 	
+MGI:1920150	Ndufv2	NADH:ubiquinone oxidoreductase core subunit V2	17		mitochondrial electron transport, NADH to ubiquinone			ISO	P19404 	J:164563 	
+MGI:1890894	Ndufv3	NADH:ubiquinone oxidoreductase core subunit V3	17		mitochondrial ATP synthesis coupled electron transport			ISO	P56181 	J:164563 	
+MGI:1278343	Nipsnap2	nipsnap homolog 2	5		oxidative phosphorylation			ISO	O75323 	J:164563 	
+MGI:1891834	Nupr1	nuclear protein transcription regulator 1	7		positive regulation of oxidative phosphorylation			ISO	O60356 	J:164563 	
+MGI:2135637	Park7	Parkinson disease (autosomal recessive, early onset) 7	4		positive regulation of mitochondrial electron transport, NADH to ubiquinone			IMP		J:212799 	
+MGI:2135637	Park7	Parkinson disease (autosomal recessive, early onset) 7	4		positive regulation of mitochondrial electron transport, NADH to ubiquinone			ISO	Q99497 	J:164563 	
+MGI:2446107	Pde2a	phosphodiesterase 2A, cGMP-stimulated	7		negative regulation of oxidative phosphorylation			IMP		J:177215 	
+MGI:2443226	Pde12	phosphodiesterase 12	14		negative regulation of oxidative phosphorylation			ISO	Q6L8Q7 	J:164563 	
+MGI:97555	Pgk1	phosphoglycerate kinase 1	X		positive regulation of oxidative phosphorylation			IBA	PTN000150497 	J:265628 	
+MGI:97563	Pgk2	phosphoglycerate kinase 2	17		positive regulation of oxidative phosphorylation			IBA	PTN000150497 	J:265628 	
+MGI:1916193	Pink1	PTEN induced putative kinase 1	4		positive regulation of mitochondrial electron transport, NADH to ubiquinone	regulates a function/process that has the participant Ndufa10		IMP		J:209583 	
+MGI:1916193	Pink1	PTEN induced putative kinase 1	4		regulation of oxidative phosphorylation			ISO	Q9BXM7 	J:164563 	
+MGI:2145814	Ppif	peptidylprolyl isomerase F (cyclophilin F)	14		negative regulation of oxidative phosphorylation			IMP		J:196258 	
+MGI:1096342	Rhoa	ras homolog family member A	9		negative regulation of oxidative phosphorylation			IMP		J:221513 	
+MGI:1914195	Sdha	succinate dehydrogenase complex, subunit A, flavoprotein (Fp)	13		mitochondrial electron transport, succinate to ubiquinone			IBA	PTN000180258 	J:265628 	
+MGI:1913322	Sdhaf2	succinate dehydrogenase complex assembly factor 2	19		mitochondrial electron transport, succinate to ubiquinone			IBA	PTN000279729 	J:265628 	
+MGI:1913322	Sdhaf2	succinate dehydrogenase complex assembly factor 2	19		mitochondrial electron transport, succinate to ubiquinone			ISO	Q9NX18 	J:164563 	
+MGI:1913302	Sdhc	succinate dehydrogenase complex, subunit C, integral membrane protein	1		mitochondrial electron transport, succinate to ubiquinone			IBA	PTN000104658 	J:265628 	
+MGI:1914175	Sdhd	succinate dehydrogenase complex, subunit D, integral membrane protein	9		mitochondrial electron transport, succinate to ubiquinone			IBA	PTN001000243 	J:265628 	
+MGI:1277989	Shmt2	serine hydroxymethyltransferase 2 (mitochondrial)	10		regulation of oxidative phosphorylation			IBA	PTN001706179 	J:265628 	
+MGI:1277989	Shmt2	serine hydroxymethyltransferase 2 (mitochondrial)	10		regulation of oxidative phosphorylation			IMP		J:259713 	
+MGI:1277989	Shmt2	serine hydroxymethyltransferase 2 (mitochondrial)	10		regulation of oxidative phosphorylation			ISO	P34897 	J:164563 	
+MGI:1914222	Slc25a23	solute carrier family 25 (mitochondrial carrier; phosphate carrier), member 23	17		regulation of oxidative phosphorylation			IMP	MGI:5500043 	J:196890 	
+MGI:1917806	Slc25a33	solute carrier family 25, member 33	4		regulation of oxidative phosphorylation			ISO	Q9BSK2 	J:164563 	
+MGI:1277151	Snca	synuclein, alpha	6		mitochondrial ATP synthesis coupled electron transport	happens in brain		IMP	MGI:2389489 	J:102361 	
+MGI:1913842	Stoml2	stomatin (Epb7.2)-like 2	4		mitochondrial ATP synthesis coupled proton transport			IMP		J:149906 J:187877 	
+MGI:1913842	Stoml2	stomatin (Epb7.2)-like 2	4		mitochondrial ATP synthesis coupled proton transport			ISO	Q9UJZ1 	J:164563 	
+MGI:98443	Surf1	surfeit gene 1	2		oxidative phosphorylation			ISO	Q15526 	J:164563 	
+MGI:109626	Taz	tafazzin	X		mitochondrial ATP synthesis coupled electron transport			ISO	Q16635 	J:164563 	
+MGI:1915800	Tefm	transcription elongation factor, mitochondrial	11		oxidative phosphorylation			ISO	Q96QE5 	J:164563 	
+MGI:104798	Tnf	tumor necrosis factor	17		negative regulation of oxidative phosphorylation			ISO	RGD:3876 	J:155856 	
+MGI:1914517	Uqcc2	ubiquinol-cytochrome c reductase complex assembly factor 2	17		regulation of oxidative phosphorylation			IMP		J:202581 	
+MGI:1914517	Uqcc2	ubiquinol-cytochrome c reductase complex assembly factor 2	17		regulation of oxidative phosphorylation			ISO	Q9BRT2 	J:164563 	
+MGI:2147553	Uqcc3	ubiquinol-cytochrome c reductase complex assembly factor 3	19		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN002193739 	J:265628 	
+MGI:2147553	Uqcc3	ubiquinol-cytochrome c reductase complex assembly factor 3	19		mitochondrial electron transport, ubiquinol to cytochrome c			ISO	Q6UW78 	J:164563 	
+MGI:1913402	Uqcr10	ubiquinol-cytochrome c reductase, complex III subunit X	11		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000312316 	J:265628 	
+MGI:1914780	Uqcrb	ubiquinol-cytochrome c reductase binding protein	13		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000246311 	J:265628 	
+MGI:107876	Uqcrc1	ubiquinol-cytochrome c reductase core protein 1	9		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN002627006 	J:265628 	
+MGI:107876	Uqcrc1	ubiquinol-cytochrome c reductase core protein 1	9		mitochondrial electron transport, ubiquinol to cytochrome c			IDA		J:110323 	
+MGI:1913944	Uqcrfs1	ubiquinol-cytochrome c reductase, Rieske iron-sulfur polypeptide 1	13		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN002228081 	J:265628 	
+MGI:1913826	Uqcrh	ubiquinol-cytochrome c reductase hinge protein	4		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000393767 	J:265628 	
+MGI:107807	Uqcrq	ubiquinol-cytochrome c reductase, complex III subunit VII	11		mitochondrial electron transport, ubiquinol to cytochrome c			IBA	PTN000950370 	J:265628 	
+MGI:99919	Vcp	valosin containing protein	4		positive regulation of oxidative phosphorylation			ISO	P55072 	J:164563 	
+

@@ -2,6 +2,8 @@
 # Date: 05/25/2020
 # Author: Jesslyn Goh
 
+library(presto)
+
 GSEA_code <- function(seurat_object, group.by, fgseaGS, ranks = NULL, group.1 = NULL, group.2 = NULL, stattest = "wilcox", slot = "data"){
 
   if (is.null(ranks)){

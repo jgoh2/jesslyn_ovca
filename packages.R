@@ -8,4 +8,5 @@ source(here::here('code','DotPlot2.R'))
 source(here::here('code','DEAnalysis_code.R'))
 source(here::here('code','GSEA_code.R'))
 source(here::here('code','seurat_tab.R'))
+source(here::here('code', 'FindMarkers_code.R'))
 

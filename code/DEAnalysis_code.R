@@ -10,6 +10,7 @@ library(here)
 library(dplyr)
 library(EnhancedVolcano)
 library(patchwork)
+library(glue)
 
 DEAnalysis_code <- function(seurat_object, markers = NULL, group.by, group.1, group.2, graph = FALSE, geneset = NULL, stattest = "wilcox", slot = "data"){
   if(is.null(markers)){

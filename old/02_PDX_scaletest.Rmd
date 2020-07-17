@@ -49,16 +49,16 @@ treatment_levels <- c("vehicle", "MRD", "relapse")
 PDX$treatment.status = factor(PDX$treatment.status, levels = treatment_levels)
 
 # Read in gene lists
-ccgenes = read_lines("gene_lists/regev_lab_cell_cycle_genes.txt")
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
 s.genes <- ccgenes[1:43]
 g2m.genes <- ccgenes[44:97]
 
 #Read in hallmarks of interest
-hallmark_names = read_lines("gene_lists/hallmarks.txt")
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
 hallmark.list <- vector(mode = "list", length = length(hallmark_names))
 names(hallmark.list) <- hallmark_names
 for(hm in hallmark_names){
-  file <- read_lines(glue("hallmarks/{hm}_updated.txt"), skip = 1)
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
 }
 
@@ -475,7 +475,7 @@ theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 
 ggsave(plot = ranks.plot, "DF20_FindMarkers_slot_ranks.png", path = "jesslyn_plots/PDX_test")
 
 #compare padj 
-padj.plot <- ggscatter(both, x = "p_val_adj.x", y = "p_val_adj.y", add = "reg.line", add.params = list(color = "grey")) + labs(title = "Comparing the padj values of using data vs. scale.data", x = "data", y = "scale.data", caption = "R = 1, p < 2.2e-16") +  theme(plot.title = element_text(size = 10))
+padj.plot <- ggplot(both, aes(x = p_val_adj.x, y = p_val_adj.y)) + geom_point(alpha = 0.5) + geom_abline() + theme_bw() + labs(title = "Comparing the padj values of using data vs. scale.data", x = "data", y = "scale.data", caption = "R = 1, p < 2.2e-16") +  theme(plot.title = element_text(size = 10))
 ggsave(plot = padj.plot, "DF20_FindMarkers_slot_padj.png", path = "jesslyn_plots/PDX_test")
 
 #compare avg_logfc vs. avg_diff
@@ -526,11 +526,11 @@ DF20.vehicle <- subset(DF20_score, subset = (treatment.status == "vehicle"))
 DF20.MRD <- subset(DF20_score, subset = (treatment.status == "MRD"))
 
 df.data <- data.frame(
-  "DF20" = rowMeans(DF20_score[["RNA"]]@data),
-  "DF20.vehicle" = rowMeans(DF20.vehicle[["RNA"]]@data),
-  "DF20.MRD" = rowMeans(DF20.MRD[["RNA"]]@data),
-  "diff" = (rowMeans(DF20.MRD[["RNA"]]@data) - rowMeans(DF20.vehicle[["RNA"]]@data)),
-  "logFC" = log2(rowMeans(DF20.MRD[["RNA"]]@data) / rowMeans(DF20.vehicle[["RNA"]]@data)),
+  "DF20" = Matrix::rowMeans(DF20_score[["RNA"]]@data),
+  "DF20.vehicle" = Matrix::rowMeans(DF20.vehicle[["RNA"]]@data),
+  "DF20.MRD" = Matrix::rowMeans(DF20.MRD[["RNA"]]@data),
+  "diff" = (Matrix::rowMeans(DF20.MRD[["RNA"]]@data) - Matrix::rowMeans(DF20.vehicle[["RNA"]]@data)),
+  "logFC" = log2(Matrix::rowMeans(DF20.MRD[["RNA"]]@data) / Matrix::rowMeans(DF20.vehicle[["RNA"]]@data)),
   "genes" = rownames(DF20.vehicle) %in% c("DDRGK1","RPS27","BCL9L","PYCR1","ACSF2"),
   "rownames" = rownames(DF20.vehicle)
   )
@@ -589,7 +589,7 @@ We therefore build MAPlots to try to determine whether avg_logFC or avg_diff wou
 ```{r FindMarkers logFC MAPlots, message = FALSE, warning = FALSE, fig.align= 'center', fig.width = 20}
 MA.df = data.frame(
   "rowname" = rownames(DF20_score[["RNA"]]@data),
-  "normalized.exp" = rowMeans(DF20_score[["RNA"]]@data)
+  "normalized.exp" = Matrix::rowMeans(DF20_score[["RNA"]]@data)
 )
 
 MA.df <- merge(MA.df, both, by = "rowname")
@@ -630,21 +630,21 @@ FC + diff
 
 ```{r FindMarkers statistical test, warning= FALSE, message= FALSE, fig.align = 'center', fig.width = 5, fig.height = 5}
 
-wilcox <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "wilcox") 
-colnames(wilcox) <- c("rowname", "wilcox.logFC", "wilcox.padj", "wilcox.-log10padj", "wilcox.rank", "wilcox.DE")
+wilcox <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "wilcox")
+colnames(wilcox) <- c("feature", "wilcox.logFC", "wilcox.padj", "wilcox.-log10padj", "wilcox.rank", "wilcox.DE")
 
 t.test <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "t") 
-colnames(t.test) <- c("rowname", "t.logFC", "t.padj", "t.-log10padj", "t.rank", "t.DE")
+colnames(t.test) <- c("feature", "t.logFC", "t.padj", "t.-log10padj", "t.rank", "t.DE")
 
 MAST <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "MAST") 
-colnames(MAST) <- c("rowname", "MAST.logFC", "MAST.padj", "MAST.-log10padj", "MAST.rank", "MAST.DE")
+colnames(MAST) <- c("feature", "MAST.logFC", "MAST.padj", "MAST.-log10padj", "MAST.rank", "MAST.DE")
 
 LR <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "LR") 
-colnames(LR) <- c("rowname", "LR.logFC", "LR.padj", "LR.-log10padj", "LR.rank", "LR.DE")
+colnames(LR) <- c("feature", "LR.logFC", "LR.padj", "LR.-log10padj", "LR.rank", "LR.DE")
 
-wilcox.t <- merge(wilcox, t.test, by = "rowname")
-MAST.LR <- merge(MAST, LR, by = "rowname")
-all <- merge(wilcox.t, MAST.LR, by = "rowname")
+wilcox.t <- merge(wilcox, t.test, by = "feature")
+MAST.LR <- merge(MAST, LR, by = "feature")
+all <- merge(wilcox.t, MAST.LR, by = "feature")
 
 #compare padj 
 all.padj <- ggpairs(all, columns = c("wilcox.padj", "t.padj", "MAST.padj", "LR.padj"), diag = "blank", mapping = aes(alpha = 0.3)) + labs(title = "Comparing padj values between statistical tests")
@@ -706,11 +706,11 @@ all <- all %>% mutate("num.DE" = as.character(all$wilcox.DE + all$t.DE + all$MAS
 
 #MAplots 
 MA.df = data.frame(
-  "rowname" = rownames(DF20_score[["RNA"]]@data),
-  "normalized.exp" = rowMeans(DF20_score[["RNA"]]@data)
+  "feature" = rownames(DF20_score[["RNA"]]@data),
+  "normalized.exp" = Matrix::rowMeans(DF20_score[["RNA"]]@data)
 )
 
-MA.df <- merge(MA.df, all, by = "rowname")
+MA.df <- merge(MA.df, all, by = "feature")
 
 stat.FC <- ggplot(MA.df, aes(x = normalized.exp, y = wilcox.logFC)) + 
   geom_point(alpha = 0.5, aes(colour = num.DE)) + 
@@ -753,24 +753,24 @@ wilcox.FC + t.FC + MAST.FC + LR.FC + plot_layout(guides= 'collect')
 ```{r FindMarkers statistical test Volcano Plots, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height= 15}
 
 wilcox.volcano <- EnhancedVolcano(all, lab= all$wilcox.rank, selectLab = all$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - Wilcox", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (ranked with padj)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (padj ascending, logFC descending)", 
       legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
 
 t.volcano <- EnhancedVolcano(all, lab= all$t.rank, selectLab = all$t.rank, x='t.logFC', y='t.padj', 
       pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes -T.test", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      title= "DF20 MRD vs. vehicle DE Genes -T.test (ranked with padj)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (padj ascending, logFC descending)", 
       legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
 
 MAST.volcano <- EnhancedVolcano(all, lab= all$MAST.rank, selectLab = all$MAST.rank, x='MAST.logFC', y='MAST.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - MAST", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      title= "DF20 MRD vs. vehicle DE Genes - MAST (ranked with padj)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (padj ascending, logFC descending)", 
       legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
 
 LR.volcano <- EnhancedVolcano(all, lab= all$LR.rank, selectLab = all$LR.rank, x='LR.logFC', y='LR.padj', 
       pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - LR", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      title= "DF20 MRD vs. vehicle DE Genes - LR (ranked with padj)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (padj ascending, logFC descending)", 
       legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
 
@@ -793,9 +793,9 @@ Since **t.test** and **LR** are **parametric** tests, unlike **wilcox**, which i
 t.data = t.test
 
 t.scale.data <- FindMarkers_code(DF20_score, group.by="treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "t", slot = "scale.data")
-colnames(t.scale.data) <- c("rowname", "t.avg_diff", "t.scale.padj", "t.scale.-log10padj", "t.scale.rank", "t.scale.DE")
+colnames(t.scale.data) <- c("feature", "t.avg_diff", "t.scale.padj", "t.scale.-log10padj", "t.scale.rank", "t.scale.DE")
 
-t.both <- merge(t.data, t.scale.data)
+t.both <- merge(t.data, t.scale.data, by = "feature")
 t.both <- t.both %>% mutate("DE.in" = as.character(t.both$t.DE + t.both$t.scale.DE))
 
 #compare ranks 
@@ -804,7 +804,7 @@ theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 
 ggsave(plot = t.ranks.plot, "DF20_FindMarkers_slot_t.ranks.png", path = "jesslyn_plots/PDX_test")
 
 #compare padj 
-t.padj.plot <- ggscatter(t.both, x = "t.padj", y = "t.scale.padj", add = "reg.line", add.params = list(color = "grey")) + labs(title = "Comparing the padj values of using data vs. scale.data for t.test", x = "data", y = "scale.data", caption = "R = 1, p < 2.2e-16") +  theme(plot.title = element_text(size = 10))
+t.padj.plot <- ggplot(t.both, aes(x = t.padj, y = t.scale.padj)) + geom_point(alpha = 0.5) + theme_bw() + geom_abline() + labs(title = "Comparing the padj values of using data vs. scale.data for t.test", x = "data", y = "scale.data", caption = "R = 1, p < 2.2e-16") +  theme(plot.title = element_text(size = 10))
 ggsave(plot = t.padj.plot, "DF20_FindMarkers_slot_t.padj.png", path = "jesslyn_plots/PDX_test")
 
 #compare avg_logfc vs. avg_diff
@@ -815,11 +815,11 @@ t.ranks.plot + t.padj.plot + t.logFC.plot + plot_layout(guides= 'collect')
 
 #MAplots 
 MA.df = data.frame(
-  "rowname" = rownames(DF20_score[["RNA"]]@data),
-  "normalized.exp" = rowMeans(DF20_score[["RNA"]]@data)
+  "feature" = rownames(DF20_score[["RNA"]]@data),
+  "normalized.exp" = Matrix::rowMeans(DF20_score[["RNA"]]@data)
 )
 
-MA.df <- merge(MA.df, t.both, by = "rowname")
+MA.df <- merge(MA.df, t.both, by = "feature")
 
 FC <- ggplot(MA.df, aes(x = normalized.exp, y = t.logFC)) + 
   geom_point(alpha = 0.5, aes(colour = DE.in)) +
@@ -842,24 +842,123 @@ FC + diff
     - Ranks differed at a similar level it differed when testing with the **wilcoxon** statistical test
     - MAplot tells us that it would be better to use the "data" slot, because the distribution of t.logFC has less variation than the distribution of t.avg_diff. 
     
-### REMAINING QUESTIONS
-What is the purpose of scaling the data? (since we did not use the scale.data slot at all in our analysis)
-1. Does scaling the data make expression more comparable across genes for FindMarkers, when we're ranking the genes? 
-* Ex. mean(geneA.condition1) = 2 and mean(geneA.condition2) = 3
-* Ex. mean(geneB.condition1) = 3 and mean(geneB.condition2) = 4
-        
-```{r demonstrating question}
-print(paste("logFC.geneA:", log2(3/2)))
-print(paste("logFC.geneB:", log2(4/3)))
+### 3.1.3 INVESTIGATE RANKING METHOD
+* We demonstrated above that ranking by padj values first, then by logFC resulted in **false positives**, where many genes that are high in rank have low padj values but also low logFC that do not meet the 0.5 threshold. Here, we investigate which method would be best for ranking genes: 
+    - Ranking by padj values ascending, then by logFC descending (demonstrated above, will include again below)
+    - Ranking by logFC descending, then by padj values ascending 
+    - Rank by AUC 
+
+```{r FindMarkers rank by padj, message=FALSE, warning = FALSE, fig.align='center', fig.width=20, fig.height =15}
+all.volcano
 ```
 
-* In the scenario above, the logFC of each gene would define gene A as DE and gene B as not DE, even though the difference in mean gene expression between the two conditions are both 1. 
-* However, if we scale and center the data so that the mean expression of both gene A and B are centered around 0, the logFC of gene A and gene B would be possibly be more comparable? 
+* Rank by padj first, then by logFC: 
+    - A lot of false positives - many genes that are at the **top** of the rank, especially for **wilcox** and **MAST** are actually false positives.
+    
+We now test how our ranked list would look like if we rank with logFC first: 
 
-2. Does scaling the data make geneset expression scores more comparable for AddModuleScore? 
-* We've decided to use the "data" slot for AddModuleScore because the "scale.data" slot might have shrunk the data too much, which may obscure important differences. 
-* Although our initial intention behind using "scale.data" is so that the hallmark score is comparable across cells (and therefore across treatment conditions), we decided that the count data is already comparable across cells due to RPKM normalization.  
-* We now consider whether we would need to use the "scale.data" slot to make the hallmark score comparable across genesets:
-  - Using the data slot should still make the hallmark scores comparable between different genesets because AddModuleScore divides the genome into bins, and for each gene in the geneset, it randomly picks 100 genes from the same bin, take the average expression, and subtract that from the expression of the gene in the geneset. It then takes the average of all bins to obtain the final hallmark score. 
+```{r FindMarkers rank by logFC, message=FALSE, warning = FALSE, fig.align='center', fig.width=20, fig.height =15}
+#rank by logFC descending first, then by padj
+wilcox.FCrank <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "wilcox", rank.by = "logFC")
+colnames(wilcox.FCrank) <- c("rowname", "wilcox.logFC", "wilcox.padj", "wilcox.-log10padj", "wilcox.rank", "wilcox.DE")
   
-Question: If this is the case, and the hallmark score is already comparable across genesets, why do we still need to scale it visually for the DotPlot? 
+t.test.FCrank <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "t", rank.by = "logFC")
+colnames(t.test.FCrank) <- c("rowname", "t.logFC", "t.padj", "t.-log10padj", "t.rank", "t.DE")
+
+MAST.FCrank <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "MAST", rank.by = "logFC")
+colnames(MAST.FCrank) <- c("rowname", "MAST.logFC", "MAST.padj", "MAST.-log10padj", "MAST.rank", "MAST.DE")
+
+LR.FCrank <- FindMarkers_code(DF20_score, group.by = "treatment.status", group.1 = "MRD", group.2 = "vehicle", stattest = "LR", rank.by = "logFC")
+colnames(LR.FCrank) <- c("rowname", "LR.logFC", "LR.padj", "LR.-log10padj", "LR.rank", "LR.DE")
+
+#volcano plots 
+wilcox.FCrank.plot <- EnhancedVolcano(wilcox.FCrank, lab= wilcox.FCrank$wilcox.rank, selectLab = wilcox.FCrank$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (ranked with logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (logFC descending, padj ascending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+t.FCrank.plot <- EnhancedVolcano(t.test.FCrank, lab= t.test.FCrank$t.rank, selectLab = t.test.FCrank$t.rank, x='t.logFC', y='t.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - T.test (ranked with logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (logFC descending, padj ascending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+MAST.FCrank.plot <- EnhancedVolcano(MAST.FCrank, lab= MAST.FCrank$MAST.rank, selectLab = MAST.FCrank$MAST.rank, x='MAST.logFC', y='MAST.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - MAST (ranked with logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (logFC descending, padj ascending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+LR.FCrank.plot <- EnhancedVolcano(LR.FCrank, lab= LR.FCrank$LR.rank, selectLab = LR.FCrank$LR.rank, x='LR.logFC', y='LR.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - LR (ranked with logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (logFC descending, padj ascending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+all.FCrank.plot <- wilcox.FCrank.plot + t.FCrank.plot + MAST.FCrank.plot + LR.FCrank.plot
+all.FCrank.plot
+ggsave(plot = all.FCrank.plot, file = "DF20_FCrankPlot.png", path = "jesslyn_plots/PDX_test", width = 20, height = 15)
+```
+
+* Rank by logFC first, then by padj:
+    - Very bad - genes at the top of the ranked list all have a padj value of 1. They aggregate at the bottom of the volcano plot. 
+    - Genes that are actually detected as DE (padj < 0.05, abs(logFC) > 0.5) are towards the very end of the ranked list. 
+    - The only good news is that the **false positives** are also at the very end of the ranked list instead of being at the top of the list like when we ranked with padj. 
+
+**TESTING WILCOXAUC***
+We now test how our ranked list would look like if we rank with AUC. AUC is calculated using the **wilcoxauc** function, which calculate the **logFC**, **padj**, and **auc** value for each gene 
+
+```{r FindMarkers rank by AUC, message=FALSE, warning = FALSE, fig.align='center', fig.width=20, fig.height =10}
+
+wilcoxauc.test <- wilcoxauc(DF20_score, group_by = "treatment.status", groups_use = c("vehicle", "MRD"), assay = "data") %>% filter(group == "MRD")
+wilcoxauc.test <- wilcoxauc.test %>%
+  arrange(-auc) %>%
+  mutate("rank" = seq(from=1, to=length(wilcoxauc.test$feature)))
+
+#compare metrics from wilcoxauc.test vs. wilcox
+wilcoxVs.auc <- merge(wilcox, wilcoxauc.test, by = "feature")
+
+wilcoxVsAuc.padj <- ggplot(wilcoxVs.auc, aes(x = wilcox.padj, y = padj)) + 
+  geom_point(alpha = 0.5) + geom_abline() + theme_bw() +
+  labs(x = "wilcox padj", y = "wilcoxauc padj", title = "Comparing padj values from wilcox vs. wilcoxauc", subtitle = "R = 0.22, p < 2.2e-16")
+
+wilcoxVsAuc.logFC <- ggplot(wilcoxVs.auc, aes(x = wilcox.logFC, y = logFC)) + 
+  geom_point(alpha = 0.5) + geom_abline() + theme_bw() + 
+  labs(x = "wilcox logFC", y = "wilcoxauc logFC", title = "Comparing logFC values from wilcox vs. wilcoxauc", subtitle = "R = 0.56, p < 2.2e-16") 
+
+wilcoxVsAuc.rank <- ggplot(wilcoxVs.auc, aes(x = wilcox.rank, y = rank)) + 
+  geom_point(alpha = 0.5) + geom_abline() + theme_bw() + 
+  labs(x = "wilcox rank (by padj first)", y = "wilcoxauc rank (by auc)", title = "Comparing gene ranks between ranking by padj vs. auc", subtitle = "R = 0.29, p < 2.2e-16") 
+
+wilcoxVsAuc.padj + wilcoxVsAuc.logFC + wilcoxVsAuc.rank
+```
+
+* We used **wilcoxauc** to calculate the logFC, padj, and auc value for each gene in MRD relative to vehicle. However, the logFC and padj values obtained differs significantly from those we obtained using the **wilcoxon rank sum test**.
+    - While some genes have a padj value of **1** using the **wilcox** test, they actually have a significant padj value (p < 0.05) when using the **wilcoxauc** 
+    - It is **unexpected** that the logFC value associated with each gene would be different depending on the statistical test, because that was not the case when we tested between the four statistical tests above (wilcox, t.test, MAST, LR). 
+
+We are not sure which test to trust considering how drastically different the logFC and padj values obtained are between the two statistical tests. 
+
+Meanwhile, we rank each gene by their **auc** value, and a create VolcanoPlot to visualize the results: 
+
+```{r wilcoxauc volcano plot, message = FALSE, warning = FALSE, fig.align="center", fig.width=20, fig.height=10}
+wilcoxauc.plot <- EnhancedVolcano(wilcoxauc.test, lab= wilcoxauc.test$rank, selectLab = wilcoxauc.test$rank, x='logFC', y='padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - WilcoxAUC (ranked by AUC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled by gene ranks (ranked by AUC)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+
+wilcox.volcano <- wilcox.volcano + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+
+wilcox.FCrank.plot <- wilcox.FCrank.plot + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+
+ranks.plot <- wilcoxauc.plot + wilcox.volcano + wilcox.FCrank.plot
+ranks.plot
+```
+
+* **OBSERVATIONS**
+    - The **wilcoxauc** test gave us a lot more **false positives** than any of the statistical tests we tested above, and some of these false positives are pretty high up in the gene ranks, although most of them are in the middle / lower end of the rank. 
+    - Ranking genes with **auc** seems like the best option because genes that are at the top of the list (auc = 1) are those that are enriched in group.1 (MRD) relative group.2 (vehicle), while genes that are at the end of the list (auc = 0) are those that are depleted in group.1 (MRD) relative to group.2 (vehicle). Genes in the middle are those that are not DE. 
+        - This is the most appropriate way of ranking genes for GSEA. GSEA ranks genes by walking down the list and adding to a running sum if a gene in the list is in the geneset. Therefore, if the GSEA plot is skewed towards the left, it means that the geneset is enriched, while if the plot is skewed towards the right, the geneset is depleted altogether.
+        - Although this can also be achieved by ranking genes by logFC, we demonstrated above that doing so will result in top ranked genes with a padj value of 1. 
+        - However, if we ranked by padj values first, top ranked genes would be a mixture of those that are upregulated and depleted. 
+
+**Conclusion**: Although ranking genes by AUC seems like the best method, the drastic difference in logFC and padj values we get from the **wilcoxauc** vs. **wilcox** statistical tests is a concerning factor, and we're not sure which metric to trust.
+
+    
