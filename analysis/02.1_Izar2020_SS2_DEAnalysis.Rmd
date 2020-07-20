@@ -1,0 +1,116 @@
+---
+title: "Izar 2020 SS2 (Cohort 2) DE Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 1
+
+### OVERVIEW
+* This is the third part of our 3-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
+* The SS2 data consists of cells from 14 ascites samples from 6 individuals. 
+    - selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
+    - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
+    - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that contributed different treatment statuses. 
+
+* We split our SS2 analysis into three parts: 
+    1. Loading and Processing Data
+    2. Visualizing Clusters (UMAP)
+    3. **DE Analysis**
+        a. Load Processed Seurat Objects
+        b. DE Analysis Type #1. Find Individual DE Genes
+            i. Subset SS2Malignant to Seurat objects with **only patient 8** and **only patient 9**
+            ii. For each subsetted Seurat object: 
+                  - Call FindMarkers by **sample** 
+                  - Visualize results with VolcanoPlot
+        c. DE Analysis Type #2. Evaluate DE Hallmark Genesets 
+            i. Call FindMarkers and rank genes for GSEA 
+
+### STEP 3A LOAD SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in SS2 RDS object
+SS2Malignant = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+```
+
+### STEP 3B - DE ANALYSIS TYPE #1. FIND DE GENES FROM SCRATCH (wilcox, data)
+```{r Patient 8 Volcano Plots, message=FALSE, warning = FALSE, fig.align='center', fig.width=20}
+#do separately for patient 8 and patient 9
+genesets <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
+
+SS2Malignant.8 <- subset(SS2Malignant, subset = (Patient == 8))
+groups <- c("8.0 vs. 8.1", "8.1 vs. 8.2", "8.0 vs. 8.2")
+
+for(group in groups){
+  group1 = substr(group, 1,3)
+  group2 = substr(group, 9,11)
+  DEgenes <- DEAnalysis_code(SS2Malignant.8, group.by = "sample", group.1 = group1, group.2 = group2)
+  
+  DEAnalysis_code(SS2Malignant.8, markers = DEgenes, group.by = "sample", group.1 = group1, group.2 = group2, graph = TRUE)+ 
+    labs(title = glue("Patient 8 Sample {group1} vs. Sample {group2} All DE Genes"))
+    ggsave(glue("SS2_Patient8_{group1}VS{group2}_allDEGenes.png"), path= "jesslyn_plots/SS2/DE/Volcano", width = 15)
+    
+  for(geneset in genesets){
+    #volcano plots with only oxphos genes (from all DE genes)
+    DEAnalysis_code(SS2Malignant.8, markers = DEgenes, group.by = "sample", group.1 = group1, group.2 = group2, geneset = hallmark.list[[geneset]]) + 
+      labs(title = glue("Patient 8 Sample {group1} vs. Sample {group2} DE Genes for {geneset}"))
+    ggsave(glue("SS2_Patient8_{group1}VS{group2}_{geneset}DEGenes.png"), path= "jesslyn_plots/SS2/DE/Volcano", width = 15)
+    }
+}
+```
+
+```{r Patient 9 Volcano Plots, message=FALSE, warning = FALSE, fig.align='center', fig.width=20}
+genesets <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE")
+
+SS2Malignant.9 <- subset(SS2Malignant, subset = (Patient == 9))
+groups <- c("9.0 vs. 9.1", "9.1 vs. 9.2", "9.0 vs. 9.2")
+
+for(group in groups){
+  group1 = substr(group, 1,3)
+  group2 = substr(group, 9,11)
+  DEgenes <- DEAnalysis_code(SS2Malignant.9, group.by = "sample", group.1 = group1, group.2 = group2)
+  
+  DEAnalysis_code(SS2Malignant.9, markers = DEgenes, group.by = "sample", group.1 = group1, group.2 = group2, graph = TRUE)+ 
+    labs(title = glue("Patient 9 Sample {group1} vs. Sample {group2} All DE Genes"))
+    ggsave(glue("SS2_Patient9_{group1}VS{group2}_allDEGenes.png"), path= "jesslyn_plots/SS2/DE/Volcano", width = 15)
+    
+  for(geneset in genesets){
+    #volcano plots with only oxphos genes (from all DE genes)
+    DEAnalysis_code(SS2Malignant.9, markers = DEgenes, group.by = "sample", group.1 = group1, group.2 = group2, geneset = hallmark.list[[geneset]]) + 
+      labs(title = glue("Patient 9 Sample {group1} vs. Sample {group2} DE Genes for {geneset}"))
+    ggsave(glue("SS2_Patient9_{group1}VS{group2}_{geneset}DEGenes.png"), path= "jesslyn_plots/SS2/DE/Volcano", width = 15)
+    }
+}
+```
+
+### STEP 4A GSEA
+**still not sure if we should rank by AUC or logFC, will edit this part after we decide**

@@ -43,7 +43,7 @@ options(width=120)
 # Load packages
 source(here::here('packages.R'))
 
-#Read in PDX RDS object
+#Read in 10X RDS object
 cohort1 = readRDS("data/Izar_2020/Izar_2020_10x.RDS")
 
 #filter out clusters -1, 19-21

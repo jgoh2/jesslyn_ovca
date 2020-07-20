@@ -1,0 +1,150 @@
+---
+title: "Izar 2020 SS2 (Cohort 2) Load + Plots"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 1
+
+### OVERVIEW
+* This is the first and second part of our 3-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
+* The SS2 data consists of cells from 14 ascites samples from 6 individuals. 
+    - selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
+    - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
+    - We are only interested in the **malignant** ascites population
+
+* We split our SS2 analysis into three parts: 
+    1. **Loading and Processing Data**
+        a. Load in Izar2020 10X data and create Seurat Objects
+        b. Assign metadata (Patient, Sample IDs, treatment status)
+        c. Subset the Seurat Object for Malignant Cells 
+        d. Score Cells (Cell cycle and Each hallmark using **AddModuleScore**)
+        e. Scale and Center Cells 
+        f. Evaluate Patient and Treatment Metrics
+        g. Dimensional Reduction (PCA and UMAP)
+        
+    2. **Visualizing Clusters (UMAP)**
+        a. Visualize metadata identities with PCA and UMAP 
+            i. Sample ID 
+            ii. Treatment Status 
+        b. Save Seurat Obejcts
+        
+    3. DE Analysis 
+
+### STEP 1A LOAD SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in SS2 RDS object
+SS2 = readRDS(file = "data/Izar_2020/Izar_2020_SS2.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+```
+
+### STEP 1B ASSIGN SAMPLE ID TO METADATA 
+```{r sampleID, message=FALSE, warning = FALSE}
+#add sample
+sample_ID <- rep("NA", ncol(SS2))
+for(patient in unique(SS2$Patient)){
+  for (time in unique(SS2$Time)){
+    sample_ID[SS2$Patient == patient & SS2$Time == time] <- glue("{patient}.{time}")
+  }
+}
+SS2 <- AddMetaData(SS2, sample_ID, col.name = "sample")
+
+#add BRAC status
+BRAC.status <- rep("NA", ncol(SS2))
+BRAC.status[SS2$Patient %in% c(5,8,9,10,122)] <- "WT"
+BRAC.status[SS2$Patient == 7] <- "BRCA2 MUT"
+SS2 <- AddMetaData(SS2, BRAC.status, col.name = "BRAC.status")
+
+#set levels 
+SS2$sample = factor(SS2$sample, levels = trimws(sort(formatC(unique(SS2$sample)))))
+SS2$treatment.status = factor(SS2$treatment.status, levels = c("Treatment-naïve","On-treatment"))
+```
+
+### STEP 1C-E SUBSET, SCORE, SCALE SEURAT OBJECT FOR MALIGNANT CELLS ONLY 
+```{r subset and scale Malignant, message=FALSE, warning = FALSE}
+#subset
+SS2Malignant <- subset(SS2, subset = (cell.type == "Malignant"))
+
+#score
+SS2Malignant <- AddModuleScore(SS2Malignant, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T) 
+SS2Malignant <- CellCycleScoring(SS2Malignant, g2m.features = g2m.genes, s.features = s.genes)
+
+#scale
+SS2Malignant <- ScaleData(SS2Malignant, do.scale = TRUE, do.center = TRUE)
+```
+
+### STEP 1F SS2 MALIGNANT CELLS METRICS 
+```{r malignant cells metrics, message=FALSE, warning=FALSE}
+#numMalignantCellsPerSample
+numMalignantCellsPerSample <- table(SS2Malignant$sample, SS2Malignant$cell.type, SS2Malignant$treatment.status) %>%
+  as.data.frame() %>% 
+  dplyr::rename(sample = Var1, celltype = Var2, treatment = Var3, numCells = Freq) %>% 
+  filter(`celltype` == "Malignant")
+ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)) + 
+  geom_bar(stat = "identity") + 
+  labs(title = "Number of Malignant Cells Per Sample in SS2 Data")
+ggsave("numMalignantCellsPerSample.png", path = "jesslyn_plots/SS2", width = 8, height = 8)
+
+seurat_tab(SS2Malignant, col_var = "sample", row_var = "treatment.status", title = "Number of Malignant cells per Sample per treatment status")
+
+seurat_tab(SS2Malignant, col_var = "Patient", row_var = "treatment.status", title = "Number of Malignant cells per Sample per Patient")
+
+seurat_tab(SS2Malignant, col_var = "Patient", row_var = "Time", title = "Number of Malignant cells per Sample per Patient")
+```
+
+### STEP 1G. DIMENSIONALITY REDUCTION 
+```{r Dimensionality Reduction, message=FALSE, warning=FALSE}
+#PCA data has already been scaled and centered above
+SS2Malignant <- FindVariableFeatures(SS2Malignant, selection.method = "vst")
+
+SS2Malignant <- RunPCA(SS2Malignant, features = VariableFeatures(SS2Malignant))
+ElbowPlot(SS2Malignant)
+
+#UMAP
+SS2Malignant<- RunUMAP(SS2Malignant, dims=1:15)
+```
+
+### STEP 2A. VISUALIZE METADATA WITH PCA AND UMAP 
+```{r PCA and UMAP, message=FALSE, warning=FALSE, fig.align='center', fig.width=20}
+PCAPlot(SS2Malignant)
+
+umap1 <- UMAPPlot(SS2Malignant, group.by = "sample") + labs(title = "SS2 Malignant UMAP by Sample")
+umap2 <- UMAPPlot(SS2Malignant, group.by = "treatment.status") + labs(title = "SS2 Malignant UMAP by Treatment Status")
+umap <- umap1 + umap2 
+umap
+ggsave(plot = umap, filename = "SS2Malignant_UMAP.png", path = "jesslyn_plots/SS2")
+```
+
+### STEP 2B. SAVE SEURAT OBJECT 
+```{r save SDS}
+saveRDS(SS2Malignant, file="data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
+```
