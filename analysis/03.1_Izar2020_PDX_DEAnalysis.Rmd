@@ -1,0 +1,72 @@
+---
+title: "Izar 2020 PDX (Cohort 3) DE Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 PDX (COHORT 3) DATA ANALYSIS - PART 3
+
+### OVERVIEW
+* This is the third of our 3-part analysis of the Izar 2020 PDX (Cohort 3) data. 
+* The PDX data consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
+    - DF20 (BRCA WT treatment-naive, clinically platinum sensitive) 
+    - DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant) 
+    - DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant) 
+* After tumors were established, animals were divided into two groups per model: 
+    - Vehicle (treated with DMSO) 
+    - Carboplatin (treated with IP carboplatin) 
+        * Carboplatin-treated mice for minimal residual disease (**MRD**) group were harvested for scRNA-seq 
+        * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
+
+* We split our PDX analysis into three parts: 
+    1. Loading and Processing Data
+    2. Visualizing Clusters (UMAP)
+    3. **DE Analysis**
+        a. Load in Seurat Objects
+        b. **Type #1 DE Analysis**: Finding DE Genes from scratch and evaluate if they make up a GO term collectively using **Volcano Plots**
+        c. **Type #2 DE Analysis**: Visualizing and Quantifying DE on **predefined** GO Genesets through: 
+            i. Violin and Dot Plots 
+            ii. Gene Set Enrichment Analysis (GSEA)
+
+
+### STEP 3A. LOAD IN SEURAT OBJECTS AND GENESETS 
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX_All = readRDS("data/Izar_2020/test/jesslyn_PDX_All_processed.RDS")
+PDX_DF20 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
+PDX_DF101 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
+PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+```
+
+**have not finalized which statistical test + ranking method to use. Will edit this section later**
+
+### STEP 3B. TYPE #1. DE ANALYSIS - FIND DE GENES FROM SCRATCH 
+
+
+### STEP 3C. TYPE #2. DE ANALYSIS - GSEA
+
