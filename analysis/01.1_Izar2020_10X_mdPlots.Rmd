@@ -1,0 +1,114 @@
+---
+title: "Izar 2020 10X (Cohort 1) Metadata Plots"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/19/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 10X (COHORT 1) DATA ANALYSIS - PART 2
+
+### OVERVIEW
+* This is the second part of our 3-part analysis of the Izar 2020 10X (Cohort 1) data. 
+* The 10X data consists of **CD45+ depleted 8 ascites samples from 6 patients** 
+    - Includes both **malignant** and **nonmalignant** populations: Provides a broad view of the diverse cell types in the ascites ecosystem
+    - We are only interested in the **malignant** ascites population
+
+* We split our 10X analysis into three parts: 
+    1. Loading and Processing Data
+    2. **Visualizing Clusters (PCA and UMAP)**
+        a. Load in processed 10X and 10X Malignant Seurat Objects 
+        b. For each Seurat Object, examine how cells separate by their metadata identities by visualizing with PCA / UMAP: 
+            i. Patient / Sample ID 
+            ii. Treatment Status 
+            iii. Cell Cycle Phase
+    3. DE Analysis 
+
+### STEP 2A LOAD AND SUBSET SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+cohort1 = readRDS("data/Izar_2020/jesslyn_cohort1_processed.RDS")
+cohort1Malignant = readRDS("data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+if(!dir.exists("jesslyn_plots/cohort1/All")){dir.create("jesslyn_plots/cohort1/All")}
+if(!dir.exists("jesslyn_plots/cohort1/Malignant")){dir.create("jesslyn_plots/cohort1/Malignant")}
+```
+
+### STEP 2B VISUALIZE METADATA IDENTITIES FOR ALL CELLS 
+
+```{r metadata pca - all cells, message=FALSE, warning=FALSE, fig.align='center', fig.width=20}
+#plot PCA - shows differential expresison between different cohorts
+pca1 <- PCAPlot(cohort1) + labs(title = "10X All Cells PCA")
+
+#separate by treatment? 
+pca2 <- PCAPlot(cohort1, group.by="treatment.status") + labs(title = "10X All Cells PCA by Treatment Status")
+
+#separate by cellcycle phase?
+pca3 <- PCAPlot(cohort1, group.by="Phase") + labs(title = "10X All Cells PCA by Cell Cycle Phase")
+
+#separate by patient?
+pca4 <- PCAPlot(cohort1, group.by="patient") + labs(title = "10X All Cells PCA by Patient")
+
+pca <- pca1 + pca2 + pca3 + pca4
+ggsave(plot = pca, filename = "10X_All_PCA", path = "jesslyn_plots/cohort1/All")
+```
+
+```{r metadata umap - all cells, message=FALSE, warning = FALSE, fig.align='center', fig.width=20}
+
+umap1 <- UMAPPlot(cohort1, group.by="clst") + labs(title = "10X All Cells UMAP By Cluster")
+
+umap2 <- UMAPPlot(cohort1, group.by='sample.ID') + labs(title = "10X All Cells UMAP By Sample")
+
+umap3 <- UMAPPlot(cohort1, group.by = 'treatment.status') + labs(title = "10X All Cells UMAP By Treatment Status")
+
+umap4 <- UMAPPlot(cohort1, group.by='Phase') + labs(title = "10X All Cells UMAP By Cell Cycle Phase")
+
+umap <- umap1 + umap2 + umap3 + umap4
+ggsave(plot = umap, filename = "10X_All_UMAP", path = "jesslyn_plots/cohort1/All")
+```
+
+### STEP 2C VISUALIZE METADATA IDENTITIES FOR MALIGNANT CELLS 
+
+```{r metadata umap - malignant cells, message = FALSE, warning = FALSE, fig.align = 'center', fig.width=20}
+
+#umap by sample
+malumap1 <- UMAPPlot(cohort1Malignant, group.by="sample.ID") + labs(title = "10X Malignant Cells UMAP by Sample")
+
+#umap by treatment
+malumap2 <- UMAPPlot(cohort1Malignant, group.by="treatment.status") + labs(title = "10X Malignant Cells UMAP by Treatment Status")
+
+#umap by cell cycle phase
+malumap3 <- UMAPPlot(cohort1Malignant, group.by="Phase") + labs(title = "10X Malignant Cells UMAP by Cell Cycle Phase")
+
+malumap <- malumap1 + malumap2 + malumap3
+ggsave(plot = malumap, filename = "10X_Mal_UMAP", path = "jesslyn_plots/cohort1_Malignant")
+```
+

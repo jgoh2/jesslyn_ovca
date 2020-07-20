@@ -1,0 +1,136 @@
+---
+title: "Izar 2020 10X (Cohort 1) DE Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/19/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 10X (COHORT 1) DATA ANALYSIS - PART 2
+
+### OVERVIEW
+* This is the second part of our 3-part analysis of the Izar 2020 10X (Cohort 1) data. 
+* The 10X data consists of **CD45+ depleted 8 ascites samples from 6 patients** 
+    - Includes both **malignant** and **nonmalignant** populations: Provides a broad view of the diverse cell types in the ascites ecosystem
+    - We are only interested in the **malignant** ascites population
+
+* We split our 10X analysis into three parts: 
+    1. Loading and Processing Data
+    2. Visualizing Clusters (PCA and UMAP)
+    3. **DE Analysis (Focus on Malignant Cells)**
+        a. Load Processed Seurat Objects
+        b. DE Analysis Type #1. Find Individual DE Genes
+            i. Call FindMarkers on **cohort1Malignant** by **treatment.status**
+            ii. Visualize results using: 
+                  - Heatmap
+                  - Volcano Plot
+        c. DE Analysis Type #2. Evaluate DE Hallmark Genesets 
+            i. Call FindMarkers and rank genes for GSEA 
+
+### STEP 3A. LOAD AND SUBSET SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+cohort1Malignant = readRDS("data/Izar_2020/jesslyn_cohort1Malignant_processed.RDS")
+
+# Read in gene lists
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+if(!dir.exists("jesslyn_plots/cohort1/Malignant")){dir.create("jesslyn_plots/cohort1/Malignant")}
+```
+
+### STEP 3B.I CALL FINDMARKERS 
+**not sure which statistical test to use yet**
+
+```{r FindMarkers, message=FALSE, warning=FALSE}
+tn.oc.markers <- FindMarkers_code(cohort1Malignant, group.by = "treatment.status", group.1 = "Treatment-naïve", group.2 = "After 1 cycle of chemotherapy")
+rownames(tn.oc.markers) <- tn.oc.markers$rowname
+
+tn.ot.markers <- FindMarkers_code(cohort1Malignant, group.by = "treatment.status", group.1 = "Treatment-naïve", group.2 = "On-treatment")
+rownames(tn.ot.markers) <- tn.ot.markers$rowname
+
+oc.ot.markers <- FindMarkers_code(cohort1Malignant, group.by = "treatment.status", group.1 = "After 1 cycle of chemotherapy", group.2 = "On-treatment")
+rownames(oc.ot.markers) <- oc.ot.markers$rowname
+```
+
+### STEP 3B.II VISUALIZE RESULTS 
+```{r visualize FindMarkers results, message=FALSE, warning = FALSE, fig.align='center', fig.width = 20, fig.height=10}
+#treatment naive vs. one cycle of chemotherapy 
+tn.oc.volcano <- DEAnalysis_code(cohort1Malignant, markers = tn.oc.markers, 
+    group.by = "treatment.status", group.1 = "Treatment-naïve", group.2 = "After 1 cycle of chemotherapy", graph = TRUE) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+tn.oc.volcano.oxphos <- DEAnalysis_code(cohort1Malignant, markers = tn.oc.markers, 
+    group.by = "treatment.status", group.1 = "Treatment-naïve", 
+    group.2 = "After 1 cycle of chemotherapy", geneset = hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]]) +
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+tn.oc.volcano.upr <- DEAnalysis_code(cohort1Malignant, markers = tn.oc.markers, 
+    group.by = "treatment.status", group.1 = "Treatment-naïve", 
+    group.2 = "After 1 cycle of chemotherapy", geneset = hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]]) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+
+tn.oc.volcano.all <- tn.oc.volcano + tn.oc.volcano.oxphos + tn.oc.volcano.upr
+tn.oc.volcano.all
+ggsave(plot = tn.oc.volcano.all, filename = "10X_Mal_TNvsOC_Volcano.png", path = "jesslyn_plots/cohort1/Malignant", width = 20, height = 10)
+
+#treatment naive vs. on-treatment 
+tn.ot.volcano <- DEAnalysis_code(cohort1Malignant, markers = tn.ot.markers, 
+    group.by = "treatment.status", group.1 = "Treatment-naïve", group.2 = "On-treatment", 
+    graph = TRUE) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+tn.ot.volcano.oxphos <- DEAnalysis_code(cohort1Malignant, markers = tn.ot.markers, 
+    group.by = "treatment.status", group.1 = "Treatment-naïve", 
+    group.2 = "On-treatment", geneset = hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]]) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+tn.ot.volcano.upr <- DEAnalysis_code(cohort1Malignant, markers = tn.ot.markers, 
+    group.by = "treatment.status", group.1 = "Treatment-naïve", 
+    group.2 = "On-treatment", geneset = hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]]) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+
+tn.ot.volcano.all <- tn.ot.volcano + tn.ot.volcano.oxphos + tn.ot.volcano.upr
+tn.ot.volcano.all
+ggsave(plot = tn.ot.volcano.all, filename = "10X_Mal_TNvsOT_Volcano.png", path = "jesslyn_plots/cohort1/Malignant", width =20, height = 10)
+
+#one cycle of chemotherapy vs. on-treatment
+oc.ot.volcano <- DEAnalysis_code(cohort1Malignant, markers = oc.ot.markers, 
+    group.by = "treatment.status", group.1 = "After 1 cycle of chemotherapy", group.2 = "On-treatment", graph = TRUE) +
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+oc.ot.volcano.oxphos <- DEAnalysis_code(cohort1Malignant, markers = oc.ot.markers, 
+    group.by = "treatment.status", group.1 = "After 1 cycle of chemotherapy", 
+    group.2 = "On-treatment", geneset = hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]]) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+oc.ot.volcano.upr <- DEAnalysis_code(cohort1Malignant, markers = oc.ot.markers, 
+    group.by = "treatment.status", group.1 = "After 1 cycle of chemotherapy", 
+    group.2 = "On-treatment", geneset = hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]]) + 
+    theme(plot.title = element_text(size = 8), plot.subtitle = element_text(size = 8))
+
+oc.ot.volcano.all <- oc.ot.volcano + oc.ot.volcano.oxphos + oc.ot.volcano.upr
+oc.ot.volcano.all
+ggsave(plot = oc.ot.volcano.all, filename = "10X_Mal_OCvsOT_Volcano.png", path = "jesslyn_plots/cohort1/Malignant", width = 20, height = 10)
+```
+
+### STEP 4A.I GSEA
+**still not sure if we should rank by AUC or logFC, will edit this part after we decide**
