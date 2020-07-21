@@ -71,9 +71,9 @@
     },
     "DelayedArray": {
       "Package": "DelayedArray",
-      "Version": "0.14.0",
+      "Version": "0.14.1",
       "Source": "Bioconductor",
-      "Hash": "8c3ce65b8535566d01499971a054d7ce"
+      "Hash": "8430a6ec606d0d92198ff107f1d98261"
     },
     "EnhancedVolcano": {
       "Package": "EnhancedVolcano",
@@ -219,10 +219,10 @@
     },
     "RcppArmadillo": {
       "Package": "RcppArmadillo",
-      "Version": "0.9.900.1.0",
+      "Version": "0.9.900.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "9fcf8f42726ef53839d9b1d5ca44285f"
+      "Hash": "8845285b6151967fb0d95678b7eee11a"
     },
     "RcppEigen": {
       "Package": "RcppEigen",
@@ -375,10 +375,10 @@
     },
     "bit64": {
       "Package": "bit64",
-      "Version": "0.9-7",
+      "Version": "0.9-7.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "3338d4a9b1352f5a613e2bdcefe784ea"
+      "Hash": "41dbb29d3c0d62c53b03fef11cdb0f09"
     },
     "bitops": {
       "Package": "bitops",
@@ -1307,8 +1307,8 @@
       "RemoteRepo": "presto",
       "RemoteUsername": "immunogenomics",
       "RemoteRef": "master",
-      "RemoteSha": "7f63f9606953f8ab643809fad6eb4daea7c471d0",
-      "Hash": "a77d29a4ba190660c675b3942642b157"
+      "RemoteSha": "052085db9c88aa70a28d11cc58ebc807999bf0ad",
+      "Hash": "bf01a4a8947398ef32d019e8d8282222"
     },
     "prettyunits": {
       "Package": "prettyunits",
@@ -1646,10 +1646,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.3.1",
+      "Version": "0.3.2",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "1739235995f08583db4095a28c357207"
+      "Hash": "5ba3006888ac62fd5e97b208d00d3317"
     },
     "viridisLite": {
       "Package": "viridisLite",

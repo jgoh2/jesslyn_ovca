@@ -10,7 +10,7 @@ library(vroom)
 library(glue)
 library(beepr)
 
-# read in files
+# read in files for scoring, etc -----------
 hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
 pat_info = read_excel("data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
 clust_cell_10x = read_excel("data/Izar_2020/Table_S2.xlsx", skip = 2)[1,] %>% 
@@ -20,6 +20,7 @@ clust_cell_10x$clst = as.numeric(clust_cell_10x$clst)
 clust_cell_SS2 = data.frame(clst = c(1,2,3,4,5,6,7,8,9),
                             cell.type = c(rep("Malignant",6),"Fibroblast","Macrophage","Malignant"))
 
+# 10x data --------------------
 # read and save 10x data to Seurat object 
 data_10x = vroom("data/Izar_2020/GSE146026_Izar_HGSOC_ascites_10x_log.tsv.gz")
 data_10x = column_to_rownames(data_10x, "Cell_ID")
@@ -64,11 +65,14 @@ seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, pnt)$`Treat
 samp = data.frame(sample.ID = as.numeric(c("1976", "3250", "3250.1", "3266", "3281", "3288", "3288.1", "3290")),
                   new.sample.ID = c("1","2.0","2.1","3","4","5.0","5.1","6"))
 seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, samp)$new.sample.ID, col.name = "sample.ID")
+## Jesslyn AddModuleScore here!
+
 # Save and clear memory
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_10x.RDS")
 rm(seurat_obj)
 rm(data_10x)
 
+# SS2 data ----------------
 # read and save SS2 data to Seurat object 
 data_SS2 = vroom("data/Izar_2020/GSE146026_Izar_HGSOC_ascites_SS2_log.tsv.gz")
 data_SS2 = column_to_rownames(data_SS2, "Cell_ID")
@@ -99,13 +103,14 @@ new_meta$`Treatment status of sample`[new_meta$Time == 0] = "Treatment-naïve"
 seurat_obj = AddMetaData(seurat_obj, new_meta$`Treatment status of sample`, col.name = "treatment.status")
 ## cell type
 seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell_SS2)$cell.type, col.name = "cell.type")
-
+## Jesslyn AddModuleScore here!
 
 # Save and clear memory
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_SS2.RDS")
 rm(seurat_obj)
 rm(data_SS2)
 
+# PDX data ------------
 # read and save SS2 data to Seurat object 
 data_PDX = vroom("data/Izar_2020/PDX_OvCa_processed.txt.gz")
 data_PDX = column_to_rownames(data_PDX, "...1")
@@ -139,7 +144,11 @@ hkgenes.found = which(toupper(rownames(seurat_obj[["RNA"]]@data)) %in% hkgenes)
 n.expressed.hkgenes <- seurat_obj[["RNA"]]@data[hkgenes.found, ] > 0 
 seurat_obj <- AddMetaData(object = seurat_obj, metadata = Matrix::colSums(n.expressed.hkgenes), col.name = "n.exp.hkgenes")
 seurat_obj[["percent.mt"]] <- PercentageFeatureSet(object = seurat_obj, pattern = "^MT-")
+## Jesslyn AddModuleScore here!
+
 
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_PDX.RDS")
+rm(seurat_obj)
+rm(data_SS2)
 
 beep(4)
