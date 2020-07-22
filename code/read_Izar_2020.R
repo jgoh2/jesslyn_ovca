@@ -11,7 +11,7 @@ library(glue)
 library(beepr)
 
 # read in files for scoring, etc -----------
-hkgenes = read_lines("gene_lists/tirosh_house_keeping.txt", skip = 2)
+hkgenes = read_lines("data/gene_lists/tirosh_house_keeping.txt", skip = 2)
 pat_info = read_excel("data/Izar_2020/Table_S1_FINAL_Rev3.xlsx")
 clust_cell_10x = read_excel("data/Izar_2020/Table_S2.xlsx", skip = 2)[1,] %>% 
   t() %>% as_tibble() %>% filter(V1 != "Cell type") %>% rownames_to_column()
@@ -19,6 +19,21 @@ names(clust_cell_10x) = c("clst","cell.type")
 clust_cell_10x$clst = as.numeric(clust_cell_10x$clst)
 clust_cell_SS2 = data.frame(clst = c(1,2,3,4,5,6,7,8,9),
                             cell.type = c(rep("Malignant",6),"Fibroblast","Macrophage","Malignant"))
+
+#read in hallmarks and cell cycle genes for scoring
+# Read in ccgenes
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
 
 # 10x data --------------------
 # read and save 10x data to Seurat object 
@@ -66,6 +81,8 @@ samp = data.frame(sample.ID = as.numeric(c("1976", "3250", "3250.1", "3266", "32
                   new.sample.ID = c("1","2.0","2.1","3","4","5.0","5.1","6"))
 seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, samp)$new.sample.ID, col.name = "sample.ID")
 ## Jesslyn AddModuleScore here!
+seurat_obj <- AddModuleScore(seurat_obj, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+seurat_obj<- CellCycleScoring(seurat_obj, g2m.features = g2m.genes, s.features = s.genes)
 
 # Save and clear memory
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_10x.RDS")
@@ -104,6 +121,8 @@ seurat_obj = AddMetaData(seurat_obj, new_meta$`Treatment status of sample`, col.
 ## cell type
 seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell_SS2)$cell.type, col.name = "cell.type")
 ## Jesslyn AddModuleScore here!
+seurat_obj <- AddModuleScore(seurat_obj, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+seurat_obj<- CellCycleScoring(seurat_obj, g2m.features = g2m.genes, s.features = s.genes)
 
 # Save and clear memory
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_SS2.RDS")
@@ -111,7 +130,7 @@ rm(seurat_obj)
 rm(data_SS2)
 
 # PDX data ------------
-# read and save SS2 data to Seurat object 
+# read and save PDX data to Seurat object 
 data_PDX = vroom("data/Izar_2020/PDX_OvCa_processed.txt.gz")
 data_PDX = column_to_rownames(data_PDX, "...1")
 pnt = list("MRD" = c(496,926,504,530,493,495),
@@ -144,11 +163,13 @@ hkgenes.found = which(toupper(rownames(seurat_obj[["RNA"]]@data)) %in% hkgenes)
 n.expressed.hkgenes <- seurat_obj[["RNA"]]@data[hkgenes.found, ] > 0 
 seurat_obj <- AddMetaData(object = seurat_obj, metadata = Matrix::colSums(n.expressed.hkgenes), col.name = "n.exp.hkgenes")
 seurat_obj[["percent.mt"]] <- PercentageFeatureSet(object = seurat_obj, pattern = "^MT-")
-## Jesslyn AddModuleScore here!
 
+## Jesslyn AddModuleScore here!
+seurat_obj <- AddModuleScore(seurat_obj, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
+seurat_obj<- CellCycleScoring(seurat_obj, g2m.features = g2m.genes, s.features = s.genes)
 
 saveRDS(seurat_obj, "data/Izar_2020/Izar_2020_PDX.RDS")
 rm(seurat_obj)
-rm(data_SS2)
+rm(data_PDX)
 
 beep(4)

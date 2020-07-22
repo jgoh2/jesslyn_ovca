@@ -16,11 +16,10 @@ knitr::opts_chunk$set(echo = TRUE)
 options(width=120)
 ```
 
-# IZAR 2020 PDX (COHORT 3) DATA ANALYSIS - PART 1 & 2
+# IZAR 2020 PDX (COHORT 3) DATA ANALYSIS - PART 2
 
 ### OVERVIEW
-* This is the first and second part of our 3-part analysis of the Izar 2020 PDX (Cohort 3) data. 
-* The PDX data consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
+* The PDX data from Izar2020 consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
     - DF20 (BRCA WT treatment-naive, clinically platinum sensitive) 
     - DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant) 
     - DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant) 
@@ -29,24 +28,46 @@ options(width=120)
     - Carboplatin (treated with IP carboplatin) 
         * Carboplatin-treated mice for minimal residual disease (**MRD**) group were harvested for scRNA-seq 
         * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
-
+* In our 3-part analysis of the Izar 2020 PDX data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** each model. 
 * We split our PDX analysis into three parts: 
-    1. **Loading and Processing Data**
-        a. Load in the normalized but uncentered PDX Seurat Object 
-        b. Set levels and examine metrics
-        c. Subset the PDX Seurat Object for each model (All, DF20, DF101, DF68), process and Analyze **each model separately**. 
-        d. Scale and center data for each model (do.scale = do.center = T)
-        e. AddModuleScore for each hallmark and AddCellCycleScore 
-        f. Dimensionality reduction (PCA) and UMAPP 
-    2. **Visualizing Clusters (UMAP)**
-        a. Intermodel heterogeneity: How do cells separate by model? 
-        b. Intramodel heterogeneity: 
-            i. How do cells separate by treament status? 
-            ii. How do cells separate by cell cycle phase? 
-        c. Save Seurat Objects
-    3. DE Analysis 
+    1. **Load Data and Create PDX Seurat Object**
+        a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+            i. Load in PDX count matrix and Create Seurat Object 
+            ii. Assign Metadata identities including: 
+                - Mouse ID 
+                - Model ID 
+                - Treatment Status 
+            iii. Score cells for **cell cycle** and **hallmark genesets** 
+                - **Note**: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the **data** slot. 
+            iv. Save Seurat Object
+          
+    2. **Process Data and Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **03_Izar2020_PDX_Load** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in PDX Seurat Object from Part 1 and **subset by model**. Continue analysis separately for each model. 
+            ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
+            iii. Dimensionality Reduction (PCA + UMAP)
+            iv. Visualize how cells separate based on metadata identities via UMAP 
+                  - Intermodel heterogeneity: How do cells separate by model? 
+                  - Intramodel heterogeneity: 
+                      * How do cells separate by treament status? 
+                      * How do cells separate by cell cycle phase? 
+            v. Compute summary metrics for PDX data such as:
+                - Number of cells per model per treatment 
+                - Number of cells per treatment per cell cycle phase 
+            vi. Save Seurat Objects 
+            
+    3. **DE Analysis**
+        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+            i. Violin Plots and UMAP 
+            ii. Gene Set Enrichment Analysis (GSEA)
+        b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
+            i. Volcano Plots 
+        c. **CELL CYCLE ANALYSIS**
+            i. Evaluate the idea that cell cycle might influence expression of signatures 
 
-### STEP 1A LOAD SEURAT OBJECT AND GENESETS
+This is the second part of our 3-part analysis of the Izar 2020 PDX (Cohort 3) data. 
+
+### STEP 1 LOAD SEURAT OBJECT AND GENESETS
 
 ```{r init, message = FALSE, warning = FALSE}
 # Load packages
@@ -70,7 +91,7 @@ for(hm in hallmark_names){
 }
 ```
 
-### STEP 1B SET LEVELS AND EXAMINE METRICS
+### STEP 2 SET LEVELS AND EXAMINE METRICS
 ```{r metrics, message=FALSE, warning=FALSE, fig.align='center'}
 PDX_All$treatment.status = factor(PDX_All$treatment.status, levels = c("vehicle", "MRD", "relapse"))
 PDX_All$model_ID = factor(PDX_All$model_ID, levels = c("DF20", "DF101", "DF68"))
@@ -94,14 +115,14 @@ seurat_tab(PDX_All, col_var = "model_ID", row_var = "treatment.status", title = 
   gtsave("PDX_numCellsPerTreatmentPerModel.png", path = "jesslyn_plots/PDX")
 ```
 
-### STEP 1C SUBSET SEURAT OBJECT
+### STEP 3 SUBSET SEURAT OBJECT bY MODEL
 ```{r subset, message=FALSE, warning=FALSE}
 PDX_DF20 <- subset(PDX_All, subset = (model_ID == "DF20"))
 PDX_DF101 <- subset(PDX_All, subset = (model_ID == "DF101"))
 PDX_DF68 <- subset(PDX_All, subset = (model_ID == "DF68"))
 ```
 
-### STEP 1D SCALE EACH SEURAT OBJECT + PREPARE FOR PCA
+### STEP 4 SCALE EACH SEURAT OBJECT + PREPARE FOR PCA
 ```{r scale, message=FALSE, warning=FALSE}
 #scale data
 PDX_All <- ScaleData(PDX_All, features = rownames(PDX_All), do.scale = T, do.center = T)
@@ -116,25 +137,7 @@ PDX_DF101 <- FindVariableFeatures(PDX_DF101, selection.method = "vst")
 PDX_DF68 <- FindVariableFeatures(PDX_DF68, selection.method = "vst")
 ```
 
-### STEP 1E SCORE CELLS 
-Scoring each cell by their level expression of all the genes in a specified geneset. Prepares for future DE analysis of GO hallmarks. 
-```{r cell scoring, message = FALSE, warning=FALSE}
-# cell cycle scoring 
-PDX_All <- CellCycleScoring(PDX_All, g2m.features = g2m.genes, s.features = s.genes)
-PDX_DF20 <- CellCycleScoring(PDX_DF20, g2m.features = g2m.genes, s.features = s.genes)
-PDX_DF101 <- CellCycleScoring(PDX_DF101, g2m.features = g2m.genes, s.features = s.genes)
-PDX_DF68 <- CellCycleScoring(PDX_DF68, g2m.features = g2m.genes, s.features = s.genes)
-
-#hallmark scoring
-PDX_All <- AddModuleScore(PDX_All, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
-PDX_DF20 <- AddModuleScore(PDX_DF20, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
-PDX_DF101 <- AddModuleScore(PDX_DF101, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
-PDX_DF68 <- AddModuleScore(PDX_DF68, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
-
-beep(3)
-```
-
-### STEP 1F DIMENSIONALITY REDUCTION
+### STEP 5 DIMENSIONALITY REDUCTION
 This step helps reduce all of our features to ones that contribute most to the variability between cells. 
   1) We would first need to find the Variable Features by running FindVariableFeatures 
   2) run PCA 
@@ -152,7 +155,7 @@ PDX_DF101<- RunUMAP(PDX_DF101, dims=1:15)
 PDX_DF68<- RunUMAP(PDX_DF68, dims=1:15)
 ```
 
-### STEP 2A-B. VISUALIZE METADATA WITH UMAP 
+### STEP 6 VISUALIZE METADATA WITH UMAP 
 ```{r umap, message=FALSE, warning=FALSE, fig.align='center'}
 #cluster by model? 
 UMAPPlot(PDX_All, group.by = "model_ID")
@@ -169,7 +172,7 @@ UMAPPlot(PDX_DF68, group.by = "treatment.status")
 ggsave("DF68_UMAP.png", path = "jesslyn_plots/PDX_test")
 ```
 
-### STEP 2C. SAVE SEURAT OBJECT
+### STEP 7 SAVE SEURAT OBJECT
 ```{r save RDS}
 saveRDS(PDX_All, file="data/Izar_2020/test/jesslyn_PDX_All_processed.RDS")
 saveRDS(PDX_DF20, file="data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")

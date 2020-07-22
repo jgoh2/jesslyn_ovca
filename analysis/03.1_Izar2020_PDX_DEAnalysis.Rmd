@@ -16,11 +16,10 @@ knitr::opts_chunk$set(echo = TRUE)
 options(width=120)
 ```
 
-# IZAR 2020 PDX (COHORT 3) DATA ANALYSIS - PART 3
+# IZAR 2020 PDX (COHORT 3) DATA DIFFERANTIAL EXPRESISON ANALYSIS 
 
 ### OVERVIEW
-* This is the third of our 3-part analysis of the Izar 2020 PDX (Cohort 3) data. 
-* The PDX data consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
+* The PDX data from Izar2020 consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
     - DF20 (BRCA WT treatment-naive, clinically platinum sensitive) 
     - DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant) 
     - DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant) 
@@ -29,16 +28,45 @@ options(width=120)
     - Carboplatin (treated with IP carboplatin) 
         * Carboplatin-treated mice for minimal residual disease (**MRD**) group were harvested for scRNA-seq 
         * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
-
+* In our 3-part analysis of the Izar 2020 PDX data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** each model. 
 * We split our PDX analysis into three parts: 
-    1. Loading and Processing Data
-    2. Visualizing Clusters (UMAP)
+    1. **Load Data and Create PDX Seurat Object**
+        a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+            i. Load in PDX count matrix and Create Seurat Object 
+            ii. Assign Metadata identities including: 
+                - Mouse ID 
+                - Model ID 
+                - Treatment Status 
+            iii. Score cells for **cell cycle** and **hallmark genesets** 
+                - **Note**: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the **data** slot. 
+            iv. Save Seurat Object
+          
+    2. **Process Data and Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **03_Izar2020_PDX_Load** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in PDX Seurat Object from Part 1 and **subset by model**. Continue analysis separately for each model. 
+            ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
+            iii. Dimensionality Reduction (PCA + UMAP)
+            iv. Visualize how cells separate based on metadata identities via UMAP 
+                  - Intermodel heterogeneity: How do cells separate by model? 
+                  - Intramodel heterogeneity: 
+                      * How do cells separate by treament status? 
+                      * How do cells separate by cell cycle phase? 
+            v. Compute summary metrics for PDX data such as:
+                - Number of cells per model per treatment 
+                - Number of cells per treatment per cell cycle phase 
+            vi. Save Seurat Objects 
+            
     3. **DE Analysis**
-        a. Load in Seurat Objects
-        b. **Type #1 DE Analysis**: Finding DE Genes from scratch and evaluate if they make up a GO term collectively using **Volcano Plots**
-        c. **Type #2 DE Analysis**: Visualizing and Quantifying DE on **predefined** GO Genesets through: 
-            i. Violin and Dot Plots 
+        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+            i. Violin Plots and UMAP 
             ii. Gene Set Enrichment Analysis (GSEA)
+        b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
+            i. Volcano Plots 
+        c. **CELL CYCLE ANALYSIS**
+            i. Evaluate the idea that cell cycle might influence expression of signatures 
+
+This is the third part of our 3-part analysis of the Izar 2020 PDX (Cohort 3) data. 
+### DIFFERENTIAL EXPRESSION ANALYSIS IN-DEPTH EXPLANATION 
 
 
 ### STEP 3A. LOAD IN SEURAT OBJECTS AND GENESETS 
