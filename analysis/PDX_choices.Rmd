@@ -28,7 +28,7 @@ Every choice we make along our RNA-seq analysis pipeline will affect the results
 2. Scoring Cells (AddModuleScore)
     i) Which Seurat slot does AddModuleScore use by default? --> normalized but unscaled "data" slot
     ii) Should we call AddModuleScore first or subset by model first? -> Same results
-    iii) Which slot should we use for AddModuleScore? 
+    iii) Which slot should we use for AddModuleScore? -> score with "data", center afterward
           A) "data" slot 
           B) "scale.data" slot 
           C) score with "data" slot, the center the scores 
@@ -37,6 +37,7 @@ Every choice we make along our RNA-seq analysis pipeline will affect the results
     i) How do our decisions for FindMarkers (slot and statistical test) affect our results for: 
         A) Identification of individual DE Genes (Volcano Plot) 
         B) Geneset enrichment analysis (GSEA)
+    ii) What metric should we use to rank our genes? (logFC vs. AUC)
 
 ```{r init, message = FALSE}
 # Load packages
