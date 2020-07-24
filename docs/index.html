@@ -13,7 +13,6 @@
 
 <title>Home</title>
 
-<script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
@@ -34,8 +33,6 @@ div.section {
   padding-top: 12px;
 }
 </style>
-
-
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -348,7 +345,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-15
+<strong>Last updated:</strong> 2020-07-24
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -379,16 +376,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3ed7449be8b4b69c58dbe8ad917a57902fd7b1d3targetblank3ed7449a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3ed7449be8b4b69c58dbe8ad917a57902fd7b1d3" target="_blank">3ed7449</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree2b6116dfa34b8b875fa6fe6e26c9a9279af32e0ftargetblank2b6116da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/2b6116dfa34b8b875fa6fe6e26c9a9279af32e0f" target="_blank">2b6116d</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3ed7449be8b4b69c58dbe8ad917a57902fd7b1d3targetblank3ed7449a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree2b6116dfa34b8b875fa6fe6e26c9a9279af32e0ftargetblank2b6116da" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3ed7449be8b4b69c58dbe8ad917a57902fd7b1d3" target="_blank">3ed7449</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/2b6116dfa34b8b875fa6fe6e26c9a9279af32e0f" target="_blank">2b6116d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -399,10 +396,15 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/.DS_Store
+    Ignored:    code/.DS_Store
     Ignored:    data/.DS_Store
     Ignored:    data/HTAPP/
     Ignored:    data/Izar_2020/
+    Ignored:    data/gene_lists/.DS_Store
+    Ignored:    jesslyn_plots/
+    Ignored:    mike_plots/
     Ignored:    old/.DS_Store
+    Ignored:    renv/.DS_Store
     Ignored:    renv/library/
     Ignored:    renv/python/
     Ignored:    renv/staging/
@@ -447,6 +449,40 @@ Message
 <tbody>
 <tr>
 <td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2b6116dfa34b8b875fa6fe6e26c9a9279af32e0f/analysis/index.Rmd" target="_blank">2b6116d</a>
+</td>
+<td>
+Mike Cuoco
+</td>
+<td>
+2020-07-24
+</td>
+<td>
+added 03.1_Izar2020_PDX_DEAnalysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/00588156e0b552404a4f77f65893827f117c78da/docs/index.html" target="_blank">0058815</a>
+</td>
+<td>
+Mike Cuoco
+</td>
+<td>
+2020-07-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
 html
 </td>
 <td>
@@ -456,7 +492,7 @@ html
 Mike Cuoco
 </td>
 <td>
-2020-07-14
+2020-07-15
 </td>
 <td>
 add workflowr website
@@ -473,7 +509,7 @@ Rmd
 Mike Cuoco
 </td>
 <td>
-2020-07-14
+2020-07-15
 </td>
 <td>
 add project description
@@ -490,7 +526,7 @@ Rmd
 Mike Cuoco
 </td>
 <td>
-2020-07-13
+2020-07-14
 </td>
 <td>
 Start workflowr project.
@@ -508,6 +544,7 @@ Start workflowr project.
 <p>The purpose of this project is to identify gene expression signatures from ovarian cancer RNA-seq data that are associated with a drug tolerant state that is characteristic of cancer persister cells.</p>
 <ol style="list-style-type: decimal">
 <li><a href="data_summary.html">A summary of the data from Izar 2020 et al.</a></li>
+<li><a href="03.1_Izar2020_PDX_DEAnalysis.html">PDX DE analysis</a></li>
 </ol>
 </div>
 <div id="credits" class="section level2">
@@ -527,8 +564,6 @@ footer is added to webpages before the MathJax javascript. -->
     "HTML-CSS": { availableFonts: ["TeX"] }
   });
 </script>
-
-
 
 
 
