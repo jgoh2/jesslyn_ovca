@@ -113,15 +113,18 @@ PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names))
-names(hallmark.list) <- hallmark_names
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 2)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
 }
 
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(PDX_All@meta.data)[9:44]
+hm.names <- names(PDX_All@meta.data)[9:46]
 
 for(i in hm.names){
     DF20.hm.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
@@ -156,7 +159,10 @@ names(UMAP.plots) <- PDX.names
 
 for (i in 1:length(PDXs)){
   obj <- PDX.names[[i]]
-  umap <- UMAPPlot(PDXs[[i]], group.by = "treatment.status") + labs(title = glue("{obj} UMAP by Treatment"))
+  numCells = nrow(PDXs[[i]]@meta.data)
+  umap <- UMAPPlot(PDXs[[i]], group.by = "treatment.status") + 
+    labs(title = glue("{obj} UMAP by Treatment"), subtitle = glue("Number of cells in {obj}: {numCells}"))+
+    theme(plot.subtitle = element_text(size = 8))
   p <- FeaturePlot(PDXs[[i]], features = hms.centered, combine = FALSE)
   p[[1]] <- p[[1]] + labs(title = glue("{obj} UMAP by Oxphos Scores"))
   p[[2]] <- p[[2]] + labs(title = glue("{obj} UMAP by UPR Scores"))
@@ -183,9 +189,18 @@ names(Vln.plots) <- PDX.names
 
 for (i in 1:length(PDXs)){
   obj <- PDX.names[[i]]
-  p <- VlnPlot(PDXs[[i]], features = hms.centered, group.by = "treatment.status", combine = F)
-  p[[1]] <- p[[1]] + labs(title = glue("OXPHOS scores across treatment in {obj}"), x = obj) + geom_boxplot(show.legend = FALSE)
-  p[[2]] <- p[[2]] + labs(title = glue("UPR scores across treatment in {obj}"), x = obj) + geom_boxplot(show.legend = FALSE)
+  numCells <- nrow(PDXs[[i]]@meta.data)
+  p <- VlnPlot(PDXs[[i]], features = hms.centered, group.by = "treatment.status", pt.size = 0, combine = F)
+  p[[1]] <- p[[1]] + labs(title = glue("OXPHOS scores across treatment in {obj}"), x = obj, subtitle = glue("Number of cells in {obj}: {numCells}"), caption = "www.gsea-msigdb.org: HALLMARK_OXIDATIVE_PHOSPHORYLATION") +
+    theme(plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDXs[[i]]$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDXs[[i]]$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDXs[[i]]$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p[[2]] <- p[[2]] + labs(title = glue("UPR scores across treatment in {obj}"), x = obj, caption = "www.gsea-msigdb.org: HALLMARK_UNFOLDED_PROTEIN_RESPONSE") +
+    theme(plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
   p <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
   
   Vln.plots[[obj]] <- p
@@ -200,7 +215,7 @@ Vln.plots[["DF68"]]
     - We observe differences in hallmark scores across treatment conditions: 
         * Results from **DF20** seems to agree with our hypothesis where cells in **MRD** express enriched levels of **OXPHOS and UPR** genes in comparison to the other two conditions. 
         * Results from **DF101** reveal a clear enrichment of **OXPHOS** genes in the **vehicle** treatment condition, which does not support our hypothesis. It also seems like cells in **relapse** express higher levels of **UPR** genes in comparison to the other two conditions, which also does not support our hypothesis. 
-        * Results from **DF68** shows a slight enrichment of **OXPHOS** genes and a slight depltetion of **UPR** genes in **MRD**. 
+        * Results from **DF68** shows a slight enrichment of **OXPHOS** genes and a slight depletion of **UPR** genes in **MRD**. 
     - We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the **wilcoxon rank sum test**
 ```{r DEAnalysis1 Statistical test, message = FALSE, warning = FALSE}
 #DF20 ---------------------------------
@@ -271,11 +286,146 @@ DT::datatable(all.DF) %>%
 ```
 
 * **CONCLUSIONS**
-    - The only statistically significant difference (p < 0.05) in hallmark scores is between treatment conditions within model **DF101** for **OXPHOS**. 
-    - However, the trends found in DF101 do not agree with our hypothesis that cells in **MRD** differentially enrich OXPHOS genes) : 
-        * DF101 reveals an enrichment of **OXPHOS** genes in the **vehicle** treatment condition in comparison to the other two conditions. 
+    - The only statistically significant difference (p < 0.05) in hallmark scores is between treatment conditions within model **DF101** for **OXPHOS** 
+    - **Vehicle > MRD > Relapse**
+    - However, the trends found in DF101 do not agree with our hypothesis that cells in **MRD** differentially enrich OXPHOS genes)
 
-Considering how our approach with analyzing and comparing **module score** did not support our hypothesis, we now try to confirm our results with our second appraoch: **GSEA**
+Considering how we did not obtain statistically significant results from these genesets, we looked for other **OXPHOS** genesets to confirm our results. The **OXPHOS** genesets that we test are listed as follows:
+
+    - HALLMARK_OXIDATIVE_PHOSPHORYLATION (200 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/HALLMARK_OXIDATIVE_PHOSPHORYLATION (**used above**)
+    - GO_OXIDATIVE_PHOSPHORYLATION (144 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/GO_OXIDATIVE_PHOSPHORYLATION 
+    - KEGG_OXIDATIVE_PHOSPHORYLATION (131 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/KEGG_OXIDATIVE_PHOSPHORYLATION
+
+```{r oxphosGS, message=FALSE, warning=FALSE, fig.align='center', fig.width=20, fig.height=10}
+oxphos.centered <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered", "GO.OXPHOS35.centered", "KEGG.OXPHOS36.centered")
+PDX.names <- c("DF20", "DF101", "DF68")
+PDXs <- c(PDX_DF20, PDX_DF101, PDX_DF68)
+Oxphos.Vln.plots <- vector("list", length(PDXs))
+names(Oxphos.Vln.plots) <- PDX.names
+
+for (i in 1:length(PDXs)){
+  obj <- PDXs[[i]]
+  name <- PDX.names[[i]]
+  numCells <- nrow(PDXs[[i]]@meta.data)
+  
+  p <- VlnPlot(obj, features = oxphos.centered, group.by = "treatment.status", pt.size = 0, combine = F)
+  p[[1]] <- p[[1]] + labs(title = glue("{name} HALLMARK_OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = "HALLMARK_OXIDATIVE_PHOSPHORYLATION") +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(obj$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == "MRD"), "cells"), x = "MRD", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == "relapse"), "cells"), x = "relapse", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p[[2]] <- p[[2]] + labs(title = glue("{name} GO_OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = "GO_OXIDATIVE_PHOSPHORYLATION") +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  
+  p[[3]] <- p[[3]] + labs(title = glue("{name} KEGG_OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = "KEGG_OXIDATIVE_PHOSPHORYLATION") +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  
+  p <- p[[1]] + p[[2]] + p[[3]] + plot_layout(guides= 'collect')
+  
+  Oxphos.Vln.plots[[name]] <- p
+}
+
+Oxphos.Vln.plots[["DF20"]]
+Oxphos.Vln.plots[["DF101"]]
+Oxphos.Vln.plots[["DF68"]]
+```
+
+* **OBSERVATIONS**
+    - The overall trend we see between treatment groups within each model is the same across all three oxphos genesets. However, it seems like the difference in scores is most obvious/drastic when using the **KEGG** geneset. 
+    - We now test for the statistical significance of using each geneset to test whether using the other two genesets would give us more statistically significant results. 
+    
+```{r oxphosStat, message=FALSE, warning=FALSE}
+#DF20 ---------------------------------
+DF20.hm.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF20.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF20.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF20.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value
+)
+
+DF20.go.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.vehicle$GO.OXPHOS35.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF20.kegg.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value,
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#DF101 ---------------------------------
+
+DF101.hm.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF101.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF101.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF101.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value
+)
+
+DF101.go.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.vehicle$GO.OXPHOS35.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF101.kegg.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value,
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#DF68 ---------------------------------
+DF68.hm.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF68.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF68.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF68.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value
+)
+
+DF68.go.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.vehicle$GO.OXPHOS35.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF68.kegg.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value,
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#combine ------------------------------
+hm.oxphos.DF <- rbind(DF20.hm.oxphos.df, DF101.hm.oxphos.df, DF68.hm.oxphos.df)
+rownames(hm.oxphos.DF) <- c("HM.OXPHOS.DF20", "HM.OXPHOS.DF101", "HM.OXPHOS.DF68")
+
+go.oxphos.DF <- rbind(DF20.go.oxphos.df, DF101.go.oxphos.df, DF68.go.oxphos.df)
+rownames(go.oxphos.DF) <- c("GO.OXPHOS.DF20", "GO.OXPHOS.DF101", "GO.OXPHOS.DF68")
+
+kegg.oxphos.DF <- rbind(DF20.kegg.oxphos.df, DF101.kegg.oxphos.df, DF68.kegg.oxphos.df)
+rownames(kegg.oxphos.DF) <- c("KEGG.OXPHOS.DF20", "KEGG.OXPHOS.DF101", "KEGG.OXPHOS.DF68")
+
+all.oxphos.DF <- rbind(hm.oxphos.DF, go.oxphos.DF, kegg.oxphos.DF)
+DT::datatable(all.oxphos.DF) %>% 
+  DT::formatRound(names(all.oxphos.DF), digits = 8) %>% 
+  DT::formatStyle(names(all.oxphos.DF), color = DT::styleInterval(0.05, c('red', 'black')))
+```
+
+* More comparisons are statistically significant when using the **GO** or **KEGG** genesets in comparison to using the **HALLMARK** geneset. 
+    - All comparisons within DF101 are significant 
+        * **Vehicle** > **MRD** > **Relapse** 
+    - DF68 **MRD** > **Relapse** is significant 
+
+
+Considering how our approach with analyzing and comparing **module score** did not support our hypothesis, we try to confirm our results again with our second appraoch: **GSEA**
 
 * **APPROACH #2** Geneset Enrichment Analysis (GSEA)
       - GSEA enrichment plots for hallmarks of interest between condition.1 vs. condition.2 
@@ -310,15 +460,29 @@ names(bar.plots) <- c("DF20", "DF101", "DF68")
 for(i in 1:length(PDXs)){
   obj = PDXs[[i]]
   name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
   
   obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
-  p = table(obj$Phase, obj$treatment.status) %>% 
+  t = table(obj$Phase, obj$treatment.status) %>% 
     as.data.frame() %>% 
-    rename(Phase = Var1, Treatment = Var2, numCells = Freq) %>% 
-    ggplot(aes(x=Treatment, y=numCells, fill=Phase)) + 
-    geom_bar(position="fill", stat="identity") + 
-    labs(title = glue("{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment")) +
-    theme(plot.title = element_text(size = 8))
+    rename(Phase = Var1, Treatment = Var2, numCells = Freq)
+
+sum = c()
+z = 1
+while(z < nrow(t)){
+    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
+    sum = c(sum, rep(n,3))
+    z = z + 3
+  }
+  
+t <- t %>% mutate(total = sum) %>% mutate(percent = (numCells/total)*100)
+  
+  p = t %>% 
+    ggplot(aes(x=Treatment, y=percent, fill=Phase)) + 
+    geom_bar(stat="identity") + 
+    labs(title = glue("{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment"), subtitle = glue("Total # Cells in {name}: {numCells}"), caption = "Labeled by # cells in each phase per treatment") +
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
+    geom_text(aes(label = numCells), position = "stack", hjust = 0.5, vjust = 2, size = 3, color = "white")
   bar.plots[[i]] <- p
 }
 
@@ -334,18 +498,6 @@ bar.plots[["DF20"]] + bar.plots[["DF101"]] + bar.plots[["DF68"]] + plot_layout(g
 To investigate this further, we compare UMAPs by treatment vs. UMAPs by cell cycle phase and scores
 
 ```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=20, fig.height=10}
-#center cell cycle scores 
-cc.scores <- names(PDX_All@meta.data)[43:44]
-for(i in cc.scores){
-    DF20.score.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
-    PDX_DF20 <- AddMetaData(PDX_DF20, DF20.score.centered, col.name = glue("{i}.centered"))
-    
-    DF101.score.centered <- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
-    PDX_DF101 <- AddMetaData(PDX_DF101, DF101.score.centered, col.name = glue("{i}.centered"))
-    
-    DF68.score.centered <- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
-    PDX_DF68 <- AddMetaData(PDX_DF68, DF68.score.centered, col.name = glue("{i}.centered"))
-}
 
 #UMAP -------------------------
 ccUMAP.plots <- vector("list", length = 3)
@@ -354,10 +506,11 @@ names(ccUMAP.plots) <- c("DF20", "DF101", "DF68")
 for(i in 1:length(PDXs)){
   obj = PDXs[[i]]
   name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
   obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
   
   byt <- UMAPPlot(obj, group.by = "treatment.status") + 
-    labs(title = glue("{name} UMAP by treatment")) + 
+    labs(title = glue("{name} UMAP by treatment"), subtitle = glue("Number of cells in {name}: {numCells}")) + 
     theme(plot.title = element_text(hjust = 0.5))
   bycc <- UMAPPlot(obj, group.by = "Phase") + 
     labs(title = glue("{name} UMAP by CellCycle Phase")) + 
@@ -372,10 +525,37 @@ for(i in 1:length(PDXs)){
 ccUMAP.plots[["DF20"]]
 ccUMAP.plots[["DF101"]]
 ccUMAP.plots[["DF68"]]
+
+#PCA -------------------- (PCA separates cell by cell cycle really well)
+ccPCA.plots <- vector("list", length = 3)
+names(ccPCA.plots) <- c("DF20", "DF101", "DF68")
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  
+  byt <- PCAPlot(obj, group.by = "treatment.status") + 
+    labs(title = glue("{name} PCA by treatment"), subtitle = glue("Number of cells in {name}: {numCells}")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  bycc <- PCAPlot(obj, group.by = "Phase") + 
+    labs(title = glue("{name} PCA by CellCycle Phase")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  byscore <- FeaturePlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), reduction = "pca",combine = FALSE)
+  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score"))
+  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score"))
+  
+  ccPCA.plots[[i]] <- byt + bycc + byscore[[1]] + byscore[[2]]
+}
+
+ccPCA.plots[["DF20"]]
+ccPCA.plots[["DF101"]]
+ccPCA.plots[["DF68"]]
 ```
 
 * **OBSERVATIONS** 
-    - Although it doesn't seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space.
+    - Although it doesn't seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space. We visualized how cells cluster by cell cycle using both UMAP and PCA because PCA is known to cluster cells well by cell cycle.  
     - However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots. We further investigate this by building violin plots of cell cycle scores separated by treatment status. 
     
 ```{r cellcycleVln, message=FALSE, warning=FALSE, fig.align='center', fig.width=20, fig.height=10}
@@ -385,9 +565,16 @@ names(Vln.plots) <- PDX.names
 
 for (i in 1:length(PDXs)){
   obj <- PDX.names[[i]]
-  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", combine = F)
-  p[[1]] <- p[[1]] + labs(title = glue("{obj} S.Score across treatment"), x = obj) + geom_boxplot(show.legend = FALSE)
-  p[[2]] <- p[[2]] + labs(title = glue("{obj} G2M.Score across treatment"), x = obj) + geom_boxplot(show.legend = FALSE)
+  numCells = nrow(PDXs[[i]]@meta.data)
+  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F)
+  p[[1]] <- p[[1]] + labs(title = glue("{obj} S.Score across treatment"), x = obj, subtitle = glue("Number of cells in {obj}: {numCells}")) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDXs[[i]]$S.Score.centered) -0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDXs[[i]]$S.Score.centered) - 0.03)
+  
+  p[[2]] <- p[[2]] + labs(title = glue("{obj} G2M.Score across treatment"), x = obj) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
   cc.Vln.plots[[obj]] <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
 }
@@ -398,7 +585,7 @@ cc.Vln.plots[["DF68"]]
 ```
 
 * **OBSERVATIONS** 
-    - There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an increase of cells in the S or G2M phases in **MRD and relapse** relative to **vehicle**. To confirm this, we evaluate the statistical significance of the difference between S and G2M scores across treatment conditions. 
+    - There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an **increase of cycling cells** in the S or G2M phases in **MRD and relapse** relative to **vehicle**. To confirm this, we evaluate the statistical significance of the difference between S and G2M scores across treatment conditions. 
 
 ```{r cellcycleStat, message=FALSE, warning=FALSE}
 #DF20 ---------------------------------
@@ -465,7 +652,7 @@ DT::datatable(both.DF) %>%
 Our results from above collectively suggest that **OXPHOS and UPR** expression, and cell cycle phase, do not significantly correlate with the treatment condition a cell is in. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of **OXPHOS and UPR** and **cell cycle phase**. 
 
 * **QUESTION #2** Is there a correlation between cell cycle phase and the expression of signatures? 
-* **HYPOTHESIS** We hypothesize that low cycling cells should express higher levels of **OXPHOS and UPR** genes. 
+* **HYPOTHESIS** We hypothesize that low cycling cells (G1) should express higher levels of **OXPHOS and UPR** genes. 
     - **APPROACH** Violin Plots
         * Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1. 
         * Stratify the Violin Plots by cell cycle phase
@@ -477,16 +664,25 @@ names(cc.exp.plot) <- PDX.names
 for(i in 1:length(PDXs)){
   obj = PDXs[[i]]
   name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
   obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
   
-  p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", combine = FALSE)
-  p1[[1]] <- p1[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase")) + geom_boxplot(show.legend = FALSE)
-  p1[[2]] <- p1[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase")) + geom_boxplot(show.legend = FALSE)
+  p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE)
+  p1[[1]] <- p1[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase"), subtitle = glue("Number of cells in {name}: {numCells}")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
+    geom_text(label = paste(sum(obj$Phase == "G1"), "cells"), x = "G1", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$Phase == "G2M"), "cells"), x = "G2M", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$Phase == "S"), "cells"), x = "S", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p1[[2]] <- p1[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
   
-  p2 <- VlnPlot(obj, features = hms.centered, group.by = "treatment.status", split.by = "Phase", combine = FALSE)
-  p2[[1]] <- p2[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase / Treatment")) + geom_boxplot(show.legend = FALSE)
-  p2[[2]] <- p2[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase / Treatment")) + geom_boxplot(show.legend = FALSE)
+  p2 <- VlnPlot(obj, features = hms.centered, group.by = "treatment.status", split.by = "Phase", pt.size = 0, combine = FALSE)
+  p2[[1]] <- p2[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase / Treatment")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  p2[[2]] <- p2[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase / Treatment")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
   
   cc.exp.plot[[i]] <- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= 'collect')
 }
@@ -500,13 +696,10 @@ cc.exp.plot[["DF68"]]
     - Results from comparing **OXPHOS and UPR** gene scores across cell cycle phase within each model reveal that cells in S phase seems to generally express higher levels of **OXPHOS** genes in comparison to the other cell cycle phases. This trend is especially true within **DF20**. 
     - Results from comparing **OXPHOS and UPR** gene scores across cell cycle phase within each treatment condition per model revel that cells in S phase generally enrich **OXPHOS** genes especially within the **MRD** treatment condition in comparison to the other cell cycle phases. 
     - We hypothesized that low / cycling cells (G1) should express higher levels of **OXPHOS and/or UPR genes** based on findings from previous studies that low cycling cells seem to survive cancer treatment. We try to rationalize our findings that cells in S phase actually express higher levels of our hallmarks: 
+        * It makes sense that cells in S phase express higher levels of OXPHOS genes because DNA is being replicated in S phase, which requires a lot of energy. 
         * Even if a cell is found to be in the S phase, it might not mean that it is cycling. It is possible that the cell entered the S phase but does not continue through the cell cycle upon treatment. Furthermore, since DNA is being replicated during S phase and mistakes are most commonly made during DNA replication, it is possible that DNA damage repair programs are also most active during this phase, and may subsequently promote survival upon cancer treatment. 
         * This rationale would also agree with our results from comparing S and G2M scores across treatment conditions, where we found that cells in **MRD and Relapse** have statistically significantly higher S and G2M scores than cells in **Vehicle**. 
         * However, this rationale does not explain why we do not see enriched expression of OXPHOS and UPR genes in the MRD treatment condition. 
 
-        
-
-
-
-
+**note: our sample size is extremely small for each condition, which may mean that we have really low power**
 

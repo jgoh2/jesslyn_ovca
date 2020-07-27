@@ -414,7 +414,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -423,7 +423,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -432,10 +432,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-23
+<strong>Last updated:</strong> 2020-07-27
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -451,12 +451,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreebc21d3a4bbfeaaab3c3701621e489ba430369973targetblankbc21d3aa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/bc21d3a4bbfeaaab3c3701621e489ba430369973" target="_blank">bc21d3a</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreef1acd7b63f7d61d83ee574a9d77c21cffeeb5cb9targetblankf1acd7ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/f1acd7b63f7d61d83ee574a9d77c21cffeeb5cb9" target="_blank">f1acd7b</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreebc21d3a4bbfeaaab3c3701621e489ba430369973targetblankbc21d3aa" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreef1acd7b63f7d61d83ee574a9d77c21cffeeb5cb9targetblankf1acd7ba" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/bc21d3a4bbfeaaab3c3701621e489ba430369973" target="_blank">bc21d3a</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/f1acd7b63f7d61d83ee574a9d77c21cffeeb5cb9" target="_blank">f1acd7b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -556,6 +556,35 @@ Ignored files:
     Ignored:    renv/python/
     Ignored:    renv/staging/
     Ignored:    vignettes/
+
+Untracked files:
+    Untracked:  data/gene_lists/extra/
+
+Unstaged changes:
+    Modified:   analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd
+    Deleted:    analysis/figure/PDX_choices.Rmd/AddModuleScore or subset-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/AddModuleScore slot-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/AddModuleScore slots-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/AddModuleScore slots-2.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/AddModuleScore slots-3.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/Deciding ScaleData() arguments-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers data slot-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers logFC MAPlots-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers ranks-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers statistical test MAplots-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers statistical test MAplots-2.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers statistical test-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers statistical test-2.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers statistical test-3.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/FindMarkers statistical test-4.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/VlnPlot by treatment-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/VlnPlot by treatment-2.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/VlnPlot by treatment-3.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/logFC vs. diff-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/module score variance-1.png
+    Deleted:    analysis/figure/PDX_choices.Rmd/scale or subset-1.png
+    Modified:   code/read_Izar_2020.R
+    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
 
 </code></pre>
 <p>
@@ -594,6 +623,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/f1acd7b63f7d61d83ee574a9d77c21cffeeb5cb9/docs/03.1_Izar2020_PDX_DEAnalysis.html" target="_blank">f1acd7b</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-24
+</td>
+<td>
+Move PDX_choices.Rmd to old
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -814,15 +860,18 @@ PDX_DF68 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS&quot
 
 #Read in hallmarks of interest
 hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
-hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names))
-names(hallmark.list) &lt;- hallmark_names
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 2)
+names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;)
 for(hm in hallmark_names){
   file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
   hallmark.list[[hm]] &lt;- file
 }
 
+hallmark.list[[&quot;GO.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/GO.OXPHOS.txt&quot;, skip = 1)
+hallmark.list[[&quot;KEGG.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/KEGG.OXPHOS.txt&quot;, skip = 2)
+
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(PDX_All@meta.data)[9:44]
+hm.names &lt;- names(PDX_All@meta.data)[9:46]
 
 for(i in hm.names){
     DF20.hm.centered &lt;- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
@@ -863,7 +912,10 @@ names(UMAP.plots) &lt;- PDX.names
 
 for (i in 1:length(PDXs)){
   obj &lt;- PDX.names[[i]]
-  umap &lt;- UMAPPlot(PDXs[[i]], group.by = &quot;treatment.status&quot;) + labs(title = glue(&quot;{obj} UMAP by Treatment&quot;))
+  numCells = nrow(PDXs[[i]]@meta.data)
+  umap &lt;- UMAPPlot(PDXs[[i]], group.by = &quot;treatment.status&quot;) + 
+    labs(title = glue(&quot;{obj} UMAP by Treatment&quot;), subtitle = glue(&quot;Number of cells in {obj}: {numCells}&quot;))+
+    theme(plot.subtitle = element_text(size = 8))
   p &lt;- FeaturePlot(PDXs[[i]], features = hms.centered, combine = FALSE)
   p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} UMAP by Oxphos Scores&quot;))
   p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} UMAP by UPR Scores&quot;))
@@ -1003,9 +1055,18 @@ names(Vln.plots) &lt;- PDX.names
 
 for (i in 1:length(PDXs)){
   obj &lt;- PDX.names[[i]]
-  p &lt;- VlnPlot(PDXs[[i]], features = hms.centered, group.by = &quot;treatment.status&quot;, combine = F)
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;OXPHOS scores across treatment in {obj}&quot;), x = obj) + geom_boxplot(show.legend = FALSE)
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;UPR scores across treatment in {obj}&quot;), x = obj) + geom_boxplot(show.legend = FALSE)
+  numCells &lt;- nrow(PDXs[[i]]@meta.data)
+  p &lt;- VlnPlot(PDXs[[i]], features = hms.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F)
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;OXPHOS scores across treatment in {obj}&quot;), x = obj, subtitle = glue(&quot;Number of cells in {obj}: {numCells}&quot;), caption = &quot;www.gsea-msigdb.org: HALLMARK_OXIDATIVE_PHOSPHORYLATION&quot;) +
+    theme(plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDXs[[i]]$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDXs[[i]]$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDXs[[i]]$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;UPR scores across treatment in {obj}&quot;), x = obj, caption = &quot;www.gsea-msigdb.org: HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) +
+    theme(plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
   p &lt;- p[[1]] + p[[2]] + plot_layout(guides= &#39;collect&#39;)
   
   Vln.plots[[obj]] &lt;- p
@@ -1135,7 +1196,7 @@ jgoh2
 <ul>
 <li>Results from <strong>DF20</strong> seems to agree with our hypothesis where cells in <strong>MRD</strong> express enriched levels of <strong>OXPHOS and UPR</strong> genes in comparison to the other two conditions.</li>
 <li>Results from <strong>DF101</strong> reveal a clear enrichment of <strong>OXPHOS</strong> genes in the <strong>vehicle</strong> treatment condition, which does not support our hypothesis. It also seems like cells in <strong>relapse</strong> express higher levels of <strong>UPR</strong> genes in comparison to the other two conditions, which also does not support our hypothesis.</li>
-<li>Results from <strong>DF68</strong> shows a slight enrichment of <strong>OXPHOS</strong> genes and a slight depltetion of <strong>UPR</strong> genes in <strong>MRD</strong>.</li>
+<li>Results from <strong>DF68</strong> shows a slight enrichment of <strong>OXPHOS</strong> genes and a slight depletion of <strong>UPR</strong> genes in <strong>MRD</strong>.</li>
 </ul></li>
 <li>We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the <strong>wilcoxon rank sum test</strong></li>
 </ul></li>
@@ -1210,14 +1271,155 @@ DT::datatable(all.DF) %&gt;%
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
-<li>The only statistically significant difference (p &lt; 0.05) in hallmark scores is between treatment conditions within model <strong>DF101</strong> for <strong>OXPHOS</strong>.</li>
-<li>However, the trends found in DF101 do not agree with our hypothesis that cells in <strong>MRD</strong> differentially enrich OXPHOS genes) :
-<ul>
-<li>DF101 reveals an enrichment of <strong>OXPHOS</strong> genes in the <strong>vehicle</strong> treatment condition in comparison to the other two conditions.</li>
-</ul></li>
+<li>The only statistically significant difference (p &lt; 0.05) in hallmark scores is between treatment conditions within model <strong>DF101</strong> for <strong>OXPHOS</strong></li>
+<li><strong>Vehicle &gt; MRD &gt; Relapse</strong></li>
+<li>However, the trends found in DF101 do not agree with our hypothesis that cells in <strong>MRD</strong> differentially enrich OXPHOS genes)</li>
 </ul></li>
 </ul>
-<p>Considering how our approach with analyzing and comparing <strong>module score</strong> did not support our hypothesis, we now try to confirm our results with our second appraoch: <strong>GSEA</strong></p>
+<p>Considering how we did not obtain statistically significant results from these genesets, we looked for other <strong>OXPHOS</strong> genesets to confirm our results. The <strong>OXPHOS</strong> genesets that we test are listed as follows:</p>
+<ul>
+<li>HALLMARK_OXIDATIVE_PHOSPHORYLATION (200 genes) <a href="https://www.gsea-msigdb.org/gsea/msigdb/cards/HALLMARK_OXIDATIVE_PHOSPHORYLATION" class="uri">https://www.gsea-msigdb.org/gsea/msigdb/cards/HALLMARK_OXIDATIVE_PHOSPHORYLATION</a> (<strong>used above</strong>)
+<ul>
+<li>GO_OXIDATIVE_PHOSPHORYLATION (144 genes) <a href="https://www.gsea-msigdb.org/gsea/msigdb/cards/GO_OXIDATIVE_PHOSPHORYLATION" class="uri">https://www.gsea-msigdb.org/gsea/msigdb/cards/GO_OXIDATIVE_PHOSPHORYLATION</a></li>
+<li>KEGG_OXIDATIVE_PHOSPHORYLATION (131 genes) <a href="https://www.gsea-msigdb.org/gsea/msigdb/cards/KEGG_OXIDATIVE_PHOSPHORYLATION" class="uri">https://www.gsea-msigdb.org/gsea/msigdb/cards/KEGG_OXIDATIVE_PHOSPHORYLATION</a></li>
+</ul></li>
+</ul>
+<pre class="r"><code>oxphos.centered &lt;- c(&quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered&quot;, &quot;GO.OXPHOS35.centered&quot;, &quot;KEGG.OXPHOS36.centered&quot;)
+PDX.names &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
+PDXs &lt;- c(PDX_DF20, PDX_DF101, PDX_DF68)
+Oxphos.Vln.plots &lt;- vector(&quot;list&quot;, length(PDXs))
+names(Oxphos.Vln.plots) &lt;- PDX.names
+
+for (i in 1:length(PDXs)){
+  obj &lt;- PDXs[[i]]
+  name &lt;- PDX.names[[i]]
+  numCells &lt;- nrow(PDXs[[i]]@meta.data)
+  
+  p &lt;- VlnPlot(obj, features = oxphos.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F)
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} HALLMARK_OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION&quot;) +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(obj$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} GO_OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = &quot;GO_OXIDATIVE_PHOSPHORYLATION&quot;) +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  
+  p[[3]] &lt;- p[[3]] + labs(title = glue(&quot;{name} KEGG_OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = &quot;KEGG_OXIDATIVE_PHOSPHORYLATION&quot;) +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  
+  p &lt;- p[[1]] + p[[2]] + p[[3]] + plot_layout(guides= &#39;collect&#39;)
+  
+  Oxphos.Vln.plots[[name]] &lt;- p
+}
+
+Oxphos.Vln.plots[[&quot;DF20&quot;]]</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Oxphos.Vln.plots[[&quot;DF101&quot;]]</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>Oxphos.Vln.plots[[&quot;DF68&quot;]]</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-3.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>The overall trend we see between treatment groups within each model is the same across all three oxphos genesets. However, it seems like the difference in scores is most obvious/drastic when using the <strong>KEGG</strong> geneset.</li>
+<li>We now test for the statistical significance of using each geneset to test whether using the other two genesets would give us more statistically significant results.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>#DF20 ---------------------------------
+DF20.hm.oxphos.df &lt;- data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF20.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF20.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF20.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value
+)
+
+DF20.go.oxphos.df &lt;- 
+  data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.vehicle$GO.OXPHOS35.centered)$p.value, 
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value, 
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF20.kegg.oxphos.df &lt;- 
+  data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value,
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#DF101 ---------------------------------
+
+DF101.hm.oxphos.df &lt;- data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF101.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF101.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF101.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value
+)
+
+DF101.go.oxphos.df &lt;- 
+  data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.vehicle$GO.OXPHOS35.centered)$p.value, 
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value, 
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF101.kegg.oxphos.df &lt;- 
+  data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value,
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#DF68 ---------------------------------
+DF68.hm.oxphos.df &lt;- data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF68.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF68.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value, 
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered, DF68.relapse$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered)$p.value
+)
+
+DF68.go.oxphos.df &lt;- 
+  data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.vehicle$GO.OXPHOS35.centered)$p.value, 
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value, 
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF68.kegg.oxphos.df &lt;- 
+  data.frame(
+  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value,
+  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#combine ------------------------------
+hm.oxphos.DF &lt;- rbind(DF20.hm.oxphos.df, DF101.hm.oxphos.df, DF68.hm.oxphos.df)
+rownames(hm.oxphos.DF) &lt;- c(&quot;HM.OXPHOS.DF20&quot;, &quot;HM.OXPHOS.DF101&quot;, &quot;HM.OXPHOS.DF68&quot;)
+
+go.oxphos.DF &lt;- rbind(DF20.go.oxphos.df, DF101.go.oxphos.df, DF68.go.oxphos.df)
+rownames(go.oxphos.DF) &lt;- c(&quot;GO.OXPHOS.DF20&quot;, &quot;GO.OXPHOS.DF101&quot;, &quot;GO.OXPHOS.DF68&quot;)
+
+kegg.oxphos.DF &lt;- rbind(DF20.kegg.oxphos.df, DF101.kegg.oxphos.df, DF68.kegg.oxphos.df)
+rownames(kegg.oxphos.DF) &lt;- c(&quot;KEGG.OXPHOS.DF20&quot;, &quot;KEGG.OXPHOS.DF101&quot;, &quot;KEGG.OXPHOS.DF68&quot;)
+
+all.oxphos.DF &lt;- rbind(hm.oxphos.DF, go.oxphos.DF, kegg.oxphos.DF)
+DT::datatable(all.oxphos.DF) %&gt;% 
+  DT::formatRound(names(all.oxphos.DF), digits = 8) %&gt;% 
+  DT::formatStyle(names(all.oxphos.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
+<div id="htmlwidget-65aae89599b535d33635" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-65aae89599b535d33635">{"x":{"filter":"none","data":[["HM.OXPHOS.DF20","HM.OXPHOS.DF101","HM.OXPHOS.DF68","GO.OXPHOS.DF20","GO.OXPHOS.DF101","GO.OXPHOS.DF68","KEGG.OXPHOS.DF20","KEGG.OXPHOS.DF101","KEGG.OXPHOS.DF68"],[0.813197633536318,6.15827040589908e-05,0.282607075809008,0.539910629357917,1.05912304507862e-06,0.262203696434015,0.460698666301977,1.81961942711733e-05,0.220082024126051],[0.253960112012267,0.0087134610839046,0.102027572013648,0.167136317291695,0.000190204318100418,0.0143820901123957,0.177053988013909,2.11507138839815e-05,0.0111176507629096],[0.404209798305834,1.34976260864282e-07,0.904345987163538,0.567722174320975,1.03732209313145e-10,0.82339642391274,0.546075091342282,1.47738702776111e-10,0.897549974026351]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>MRDvsVehicle<\/th>\n      <th>MRDvsRelapse<\/th>\n      <th>VehiclevsRelapse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 8, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 8, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 8, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<ul>
+<li>More comparisons are statistically significant when using the <strong>GO</strong> or <strong>KEGG</strong> genesets in comparison to using the <strong>HALLMARK</strong> geneset.
+<ul>
+<li>All comparisons within DF101 are significant
+<ul>
+<li><strong>Vehicle</strong> &gt; <strong>MRD</strong> &gt; <strong>Relapse</strong></li>
+</ul></li>
+<li>DF68 <strong>MRD</strong> &gt; <strong>Relapse</strong> is significant</li>
+</ul></li>
+</ul>
+<p>Considering how our approach with analyzing and comparing <strong>module score</strong> did not support our hypothesis, we try to confirm our results again with our second appraoch: <strong>GSEA</strong></p>
 <ul>
 <li><strong>APPROACH #2</strong> Geneset Enrichment Analysis (GSEA) - GSEA enrichment plots for hallmarks of interest between condition.1 vs. condition.2 - Rank genes and compute GSEA enrichment scores - Statistical test: how significant are the enrichment scores?</li>
 </ul>
@@ -1252,15 +1454,29 @@ names(bar.plots) &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
 for(i in 1:length(PDXs)){
   obj = PDXs[[i]]
   name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
   
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
-  p = table(obj$Phase, obj$treatment.status) %&gt;% 
+  t = table(obj$Phase, obj$treatment.status) %&gt;% 
     as.data.frame() %&gt;% 
-    rename(Phase = Var1, Treatment = Var2, numCells = Freq) %&gt;% 
-    ggplot(aes(x=Treatment, y=numCells, fill=Phase)) + 
-    geom_bar(position=&quot;fill&quot;, stat=&quot;identity&quot;) + 
-    labs(title = glue(&quot;{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment&quot;)) +
-    theme(plot.title = element_text(size = 8))
+    rename(Phase = Var1, Treatment = Var2, numCells = Freq)
+
+sum = c()
+z = 1
+while(z &lt; nrow(t)){
+    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
+    sum = c(sum, rep(n,3))
+    z = z + 3
+  }
+  
+t &lt;- t %&gt;% mutate(total = sum) %&gt;% mutate(percent = (numCells/total)*100)
+  
+  p = t %&gt;% 
+    ggplot(aes(x=Treatment, y=percent, fill=Phase)) + 
+    geom_bar(stat=&quot;identity&quot;) + 
+    labs(title = glue(&quot;{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment&quot;), subtitle = glue(&quot;Total # Cells in {name}: {numCells}&quot;), caption = &quot;Labeled by # cells in each phase per treatment&quot;) +
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
+    geom_text(aes(label = numCells), position = &quot;stack&quot;, hjust = 0.5, vjust = 2, size = 3, color = &quot;white&quot;)
   bar.plots[[i]] &lt;- p
 }
 
@@ -1315,30 +1531,18 @@ jgoh2
 </ul></li>
 </ul>
 <p>To investigate this further, we compare UMAPs by treatment vs. UMAPs by cell cycle phase and scores</p>
-<pre class="r"><code>#center cell cycle scores 
-cc.scores &lt;- names(PDX_All@meta.data)[43:44]
-for(i in cc.scores){
-    DF20.score.centered &lt;- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
-    PDX_DF20 &lt;- AddMetaData(PDX_DF20, DF20.score.centered, col.name = glue(&quot;{i}.centered&quot;))
-    
-    DF101.score.centered &lt;- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
-    PDX_DF101 &lt;- AddMetaData(PDX_DF101, DF101.score.centered, col.name = glue(&quot;{i}.centered&quot;))
-    
-    DF68.score.centered &lt;- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
-    PDX_DF68 &lt;- AddMetaData(PDX_DF68, DF68.score.centered, col.name = glue(&quot;{i}.centered&quot;))
-}
-
-#UMAP -------------------------
+<pre class="r"><code>#UMAP -------------------------
 ccUMAP.plots &lt;- vector(&quot;list&quot;, length = 3)
 names(ccUMAP.plots) &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
 
 for(i in 1:length(PDXs)){
   obj = PDXs[[i]]
   name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
   
   byt &lt;- UMAPPlot(obj, group.by = &quot;treatment.status&quot;) + 
-    labs(title = glue(&quot;{name} UMAP by treatment&quot;)) + 
+    labs(title = glue(&quot;{name} UMAP by treatment&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) + 
     theme(plot.title = element_text(hjust = 0.5))
   bycc &lt;- UMAPPlot(obj, group.by = &quot;Phase&quot;) + 
     labs(title = glue(&quot;{name} UMAP by CellCycle Phase&quot;)) + 
@@ -1467,10 +1671,40 @@ jgoh2
 </table>
 </div>
 </div>
+<pre class="r"><code>#PCA -------------------- (PCA separates cell by cell cycle really well)
+ccPCA.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(ccPCA.plots) &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
+  
+  byt &lt;- PCAPlot(obj, group.by = &quot;treatment.status&quot;) + 
+    labs(title = glue(&quot;{name} PCA by treatment&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  bycc &lt;- PCAPlot(obj, group.by = &quot;Phase&quot;) + 
+    labs(title = glue(&quot;{name} PCA by CellCycle Phase&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), reduction = &quot;pca&quot;,combine = FALSE)
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;))
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;))
+  
+  ccPCA.plots[[i]] &lt;- byt + bycc + byscore[[1]] + byscore[[2]]
+}
+
+ccPCA.plots[[&quot;DF20&quot;]]</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/cellcyleUMAP-4.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ccPCA.plots[[&quot;DF101&quot;]]</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/cellcyleUMAP-5.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ccPCA.plots[[&quot;DF68&quot;]]</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/cellcyleUMAP-6.png" width="1920" style="display: block; margin: auto;" /></p>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li>Although it doesn’t seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space.</li>
+<li>Although it doesn’t seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space. We visualized how cells cluster by cell cycle using both UMAP and PCA because PCA is known to cluster cells well by cell cycle.<br />
+</li>
 <li>However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots. We further investigate this by building violin plots of cell cycle scores separated by treatment status.</li>
 </ul></li>
 </ul>
@@ -1480,9 +1714,16 @@ names(Vln.plots) &lt;- PDX.names
 
 for (i in 1:length(PDXs)){
   obj &lt;- PDX.names[[i]]
-  p &lt;- VlnPlot(PDXs[[i]], features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), group.by = &quot;treatment.status&quot;, combine = F)
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} S.Score across treatment&quot;), x = obj) + geom_boxplot(show.legend = FALSE)
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} G2M.Score across treatment&quot;), x = obj) + geom_boxplot(show.legend = FALSE)
+  numCells = nrow(PDXs[[i]]@meta.data)
+  p &lt;- VlnPlot(PDXs[[i]], features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F)
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} S.Score across treatment&quot;), x = obj, subtitle = glue(&quot;Number of cells in {obj}: {numCells}&quot;)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDXs[[i]]$S.Score.centered) -0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDXs[[i]]$S.Score.centered) - 0.03)
+  
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} G2M.Score across treatment&quot;), x = obj) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
   cc.Vln.plots[[obj]] &lt;- p[[1]] + p[[2]] + plot_layout(guides= &#39;collect&#39;)
 }
@@ -1607,7 +1848,7 @@ jgoh2
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li>There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an increase of cells in the S or G2M phases in <strong>MRD and relapse</strong> relative to <strong>vehicle</strong>. To confirm this, we evaluate the statistical significance of the difference between S and G2M scores across treatment conditions.</li>
+<li>There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an <strong>increase of cycling cells</strong> in the S or G2M phases in <strong>MRD and relapse</strong> relative to <strong>vehicle</strong>. To confirm this, we evaluate the statistical significance of the difference between S and G2M scores across treatment conditions.</li>
 </ul></li>
 </ul>
 <pre class="r"><code>#DF20 ---------------------------------
@@ -1663,8 +1904,8 @@ both.DF &lt;- rbind(sscore.DF, g2m.DF)
 DT::datatable(both.DF) %&gt;% 
   DT::formatRound(names(both.DF), digits = 7) %&gt;% 
   DT::formatStyle(names(both.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
-<div id="htmlwidget-65aae89599b535d33635" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-65aae89599b535d33635">{"x":{"filter":"none","data":[["S.DF20","S.DF101","S.DF68","g2m.DF20","g2m.DF101","g2m.DF68"],[0.00271073794553325,0.888942538114057,0.770303000465612,0.0184812739341011,0.540353699001157,0.770303000465612],[0.454680305623842,0.81626199280517,0.140856820535078,0.680187954269424,0.345466689376595,0.190157561978004],[0.0383322303842036,0.607147010679134,0.302983921375116,0.0498299437004385,0.75304320436794,0.409914299566131]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>MRDvsVehicle<\/th>\n      <th>MRDvsRelapse<\/th>\n      <th>VehiclevsRelapse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 7, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 7, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 7, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<div id="htmlwidget-fe39aca42ace54a19865" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fe39aca42ace54a19865">{"x":{"filter":"none","data":[["S.DF20","S.DF101","S.DF68","g2m.DF20","g2m.DF101","g2m.DF68"],[0.00271073794553325,0.888942538114057,0.770303000465612,0.0184812739341011,0.540353699001157,0.770303000465612],[0.454680305623842,0.81626199280517,0.140856820535078,0.680187954269424,0.345466689376595,0.190157561978004],[0.0383322303842036,0.607147010679134,0.302983921375116,0.0498299437004385,0.75304320436794,0.409914299566131]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>MRDvsVehicle<\/th>\n      <th>MRDvsRelapse<\/th>\n      <th>VehiclevsRelapse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 7, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 7, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatRound(data, 7, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
@@ -1679,7 +1920,7 @@ DT::datatable(both.DF) %&gt;%
 <p>Our results from above collectively suggest that <strong>OXPHOS and UPR</strong> expression, and cell cycle phase, do not significantly correlate with the treatment condition a cell is in. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of <strong>OXPHOS and UPR</strong> and <strong>cell cycle phase</strong>.</p>
 <ul>
 <li><strong>QUESTION #2</strong> Is there a correlation between cell cycle phase and the expression of signatures?</li>
-<li><strong>HYPOTHESIS</strong> We hypothesize that low cycling cells should express higher levels of <strong>OXPHOS and UPR</strong> genes.
+<li><strong>HYPOTHESIS</strong> We hypothesize that low cycling cells (G1) should express higher levels of <strong>OXPHOS and UPR</strong> genes.
 <ul>
 <li><strong>APPROACH</strong> Violin Plots
 <ul>
@@ -1694,16 +1935,25 @@ names(cc.exp.plot) &lt;- PDX.names
 for(i in 1:length(PDXs)){
   obj = PDXs[[i]]
   name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
   
-  p1 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;Phase&quot;, combine = FALSE)
-  p1[[1]] &lt;- p1[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase&quot;)) + geom_boxplot(show.legend = FALSE)
-  p1[[2]] &lt;- p1[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase&quot;)) + geom_boxplot(show.legend = FALSE)
+  p1 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE)
+  p1[[1]] &lt;- p1[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
+    geom_text(label = paste(sum(obj$Phase == &quot;G1&quot;), &quot;cells&quot;), x = &quot;G1&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;G2M&quot;), &quot;cells&quot;), x = &quot;G2M&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;S&quot;), &quot;cells&quot;), x = &quot;S&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p1[[2]] &lt;- p1[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
   
-  p2 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;treatment.status&quot;, split.by = &quot;Phase&quot;, combine = FALSE)
-  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase / Treatment&quot;)) + geom_boxplot(show.legend = FALSE)
-  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase / Treatment&quot;)) + geom_boxplot(show.legend = FALSE)
+  p2 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;treatment.status&quot;, split.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE)
+  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase / Treatment&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase / Treatment&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
   
   cc.exp.plot[[i]] &lt;- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= &#39;collect&#39;)
 }
@@ -1832,12 +2082,14 @@ jgoh2
 <li>Results from comparing <strong>OXPHOS and UPR</strong> gene scores across cell cycle phase within each treatment condition per model revel that cells in S phase generally enrich <strong>OXPHOS</strong> genes especially within the <strong>MRD</strong> treatment condition in comparison to the other cell cycle phases.</li>
 <li>We hypothesized that low / cycling cells (G1) should express higher levels of <strong>OXPHOS and/or UPR genes</strong> based on findings from previous studies that low cycling cells seem to survive cancer treatment. We try to rationalize our findings that cells in S phase actually express higher levels of our hallmarks:
 <ul>
+<li>It makes sense that cells in S phase express higher levels of OXPHOS genes because DNA is being replicated in S phase, which requires a lot of energy.</li>
 <li>Even if a cell is found to be in the S phase, it might not mean that it is cycling. It is possible that the cell entered the S phase but does not continue through the cell cycle upon treatment. Furthermore, since DNA is being replicated during S phase and mistakes are most commonly made during DNA replication, it is possible that DNA damage repair programs are also most active during this phase, and may subsequently promote survival upon cancer treatment.</li>
 <li>This rationale would also agree with our results from comparing S and G2M scores across treatment conditions, where we found that cells in <strong>MRD and Relapse</strong> have statistically significantly higher S and G2M scores than cells in <strong>Vehicle</strong>.</li>
 <li>However, this rationale does not explain why we do not see enriched expression of OXPHOS and UPR genes in the MRD treatment condition.</li>
 </ul></li>
 </ul></li>
 </ul>
+<p><strong>note: our sample size is extremely small for each condition, which may mean that we have really low power</strong></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

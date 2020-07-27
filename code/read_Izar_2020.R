@@ -28,12 +28,15 @@ g2m.genes <- ccgenes[44:97]
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names))
-names(hallmark.list) <- hallmark_names
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 2)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
 }
+
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
 
 # 10x data --------------------
 # read and save 10x data to Seurat object 
