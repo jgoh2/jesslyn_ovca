@@ -118,7 +118,7 @@ seurat_tab(PDX_All, col_var = "model_ID", row_var = "treatment.status", title = 
   gtsave("PDX_numCellsPerTreatmentPerModel.png", path = "jesslyn_plots/PDX")
 ```
 
-### STEP 3 SUBSET SEURAT OBJECT bY MODEL
+### STEP 3 SUBSET SEURAT OBJECT BY MODEL
 ```{r subset, message=FALSE, warning=FALSE}
 PDX_DF20 <- subset(PDX_All, subset = (model_ID == "DF20"))
 PDX_DF101 <- subset(PDX_All, subset = (model_ID == "DF101"))

@@ -123,6 +123,16 @@ new_meta$`Treatment status of sample`[new_meta$Time == 0] = "Treatment-naïve"
 seurat_obj = AddMetaData(seurat_obj, new_meta$`Treatment status of sample`, col.name = "treatment.status")
 ## cell type
 seurat_obj = AddMetaData(seurat_obj, left_join(seurat_obj@meta.data, clust_cell_SS2)$cell.type, col.name = "cell.type")
+
+##sample ID
+sample_ID <- rep("NA", ncol(seurat_obj))
+for(patient in unique(seurat_obj$Patient)){
+  for (time in unique(seurat_obj$Time)){
+    sample_ID[seurat_obj$Patient == patient & seurat_obj$Time == time] <- glue("{patient}.{time}")
+  }
+}
+seurat_obj <- AddMetaData(seurat_obj, sample_ID, col.name = "sample")
+
 ## Jesslyn AddModuleScore here!
 seurat_obj <- AddModuleScore(seurat_obj, features = hallmark.list, name = names(hallmark.list), nbin = 50, search = T)
 seurat_obj<- CellCycleScoring(seurat_obj, g2m.features = g2m.genes, s.features = s.genes)
