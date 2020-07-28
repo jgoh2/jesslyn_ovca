@@ -14,6 +14,7 @@ The purpose of this project is to identify gene expression signatures from ovari
 
 1. [A summary of the data from Izar 2020 et al.](data_summary.html)
 2. [PDX DE analysis](03.1_Izar2020_PDX_DEAnalysis.html)
+3. [SS2 DE analysis](02.1_Izar2020_SS2_DEAnalysis.html)
 
 ## Credits
 

@@ -140,7 +140,7 @@ for(i in hm.names){
 
 ### STEP 2 DE ANALYSIS #1. VISUALIZING AND QUANTIFYING DE HALLMARK GENESETS
 * **QUESTION** Are modules (**OXPHOS and UPR**) differentially expressed across treatment conditions within each model? 
-* **HYPOTHESIS** We hypothesize that the **MRD** treatment condition will express enriched levels of OXPHOS and UPR hallmarks relative to cells in the **vehicle** and **relapse** treatment conditions. 
+* **HYPOTHESIS** We hypothesize that the **MRD** treatment condition will express enriched levels of OXPHOS and UPR hallmarks relative to cells in the **vehicle** and **relapse** treatment conditions (MRD > vehicle, MRD > relapse). 
     - **APPROACH #1** Violin Plots and UMAP
         * Center **OXPHOS and UPR** module scores at 0 and reassign to metadata
         * Visualize differences in hallmark score across treatment conditions with:
@@ -213,10 +213,18 @@ Vln.plots[["DF68"]]
 
 * **OBSERVATIONS**
     - We observe differences in hallmark scores across treatment conditions: 
-        * Results from **DF20** seems to agree with our hypothesis where cells in **MRD** express enriched levels of **OXPHOS and UPR** genes in comparison to the other two conditions. 
-        * Results from **DF101** reveal a clear enrichment of **OXPHOS** genes in the **vehicle** treatment condition, which does not support our hypothesis. It also seems like cells in **relapse** express higher levels of **UPR** genes in comparison to the other two conditions, which also does not support our hypothesis. 
-        * Results from **DF68** shows a slight enrichment of **OXPHOS** genes and a slight depletion of **UPR** genes in **MRD**. 
-    - We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the **wilcoxon rank sum test**
+        * **DF20**
+            - OXPHOS: MRD > Vehicle ; MRD > Relapse (supports our hypothesis)
+            - UPR: MRD > Vehicle ; MRD > Relapse (supports our hypothesis)
+        * **DF101** 
+            - OXPHOS: Vehicle >> MRD; Vehicle >> Relapse ; MRD > Relapse (does not support our hypothesis)
+            - UPR: Relapse > MRD > Vehicle (does not support our hypothesis)
+        * **DF68** 
+            - **OXPHOS: MRD > Vehicle; MRD > Relapse (supports our hypothesis)**
+            - UPR: Relapse > Vehicle > MRD (does not support our hypothesis)
+        
+    - Most of the comparisons do not support our hypothesis. We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the **wilcoxon rank sum test**
+    
 ```{r DEAnalysis1 Statistical test, message = FALSE, warning = FALSE}
 #DF20 ---------------------------------
 DF20.vehicle <- subset(PDX_DF20, subset = (treatment.status == "vehicle"))
@@ -287,7 +295,7 @@ DT::datatable(all.DF) %>%
 
 * **CONCLUSIONS**
     - The only statistically significant difference (p < 0.05) in hallmark scores is between treatment conditions within model **DF101** for **OXPHOS** 
-    - **Vehicle > MRD > Relapse**
+    - DF101 OXPHOS: **Vehicle > MRD > Relapse**
     - However, the trends found in DF101 do not agree with our hypothesis that cells in **MRD** differentially enrich OXPHOS genes)
 
 Considering how we did not obtain statistically significant results from these genesets, we looked for other **OXPHOS** genesets to confirm our results. The **OXPHOS** genesets that we test are listed as follows:
@@ -421,9 +429,8 @@ DT::datatable(all.oxphos.DF) %>%
 
 * More comparisons are statistically significant when using the **GO** or **KEGG** genesets in comparison to using the **HALLMARK** geneset. 
     - All comparisons within DF101 are significant 
-        * **Vehicle** > **MRD** > **Relapse** 
-    - DF68 **MRD** > **Relapse** is significant 
-
+        * **Vehicle** > **MRD** > **Relapse** (does not support our hypothesis)
+    - DF68 **MRD** > **Relapse** is significant (supports our hypothesis)
 
 Considering how our approach with analyzing and comparing **module score** did not support our hypothesis, we try to confirm our results again with our second appraoch: **GSEA**
 
@@ -450,7 +457,7 @@ Considering how our approach with analyzing and comparing **module score** did n
             - Stacked Bar Plot
             - UMAP by treatment vs. UMAP by cell cycle phase vs. UMAP by S and G2M Score 
             - Violin Plot 
-        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically
+        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant.
         
 ```{r cellcycle1, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height = 10}
 #Stacked Bar Plot --------------------------
@@ -490,10 +497,11 @@ bar.plots[["DF20"]] + bar.plots[["DF101"]] + bar.plots[["DF68"]] + plot_layout(g
 ```
 
 * **OBSERVATIONS**
-    - Different fractions of cells do seem to be in different cell cycle phases depending on the treatment condition. However, the trends we see do not necessary agree with our hypothesis that the **MRD** treatment condition will have the least number of cycling cells: 
-        * In DF68, cells in **vehicle** do seem to have the most cells in the G2M phase, although cells in **relapse** has the most noncycling cells in the G1 phase. 
-        * In DF20, cells in **MRD** have the highest fraction of cells in the G2M phase, which does not support our hypothesis. 
-        * In all cases, cells in **MRD** do not seem to have the highest fraction of noncycling G1 cells. 
+    - Different fractions of cells do seem to be in different cell cycle phases depending on the treatment condition. However, the trends we see do not necessary agree with our hypothesis that the **MRD** treatment condition will have the highest % of noncycling cells: 
+        * DF20: % Noncycling - Vehicle > Relapse > MRD (does not support our hypothesis)
+        * DF101: % Noncycling - Vehicle > MRD > Relapse (does not support our hypothesis)
+        * DF68: % Noncycling - Relapse > Vehicle > MRD (does not support our hypothesis) 
+    - In all cases, cells in **MRD** do not seem to have the highest fraction of noncycling G1 cells. 
 
 To investigate this further, we compare UMAPs by treatment vs. UMAPs by cell cycle phase and scores
 
@@ -585,7 +593,8 @@ cc.Vln.plots[["DF68"]]
 ```
 
 * **OBSERVATIONS** 
-    - There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an **increase of cycling cells** in the S or G2M phases in **MRD and relapse** relative to **vehicle**. To confirm this, we evaluate the statistical significance of the difference between S and G2M scores across treatment conditions. 
+    - There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an **increase in cycling cells** in **MRD and relapse** relative to **vehicle** (which does not support our hypothesis).
+    - We evaluate the statistical significance of the difference between S and G2M scores across treatment conditions. 
 
 ```{r cellcycleStat, message=FALSE, warning=FALSE}
 #DF20 ---------------------------------
@@ -644,9 +653,8 @@ DT::datatable(both.DF) %>%
 ```
 
 * **CONCLUSIONS** 
-    - Only comparisons between **MRD vs. Vehicle** and **Vehicle vs. Relapse** in model **DF20** yielded statistically significant results (p < 0.05) for both **S and G2M scores** 
-    - Based on the Violin Plot: 
-        * **MRD** and **Relapse** have higher S and G2M scores than **Vehicle** 
+    - Only comparisons within model **DF20** yielded statistically significant results (p < 0.05) for both **S and G2M scores**:
+        * DF20: For both S and G2M scores - MRD >> Vehicle; Relapse >> Vehicle
     - These results do not support our hypothesis that there should be less cycling cells in the **MRD** treatment condition than the other two treatment conditions. 
 
 Our results from above collectively suggest that **OXPHOS and UPR** expression, and cell cycle phase, do not significantly correlate with the treatment condition a cell is in. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of **OXPHOS and UPR** and **cell cycle phase**. 
@@ -693,8 +701,8 @@ cc.exp.plot[["DF68"]]
 ```
 
 * **OBSERVATIONS** 
-    - Results from comparing **OXPHOS and UPR** gene scores across cell cycle phase within each model reveal that cells in S phase seems to generally express higher levels of **OXPHOS** genes in comparison to the other cell cycle phases. This trend is especially true within **DF20**. 
-    - Results from comparing **OXPHOS and UPR** gene scores across cell cycle phase within each treatment condition per model revel that cells in S phase generally enrich **OXPHOS** genes especially within the **MRD** treatment condition in comparison to the other cell cycle phases. 
+    - **OXPHOS and UPR** scores comparison across cell cycle phase within each model: S > G1 and G2M (in general) **especially true within DF20**
+    - **OXPHOS and UPR** scores comparison across cell cycle phase within each treatment condition per model: S > G1 and G2M especially withtin **MRD** treatment condition for **OXPHOS**
     - We hypothesized that low / cycling cells (G1) should express higher levels of **OXPHOS and/or UPR genes** based on findings from previous studies that low cycling cells seem to survive cancer treatment. We try to rationalize our findings that cells in S phase actually express higher levels of our hallmarks: 
         * It makes sense that cells in S phase express higher levels of OXPHOS genes because DNA is being replicated in S phase, which requires a lot of energy. 
         * Even if a cell is found to be in the S phase, it might not mean that it is cycling. It is possible that the cell entered the S phase but does not continue through the cell cycle upon treatment. Furthermore, since DNA is being replicated during S phase and mistakes are most commonly made during DNA replication, it is possible that DNA damage repair programs are also most active during this phase, and may subsequently promote survival upon cancer treatment. 

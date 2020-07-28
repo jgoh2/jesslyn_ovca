@@ -414,7 +414,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -423,7 +423,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -432,10 +432,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-27
+<strong>Last updated:</strong> 2020-07-28
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -451,12 +451,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree8ca1e011ab3510091358c41f362229573a9741f9targetblank8ca1e01a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/8ca1e011ab3510091358c41f362229573a9741f9" target="_blank">8ca1e01</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree35c794768b06ac80182d293ea94c867226d20d49targetblank35c7947a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/35c794768b06ac80182d293ea94c867226d20d49" target="_blank">35c7947</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree8ca1e011ab3510091358c41f362229573a9741f9targetblank8ca1e01a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree35c794768b06ac80182d293ea94c867226d20d49targetblank35c7947a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/8ca1e011ab3510091358c41f362229573a9741f9" target="_blank">8ca1e01</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/35c794768b06ac80182d293ea94c867226d20d49" target="_blank">35c7947</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -557,6 +557,11 @@ Ignored files:
     Ignored:    renv/python/
     Ignored:    renv/staging/
     Ignored:    vignettes/
+
+Unstaged changes:
+    Modified:   analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd
+    Modified:   analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd
+    Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
 
 </code></pre>
 <p>
@@ -595,6 +600,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/35c794768b06ac80182d293ea94c867226d20d49/docs/03.1_Izar2020_PDX_DEAnalysis.html" target="_blank">35c7947</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-27
+</td>
+<td>
+SS2 Analysis Part 1 and 2
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -894,7 +916,7 @@ for(i in hm.names){
 <h3>STEP 2 DE ANALYSIS #1. VISUALIZING AND QUANTIFYING DE HALLMARK GENESETS</h3>
 <ul>
 <li><strong>QUESTION</strong> Are modules (<strong>OXPHOS and UPR</strong>) differentially expressed across treatment conditions within each model?</li>
-<li><strong>HYPOTHESIS</strong> We hypothesize that the <strong>MRD</strong> treatment condition will express enriched levels of OXPHOS and UPR hallmarks relative to cells in the <strong>vehicle</strong> and <strong>relapse</strong> treatment conditions.
+<li><strong>HYPOTHESIS</strong> We hypothesize that the <strong>MRD</strong> treatment condition will express enriched levels of OXPHOS and UPR hallmarks relative to cells in the <strong>vehicle</strong> and <strong>relapse</strong> treatment conditions (MRD &gt; vehicle, MRD &gt; relapse).
 <ul>
 <li><strong>APPROACH #1</strong> Violin Plots and UMAP
 <ul>
@@ -1266,11 +1288,23 @@ jgoh2
 <ul>
 <li>We observe differences in hallmark scores across treatment conditions:
 <ul>
-<li>Results from <strong>DF20</strong> seems to agree with our hypothesis where cells in <strong>MRD</strong> express enriched levels of <strong>OXPHOS and UPR</strong> genes in comparison to the other two conditions.</li>
-<li>Results from <strong>DF101</strong> reveal a clear enrichment of <strong>OXPHOS</strong> genes in the <strong>vehicle</strong> treatment condition, which does not support our hypothesis. It also seems like cells in <strong>relapse</strong> express higher levels of <strong>UPR</strong> genes in comparison to the other two conditions, which also does not support our hypothesis.</li>
-<li>Results from <strong>DF68</strong> shows a slight enrichment of <strong>OXPHOS</strong> genes and a slight depletion of <strong>UPR</strong> genes in <strong>MRD</strong>.</li>
+<li><strong>DF20</strong>
+<ul>
+<li>OXPHOS: MRD &gt; Vehicle ; MRD &gt; Relapse (supports our hypothesis)</li>
+<li>UPR: MRD &gt; Vehicle ; MRD &gt; Relapse (supports our hypothesis)</li>
 </ul></li>
-<li>We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the <strong>wilcoxon rank sum test</strong></li>
+<li><strong>DF101</strong>
+<ul>
+<li>OXPHOS: Vehicle &gt;&gt; MRD; Vehicle &gt;&gt; Relapse ; MRD &gt; Relapse (does not support our hypothesis)</li>
+<li>UPR: Relapse &gt; MRD &gt; Vehicle (does not support our hypothesis)</li>
+</ul></li>
+<li><strong>DF68</strong>
+<ul>
+<li><strong>OXPHOS: MRD &gt; Vehicle; MRD &gt; Relapse (supports our hypothesis)</strong></li>
+<li>UPR: Relapse &gt; Vehicle &gt; MRD (does not support our hypothesis)</li>
+</ul></li>
+</ul></li>
+<li>Most of the comparisons do not support our hypothesis. We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the <strong>wilcoxon rank sum test</strong></li>
 </ul></li>
 </ul>
 <pre class="r"><code>#DF20 ---------------------------------
@@ -1344,7 +1378,7 @@ DT::datatable(all.DF) %&gt;%
 <li><strong>CONCLUSIONS</strong>
 <ul>
 <li>The only statistically significant difference (p &lt; 0.05) in hallmark scores is between treatment conditions within model <strong>DF101</strong> for <strong>OXPHOS</strong></li>
-<li><strong>Vehicle &gt; MRD &gt; Relapse</strong></li>
+<li>DF101 OXPHOS: <strong>Vehicle &gt; MRD &gt; Relapse</strong></li>
 <li>However, the trends found in DF101 do not agree with our hypothesis that cells in <strong>MRD</strong> differentially enrich OXPHOS genes)</li>
 </ul></li>
 </ul>
@@ -1597,9 +1631,9 @@ DT::datatable(all.oxphos.DF) %&gt;%
 <ul>
 <li>All comparisons within DF101 are significant
 <ul>
-<li><strong>Vehicle</strong> &gt; <strong>MRD</strong> &gt; <strong>Relapse</strong></li>
+<li><strong>Vehicle</strong> &gt; <strong>MRD</strong> &gt; <strong>Relapse</strong> (does not support our hypothesis)</li>
 </ul></li>
-<li>DF68 <strong>MRD</strong> &gt; <strong>Relapse</strong> is significant</li>
+<li>DF68 <strong>MRD</strong> &gt; <strong>Relapse</strong> is significant (supports our hypothesis)</li>
 </ul></li>
 </ul>
 <p>Considering how our approach with analyzing and comparing <strong>module score</strong> did not support our hypothesis, we try to confirm our results again with our second appraoch: <strong>GSEA</strong></p>
@@ -1626,7 +1660,7 @@ DT::datatable(all.oxphos.DF) %&gt;%
 <li>UMAP by treatment vs. UMAP by cell cycle phase vs. UMAP by S and G2M Score</li>
 <li>Violin Plot</li>
 </ul></li>
-<li>Statistical test: is the difference in cell cycle scores across treatment conditions statistically</li>
+<li>Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant.</li>
 </ul></li>
 </ul></li>
 </ul>
@@ -1716,12 +1750,13 @@ jgoh2
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li>Different fractions of cells do seem to be in different cell cycle phases depending on the treatment condition. However, the trends we see do not necessary agree with our hypothesis that the <strong>MRD</strong> treatment condition will have the least number of cycling cells:
+<li>Different fractions of cells do seem to be in different cell cycle phases depending on the treatment condition. However, the trends we see do not necessary agree with our hypothesis that the <strong>MRD</strong> treatment condition will have the highest % of noncycling cells:
 <ul>
-<li>In DF68, cells in <strong>vehicle</strong> do seem to have the most cells in the G2M phase, although cells in <strong>relapse</strong> has the most noncycling cells in the G1 phase.</li>
-<li>In DF20, cells in <strong>MRD</strong> have the highest fraction of cells in the G2M phase, which does not support our hypothesis.</li>
-<li>In all cases, cells in <strong>MRD</strong> do not seem to have the highest fraction of noncycling G1 cells.</li>
+<li>DF20: % Noncycling - Vehicle &gt; Relapse &gt; MRD (does not support our hypothesis)</li>
+<li>DF101: % Noncycling - Vehicle &gt; MRD &gt; Relapse (does not support our hypothesis)</li>
+<li>DF68: % Noncycling - Relapse &gt; Vehicle &gt; MRD (does not support our hypothesis)</li>
 </ul></li>
+<li>In all cases, cells in <strong>MRD</strong> do not seem to have the highest fraction of noncycling G1 cells.</li>
 </ul></li>
 </ul>
 <p>To investigate this further, we compare UMAPs by treatment vs. UMAPs by cell cycle phase and scores</p>
@@ -2219,7 +2254,8 @@ jgoh2
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li>There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an <strong>increase of cycling cells</strong> in the S or G2M phases in <strong>MRD and relapse</strong> relative to <strong>vehicle</strong>. To confirm this, we evaluate the statistical significance of the difference between S and G2M scores across treatment conditions.</li>
+<li>There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an <strong>increase in cycling cells</strong> in <strong>MRD and relapse</strong> relative to <strong>vehicle</strong> (which does not support our hypothesis).</li>
+<li>We evaluate the statistical significance of the difference between S and G2M scores across treatment conditions.</li>
 </ul></li>
 </ul>
 <pre class="r"><code>#DF20 ---------------------------------
@@ -2280,10 +2316,9 @@ DT::datatable(both.DF) %&gt;%
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
-<li>Only comparisons between <strong>MRD vs. Vehicle</strong> and <strong>Vehicle vs. Relapse</strong> in model <strong>DF20</strong> yielded statistically significant results (p &lt; 0.05) for both <strong>S and G2M scores</strong></li>
-<li>Based on the Violin Plot:
+<li>Only comparisons within model <strong>DF20</strong> yielded statistically significant results (p &lt; 0.05) for both <strong>S and G2M scores</strong>:
 <ul>
-<li><strong>MRD</strong> and <strong>Relapse</strong> have higher S and G2M scores than <strong>Vehicle</strong></li>
+<li>DF20: For both S and G2M scores - MRD &gt;&gt; Vehicle; Relapse &gt;&gt; Vehicle</li>
 </ul></li>
 <li>These results do not support our hypothesis that there should be less cycling cells in the <strong>MRD</strong> treatment condition than the other two treatment conditions.</li>
 </ul></li>
@@ -2482,8 +2517,8 @@ jgoh2
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li>Results from comparing <strong>OXPHOS and UPR</strong> gene scores across cell cycle phase within each model reveal that cells in S phase seems to generally express higher levels of <strong>OXPHOS</strong> genes in comparison to the other cell cycle phases. This trend is especially true within <strong>DF20</strong>.</li>
-<li>Results from comparing <strong>OXPHOS and UPR</strong> gene scores across cell cycle phase within each treatment condition per model revel that cells in S phase generally enrich <strong>OXPHOS</strong> genes especially within the <strong>MRD</strong> treatment condition in comparison to the other cell cycle phases.</li>
+<li><strong>OXPHOS and UPR</strong> scores comparison across cell cycle phase within each model: S &gt; G1 and G2M (in general) <strong>especially true within DF20</strong></li>
+<li><strong>OXPHOS and UPR</strong> scores comparison across cell cycle phase within each treatment condition per model: S &gt; G1 and G2M especially withtin <strong>MRD</strong> treatment condition for <strong>OXPHOS</strong></li>
 <li>We hypothesized that low / cycling cells (G1) should express higher levels of <strong>OXPHOS and/or UPR genes</strong> based on findings from previous studies that low cycling cells seem to survive cancer treatment. We try to rationalize our findings that cells in S phase actually express higher levels of our hallmarks:
 <ul>
 <li>It makes sense that cells in S phase express higher levels of OXPHOS genes because DNA is being replicated in S phase, which requires a lot of energy.</li>
@@ -2514,7 +2549,7 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices datasets  utils     methods   base     
+[1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
  [1] ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4        tidyselect_1.1.0     

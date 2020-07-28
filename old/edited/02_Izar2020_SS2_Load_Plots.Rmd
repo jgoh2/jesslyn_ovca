@@ -24,7 +24,7 @@ options(width=120)
     - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
     - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses. 
     
-* In our 3-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** each model. 
+* In our 3-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9 
 * We split our SS2 analysis into three parts: 
     1. **Load Data and Create SS2 Seurat Object**
         a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
