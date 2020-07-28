@@ -181,14 +181,18 @@ p3
 ggsave(plot = p3, "SS2Malignant_All_UMAP.png", path = "jesslyn_plots/SS2", width = 10)
 
 #cluster by treatment/sample within patient 8 and 9? 
-p4 <- UMAPPlot(SS2Malignant.8, group.by = "treatment.status") + labs(title = "SS2 Patient 8 Malignant Cells by Treatment")
-p5 <- UMAPPlot(SS2Malignant.8, group.by = "sample") + labs(title = "SS2 Patient 8 Malignant Cells by Sample")
+p4 <- UMAPPlot(SS2Malignant.8, group.by = "treatment.status") + 
+  labs(title = "SS2 Patient 8 Malignant Cells by Treatment")
+p5 <- UMAPPlot(SS2Malignant.8, group.by = "sample") + 
+  labs(title = "SS2 Patient 8 Malignant Cells by Sample")
 p6 <- p4 + p5
 p6
 ggsave(plot = p6, "SS2Malignant.8_UMAP.png", path = "jesslyn_plots/SS2", width = 10)
 
-p7 <- UMAPPlot(SS2Malignant.9, group.by = "treatment.status") + labs(title = "SS2 Patient 9 Malignant Cells by Treatment")
-p8 <- UMAPPlot(SS2Malignant.9, group.by = "sample") + labs(title = "SS2 Patient 8 Malignant Cells by Sample")
+p7 <- UMAPPlot(SS2Malignant.9, group.by = "treatment.status") + 
+  labs(title = "SS2 Patient 9 Malignant Cells by Treatment")
+p8 <- UMAPPlot(SS2Malignant.9, group.by = "sample") + 
+  labs(title = "SS2 Patient 8 Malignant Cells by Sample")
 p9 <- p7 + p8
 p9
 ggsave(plot = p9, "SS2Malignant.9_UMAP.png", path = "jesslyn_plots/SS2", width = 10)
