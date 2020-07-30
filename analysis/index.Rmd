@@ -13,8 +13,12 @@ editor_options:
 The purpose of this project is to identify gene expression signatures from ovarian cancer RNA-seq data that are associated with a drug tolerant state that is characteristic of cancer persister cells.
 
 1. [A summary of the data from Izar 2020 et al.](data_summary.html)
-2. [PDX DE analysis](03.1_Izar2020_PDX_DEAnalysis.html)
-3. [SS2 DE analysis](02.1_Izar2020_SS2_DEAnalysis.html)
+2. **PDX Data Analysis**
+    a. [PDX Exploratory analysis](03.0_Izar2020_PDX_ExploratoryAnalysis.html)
+    b. [PDX DE analysis](03.1_Izar2020_PDX_DEAnalysis.html)
+    c. [PDX Cell Cycle analysis](03.2_Izar2020_PDX_CellCycleAnalysis.html)
+3. **SS2 Data Analysis** 
+    b. [SS2 DE analysis](02.1_Izar2020_SS2_DEAnalysis.html)
 
 ## Credits
 

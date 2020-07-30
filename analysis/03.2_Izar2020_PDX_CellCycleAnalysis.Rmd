@@ -1,0 +1,334 @@
+---
+title: "Izar 2020 PDX (Cohort 3) Cell Cycle Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/29/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 PDX (COHORT 3) DATA DIFFERANTIAL EXPRESISON ANALYSIS 
+
+### OVERVIEW
+* The PDX data from Izar2020 consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
+    - DF20 (BRCA WT treatment-naive, clinically platinum sensitive) 
+    - DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant) 
+    - DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant) 
+* After tumors were established, animals were divided into two groups per model: 
+    - Vehicle (treated with DMSO) 
+    - Carboplatin (treated with IP carboplatin) 
+        * Carboplatin-treated mice for minimal residual disease (**MRD**) group were harvested for scRNA-seq 
+        * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
+* In our 5-part analysis of the Izar 2020 PDX data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** each model. 
+* We split our PDX analysis into three parts: 
+    1. **Load Data and Create PDX Seurat Object**
+        a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+            i. Load in PDX count matrix and Create Seurat Object 
+            ii. Assign Metadata identities including: 
+                - Mouse ID 
+                - Model ID 
+                - Treatment Status 
+            iii. Score cells for **cell cycle** and **hallmark genesets** 
+                - **Note**: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the **data** slot. 
+            iv. Save Seurat Object
+          
+    2. **Process Data and Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **03_Izar2020_PDX_Load** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in PDX Seurat Object from Part 1 and **subset by model**. Continue analysis separately for each model. 
+            ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
+            iii. Dimensionality Reduction (PCA + UMAP)
+            vi. Save Seurat Objects 
+      
+    3. **Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **03.0_Izar2020_PDX_Exploratory Analysis** file in the **analysis** folder. During this part of our analysis we: 
+            i. Load in PDX Seurat Object from Part 2. Analyze separately for each model.
+            ii. Compute summary metrics for PDX data such as: 
+                - Number of cells per model per treatment 
+                - Number of cells per treatment per cell cycle phase 
+            iii. Visualize how cells separate based on metadata identities via UMAP 
+                - Intermodel heterogeneity: How do cells separate by model? 
+                - Intramodel heterogeneity: 
+                    * How do cells separate by treament status? 
+                    * How do cells separate by cell cycle phase?
+            
+    4. **DE Analysis**
+        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+            i. Violin Plots and UMAP 
+            ii. Gene Set Enrichment Analysis (GSEA)
+        b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
+            i. Volcano Plots 
+    5. **CELL CYCLE ANALYSIS**
+        a. **TYPE #1 CELL CYCLE ANALYSIS**: Examine correlation between treatment condition and cell cycle phase
+        b. Evaluate the idea that cell cycle might influence expression of signatures 
+
+This is the fifth part of our 5-part analysis of the Izar 2020 PDX (Cohort 3) data. 
+
+### CELL CYCLE ANALYSIS IN-DEPTH EXPLANATION 
+We are interested in answering a few questions for our Cell Cycle Analysis:
+
+**CELL CYCLE ANALYSIS** 
+
+* **QUESTION #1** Are more cells at different cell cycle phases between treatments? 
+    - **APPROACH** Violin Plots and UMAP 
+        * Visualize differences in cell cycle score across treatment conditions with: 
+            - Stacked Bar Plot
+            - Violin Plot 
+            - UMAP by treatment vs. UMAP by cell cycle phase vs. UMAP by S and G2M Score 
+        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically
+* **QUESTION #2** Is there a correlation between cell cycle phase and the expression of signatures? 
+    - **APPROACH** Violin Plots
+        * Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1. 
+        * Stratify the Violin Plots by cell cycle phase
+
+### STEP 1 LOAD IN SEURAT OBJECTS AND GENESETS 
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX_All = readRDS("data/Izar_2020/test/jesslyn_PDX_All_processed.RDS")
+PDX_DF20 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
+PDX_DF101 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
+PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names <- names(PDX_All@meta.data)[9:48]
+
+for(i in hm.names){
+    DF20.hm.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
+    PDX_DF20 <- AddMetaData(PDX_DF20, DF20.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF101.hm.centered <- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
+    PDX_DF101 <- AddMetaData(PDX_DF101, DF101.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF68.hm.centered <- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
+    PDX_DF68 <- AddMetaData(PDX_DF68, DF68.hm.centered, col.name = glue("{i}.centered"))
+}
+```
+
+### STEP 2 CELL CYCLE ANALYSIS
+In our **Exploratory Analysis** section, we observed that PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis. However, cells did not seem to cluster by treatment status. We now use a more quantitative approach to investigate the correlation between treatment and cell cycle phase. 
+
+* **QUESTION #1** Are more cells at different cell cycle phases between treatments? 
+* **HYPOTHESIS** There should be less cycling cells in the MRD treatment conditions relative to the other two treatment conditions. 
+    - **APPROACH** Violin Plots and UMAP 
+        * Visualize differences in cell cycle score across treatment conditions with: 
+            - Stacked Bar Plot
+            - Violin Plot 
+        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant.
+        
+```{r cellcycle1, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 15, fig.height = 5}
+#Stacked Bar Plot --------------------------
+hms.centered <- c("UNUPDATED.OXPHOS37.centered", "UNUPDATED.UPR38.centered")
+PDXs <- c(PDX_DF20, PDX_DF101, PDX_DF68)
+PDX.names <- c("DF20", "DF101", "DF68")
+bar.plots <- vector("list", length = 3)
+names(bar.plots) <- PDX.names
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  t = table(obj$Phase, obj$treatment.status) %>% 
+    as.data.frame() %>% 
+    rename(Phase = Var1, Treatment = Var2, numCells = Freq)
+
+sum = c()
+z = 1
+while(z < nrow(t)){
+    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
+    sum = c(sum, rep(n,3))
+    z = z + 3
+  }
+  
+t <- t %>% mutate(total = sum) %>% mutate(percent = (numCells/total)*100)
+  
+  p = t %>% 
+    ggplot(aes(x=Treatment, y=percent, fill=Phase)) + 
+    geom_bar(stat="identity") + 
+    labs(title = glue("{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment"), subtitle = glue("Total # Cells in {name}: {numCells}"), caption = "Labeled by # cells in each phase per treatment") +
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
+    geom_text(aes(label = numCells), position = "stack", hjust = 0.5, vjust = 2, size = 3, color = "white")
+  bar.plots[[i]] <- p
+}
+
+bar.plots[["DF20"]] + bar.plots[["DF101"]] + bar.plots[["DF68"]] + plot_layout(guides= 'collect')
+```
+
+* **OBSERVATIONS**
+    - Different fractions of cells do seem to be in different cell cycle phases depending on the treatment condition. However, the trends we see do not necessary agree with our hypothesis that the **MRD** treatment condition will have the highest % of noncycling cells: 
+        * DF20: % Noncycling - Vehicle > Relapse > MRD (does not support our hypothesis)
+        * DF101: % Noncycling - Vehicle > MRD > Relapse (does not support our hypothesis)
+        * DF68: % Noncycling - Relapse > Vehicle > MRD (does not support our hypothesis) 
+    - In all cases, cells in **MRD** do not seem to have the highest fraction of noncycling G1 cells. 
+
+To investigate this further, we build violin plots of cell cycle scores separated by treatment status. 
+
+```{r cellcycleVln, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=8}
+#VlnPlot -------------------------
+cc.Vln.plots <- vector("list", length = 3)
+names(cc.Vln.plots) <- PDX.names
+
+for (i in 1:length(PDXs)){
+  obj <- PDX.names[[i]]
+  numCells = nrow(PDXs[[i]]@meta.data)
+  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F)
+  p[[1]] <- p[[1]] + labs(title = glue("{obj} S.Score across treatment"), x = obj, subtitle = glue("Number of cells in {obj}: {numCells}")) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDXs[[i]]$S.Score.centered) -0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDXs[[i]]$S.Score.centered) - 0.03)
+  
+  p[[2]] <- p[[2]] + labs(title = glue("{obj} G2M.Score across treatment"), x = obj) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+  cc.Vln.plots[[obj]] <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
+}
+
+cc.Vln.plots[["DF20"]]
+cc.Vln.plots[["DF101"]]
+cc.Vln.plots[["DF68"]]
+```
+
+* **OBSERVATIONS** 
+    - There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an **increase in cycling cells** in **MRD and relapse** relative to **vehicle** (which does not support our hypothesis).
+    - We evaluate the statistical significance of the difference between S and G2M scores across treatment conditions. 
+
+```{r cellcycleStat, message=FALSE, warning=FALSE}
+#DF20 ---------------------------------
+DF20.vehicle <- subset(PDX_DF20, subset = (treatment.status == "vehicle"))
+DF20.MRD <- subset(PDX_DF20, subset = (treatment.status == "MRD"))
+DF20.relapse <- subset(PDX_DF20, subset = (treatment.status == "relapse"))
+
+DF20.sscore.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$S.Score.centered, DF20.vehicle$S.Score.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$S.Score.centered, DF20.relapse$S.Score.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$S.Score.centered, DF20.relapse$S.Score.centered)$p.value
+)
+
+DF20.g2m.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$G2M.Score.centered, DF20.vehicle$G2M.Score.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$G2M.Score.centered, DF20.relapse$G2M.Score.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$G2M.Score.centered, DF20.relapse$G2M.Score.centered)$p.value
+)
+
+#DF101 ---------------------------------
+DF101.vehicle <- subset(PDX_DF101, subset = (treatment.status == "vehicle"))
+DF101.MRD <- subset(PDX_DF101, subset = (treatment.status == "MRD"))
+DF101.relapse <- subset(PDX_DF101, subset = (treatment.status == "relapse"))
+
+DF101.sscore.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$S.Score.centered, DF101.vehicle$S.Score.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$S.Score.centered, DF101.relapse$S.Score.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$S.Score.centered, DF101.relapse$S.Score.centered)$p.value
+)
+
+DF101.g2m.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$G2M.Score.centered, DF101.vehicle$G2M.Score.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$G2M.Score.centered, DF101.relapse$G2M.Score.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$G2M.Score.centered, DF101.relapse$G2M.Score.centered)$p.value
+)
+
+#DF68 ---------------------------------
+DF68.vehicle <- subset(PDX_DF68, subset = (treatment.status == "vehicle"))
+DF68.MRD <- subset(PDX_DF68, subset = (treatment.status == "MRD"))
+DF68.relapse <- subset(PDX_DF68, subset = (treatment.status == "relapse"))
+
+DF68.sscore.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$S.Score.centered, DF68.vehicle$S.Score.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$S.Score.centered, DF68.relapse$S.Score.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$S.Score.centered, DF68.relapse$S.Score.centered)$p.value
+)
+
+DF68.g2m.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$G2M.Score.centered, DF68.vehicle$G2M.Score.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$G2M.Score.centered, DF68.relapse$G2M.Score.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$G2M.Score.centered, DF68.relapse$G2M.Score.centered)$p.value
+)
+
+#combine ------------------------------
+sscore.DF <- rbind(DF20.sscore.df, DF101.sscore.df, DF68.sscore.df)
+rownames(sscore.DF) <- c("S.DF20", "S.DF101", "S.DF68")
+
+g2m.DF <- rbind(DF20.g2m.df, DF101.g2m.df, DF68.g2m.df)
+rownames(g2m.DF) <- c("g2m.DF20", "g2m.DF101", "g2m.DF68")
+
+both.DF <- rbind(sscore.DF, g2m.DF)
+DT::datatable(both.DF) %>% 
+  DT::formatSignif(names(both.DF), digits = 2) %>% 
+  DT::formatStyle(names(both.DF), color = DT::styleInterval(0.05, c('red', 'black')))
+```
+
+* **CONCLUSIONS** 
+    - Only comparisons within model **DF20** yielded statistically significant results (p < 0.05) for both **S and G2M scores**:
+        * DF20: For both S and G2M scores - MRD >> Vehicle; Relapse >> Vehicle
+    - These results do not support our hypothesis that there should be less cycling cells in the **MRD** treatment condition than the other two treatment conditions. 
+
+Our results from above collectively suggest that **OXPHOS and UPR** expression, and cell cycle phase, do not significantly correlate with the treatment condition a cell is in. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of **OXPHOS and UPR** and **cell cycle phase**. 
+
+* **QUESTION #2** Is there a correlation between cell cycle phase and the expression of signatures? 
+* **HYPOTHESIS** We hypothesize that low cycling cells (G1) should express higher levels of **OXPHOS and UPR** genes. 
+    - **APPROACH** Violin Plots
+        * Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1. 
+        * Stratify the Violin Plots by cell cycle phase
+        
+```{r cellcycle2, message=FALSE, warning=FALSE, fig.align='center', fig.width=14, fig.height = 8}
+cc.exp.plot <- vector("list", length = 3)
+names(cc.exp.plot) <- PDX.names
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  
+  p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE)
+  p1[[1]] <- p1[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase"), subtitle = glue("Number of cells in {name}: {numCells}")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
+    geom_text(label = paste(sum(obj$Phase == "G1"), "cells"), x = "G1", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$Phase == "G2M"), "cells"), x = "G2M", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$Phase == "S"), "cells"), x = "S", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  
+  p1[[2]] <- p1[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+  
+  p2 <- VlnPlot(obj, features = hms.centered, group.by = "treatment.status", split.by = "Phase", pt.size = 0, combine = FALSE)
+  p2[[1]] <- p2[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase / Treatment")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  p2[[2]] <- p2[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase / Treatment")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  
+  cc.exp.plot[[i]] <- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= 'collect')
+}
+
+cc.exp.plot[["DF20"]]
+cc.exp.plot[["DF101"]]
+cc.exp.plot[["DF68"]]
+```
+
+* **OBSERVATIONS** 
+    - **OXPHOS and UPR** scores comparison across cell cycle phase within each model: S > G1 and G2M (in general) **especially true within DF20**
+    - **OXPHOS and UPR** scores comparison across cell cycle phase within each treatment condition per model: S > G1 and G2M especially withtin **MRD** treatment condition for **OXPHOS**
+    - We hypothesized that low / cycling cells (G1) should express higher levels of **OXPHOS and/or UPR genes** based on findings from previous studies that low cycling cells seem to survive cancer treatment. We try to rationalize our findings that cells in S phase actually express higher levels of our hallmarks: 
+        * It makes sense that cells in S phase express higher levels of OXPHOS genes because DNA is being replicated in S phase, which requires a lot of energy. 
+        * Even if a cell is found to be in the S phase, it might not mean that it is cycling. It is possible that the cell entered the S phase but does not continue through the cell cycle upon treatment. Furthermore, since DNA is being replicated during S phase and mistakes are most commonly made during DNA replication, it is possible that DNA damage repair programs are also most active during this phase, and may subsequently promote survival upon cancer treatment. 
+        * This rationale would also agree with our results from comparing S and G2M scores across treatment conditions, where we found that cells in **MRD and Relapse** have statistically significantly higher S and G2M scores than cells in **Vehicle**. 
+        * However, this rationale does not explain why we do not see enriched expression of OXPHOS and UPR genes in the MRD treatment condition. 
+
+**note: our sample size is extremely small for each condition, which may mean that we have really low power**

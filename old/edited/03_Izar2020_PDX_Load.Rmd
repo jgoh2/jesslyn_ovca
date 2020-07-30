@@ -83,8 +83,8 @@ g2m.genes <- ccgenes[44:97]
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 2)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
@@ -92,6 +92,8 @@ for(hm in hallmark_names){
 
 hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
 hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
 ```
 
 ### STEP 2 SET LEVELS AND EXAMINE METRICS
@@ -156,23 +158,6 @@ PDX_All<- RunUMAP(PDX_All, dims=1:15)
 PDX_DF20<- RunUMAP(PDX_DF20, dims=1:15)
 PDX_DF101<- RunUMAP(PDX_DF101, dims=1:15)
 PDX_DF68<- RunUMAP(PDX_DF68, dims=1:15)
-```
-
-### STEP 6 VISUALIZE METADATA WITH UMAP 
-```{r umap, message=FALSE, warning=FALSE, fig.align='center'}
-#cluster by model? 
-UMAPPlot(PDX_All, group.by = "model_ID")
-ggsave("PDX_All_UMAP.png", path = "jesslyn_plots/PDX_test")
-
-#cluster by treatment within each model? 
-UMAPPlot(PDX_DF20, group.by = "treatment.status")
-ggsave("DF20_UMAP.png", path = "jesslyn_plots/PDX_test")
-
-UMAPPlot(PDX_DF101, group.by = "treatment.status")
-ggsave("DF101_UMAP.png", path = "jesslyn_plots/PDX_test")
-
-UMAPPlot(PDX_DF68, group.by = "treatment.status")
-ggsave("DF68_UMAP.png", path = "jesslyn_plots/PDX_test")
 ```
 
 ### STEP 7 SAVE SEURAT OBJECT

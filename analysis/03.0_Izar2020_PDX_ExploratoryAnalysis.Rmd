@@ -1,0 +1,271 @@
+---
+title: "Izar 2020 PDX (Cohort 3) Exploratory Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 PDX (COHORT 3) DATA DIFFERANTIAL EXPRESISON ANALYSIS 
+
+### OVERVIEW
+* The PDX data from Izar2020 consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
+    - DF20 (BRCA WT treatment-naive, clinically platinum sensitive) 
+    - DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant) 
+    - DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant) 
+* After tumors were established, animals were divided into two groups per model: 
+    - Vehicle (treated with DMSO) 
+    - Carboplatin (treated with IP carboplatin) 
+        * Carboplatin-treated mice for minimal residual disease (**MRD**) group were harvested for scRNA-seq 
+        * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
+* In our 5-part analysis of the Izar 2020 PDX data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** each model. 
+* We split our PDX analysis into three parts: 
+    1. **Load Data and Create PDX Seurat Object**
+        a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+            i. Load in PDX count matrix and Create Seurat Object 
+            ii. Assign Metadata identities including: 
+                - Mouse ID 
+                - Model ID 
+                - Treatment Status 
+            iii. Score cells for **cell cycle** and **hallmark genesets** 
+                - **Note**: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the **data** slot. 
+            iv. Save Seurat Object
+          
+    2. **Process Data and Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **03_Izar2020_PDX_Load** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in PDX Seurat Object from Part 1 and **subset by model**. Continue analysis separately for each model. 
+            ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
+            iii. Dimensionality Reduction (PCA + UMAP)
+            vi. Save Seurat Objects 
+      
+    3. **Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **03.0_Izar2020_PDX_Exploratory Analysis** file in the **analysis** folder. During this part of our analysis we: 
+            i. Load in PDX Seurat Object from Part 2. Analyze separately for each model.
+            ii. Compute summary metrics for PDX data such as: 
+                - Number of cells per model per treatment 
+                - Number of cells per treatment per cell cycle phase 
+            iii. Visualize how cells separate based on metadata identities via UMAP 
+                - Intermodel heterogeneity: How do cells separate by model? 
+                - Intramodel heterogeneity: 
+                    * How do cells separate by treament status? 
+                    * How do cells separate by cell cycle phase?
+            
+    4. **DE Analysis**
+        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+            i. Violin Plots and UMAP 
+            ii. Gene Set Enrichment Analysis (GSEA)
+        b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
+            i. Volcano Plots 
+    5. **CELL CYCLE ANALYSIS**
+        a. **TYPE #1 CELL CYCLE ANALYSIS**: Examine correlation between treatment condition and cell cycle phase
+        b. Evaluate the idea that cell cycle might influence expression of signatures 
+
+This is the third part of our 5-part analysis of the Izar 2020 PDX (Cohort 3) data. 
+
+
+### STEP 1 LOAD IN SEURAT OBJECTS AND GENESETS 
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX_All = readRDS("data/Izar_2020/test/jesslyn_PDX_All_processed.RDS")
+PDX_DF20 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
+PDX_DF101 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
+PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names <- names(PDX_All@meta.data)[9:48]
+
+for(i in hm.names){
+    DF20.hm.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
+    PDX_DF20 <- AddMetaData(PDX_DF20, DF20.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF101.hm.centered <- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
+    PDX_DF101 <- AddMetaData(PDX_DF101, DF101.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF68.hm.centered <- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
+    PDX_DF68 <- AddMetaData(PDX_DF68, DF68.hm.centered, col.name = glue("{i}.centered"))
+}
+```
+
+### STEP 2 EXAMINE SUMMARY METRICS
+
+```{r PDXmetrics, message = FALSE, warning=FALSE}
+#number of cells in each treatment level in each model 
+numCellsPerTreatmentPerModel = table(PDX_All$treatment.status, PDX_All$model_ID)
+numCellsPerTreatmentPerModel %>% 
+  as.data.frame() %>% 
+  dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% 
+  ggplot(aes(x=model, fill=treatmentStatus, y=numCells)) +
+  geom_bar(stat="identity", position="fill") + labs(fill = "treatmentStatus", x = "model") +
+  geom_text(aes(label = numCells), position = "fill", hjust = 0.5, vjust = 2, size = 3, color = "white") + 
+  labs(title = "Number of Cells Per Treatment Per Model")
+```
+
+The summary metrics of each model shows us how little cells we have in each sample, and in each treatment condition. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population. 
+
+### STEP 3 UMAP & PCA VISUALIZATIONS 
+We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 
+    1. Intermodel heterogeneity: Do separate by model? 
+    2. Intramodel heterogeneity: 
+        a. Do cells separate by treatment status? 
+        b. Do cells separate by cell cycle phase?
+        c. Do cells separate due to nFeature and nCount? 
+        d. Do cells separate by OXPHOS or UPR hallmark scores? 
+
+**1) BY MODEL**
+```{r UMAPbyModel, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=10, fig.height=5}
+
+UMAPPlot(PDX_All, group.by = "model_ID") + labs(title = "PDX UMAP by Model", subtitle = paste("Number of Cells:", nrow(PDX_All@meta.data)))
+```
+* PDX data separates by model very well. 
+
+**2) BY TREATMENT STATUS WITHIN EACH MODEL**
+
+```{r PbyTreatment, message=FALSE, warning=FALSE, fig.align = 'center', fig.width=10, fig.height=5}
+
+DF20.byt <- UMAPPlot(PDX_DF20, group.by = "treatment.status") + labs(title = "DF20 UMAP by Treatment", subtitle = paste("Number of Cells:", nrow(PDX_DF20@meta.data)))
+DF101.byt <- UMAPPlot(PDX_DF101, group.by = "treatment.status") + labs(title = "DF101 UMAP by Treatment", subtitle = paste("Number of Cells:", nrow(PDX_DF20@meta.data)))
+DF68.byt <- UMAPPlot(PDX_DF68, group.by = "treatment.status") + labs(title = "DF68 UMAP by Treatment", subtitle = paste("Number of Cells:", nrow(PDX_DF20@meta.data)))
+
+DF20.byt + DF101.byt + DF68.byt
+
+DF20.pca.byt <- PCAPlot(PDX_DF20, group.by = "treatment.status") + labs(title = "DF20 PCA by Treatment", subtitle = paste("Number of Cells:", nrow(PDX_DF20@meta.data)))
+DF101.pca.byt <- PCAPlot(PDX_DF101, group.by  ="treatment.status") + labs(title = "DF101 PCA by Treatment", subtitle = paste("Number of Cells:", nrow(PDX_DF20@meta.data)))
+DF68.pca.byt <- PCAPlot(PDX_DF68, group.by = "treatment.status") + labs(title = "DF68 PCA by Treatment", subtitle = paste("Number of Cells:", nrow(PDX_DF20@meta.data)))
+
+DF20.pca.byt + DF101.pca.byt + DF68.pca.byt
+
+```
+
+* Seems like cells do not cluster together by treatment status. 
+* Treatment status is also not captured in PC_1 or PC_2
+
+**3) BY UPR AND OXPHOS GENESET SCORE**
+
+```{r DEanalysis1 UMAP, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 12, fig.height = 5}
+hms.centered <- c("UNUPDATED.OXPHOS37.centered", "UNUPDATED.UPR38.centered")
+
+#UMAP 
+PDX.names <- c("DF20", "DF101", "DF68")
+PDXs <- c(PDX_DF20, PDX_DF101, PDX_DF68)
+UMAP.plots <- vector("list", length(PDXs))
+names(UMAP.plots) <- PDX.names
+
+for (i in 1:length(PDXs)){
+  obj <- PDX.names[[i]]
+  numCells = nrow(PDXs[[i]]@meta.data)
+  umap <- UMAPPlot(PDXs[[i]], group.by = "treatment.status") + 
+    labs(title = glue("{obj} UMAP by Treatment"), subtitle = glue("Number of cells in {obj}: {numCells}"))+
+    theme(plot.subtitle = element_text(size = 8))
+  p <- FeaturePlot(PDXs[[i]], features = hms.centered, combine = FALSE)
+  p[[1]] <- p[[1]] + labs(title = glue("{obj} UMAP by Oxphos Scores"))
+  p[[2]] <- p[[2]] + labs(title = glue("{obj} UMAP by UPR Scores"))
+  
+  UMAP.plots[[obj]] <- umap + p[[1]] + p[[2]]
+}
+
+UMAP.plots[["DF20"]]
+UMAP.plots[["DF101"]]
+UMAP.plots[["DF68"]]
+```
+* Since cells do not separate by treatment status, it is difficult to determine whether there is a correlation between treatment condition and hallmark scores based on our UMAP visualization. 
+* We therefore try to visualize DE hallmark scores across treatment conditions with VlnPlots
+    
+**4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT** 
+
+```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=10, fig.height=5}
+
+#UMAP -------------------------
+ccUMAP.plots <- vector("list", length = 3)
+names(ccUMAP.plots) <- c("DF20", "DF101", "DF68")
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  
+  byt <- UMAPPlot(obj, group.by = "treatment.status") + 
+    labs(title = glue("{name} UMAP by treatment"), subtitle = glue("Number of cells in {name}: {numCells}")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  bycc <- UMAPPlot(obj, group.by = "Phase") + 
+    labs(title = glue("{name} UMAP by CellCycle Phase")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  byscore <- FeaturePlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), combine = FALSE)
+  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} UMAP by S Score"))
+  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} UMAP by G2M Score"))
+  
+  ccUMAP.plots[[i]] <- byt + bycc + byscore[[1]] + byscore[[2]]
+}
+
+ccUMAP.plots[["DF20"]]
+ccUMAP.plots[["DF101"]]
+ccUMAP.plots[["DF68"]]
+
+#PCA -------------------- (PCA separates cell by cell cycle really well)
+ccPCA.plots <- vector("list", length = 3)
+names(ccPCA.plots) <- c("DF20", "DF101", "DF68")
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  
+  byt <- PCAPlot(obj, group.by = "treatment.status") + 
+    labs(title = glue("{name} PCA by treatment"), subtitle = glue("Number of cells in {name}: {numCells}")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  bycc <- PCAPlot(obj, group.by = "Phase") + 
+    labs(title = glue("{name} PCA by CellCycle Phase")) + 
+    theme(plot.title = element_text(hjust = 0.5))
+  byscore <- FeaturePlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), reduction = "pca",combine = FALSE)
+  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score"))
+  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score"))
+  
+  bynFnC <- FeaturePlot(obj, features = c("nCount_RNA", "nFeature_RNA"), reduction = "pca", combine = FALSE)
+  bynFnC[[1]] <- bynFnC[[1]] + labs(title = glue("{name} PCA by nCount"))
+  bynFnC[[2]] <- bynFnC[[2]] + labs(title = glue("{name} PCA by nFeature"))
+  
+  ccPCA.plots[[i]] <- byt + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
+}
+
+ccPCA.plots[["DF20"]]
+ccPCA.plots[["DF101"]]
+ccPCA.plots[["DF68"]]
+```
+
+* **OBSERVATIONS** 
+    - Although it doesn't seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space. We visualized how cells cluster by cell cycle using both UMAP and PCA because PCA is known to cluster cells well by cell cycle.  
+    - Looking at the PCA plots, we see that: 
+        * PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis. 
+        * PC_1 captures nCount and nFeature variation, as cells with higher nCount and nFeature values are near each other on the PC_1 Axis. 
+    - However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots. 
+    
+We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections. 
