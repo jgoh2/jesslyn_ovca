@@ -345,7 +345,7 @@ $(document).ready(function () {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-28
+<strong>Last updated:</strong> 2020-07-30
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -376,16 +376,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3f6dc78a03838dbf345c2a103df2fccc7bd86ff5targetblank3f6dc78a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3f6dc78a03838dbf345c2a103df2fccc7bd86ff5" target="_blank">3f6dc78</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreec8bb9fc065ed0d52d9fff97708768a8502747ff6targetblankc8bb9fca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/c8bb9fc065ed0d52d9fff97708768a8502747ff6" target="_blank">c8bb9fc</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3f6dc78a03838dbf345c2a103df2fccc7bd86ff5targetblank3f6dc78a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreec8bb9fc065ed0d52d9fff97708768a8502747ff6targetblankc8bb9fca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3f6dc78a03838dbf345c2a103df2fccc7bd86ff5" target="_blank">3f6dc78</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/c8bb9fc065ed0d52d9fff97708768a8502747ff6" target="_blank">c8bb9fc</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -405,6 +405,7 @@ Ignored files:
     Ignored:    jesslyn_plots/
     Ignored:    mike_plots/
     Ignored:    old/.DS_Store
+    Ignored:    old/edited/.DS_Store
     Ignored:    renv/.DS_Store
     Ignored:    renv/library/
     Ignored:    renv/python/
@@ -448,6 +449,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/analysis/index.Rmd" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+<td>
+PDX Exploratory + DE + Cell Cycle Analyses
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/6be6c853e8ff1ecf2ad96e905cf37ee9b0412dda/docs/index.html" target="_blank">6be6c85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-28
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -613,8 +648,16 @@ Start workflowr project.
 <p>The purpose of this project is to identify gene expression signatures from ovarian cancer RNA-seq data that are associated with a drug tolerant state that is characteristic of cancer persister cells.</p>
 <ol style="list-style-type: decimal">
 <li><a href="data_summary.html">A summary of the data from Izar 2020 et al.</a></li>
+<li><strong>PDX Data Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li><a href="03.0_Izar2020_PDX_ExploratoryAnalysis.html">PDX Exploratory analysis</a></li>
 <li><a href="03.1_Izar2020_PDX_DEAnalysis.html">PDX DE analysis</a></li>
+<li><a href="03.2_Izar2020_PDX_CellCycleAnalysis.html">PDX Cell Cycle analysis</a></li>
+</ol></li>
+<li><strong>SS2 Data Analysis</strong>
+<ol start="2" style="list-style-type: lower-alpha">
 <li><a href="02.1_Izar2020_SS2_DEAnalysis.html">SS2 DE analysis</a></li>
+</ol></li>
 </ol>
 </div>
 <div id="credits" class="section level2">
