@@ -153,6 +153,7 @@ p <- p8 + p9
 p
 ```
 The summary metrics of each patient shows us how little cells we have in each sample. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population. 
+
 ### STEP 3 UMAP & PCA VISUALIZATIONS 
 We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 
     1. Intermodel heterogeneity: Do separate by model? 
@@ -189,10 +190,9 @@ p8 <- UMAPPlot(SS2Malignant.9, group.by = "sample") +
 p9 <- PCAPlot(SS2Malignant.9, group.by = "sample") + labs(title = "SS2 PCA Patient 9 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
 p7 + p8 + p9
 ```
-* Cells do not seem to cluster by treatment status. PC_1 and PC_2 do not capture treatment status as well. 
-
 * Seems like cells do not cluster together by treatment status. 
 * Treatment status is also not captured in PC_1 or PC_2
+
 
 **3) BY UPR AND OXPHOS GENESET SCORE**
 
@@ -230,6 +230,7 @@ UMAP.plots[["SS2 Malignant Patient 9"]]
 ```
 
 * There isn't a clear clustering of cells due to OXPHOS or UPR scores, but it seems like OXPHOS scores might be faintly captured in PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. 
+
 **4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT** 
 
 ```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=15, fig.height=6}
