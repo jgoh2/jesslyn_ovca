@@ -1,0 +1,270 @@
+---
+title: "Izar 2020 SS2 (Cohort 2) Exploatory Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 2
+
+### OVERVIEW
+* The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals: 
+    - selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
+    - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
+    - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses. 
+    
+* In our 5-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9 
+* We split our SS2 analysis into three parts: 
+    1. **Load Data and Create SS2 Seurat Object**
+        a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+            i. Load in SS2 count matrix and Create Seurat Object 
+            ii. Assign Metadata identities including: 
+                - Patient ID
+                - Time
+                - Sample ID
+                - Treatment Status 
+            iii. Score cells for **cell cycle** and **hallmark genesets** 
+                - **Note**: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the **data** slot. 
+            iv. Save Seurat Object
+          
+    2. **Process Data and Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **02_Izar2020_SS2_Load_Plots** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 1 and **subset by patients 8 and 9**. Continue analysis separately for each model. 
+            ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
+            iii. Dimensionality Reduction (PCA + UMAP)
+            vi. Save Seurat Objects 
+      
+    3. **Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **02.0_Izar2020_SS2_Exploratory Analysis** file in the **analysis** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 2. Analyze separately for patients 8 and 9
+            ii. Compute summary metrics for SS2 data such as: 
+                - Number of cells per patient per treatment 
+                - Number of cells per treatment per cell cycle phase 
+            iii. Visualize how cells separate based on metadata identities via UMAP and PCA
+                - Intermodel heterogeneity: How do cells separate by sample? 
+                - Intramodel heterogeneity: 
+                    * How do cells separate by treament status / sample? 
+                    * How do cells separate by cell cycle phase?
+            
+    4. **DE Analysis**
+        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+            i. Violin Plots and UMAP 
+            ii. Gene Set Enrichment Analysis (GSEA)
+        b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
+            i. Volcano Plots 
+          
+    5. **CELL CYCLE ANALYSIS**
+        a. **TYPE #1 CELL CYCLE ANALYSIS**: Examine correlation between treatment condition and cell cycle phase
+        b. Evaluate the idea that cell cycle might influence expression of signatures 
+
+This is the third part of our 5-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
+
+### STEP 1 LOAD SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in SS2 RDS object
+SS2Malignant = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
+SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
+SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names <- names(SS2Malignant@meta.data)[14:53]
+
+for(i in hm.names){
+    SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant <- AddMetaData(SS2Malignant, SS2Malignant.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant8.hm.centered <- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 <- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant9.hm.centered <- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 <- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue("{i}.centered"))
+}
+```
+
+### STEP 2 EXAMINE SUMMARY METRICS
+
+```{r malignant cells metrics, message=FALSE, warning=FALSE, fig.align='center', fig.width = 12, fig.height = 8}
+#numMalignantCellsPerSample
+numMalignantCellsPerSample <- table(SS2Malignant$sample, SS2Malignant$cell.type, SS2Malignant$treatment.status) %>%
+  as.data.frame() %>% 
+  dplyr::rename(sample = Var1, celltype = Var2, treatment = Var3, numCells = Freq) %>% 
+  filter(`celltype` == "Malignant")
+ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)) + 
+  geom_bar(stat = "identity") + 
+  labs(title = "Number of Malignant Cells Per Sample in SS2 Data") 
+
+#metrics for patient 8 and 9
+numMalignantCellsPerSample.8 <- table(SS2Malignant.8$Patient, SS2Malignant.8$sample) %>%
+  as.data.frame() %>% 
+  dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq)
+p8 <- ggplot(numMalignantCellsPerSample.8, aes(x = Patient, y = numCells, fill = sample)) + 
+    geom_bar(position = "fill", stat = "identity") + 
+    labs(title = "Number of Malignant Cells Per Sample in Patient 8") + 
+    geom_text(aes(label = c("Treatment-naïve", "On-treatment", "On-treatment")), position = "fill", hjust = 0.5, vjust = 2, color = "white") + 
+    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white")
+
+numMalignantCellsPerSample.9 <- table(SS2Malignant.9$Patient, SS2Malignant.9$sample) %>%
+  as.data.frame() %>% 
+  dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq)
+p9 <- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fill = sample)) + 
+    geom_bar(position = "fill", stat = "identity") + 
+    labs(title = "Number of Malignant Cells Per Sample in Patient 9") + 
+    geom_text(aes(label = c("Treatment-naïve", "On-treatment", "On-treatment")), position = "fill", hjust = 0.5, vjust = 2, color = "white") + 
+    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white")
+
+p <- p8 + p9
+p
+```
+The summary metrics of each patient shows us how little cells we have in each sample. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population. 
+### STEP 3 UMAP & PCA VISUALIZATIONS 
+We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 
+    1. Intermodel heterogeneity: Do separate by model? 
+    2. Intramodel heterogeneity: 
+        a. Do cells separate by treatment status? 
+        b. Do cells separate by cell cycle phase?
+        c. Do cells separate due to nFeature and nCount? 
+        d. Do cells separate by OXPHOS or UPR hallmark scores? 
+        
+**1) BY SAMPLE**
+```{r UMAPbyModel, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=10, fig.height=5}
+#cluster by patient/ sample? 
+p1 <- UMAPPlot(SS2Malignant, group.by = "Patient") + labs(title = "SS2 Malignant Cells UMAP by Patient")
+p2 <- UMAPPlot(SS2Malignant, group.by = "sample") + labs(title = "SS2 Malignant Cells UMAP by Sample")
+p1 + p2 
+```
+* SS2 data separates by patient very well. However, it doesn't seem like it separates by sample within each patient. We will investigate this further by looking into patient 8 and 9 specifically. 
+
+**2) BY TREATMENT STATUS WITHIN EACH MODEL**
+
+```{r PbyTreatment, message=FALSE, warning=FALSE, fig.align = 'center', fig.width=17, fig.height=5}
+
+p4 <- UMAPPlot(SS2Malignant.8, group.by = "treatment.status") + 
+  labs(title = "SS2 UMAP Patient 8 Malignant Cells by Treatment") + theme(plot.title = element_text(size = 12))
+p5 <- UMAPPlot(SS2Malignant.8, group.by = "sample") + 
+  labs(title = "SS2 UMAP Patient 8 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
+p6 <- PCAPlot(SS2Malignant.8, group.by = "sample") + labs(title = "SS2 PCA Patient 8 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
+p4 + p5 + p6
+
+p7 <- UMAPPlot(SS2Malignant.9, group.by = "treatment.status") + 
+  labs(title = "SS2 UMAP Patient 9 Malignant Cells by Treatment") + theme(plot.title = element_text(size = 12))
+p8 <- UMAPPlot(SS2Malignant.9, group.by = "sample") + 
+  labs(title = "SS2 UMAP Patient 8 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
+p9 <- PCAPlot(SS2Malignant.9, group.by = "sample") + labs(title = "SS2 PCA Patient 9 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
+p7 + p8 + p9
+```
+* Cells do not seem to cluster by treatment status. PC_1 and PC_2 do not capture treatment status as well. 
+
+* Seems like cells do not cluster together by treatment status. 
+* Treatment status is also not captured in PC_1 or PC_2
+
+**3) BY UPR AND OXPHOS GENESET SCORE**
+
+```{r gsUMAP, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 15, fig.height = 6}
+hms.centered <- c("UNUPDATED.OXPHOS37.centered", "UNUPDATED.UPR38.centered")
+
+#UMAP 
+SS2.names <- c("SS2 Malignant Patient 8", "SS2 Malignant Patient 9")
+SS2s <- c(SS2Malignant.8, SS2Malignant.9)
+UMAP.plots <- vector("list", length(SS2s))
+names(UMAP.plots) <- SS2.names
+
+for (i in 1:length(SS2s)){
+  obj <- SS2s[[i]]
+  name <- SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  
+  p <- FeaturePlot(obj, features = hms.centered, combine = FALSE)
+  p[[1]] <- p[[1]] + labs(title = glue("{name} UMAP by HALLMARK Oxphos Scores")) +
+    theme(plot.title = element_text(size = 10))
+  p[[2]] <- p[[2]] + labs(title = glue("{name} UMAP by HALLMARK UPR Scores")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  p2 <- FeaturePlot(obj, features = hms.centered, reduction = "pca", combine = FALSE)
+  p2[[1]] <- p2[[1]] + labs(title = glue("{name} PCA by HALLMARK Oxphos Scores")) +
+    theme(plot.title = element_text(size = 10))
+  p2[[2]] <- p2[[2]] + labs(title = glue("{name} PCA by HALLMARK UPR Scores")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  UMAP.plots[[name]] <- p[[1]] + p[[2]] + p2[[1]] + p2[[2]]
+}
+
+UMAP.plots[["SS2 Malignant Patient 8"]]
+UMAP.plots[["SS2 Malignant Patient 9"]]
+```
+
+* There isn't a clear clustering of cells due to OXPHOS or UPR scores, but it seems like OXPHOS scores might be faintly captured in PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. 
+**4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT** 
+
+```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=15, fig.height=6}
+#PCA -------------------- (PCA is known to separate cell by cell cycle really well)
+ccPCA.plots <- vector("list", length = 3)
+names(ccPCA.plots) <- SS2.names
+
+for(i in 1:length(SS2s)){
+  obj = SS2s[[i]]
+  name = SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  
+  bys <- PCAPlot(obj, group.by = "sample") + 
+    labs(title = glue("{name} PCA by sample"), subtitle = glue("Number of cells in {name}: {numCells}")) +
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+  
+  bycc <- PCAPlot(obj, group.by = "Phase") + 
+    labs(title = glue("{name} PCA by Cell Cycle Phase")) + 
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+  
+  byscore <- FeaturePlot(obj, features = c("S.Score", "G2M.Score"), reduction = "pca",combine = FALSE)
+  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score")) + theme(plot.title = element_text(size = 12))
+  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score")) + theme(plot.title = element_text(size = 12))
+  
+  bynFnC <- FeaturePlot(obj, features = c("nCount_RNA", "nFeature_RNA"), reduction = "pca", combine = FALSE)
+  bynFnC[[1]] <- bynFnC[[1]] + labs(title = glue("{name} PCA by nCount")) + theme(plot.title = element_text(size = 12))
+  bynFnC[[2]] <- bynFnC[[2]] + labs(title = glue("{name} PCA by nFeature")) + theme(plot.title = element_text(size = 12))
+
+  ccPCA.plots[[i]] <- bys + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
+}
+
+ccPCA.plots[["SS2 Malignant Patient 8"]]
+ccPCA.plots[["SS2 Malignant Patient 9"]]
+```
+
+- Although it doesn't seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space.  
+    - Looking at the PCA plots, we see that: 
+        * PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis. 
+        * PC_1 captures nCount and nFeature variation, as cells with higher nCount and nFeature values are near each other on the PC_1 Axis. 
+    - However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots. 
+    
+We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections. 
+
+
+

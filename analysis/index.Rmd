@@ -18,7 +18,9 @@ The purpose of this project is to identify gene expression signatures from ovari
     b. [PDX DE analysis](03.1_Izar2020_PDX_DEAnalysis.html)
     c. [PDX Cell Cycle analysis](03.2_Izar2020_PDX_CellCycleAnalysis.html)
 3. **SS2 Data Analysis** 
+    a. [SS2 Exploratory analysis](02.0_Izar2020_SS2_ExploratoryAnalysis.html)
     b. [SS2 DE analysis](02.1_Izar2020_SS2_DEAnalysis.html)
+    c. [SS2 Cell Cycle analysis](02.2_Izar2020_SS2_CellCycleAnalysis.html)
 
 ## Credits
 

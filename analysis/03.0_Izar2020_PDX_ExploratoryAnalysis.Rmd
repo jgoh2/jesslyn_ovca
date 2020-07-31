@@ -1,7 +1,7 @@
 ---
 title: "Izar 2020 PDX (Cohort 3) Exploratory Analysis"
 author: "Jesslyn Goh and Mike Cuoco"
-date: "7/20/2020"
+date: "7/30/2020"
 editor_options: 
   chunk_output_type: console
 output:
@@ -71,7 +71,6 @@ options(width=120)
         b. Evaluate the idea that cell cycle might influence expression of signatures 
 
 This is the third part of our 5-part analysis of the Izar 2020 PDX (Cohort 3) data. 
-
 
 ### STEP 1 LOAD IN SEURAT OBJECTS AND GENESETS 
 
@@ -196,7 +195,7 @@ UMAP.plots[["DF101"]]
 UMAP.plots[["DF68"]]
 ```
 * Since cells do not separate by treatment status, it is difficult to determine whether there is a correlation between treatment condition and hallmark scores based on our UMAP visualization. 
-* We therefore try to visualize DE hallmark scores across treatment conditions with VlnPlots
+* We will therefore try to visualize DE hallmark scores across treatment conditions with VlnPlots in the DE Analysis section. 
     
 **4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT** 
 

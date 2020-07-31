@@ -1,0 +1,311 @@
+---
+title: "Izar 2020 SS2 (Cohort 2) Cell Cycle Analysis"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 2
+
+### OVERVIEW
+* The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals: 
+    - selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
+    - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
+    - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses. 
+    
+* In our 5-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9 
+* We split our SS2 analysis into three parts: 
+    1. **Load Data and Create SS2 Seurat Object**
+        a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+            i. Load in SS2 count matrix and Create Seurat Object 
+            ii. Assign Metadata identities including: 
+                - Patient ID
+                - Time
+                - Sample ID
+                - Treatment Status 
+            iii. Score cells for **cell cycle** and **hallmark genesets** 
+                - **Note**: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the **data** slot. 
+            iv. Save Seurat Object
+          
+    2. **Process Data and Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **02_Izar2020_SS2_Load_Plots** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 1 and **subset by patients 8 and 9**. Continue analysis separately for each model. 
+            ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
+            iii. Dimensionality Reduction (PCA + UMAP)
+            vi. Save Seurat Objects 
+      
+    3. **Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **02.0_Izar2020_SS2_Exploratory Analysis** file in the **analysis** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 2. Analyze separately for patients 8 and 9
+            ii. Compute summary metrics for SS2 data such as: 
+                - Number of cells per patient per treatment 
+                - Number of cells per treatment per cell cycle phase 
+            iii. Visualize how cells separate based on metadata identities via UMAP and PCA
+                - Intermodel heterogeneity: How do cells separate by sample? 
+                - Intramodel heterogeneity: 
+                    * How do cells separate by treament status / sample? 
+                    * How do cells separate by cell cycle phase?
+            
+    4. **DE Analysis**
+        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+            i. Violin Plots and UMAP 
+            ii. Gene Set Enrichment Analysis (GSEA)
+        b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
+            i. Volcano Plots 
+          
+    5. **CELL CYCLE ANALYSIS**
+        a. **TYPE #1 CELL CYCLE ANALYSIS**: Examine correlation between treatment condition and cell cycle phase
+        b. Evaluate the idea that cell cycle might influence expression of signatures 
+
+This is the third part of our 5-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
+
+### CELL CYCLE ANALYSIS IN-DEPTH EXPLANATION 
+We are interested in answering a few questions for our Cell Cycle Analysis:
+
+**CELL CYCLE ANALYSIS** 
+
+* **QUESTION #1** Are more cells at different cell cycle phases between treatments? 
+    - **APPROACH** Violin Plots and UMAP 
+        * Visualize differences in cell cycle score across treatment conditions with: 
+            - Stacked Bar Plot
+            - Violin Plot 
+        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically
+* **QUESTION #2** Is there a correlation between cell cycle phase and the expression of signatures? 
+    - **APPROACH** Violin Plots
+        * Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1. 
+        * Stratify the Violin Plots by cell cycle phase
+
+### STEP 1 LOAD SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in SS2 RDS object
+SS2Malignant = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
+SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
+SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
+
+#Read in hallmarks of interest
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names <- names(SS2Malignant@meta.data)[14:53]
+
+for(i in hm.names){
+    SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant <- AddMetaData(SS2Malignant, SS2Malignant.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant8.hm.centered <- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 <- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant9.hm.centered <- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 <- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue("{i}.centered"))
+}
+```
+
+### STEP 4 CELL CYCLE ANALYSIS
+In our **Exploratory Analysis** section, we observed that PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis. However, cells did not seem to cluster by treatment status. We now use a more quantitative approach to investigate the correlation between treatment and cell cycle phase. 
+
+* **QUESTION #1** Are more cells at different cell cycle phases between treatments? 
+* **HYPOTHESIS** There should be less cycling cells in the on-treatment conditions (**p.1 and p.2**) relative to the treatment-naive condition (**p.0**)
+    - **APPROACH** Violin Plots and UMAP 
+        * Visualize differences in cell cycle score across treatment conditions with: 
+            - Stacked Bar Plot
+            - Violin Plot 
+        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant. 
+        
+```{r cellcycle1, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 15, fig.height = 5}
+hms.centered <- c("GO.OXPHOS35.centered", "UNUPDATED.UPR38.centered")
+#Stacked Bar Plot --------------------------
+SS2.names <- c("SS2 Malignant Patient 8", "SS2 Malignant Patient 9")
+SS2s <- c(SS2Malignant.8, SS2Malignant.9)
+bar.plots <- vector("list", length = 3)
+names(bar.plots) <- SS2.names
+
+for(i in 1:length(SS2s)){
+  obj = SS2s[[i]]
+  name = SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  t = table(obj$Phase, obj$sample) %>% 
+    as.data.frame() %>% 
+    rename(Phase = Var1, Sample = Var2, numCells = Freq)
+
+sum = c()
+z = 1
+while(z < nrow(t)){
+    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
+    sum = c(sum, rep(n,3))
+    z = z + 3
+  }
+  
+t <- t %>% mutate(total = sum) %>% mutate(percent = (numCells/total)*100)
+  
+  p = t %>% 
+    ggplot(aes(x=Sample, y=percent, fill=Phase)) + 
+    geom_bar(stat="identity") + 
+    labs(title = glue("{name} % of Cells in Each Cell Cycle Phase/ Treatment"), subtitle = glue("Total # Cells in {name}: {numCells}"), caption = "Labeled by # cells in each phase per treatment") +
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
+    geom_text(aes(label = paste(numCells, "cells")), position = "stack", hjust = 0.5, vjust = 2, size = 3, color = "white")
+  bar.plots[[i]] <- p
+}
+
+bar.plots[["SS2 Malignant Patient 8"]] + bar.plots[["SS2 Malignant Patient 9"]] + plot_layout(guides= 'collect')
+```
+
+* **OBSERVATIONS** 
+    - **Patient 8** % Noncyclying cells 8.0 > 8.1 > 8.2 (does not support our hypothesis, on-treatment samples should have more noncycling cells)
+    - **Patient 9** % Noncycling cells 9.2 > 9.1 > 9.0 (supports our hypothesis, not sure how to interpret 9.2 > 9.1)
+    - Important to note that we have very little cells in each condition, so we have really little power and the results from our sample may not be representative of the true population. 
+
+To investigate this further, we build violin plots of cell cycle scores separated by treatment status. 
+
+```{r cellcycleVln, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=8}
+#VlnPlot -------------------------
+cc.Vln.plots <- vector("list", length = 3)
+names(cc.Vln.plots) <- SS2.names
+patient <- c("8", "9")
+
+for (i in 1:length(SS2s)){
+  obj <- SS2s[[i]]
+  name <- SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  if(patient[[i]] == "8"){
+    p <- VlnPlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), group.by = "sample", pt.size = 0, combine = F, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 3.8)
+  }
+  else{
+  p <- VlnPlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), group.by = "sample", pt.size = 0, combine = F, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 3.5)
+  }
+  p[[1]] <- p[[1]] + labs(title = glue("{name} S.Score across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}")) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$S.Score.centered) -0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$S.Score.centered) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$S.Score.centered) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+  
+  p[[2]] <- p[[2]] + labs(title = glue("{name} G2M.Score across treatment"), x = name) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+
+  cc.Vln.plots[[name]] <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
+}
+
+cc.Vln.plots[["SS2 Malignant Patient 8"]]
+cc.Vln.plots[["SS2 Malignant Patient 9"]]
+
+```
+
+* **CONCLUSIONS** 
+    - Statistically significant results: 
+        * **Patient 8**: S.SCORE - 8.1 > 8.0 ; 8.1 > 8.2 (does not support our hypothesis)
+        * **Patient 9**: G2M.SCORE - 9.1 > 9.2 ; 9.0 > 9.2
+            - The part where 9.0 > 9.2 supports our hypothesis 
+            - However, 9.1 . 9.2 does not support our hypothesis
+        * Cell cycle does not seem to correlate with treatment condition based on these results 
+
+Our results from DE Analysis and Cell Cycle Analysis collectively suggest that **OXPHOS and UPR** expression weakly correlate with treatment condition, while cell cycle phase does not significantly correlate with treatment. 
+However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of **OXPHOS and UPR** and **cell cycle phase**. 
+
+* **QUESTION #2** Is there a correlation between cell cycle phase and the expression of signatures? 
+* **HYPOTHESIS** We hypothesize that low cycling cells (G1) should express higher levels of **OXPHOS and UPR** genes. (G1 > S > G2M)
+    - **APPROACH** Violin Plots
+        * Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1. 
+        * Stratify the Violin Plots by cell cycle phase
+
+```{r cellcycle2, message=FALSE, warning=FALSE, fig.align='center', fig.width=14, fig.height = 8}
+cc.exp.plot <- vector("list", length = 3)
+names(cc.exp.plot) <- SS2.names
+
+for(i in 1:length(SS2s)){
+  obj = SS2s[[i]]
+  name = SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
+  
+  my_comparisons <- list(
+    c(glue("G1"), glue("S")), 
+    c(glue("S"), glue("G2M")), 
+    c(glue("G1"), glue("G2M"))
+  )
+  
+  if(patient[[i]] == "8"){
+    p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 1)
+  }
+  else{
+    p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 1.3)
+  }
+  p1[[1]] <- p1[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase"), subtitle = glue("Number of cells in {name}: {numCells}")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
+    geom_text(label = paste(sum(obj$Phase == "G1"), "cells"), x = "G1", y = min(obj$GO.OXPHOS35.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$Phase == "S"), "cells"), x = "S", y = min(obj$GO.OXPHOS35.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$Phase == "G2M"), "cells"), x = "G2M", y = min(obj$GO.OXPHOS35.centered) - 0.03) + 
+    theme(plot.title = element_text(size = 10)) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.12) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.12, bracket.size = 0, vjust = 1.8)
+  
+  p1[[2]] <- p1[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase")) +
+    theme(plot.title = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.12) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.12, bracket.size = 0, vjust = 1.8)
+
+  
+  p2 <- VlnPlot(obj, features = hms.centered, group.by = "sample", split.by = "Phase", pt.size = 0, combine = FALSE, c("#00AFBB", "#FC4E07", "#E7B800"))
+  p2[[1]] <- p2[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase / Treatment")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    theme(plot.title = element_text(size = 10))
+  p2[[2]] <- p2[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase / Treatment")) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    theme(plot.title = element_text(size = 10))
+  
+  cc.exp.plot[[i]] <- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= 'collect')
+}
+
+cc.exp.plot[["SS2 Malignant Patient 8"]]
+cc.exp.plot[["SS2 Malignant Patient 9"]]
+```
+
+* **CONCLUSIONS** 
+    - **Patient 8**
+        * OXPHOS: G2M > G1 > S (not statistically significant & does not support our hypothesis)
+        * UPR: G2M > S > G1 (not statistically significant & does not support our hypothesis)
+    - **Patient 9** 
+        * OXPHOS: G2M > G1; S > G1 (statistically significant but does not support our hypothesis)
+        * UPR: S > G2M > G1 (not statistically significant and does not support our hypothesis)
+    - No specific statistically significant trend identified. However, cells in the non / low cycling G1 phase do not seem to express higher levels of OXPHOS and UPR genes, which does not support our hypothesis. 
+    
+    
+    

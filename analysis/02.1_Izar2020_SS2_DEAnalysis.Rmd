@@ -22,12 +22,9 @@ options(width=120)
 * The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals: 
     - selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
     - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
-    - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses: 
-    - Treatment naive (p.0)
-    - On-treatment (p.1 and p.2)
-    - **Did not specify like 10X data whether p.1 is after initial chemotherapy and p.2 is on-treatment (Clinical status at time of sample collection obtained from patients 8 and 9 is "Recurent")**
+    - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses. 
     
-* In our 3-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9
+* In our 5-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9 
 * We split our SS2 analysis into three parts: 
     1. **Load Data and Create SS2 Seurat Object**
         a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
@@ -42,30 +39,36 @@ options(width=120)
             iv. Save Seurat Object
           
     2. **Process Data and Exploratory Data Analysis**
-        a. The code to this part of our analysis can be found in the **03_Izar2020_SS2_Load_Plots.Rmd** file in the **old/edited** folder. During this part of our analysis we: 
-            i. Load in SS2 Seurat Object from Part 1 and **subset for Malignant cells then for patient 8 and 9**. Continue analysis separately for each patient. 
+        a. The code to this part of our analysis can be found in the **02_Izar2020_SS2_Load_Plots** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 1 and **subset by patients 8 and 9**. Continue analysis separately for each model. 
             ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
             iii. Dimensionality Reduction (PCA + UMAP)
-            iv. Visualize how cells separate based on metadata identities via UMAP 
-                  - Intermodel heterogeneity: How do cells separate by model? 
-                  - Intramodel heterogeneity: 
-                      * How do cells separate by treament status? 
-                      * How do cells separate by cell cycle phase? 
-            v. Compute summary metrics for SS2 data such as:
+            vi. Save Seurat Objects 
+      
+    3. **Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **02.0_Izar2020_SS2_Exploratory Analysis** file in the **analysis** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 2. Analyze separately for patients 8 and 9
+            ii. Compute summary metrics for SS2 data such as: 
                 - Number of cells per patient per treatment 
                 - Number of cells per treatment per cell cycle phase 
-            vi. Save Seurat Objects 
+            iii. Visualize how cells separate based on metadata identities via UMAP and PCA
+                - Intermodel heterogeneity: How do cells separate by sample? 
+                - Intramodel heterogeneity: 
+                    * How do cells separate by treament status / sample? 
+                    * How do cells separate by cell cycle phase?
             
-    3. **DE Analysis**
+    4. **DE Analysis**
         a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
             i. Violin Plots and UMAP 
             ii. Gene Set Enrichment Analysis (GSEA)
         b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
             i. Volcano Plots 
-        c. **CELL CYCLE ANALYSIS**
-            i. Evaluate the idea that cell cycle might influence expression of signatures 
+          
+    5. **CELL CYCLE ANALYSIS**
+        a. **TYPE #1 CELL CYCLE ANALYSIS**: Examine correlation between treatment condition and cell cycle phase
+        b. Evaluate the idea that cell cycle might influence expression of signatures 
 
-This is the third part of our 3-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
+This is the third part of our 5-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
 
 ### STEP 1 LOAD SEURAT OBJECT
 
@@ -80,8 +83,8 @@ SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 3)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
@@ -90,9 +93,10 @@ for(hm in hallmark_names){
 hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
 hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
 hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(SS2Malignant@meta.data)[14:51]
+hm.names <- names(SS2Malignant@meta.data)[14:53]
 
 for(i in hm.names){
     SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -106,154 +110,353 @@ for(i in hm.names){
 }
 ```
 
-### STEP 2 DE ANALYSIS #1. VISUALIZING AND QUANTIFYING DE HALLMARK GENESETS
-* **QUESTION** Are modules (**OXPHOS and UPR**) differentially expressed across treatment conditions within each patient? 
-* **HYPOTHESIS** We hypothesize that the on-treatment time-points (**p.1 and p.2**) will express enriched levels of OXPHOS and UPR hallmarks relative to cells treatment-naive time-point (**p.0**). We are not so sure what to expect between p.1 and p.2 on-treatment samples because we are not told how the two samples are different in terms of their treatment status. 
-    - **APPROACH #1** Violin Plots and UMAP
-        * Visualize differences in hallmark score across treatment conditions with:
-            - UMAP by treatment vs. UMAP by hallmark score 
-            - Violin Plot (center module scores at 0)
-        * Statistical test (**wilcoxon rank sum test**): is the difference in hallmark score across treatment conditions statistically significant? 
+### STEP 2 DETERMINING OXPHOS GENESET 
+* Before doing any DE Analysis on the genesets, we investigate which of the three OXPHOS genesets we found is best for our data. Although we've investigated this for our PDX data, the geneset that is more suitable for SS2 may be different. The **OXPHOS** genesets that we test are listed as follows:
+    - Unupdated Version of HALLMARK_OXIDATIVE_PHOSPHORYLATION (200 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/HALLMARK_OXIDATIVE_PHOSPHORYLATION
+    - Updated Version of HALLMARK_OXIDATIVE_PHOSPHORYLATION (200 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/HALLMARK_OXIDATIVE_PHOSPHORYLATION
+    - GO_OXIDATIVE_PHOSPHORYLATION (144 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/GO_OXIDATIVE_PHOSPHORYLATION 
+    - KEGG_OXIDATIVE_PHOSPHORYLATION (131 genes) https://www.gsea-msigdb.org/gsea/msigdb/cards/KEGG_OXIDATIVE_PHOSPHORYLATION
 
-```{r DEanalysis1UMAP, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height = 10}
-hms.centered <- c("KEGG.OXPHOS36.centered", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered")
+* We determine which geneset to use by asking these questions: 
+    1. How many and which genes are not found in the SS2 Seurat Object for each geneset?
+    2. What makes the genesets different from each other? Which genes in each geneset are the most DE? Are they the same?
+        a. Volcano Plot: Call FindMarkers on each model, plot onto Volcano Plot, label cells by each geneset 
+    3. Which geneset gives us the most statistically significant results? 
+        a. VlnPlot: Plot hallmark scores for each geneset group by treatment status for each model 
+        b. Label the VlnPlot with the number of genes found in SS2 Seurat Object for each OXPHOS geneset 
+  
+**ANSWERING QUESTION #1: How many and which genes are not found in the SS2 Seurat Object for each geneset?**
 
-#UMAP 
-SS2.names <- c("SS2 Malignant Patient 8", "SS2 Malignant Patient 9")
+```{r oxphosMetrics, message=FALSE, warning=FALSE, fig.align = 'center'}
+
+hm.length.df <- data.frame(
+  "UNUPDATED.HM.OXPHOS" = length(hallmark.list[["UNUPDATED.OXPHOS"]]),
+  "HALLMARK.OXPHOS" = length(hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]]), 
+  "GO.OXPHOS" = length(hallmark.list[["GO.OXPHOS"]]), 
+  "KEGG.OXPHOS" = length(hallmark.list[["KEGG.OXPHOS"]])
+)
+
+Found.df <- data.frame(
+  "UNUPDATED.HM.OXPHOS" = sum((hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(SS2Malignant))),
+  "HALLMARK.OXPHOS" = sum((hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]] %in% rownames(SS2Malignant))), 
+  "GO.OXPHOS" = sum((hallmark.list[["GO.OXPHOS"]] %in% rownames(SS2Malignant))), 
+  "KEGG.OXPHOS" = sum((hallmark.list[["KEGG.OXPHOS"]] %in% rownames(SS2Malignant)))
+)
+
+PFound.df <- data.frame(
+  "UNUPDATED.HM.OXPHOS" = (sum((hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(SS2Malignant)))/length(hallmark.list[["UNUPDATED.OXPHOS"]]))*100,
+  "HALLMARK.OXPHOS" = (sum((hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]] %in% rownames(SS2Malignant)))/length(hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]])) * 100, 
+  "GO.OXPHOS" = (sum((hallmark.list[["GO.OXPHOS"]] %in% rownames(SS2Malignant)))/length(hallmark.list[["GO.OXPHOS"]]))*100, 
+  "KEGG.OXPHOS" = (sum((hallmark.list[["KEGG.OXPHOS"]] %in% rownames(SS2Malignant)))/length(hallmark.list[["KEGG.OXPHOS"]]))*100
+)
+
+NA.df <- data.frame(
+  "UNUPDATED.HM.OXPHOS" = sum(!(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(SS2Malignant))),
+  "HALLMARK.OXPHOS" = sum(!(hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]] %in% rownames(SS2Malignant))), 
+  "GO.OXPHOS" = sum(!(hallmark.list[["GO.OXPHOS"]] %in% rownames(SS2Malignant))), 
+  "KEGG.OXPHOS" = sum(!(hallmark.list[["KEGG.OXPHOS"]] %in% rownames(SS2Malignant)))
+)
+
+all.df <- rbind(hm.length.df, Found.df, PFound.df, NA.df)
+rownames(all.df) <- c("NumGenes", "Found", "%Found", "Not Found")
+all.df[,"GO.OXPHOS"] <- round(all.df[,"GO.OXPHOS"])
+all.df[,"KEGG.OXPHOS"] <- round(all.df[,"KEGG.OXPHOS"])
+all.df
+
+# IDENTIFY GENES THAT ARE NOT FOUND -----------
+NA.genes.df <- vector("list", length = 4)
+names <- c("UNUPDATED.OXPHOS", "HALLMARK_OXIDATIVE_PHOSPHORYLATION", "GO.OXPHOS", "KEGG.OXPHOS")
+names(NA.genes.df) <- names
+for(i in names){
+  NA.genes.df[[i]] <- (hallmark.list[[i]])[which(!(hallmark.list[[i]] %in% rownames(SS2Malignant)))]
+}
+```
+* **OBSERVATIONS**
+    - Similar to what we observed in the PDX data, the **UNUPDATED.OXPHOS** genelist actually has the most genes that are found in the SS2 object. 
+    - Since the **UNUPDATED.OXPHOS** genelist works better than the updated version (HALLMARK_OXIDATIVE_PHOSPHORYLATION), we will continue our comparison of genesets using the UNUPDATED version. 
+* We now wonder: 
+    - Which OXPHOS genes are the most DE if we call FindMarkers? 
+    - Which geneset(s) do the most DE OXPHOS genes belong to? 
+
+**ANSWERING QUESTION 2: Which genes in each geneset are the most DE? Are they the same?**
+* Used the **wilcoxon rank sum test** for FindMarkers 
+
+```{r oxphosVolcano, message=FALSE, warning=FALSE, fig.align='center', fig.width=15, fig.height=8}
 SS2s <- c(SS2Malignant.8, SS2Malignant.9)
-UMAP.plots <- vector("list", length(SS2s))
-names(UMAP.plots) <- SS2.names
+SS2.names <- c("SS2 Malignant Patient 8", "SS2 Malignant Patient 9")
+oxphos.hm <- c("UNUPDATED.OXPHOS", "GO.OXPHOS", "KEGG.OXPHOS")
+SS2.hm.plots <- vector("list", length = 3)
+names(SS2.hm.plots) <- SS2.names
+
+SS2.markers <- vector("list", length = 3)
+names(SS2.markers) <- SS2.names
+
+SS2.markers[["SS2 Malignant Patient 8"]] <- FindMarkers(SS2Malignant.8, group.by = "sample", ident.1 = "8.1", ident.2 = "8.0", test.use = "wilcox", logfc.threshold = 0) 
+SS2.markers[["SS2 Malignant Patient 9"]]  <- FindMarkers(SS2Malignant.9, group.by = "sample", ident.1 = "9.1", ident.2 = "9.0", test.use = "wilcox", logfc.threshold = 0)
+
+for(i in 1:length(SS2s)){
+    SS2 <- SS2.names[[i]]
+    DF.hm.plot <- vector("list", length = 3)
+    names(DF.hm.plot) <- oxphos.hm
+    marker <- SS2.markers[[SS2]]
+    
+  for(oxphos in oxphos.hm){
+    
+    avgLFC <- rownames(marker[which(abs(marker$avg_logFC) > 0.5),])
+    keyvals <- ifelse(!(rownames(marker) %in% hallmark.list[[oxphos]]), 'black', 
+                      ifelse(abs(marker$avg_logFC) > 0.5, 'red', 'grey'))
+    names(keyvals)[keyvals == 'red'] <- 'OXPHOS & logFC'
+    names(keyvals)[keyvals == 'grey'] <- 'OXPHOS x logFC'
+    names(keyvals)[keyvals == 'black'] <- 'Not OXPHOS'
+    found = length(avgLFC[which(avgLFC %in% hallmark.list[[oxphos]])])
+    
+    p <- EnhancedVolcano(marker, 
+           lab = rownames(marker),
+           selectLab = avgLFC[which(avgLFC %in% hallmark.list[[oxphos]])],
+           labCol = "red",
+           x='avg_logFC', y='p_val_adj', pCutoff = 0.05, 
+           FCcutoff = 0.5, 
+           colCustom = keyvals,
+           pointSize = c(ifelse(rownames(marker) %in% hallmark.list[[oxphos]], 2.5,1)), 
+           drawConnectors = TRUE,
+           boxedLabels = TRUE,
+           labvjust = 1,
+           title= glue("{SS2} p.1 vs. p.0"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05",
+           caption = glue("{oxphos}: {found} DE oxphos genes found")
+           )
+    DF.hm.plot[[oxphos]] <- p
+  }
+  
+  SS2.hm.plots[[SS2]] <- DF.hm.plot[["UNUPDATED.OXPHOS"]] + DF.hm.plot[["GO.OXPHOS"]] + DF.hm.plot[["KEGG.OXPHOS"]]
+}
+
+SS2.hm.plots[["SS2 Malignant Patient 8"]]
+SS2.hm.plots[["SS2 Malignant Patient 9"]]
+
+# number of DE oxphos genes found in each geneset within each model -----------------
+P8.de.df <- data.frame(
+  "UNUPDATED.DE.OXPHOS" = sum(rownames(SS2.markers[["SS2 Malignant Patient 8"]][which(abs(SS2.markers[["SS2 Malignant Patient 8"]]$avg_logFC) > 0.5),]) %in% hallmark.list[["UNUPDATED.OXPHOS"]]),
+  "GO.DE.OXPHOS" = sum(rownames(SS2.markers[["SS2 Malignant Patient 8"]][which(abs(SS2.markers[["SS2 Malignant Patient 8"]]$avg_logFC) > 0.5),]) %in% hallmark.list[["GO.OXPHOS"]]),
+  "KEGG.DE.OXPHOS" = sum(rownames(SS2.markers[["SS2 Malignant Patient 8"]][which(abs(SS2.markers[["SS2 Malignant Patient 8"]]$avg_logFC) > 0.5),]) %in% hallmark.list[["KEGG.OXPHOS"]])
+)
+
+P9.de.df <- data.frame(
+  "UNUPDATED.DE.OXPHOS" = sum(rownames(SS2.markers[["SS2 Malignant Patient 9"]][which(abs(SS2.markers[["SS2 Malignant Patient 9"]]$avg_logFC) > 0.5),]) %in% hallmark.list[["UNUPDATED.OXPHOS"]]),
+  "GO.DE.OXPHOS" = sum(rownames(SS2.markers[["SS2 Malignant Patient 9"]][which(abs(SS2.markers[["SS2 Malignant Patient 9"]]$avg_logFC) > 0.5),]) %in% hallmark.list[["GO.OXPHOS"]]),
+  "KEGG.DE.OXPHOS" = sum(rownames(SS2.markers[["SS2 Malignant Patient 9"]][which(abs(SS2.markers[["SS2 Malignant Patient 9"]]$avg_logFC) > 0.5),]) %in% hallmark.list[["KEGG.OXPHOS"]])
+)
+
+all.de.df <- rbind(P8.de.df, P9.de.df)
+rownames(all.de.df) <- c("P8.1vs8.0", "P9.1vs9.0")
+all.de.df
+```
+
+* **OBSERVATIONS** 
+    - **UNUPDATED.OXPHOS** geneset consistently has the most DE OXPHOS genes (logFC > 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle. 
+    - Although it seems that there are a few overlaps of OXPHOS genes found, it is hard to visualize which ones overlap, and whether the ones that overlap are among the top DE genes (regardless of padj). We therefore create tables for each model, extract the top 5 DE genes from each geneset and compare if they're the same. 
+    
+```{r oxphosGSDE, message=FALSE, warning=FALSE}
+
+p8.top5 <- SS2.markers[["SS2 Malignant Patient 8"]] %>% arrange(-abs(avg_logFC))
+p9.top5 <- SS2.markers[["SS2 Malignant Patient 9"]] %>% arrange(-abs(avg_logFC))
+
+p8.gs.df <- data.frame(
+  "UNUPDATED.OXPHOS.DE" = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
+  "UNUPDATED.OXPHOS" = select(p8.top5[head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5),], avg_logFC),
+  "GO.OXPHOS.DE" = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
+  "GO.OXPHOS" = select(p8.top5[head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),], avg_logFC),
+  "KEGG.OXPHOS.DE" = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
+  "KEGG.OXPHOS" = select(p8.top5[head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5),], avg_logFC)
+)
+rownames(p8.gs.df) <- seq(from = 1, length = nrow(p8.gs.df))
+
+p9.gs.df <- data.frame(
+  "UNUPDATED.OXPHOS.DE" = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
+  "UNUPDATED.OXPHOS" = select(p9.top5[head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5),], avg_logFC),
+  "GO.OXPHOS.DE" = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
+  "GO.OXPHOS" = select(p9.top5[head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),], avg_logFC),
+  "KEGG.OXPHOS.DE" = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
+  "KEGG.OXPHOS" = select(p9.top5[head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5),], avg_logFC)
+)
+rownames(p9.gs.df) <- seq(from = 1, length = nrow(p9.gs.df))
+
+p8.gs.df
+p9.gs.df
+```
+
+* **OBSERVATIONS** 
+    - Note: All of these top 5 DE OXPHOS genes (logFC > 0.5) have a padj of 1.00
+    - There are quite a few overlaps of DE OXPHOS genes across all three genesets for both patient 8 and 9
+    - The **UNUPDATED.OXPHOS.DE** and the **GO.OXPHOS** genesets both seem to have top DE OXPHOS genes with higher logFC values relative to **KEGG.OXPHOS**
+
+* Our answers to **QUESTION #1 and #2** seem to suggest that **UNUPDATED.OXPHOS** hallmark geneset is the best our of all the genesets tested because: 
+    1. It has the least number of genes that are not found within the SS2 Seurat Object, and the highest percentage of genes that are found. 
+    2. It has the most DE OXPHOS genes (logFC > 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle
+    3. The DE OXPHOS genes present within this geneset have relatively higher logFC values (they are more DE, regardless of padj) in comparison to the DE OXPHOS genes present in the other two genesets, especially KEGG. 
+* We answer our 3rd question to confirm whether the **UNUPDATED.OXPHOS** geneset is indeed the most appropriate one for our data relative to the other two genesets. 
+
+**ANSWERING QUESTION #3: which geneset gives us the most statistically significant results**
+
+```{r oxphosGS, message=FALSE, warning=FALSE, fig.align='center', fig.width=20, fig.height=10}
+oxphos.centered <- c("UNUPDATED.OXPHOS37.centered", "GO.OXPHOS35.centered", "KEGG.OXPHOS36.centered")
+SS2.Oxphos.Vln.plots <- vector("list", length(SS2s))
+names(SS2.Oxphos.Vln.plots) <- SS2.names
+patient <- c("8", "9")
 
 for (i in 1:length(SS2s)){
   obj <- SS2s[[i]]
   name <- SS2.names[[i]]
-  numCells = nrow(obj@meta.data)
+  numCells <- nrow(SS2s[[i]]@meta.data)
   
-  umap <- UMAPPlot(obj, group.by = "sample") + 
-    labs(title = glue("{name} UMAP by Sample"), subtitle = glue("Number of cells in {name}: {numCells}")) +
-    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
   
-  p <- FeaturePlot(obj, features = hms.centered, combine = FALSE)
-  p[[1]] <- p[[1]] + labs(title = glue("{name} UMAP by KEGG Oxphos Scores")) +
-    theme(plot.title = element_text(size = 10))
-  p[[2]] <- p[[2]] + labs(title = glue("{name} UMAP by HALLMARK UPR Scores")) + 
-    theme(plot.title = element_text(size = 10))
+  if(patient[[i]] == "8"){
+    p <- VlnPlot(obj, features = oxphos.centered, group.by = "sample", pt.size = 0, combine = F, cols = c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 0.7)
+  }
+  else{
+    p <- VlnPlot(obj, features = oxphos.centered, group.by = "sample", pt.size = 0, combine = F, cols = c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 1.0)
+  }
+  p[[1]] <- p[[1]] + labs(title = glue("{name} UNUPDATED.OXPHOS scores across sample"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in geneset found in SS2:", sum(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(obj)), "out of", length(hallmark.list[["UNUPDATED.OXPHOS"]]))) + 
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  UMAP.plots[[name]] <- umap + p[[1]] + p[[2]]
+  p[[2]] <- p[[2]] + labs(title = glue("{name} GO.OXPHOS scores across sample"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in geneset found in SS2:", sum(hallmark.list[["GO.OXPHOS"]] %in% rownames(obj)),"out of", length(hallmark.list[["GO.OXPHOS"]]))) +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+  
+  p[[3]] <- p[[3]] + labs(title = glue("{name} KEGG.OXPHOS scores across sample"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in geneset found in SS2:", sum(hallmark.list[["KEGG.OXPHOS"]] %in% rownames(obj)), "out of", length(hallmark.list[["KEGG.OXPHOS"]]))) +
+    theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+  
+  p <- p[[1]] + p[[2]] + p[[3]] + plot_layout(guides= 'collect')
+  
+  SS2.Oxphos.Vln.plots[[name]] <- p
 }
 
-UMAP.plots[["SS2 Malignant Patient 8"]]
-UMAP.plots[["SS2 Malignant Patient 9"]]
+SS2.Oxphos.Vln.plots[["SS2 Malignant Patient 8"]]
+SS2.Oxphos.Vln.plots[["SS2 Malignant Patient 9"]]
 ```
 
 * **OBSERVATIONS**
-    - Since cells do not separate by treatment status, it is difficult to determine whether there is a correlation between treatment condition and hallmark scores based on our UMAP visualization. 
-    - We therefore try to visualize DE hallmark scores across treatment conditions with VlnPlots
+    - The overall trend we see between treatment groups within each model is the same across all three oxphos genesets. However, it seems like the difference in scores is most obvious/drastic when using the **KEGG** geneset. 
+    - Statistical tests show us that while **KEGG** gives us the most statistically significant results in Patient 8 and **UNUPDATED** gives us the most statistically significant results in Patient 9, the **GO** geneset is actually the most consistent, giving us statistically signifcant results in both patients. 
+
+* **CONCLUSIONS** 
+    - Although the **UNUPDATED** seems like the most suitable one for criteria 1 and 2, the **GO** geneset gives us the best result for the 3rd criterion: 
+        1. Question 1: **GO** has the most number of unfound genes in the SS2 object. However: 
+        2. Question 2: It has a pretty close tie in comparison to the **UNUPDATED** geneset, where they had similar numbers of DE OXPHOS genes present from FindMarkers, and the top DE OXPHOS genes in both genesets have comparable logFC. 
+        3. Question 3: **GO** gives us statistically significant results in both patients. 
+* Therefore, considering these three criteria, we decide that the **GO** geneset is best for our SS2 data. 
+
+We also tested how the **UNUPDATED** version of **HALLMARK_UNFOLDED_PROTEIN_RESPONSE** differs from the updated version.
+```{r uprGS, message = FALSE, warning = FALSE}
+upr.length.df <- data.frame(
+  "UNUPDATED.HM.UPR" = length(hallmark.list[["UNUPDATED.UPR"]]),
+  "HALLMARK.UPR" = length(hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]])
+)
+
+Found.upr.df <- data.frame(
+  "UNUPDATED.HM.UPR" = sum((hallmark.list[["UNUPDATED.UPR"]] %in% rownames(SS2Malignant))),
+  "HALLMARK.UPR" = sum((hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]] %in% rownames(SS2Malignant)))
+)
+
+PFound.upr.df <- data.frame(
+  "UNUPDATED.HM.UPR" = (sum((hallmark.list[["UNUPDATED.UPR"]] %in% rownames(SS2Malignant)))/length(hallmark.list[["UNUPDATED.UPR"]]))*100,
+  "HALLMARK.UPR" = (sum((hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]] %in% rownames(SS2Malignant)))/length(hallmark.list[["HALLMARK_UNFOLDED_PROTEIN_RESPONSE"]])) * 100
+)
+
+upr.df <- rbind(upr.length.df, Found.upr.df, PFound.upr.df)
+upr.df[,"UNUPDATED.HM.UPR"] <- round(upr.df[,"UNUPDATED.HM.UPR"])
+upr.df[,"HALLMARK.UPR"] <- round(upr.df[,"HALLMARK.UPR"])
+rownames(upr.df) <- c("Num UPR Genes", "Num Found", "% Found")
+upr.df
+```
+
+* Since the **UNUPDATED** version identifies two more genes than the updated version, we decide to proceed with the **UNUPDATED.UPR** geneset. 
+
+After deciding the geneset to use for our data, we can now analyze the differential expression of OXPHOS and UPR genes across treatment condition within each model: 
+    - **OXPHOS**: GO_OXIDATIVE_PHOSPHORYLATION geneset 
+    - **UPR**: unupdated HALLMARK_UNFOLDED_PROTEIN_RESPONSE geneset
+
+### STEP 3 DE ANALYSIS #1. VISUALIZING AND QUANTIFYING DE HALLMARK GENESETS
+* **QUESTION** Are modules (**OXPHOS and UPR**) differentially expressed across treatment conditions within each patient? 
+* **HYPOTHESIS** We hypothesize that the on-treatment time-points (**p.1 and p.2**) will express enriched levels of OXPHOS and UPR hallmarks relative to cells treatment-naive time-point (**p.0**). We are not so sure what to expect between p.1 and p.2 on-treatment samples because we are not told how the two samples are different in terms of their treatment status. 
+    - **APPROACH #1** Violin Plots and UMAP
+        * Visualize differences in hallmark score across treatment conditions with:
+            - Violin Plot (center module scores at 0)
+        * Statistical test (**wilcoxon rank sum test**): is the difference in hallmark score across treatment conditions statistically significant? 
 
 ```{r DEAnalysis1VlnPlot, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height = 10}
+hms.centered = c("GO.OXPHOS35.centered", "UNUPDATED.UPR38.centered")
 
 #VlnPlot
 SS2.names <- c("SS2 Malignant Patient 8", "SS2 Malignant Patient 9")
 SS2s <- c(SS2Malignant.8, SS2Malignant.9)
-Vln.plots <- vector("list", length(SS2s))
-names(UMAP.plots) <- SS2.names
-patient <- c("8", "9")
+SS2.Vln.plots <- vector("list", length(SS2s))
+names(SS2.Vln.plots) <- SS2.names
 
 for (i in 1:length(SS2s)){
   obj <- SS2s[[i]]
   name <- SS2.names[[i]]
   numCells <- nrow(obj@meta.data)
   
-  p <- VlnPlot(obj, features = hms.centered, group.by = "sample", pt.size = 0, combine = F)
-  p[[1]] <- p[[1]] + labs(title = glue("{name} OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = "www.gsea-msigdb.org: KEGG_OXIDATIVE_PHOSPHORYLATION") +
-    theme(plot.title = element_text(size = 10), plot.caption = element_text(size = 10)) + 
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  if(patient[[i]] == "8"){
+    p <- VlnPlot(obj, features = hms.centered, group.by = "sample", pt.size = 0, combine = F, cols = c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 0.9)
+  }
+  else{
+    p <- VlnPlot(obj, features = hms.centered, group.by = "sample", pt.size = 0, combine = F, cols = c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 1.0)
+  }
+
+  p[[1]] <- p[[1]] + labs(title = glue("{name} OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in GO geneset found in SS2:", sum(hallmark.list[["GO.OXPHOS"]] %in% rownames(obj)), "out of", length(hallmark.list[["GO.OXPHOS"]]))) +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$KEGG.OXPHOS36.centered) -0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$KEGG.OXPHOS36.centered) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$KEGG.OXPHOS36.centered) - 0.03)
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  p[[2]] <- p[[2]] + labs(title = glue("{name} UPR scores across treatment"), x = name, caption = "www.gsea-msigdb.org: HALLMARK_UNFOLDED_PROTEIN_RESPONSE") +
-    theme(plot.title = element_text(size = 10), plot.caption = element_text(size = 10)) + 
+  p[[2]] <- p[[2]] + labs(title = glue("{name} UPR scores across treatment"), x = name, caption = paste("# UPR genes in HALLMARK.UPR geneset found in SS2:", sum(hallmark.list[["UNUPDATED.UPR"]] %in% rownames(obj)), "out of", length(hallmark.list[["UNUPDATED.UPR"]]))) +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
-  p <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
+  p <- p[[1]] + p[[2]] + plot_layout(guides= 'collect') + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  Vln.plots[[name]] <- p
+  SS2.Vln.plots[[name]] <- p
 }
 
-Vln.plots[["SS2 Malignant Patient 8"]]
-Vln.plots[["SS2 Malignant Patient 9"]]
-```
-
-* **OBSERVATIONS**
-    - **Patient 8**
-        * OXPHOS: Sample 8.0 > 8.1 > 8.2 (does not support our hypothesis)
-        * UPR: Sample 8.2 > 8.1 > 8.0 
-    - **Patient 9** 
-        * **OXPHOS: Sample 9.1 > 9.0 > 9.2 (supports our hypothesis)**
-        * UPR: Sample 9.0 > 9.1 > 9.2 (does not support our hypothesis)
-* Overall trend of OXPHOS and UPR scores across treatment time-point within each patient does not support our hypothesis that **On-treatment** samples (esp. 8.1 and 9.1) will express higher levels of these genes relative to **Treatment-naive** samples. 
-* We now examine the statistical significance of our results. 
-
-```{r DEAnalysis1Statistical test, message = FALSE, warning = FALSE}
-#Patient 8 ---------------------------------
-SS2Malignant8.0 <- subset(SS2Malignant.8, subset = (sample == "8.0"))
-SS2Malignant8.1 <- subset(SS2Malignant.8, subset = (sample == "8.1"))
-SS2Malignant8.2 <- subset(SS2Malignant.8, subset = (sample == "8.2"))
-
-SS2M8.oxphos.df <- data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant8.0$KEGG.OXPHOS36.centered, SS2Malignant8.1$KEGG.OXPHOS36.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant8.1$KEGG.OXPHOS36.centered, SS2Malignant8.2$KEGG.OXPHOS36.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant8.0$KEGG.OXPHOS36.centered, SS2Malignant8.2$KEGG.OXPHOS36.centered)$p.value
-)
-
-SS2M8.UPR.df <- 
-  data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant8.0$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, SS2Malignant8.1$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant8.1$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, SS2Malignant8.2$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant8.0$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, SS2Malignant8.2$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value
-)
-
-#Patient 9 ---------------------------------
-SS2Malignant9.0 <- subset(SS2Malignant.9, subset = (sample == "9.0"))
-SS2Malignant9.1 <- subset(SS2Malignant.9, subset = (sample == "9.1"))
-SS2Malignant9.2 <- subset(SS2Malignant.9, subset = (sample == "9.2"))
-
-SS2M9.oxphos.df <- data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant9.0$KEGG.OXPHOS36.centered, SS2Malignant9.1$KEGG.OXPHOS36.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant9.1$KEGG.OXPHOS36.centered, SS2Malignant9.2$KEGG.OXPHOS36.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant9.0$KEGG.OXPHOS36.centered, SS2Malignant9.2$KEGG.OXPHOS36.centered)$p.value
-)
-
-SS2M9.UPR.df <- 
-  data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant9.0$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, SS2Malignant9.1$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant9.1$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, SS2Malignant9.2$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant9.0$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, SS2Malignant9.2$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value
-)
-
-#combine ------------------------------
-SS2.oxphos.DF <- rbind(SS2M8.oxphos.df, SS2M9.oxphos.df)
-rownames(SS2.oxphos.DF) <- c("OXPHOS.PATIENT8", "OXPHOS.PATIENT9")
-
-SS2.UPR.DF <- rbind(SS2M8.UPR.df, SS2M9.UPR.df)
-rownames(SS2.UPR.DF) <- c("UPR.PATIENT8", "UPR.PATIENT9")
-
-SS2.all.DF <- rbind(SS2.oxphos.DF, SS2.UPR.DF)
-DT::datatable(SS2.all.DF) %>% 
-  DT::formatRound(names(SS2.all.DF), digits = 7) %>% 
-  DT::formatStyle(names(SS2.all.DF), color = DT::styleInterval(0.05, c('red', 'black')))
+SS2.Vln.plots[["SS2 Malignant Patient 8"]]
+SS2.Vln.plots[["SS2 Malignant Patient 9"]]
 ```
 
 * **CONCLUSIONS**
     - The statistically significant results are (p < 0.05): 
         * **Patient 8**
             - OXPHOS: Sample 8.0 > 8.1 ; 8.0 > 8.2 (does not support our hypothesis)
-            - UPR: Sample 8.2 > 8.0 ; 8.1 > 8.0 (supports our hypothesis)
+            - **UPR: Sample 8.2 > 8.0 ; 8.1 > 8.0 (supports our hypothesis)**
         * **Patient 9** 
-            - OXPHOS: Sample 9.1 > 9.2 (supports our hypothesis, but would be better if 9.1 > 9.0 is also statistically significant) 
-    - Interestingly, 2/3 of the statistically significant comparisons support our hypothesis that on-treatment samples should express higher levels of OXPHOS and/or URP relative to the treatment-naive samples. 
+            - **OXPHOS: Sample 9.1 > 9.2 ; 9.1 > 9.0 (supports our hypothesis)** ; 9.0 > 9.2 (does not support our hypothesis)
+    - The trends that support our hypothesis for both OXPHOS and UPR are not consistent across patients 8 and 9. Since our sample size is so small, we're also not sure how representative this data is of the true population. 
     - We are, however, not sure how to compare between p.1 vs. p.2 because they are both categorized as "on-treatment" and the clinical status of samples obtained from patients 8 and 9 is "Recurrent", instead of denoting two types of treatment status "Diagnosis/Initial treatment" that corresponds to the two treatment timepoints for the 10X data. 
-
+    
 We try to confirm our results again with our second appraoch: **GSEA**
 
 * **APPROACH #2** Geneset Enrichment Analysis (GSEA)
@@ -271,234 +474,3 @@ We try to confirm our results again with our second appraoch: **GSEA**
 
 **have not finalized the statistical test to use for volcano plot (need to match what we use for GSEA)**
     
-### STEP 4 CELL CYCLE ANALYSIS
-* **QUESTION #1** Are more cells at different cell cycle phases between treatments? 
-* **HYPOTHESIS** There should be less cycling cells in the on-treatment conditions (**p.1 and p.2**) relative to the treatment-naive condition (**p.0**)
-    - **APPROACH** Violin Plots and UMAP 
-        * Visualize differences in cell cycle score across treatment conditions with: 
-            - Stacked Bar Plot
-            - UMAP by treatment vs. UMAP by cell cycle phase vs. UMAP by S and G2M Score 
-            - Violin Plot 
-        * Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant. 
-        
-```{r cellcycle1, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height = 10}
-#Stacked Bar Plot --------------------------
-bar.plots <- vector("list", length = 3)
-names(bar.plots) <- SS2.names
-
-for(i in 1:length(SS2s)){
-  obj = SS2s[[i]]
-  name = SS2.names[[i]]
-  numCells = nrow(obj@meta.data)
-  
-  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
-  t = table(obj$Phase, obj$sample) %>% 
-    as.data.frame() %>% 
-    rename(Phase = Var1, Sample = Var2, numCells = Freq)
-
-sum = c()
-z = 1
-while(z < nrow(t)){
-    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
-    sum = c(sum, rep(n,3))
-    z = z + 3
-  }
-  
-t <- t %>% mutate(total = sum) %>% mutate(percent = (numCells/total)*100)
-  
-  p = t %>% 
-    ggplot(aes(x=Sample, y=percent, fill=Phase)) + 
-    geom_bar(stat="identity") + 
-    labs(title = glue("{name} % of Cells in Each Cell Cycle Phase/ Treatment"), subtitle = glue("Total # Cells in {name}: {numCells}"), caption = "Labeled by # cells in each phase per treatment") +
-    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
-    geom_text(aes(label = paste(numCells, "cells")), position = "stack", hjust = 0.5, vjust = 2, size = 3, color = "white")
-  bar.plots[[i]] <- p
-}
-
-bar.plots[["SS2 Malignant Patient 8"]] + bar.plots[["SS2 Malignant Patient 9"]] + plot_layout(guides= 'collect')
-```
-
-* **OBSERVATIONS** 
-    - **Patient 8** % Noncyclying cells 8.0 > 8.1 > 8.2 (does not support our hypothesis, on-treatment samples should have more noncycling cells)
-    - **Patient 9** % Noncycling cells 9.2 > 9.1 > 9.0 (supports our hypothesis, not sure how to interpret 9.2 > 9.1)
-    - Important to note that we have very little cells in each condition, so we have really little power and the results from our sample may not be representative of the true population. 
-
-To investigate this further, we compare PCA by sample vs. PCA by cell cycle phase and scores
-
-```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=20, fig.height=10}
-#PCA -------------------- (PCA is known to separate cell by cell cycle really well)
-ccPCA.plots <- vector("list", length = 3)
-names(ccPCA.plots) <- SS2.names
-
-for(i in 1:length(SS2s)){
-  obj = SS2s[[i]]
-  name = SS2.names[[i]]
-  numCells = nrow(obj@meta.data)
-  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
-  
-  bys <- PCAPlot(obj, group.by = "sample") + 
-    labs(title = glue("{name} PCA by sample"), subtitle = glue("Number of cells in {name}: {numCells}")) +
-    theme(plot.title = element_text(hjust = 0.5))
-  
-  bycc <- PCAPlot(obj, group.by = "Phase") + 
-    labs(title = glue("{name} PCA by Cell Cycle Phase")) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  
-  byscore <- FeaturePlot(obj, features = c("S.Score", "G2M.Score"), reduction = "pca",combine = FALSE)
-  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score"))
-  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score"))
-  
-  ccPCA.plots[[i]] <- bys + bycc + byscore[[1]] + byscore[[2]]
-}
-
-ccPCA.plots[["SS2 Malignant Patient 8"]]
-ccPCA.plots[["SS2 Malignant Patient 9"]]
-```
-
-* **OBSERVATIONS** 
-    - No obvious separation by treatment. However, cells in the same cell cycle phase, or those with higher S or G2M score, seem to cluster closer together in PCA space. 
-    - However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots. We further investigate this by building violin plots of cell cycle scores separated by treatment status. 
-
-```{r cellcycleVln, message=FALSE, warning=FALSE, fig.align='center', fig.width=20, fig.height=10}
-#VlnPlot -------------------------
-cc.Vln.plots <- vector("list", length = 3)
-names(Vln.plots) <- SS2.names
-
-for (i in 1:length(SS2s)){
-  obj <- SS2s[[i]]
-  name <- SS2.names[[i]]
-  numCells = nrow(obj@meta.data)
-  p <- VlnPlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), group.by = "sample", pt.size = 0, combine = F)
-  p[[1]] <- p[[1]] + labs(title = glue("{name} S.Score across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$S.Score.centered) -0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$S.Score.centered) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$S.Score.centered) - 0.03)
-  
-  p[[2]] <- p[[2]] + labs(title = glue("{name} G2M.Score across treatment"), x = name) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
-
-  cc.Vln.plots[[name]] <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
-}
-
-cc.Vln.plots[["SS2 Malignant Patient 8"]]
-cc.Vln.plots[["SS2 Malignant Patient 9"]]
-
-```
-
-* **OBSERVATIONS** 
-    - **Patient 8** 
-        * S.SCORE: Sample 8.1 > 8.2 > 8.0 (does not support our hypothesis, on-treatment samples should have lower S and G2M cycling scores)
-        * G2M.SCORE: Sample 8.2 > 8.1 > 8.0 (does not support our hypothesis)
-    - **Patient 9** 
-        * **S.SCORE: Sample 9.0 > 9.1 > 9.2 (supports our hypothesis)**
-        * G2M.SCORE: Sample 9.1 > 9.0 > 9.2 (does not support our hypothesis, 9.1 should have a lower G2M score than 9.0)
-* Overall trend of S and G2M scores across treatment time-point within each patient does not support our hypothesis that **On-treatment** samples (esp. 8.1 and 9.1) will express lower levels of these genes relative to **Treatment-naive** samples. 
-* We now examine which comparison are statistical significance. 
-
-```{r DEAnalysis1 Statistical test, message = FALSE, warning = FALSE}
-#Patient 8 ---------------------------------
-SS2M8.S.df <- data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant8.0$S.Score.centered, SS2Malignant8.1$S.Score.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant8.1$S.Score.centered, SS2Malignant8.2$S.Score.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant8.0$S.Score.centered, SS2Malignant8.2$S.Score.centered)$p.value
-)
-
-SS2M8.G2M.df <- 
-  data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant8.0$G2M.Score.centered, SS2Malignant8.1$G2M.Score.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant8.1$G2M.Score.centered, SS2Malignant8.2$G2M.Score.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant8.0$G2M.Score.centered, SS2Malignant8.2$G2M.Score.centered)$p.value
-)
-
-#Patient 9 ---------------------------------
-SS2M9.S.df <- data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant9.0$S.Score.centered, SS2Malignant9.1$S.Score.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant9.1$S.Score.centered, SS2Malignant9.2$S.Score.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant9.0$S.Score.centered, SS2Malignant9.2$S.Score.centered)$p.value
-)
-
-SS2M9.G2M.df <- 
-  data.frame(
-  "p.0vsp.1" = wilcox.test(SS2Malignant9.0$G2M.Score.centered, SS2Malignant9.1$G2M.Score.centered)$p.value, 
-  "p.1vsp.2" = wilcox.test(SS2Malignant9.1$G2M.Score.centered, SS2Malignant9.2$G2M.Score.centered)$p.value, 
-  "p.0vsp.2" = wilcox.test(SS2Malignant9.0$G2M.Score.centered, SS2Malignant9.2$G2M.Score.centered)$p.value
-)
-
-#combine ------------------------------
-SS2.S.DF <- rbind(SS2M8.S.df, SS2M9.S.df)
-rownames(SS2.S.DF) <- c("S.PATIENT8", "S.PATIENT9")
-
-SS2.G2M.DF <- rbind(SS2M8.G2M.df, SS2M9.G2M.df)
-rownames(SS2.G2M.DF) <- c("G2M.PATIENT8", "G2M.PATIENT9")
-
-SS2.cc.DF <- rbind(SS2.S.DF, SS2.G2M.DF)
-DT::datatable(SS2.cc.DF) %>% 
-  DT::formatRound(names(SS2.cc.DF), digits = 7) %>% 
-  DT::formatStyle(names(SS2.cc.DF), color = DT::styleInterval(0.05, c('red', 'black')))
-```
-
-* **CONCLUSIONS** 
-    - Statistically significant results: 
-        * **Patient 8**: S.SCORE - 8.1 > 8.0 ; 8.1 > 8.2 (does not support our hypothesis)
-        * **Patient 9**: G2M.SCORE - 9.1 > 9.2 ; 9.0 > 9.2
-            - The part where 9.0 > 9.2 supports our hypothesis 
-            - However, 9.1 . 9.2 does not support our hypothesis
-        * Cell cycle does not seem to correlate with treatment condition based on these results 
-
-Our results from above collectively suggest that **OXPHOS and UPR** expression weakly correlate with treatment condition, while cell cycle phase does not significantly correlate with treatment. 
-However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of **OXPHOS and UPR** and **cell cycle phase**. 
-
-* **QUESTION #2** Is there a correlation between cell cycle phase and the expression of signatures? 
-* **HYPOTHESIS** We hypothesize that low cycling cells (G1) should express higher levels of **OXPHOS and UPR** genes. (G1 > S > G2M)
-    - **APPROACH** Violin Plots
-        * Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1. 
-        * Stratify the Violin Plots by cell cycle phase
-
-```{r cellcycle2, message=FALSE, warning=FALSE, fig.align='center', fig.width=20, fig.height = 15}
-cc.exp.plot <- vector("list", length = 3)
-names(cc.exp.plot) <- SS2.names
-
-for(i in 1:length(SS2s)){
-  obj = SS2s[[i]]
-  name = SS2.names[[i]]
-  numCells = nrow(obj@meta.data)
-  obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
-  
-  p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE)
-  p1[[1]] <- p1[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase"), subtitle = glue("Number of cells in {name}: {numCells}")) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
-    geom_text(label = paste(sum(obj$Phase == "G1"), "cells"), x = "G1", y = min(obj$KEGG.OXPHOS36.centered) -0.03) + 
-    geom_text(label = paste(sum(obj$Phase == "S"), "cells"), x = "S", y = min(obj$KEGG.OXPHOS36.centered) - 0.03) + 
-    geom_text(label = paste(sum(obj$Phase == "G2M"), "cells"), x = "G2M", y = min(obj$KEGG.OXPHOS36.centered) - 0.03) + 
-    theme(plot.title = element_text(size = 10))
-  
-  p1[[2]] <- p1[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase")) +
-    theme(plot.title = element_text(size = 10)) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
-
-  
-  p2 <- VlnPlot(obj, features = hms.centered, group.by = "sample", split.by = "Phase", pt.size = 0, combine = FALSE)
-  p2[[1]] <- p2[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase / Treatment")) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    theme(plot.title = element_text(size = 10))
-  p2[[2]] <- p2[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase / Treatment")) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    theme(plot.title = element_text(size = 10))
-  
-  cc.exp.plot[[i]] <- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= 'collect')
-}
-
-cc.exp.plot[["SS2 Malignant Patient 8"]]
-cc.exp.plot[["SS2 Malignant Patient 9"]]
-```
-
-* **CONCLUSIONS** 
-    - **Patient 8**
-        * OXPHOS: G2M > G1 > S (not statistically significant & does not support our hypothesis)
-        * UPR: G2M > S > G1 (not statistically significant & does not support our hypothesis)
-    - **Patient 9** 
-        * OXPHOS: G2M > S > G1 (does not support our hypothesis)
-        * UPR: S > G2M > G1 (does not support our hypothesis)
-    - No specific statistically significant trend identified. However, cells in the non / low cycling G1 phase do not seem to express higher levels of OXPHOS and UPR genes, which does not support our hypothesis. 
-

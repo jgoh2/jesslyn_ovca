@@ -184,15 +184,31 @@ names(cc.Vln.plots) <- PDX.names
 for (i in 1:length(PDXs)){
   obj <- PDX.names[[i]]
   numCells = nrow(PDXs[[i]]@meta.data)
-  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F)
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+if(obj == "DF101"){
+  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F, y.max = 4.3, c("#00AFBB", "#E7B800", "#FC4E07"))
+}
+else{
+  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F, y.max = 4, c("#00AFBB", "#E7B800", "#FC4E07"))
+}
   p[[1]] <- p[[1]] + labs(title = glue("{obj} S.Score across treatment"), x = obj, subtitle = glue("Number of cells in {obj}: {numCells}")) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDXs[[i]]$S.Score.centered) -0.03) + 
     geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
-    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDXs[[i]]$S.Score.centered) - 0.03)
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
   p[[2]] <- p[[2]] + labs(title = glue("{obj} G2M.Score across treatment"), x = obj) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
 
   cc.Vln.plots[[obj]] <- p[[1]] + p[[2]] + plot_layout(guides= 'collect')
 }
@@ -200,78 +216,6 @@ for (i in 1:length(PDXs)){
 cc.Vln.plots[["DF20"]]
 cc.Vln.plots[["DF101"]]
 cc.Vln.plots[["DF68"]]
-```
-
-* **OBSERVATIONS** 
-    - There does not seem to be any obvious trends in S or G2M scores across treatment conditions other than in DF20, which shows an **increase in cycling cells** in **MRD and relapse** relative to **vehicle** (which does not support our hypothesis).
-    - We evaluate the statistical significance of the difference between S and G2M scores across treatment conditions. 
-
-```{r cellcycleStat, message=FALSE, warning=FALSE}
-#DF20 ---------------------------------
-DF20.vehicle <- subset(PDX_DF20, subset = (treatment.status == "vehicle"))
-DF20.MRD <- subset(PDX_DF20, subset = (treatment.status == "MRD"))
-DF20.relapse <- subset(PDX_DF20, subset = (treatment.status == "relapse"))
-
-DF20.sscore.df <- data.frame(
-  "MRDvsVehicle" = wilcox.test(DF20.MRD$S.Score.centered, DF20.vehicle$S.Score.centered)$p.value, 
-  "MRDvsRelapse" = wilcox.test(DF20.MRD$S.Score.centered, DF20.relapse$S.Score.centered)$p.value, 
-  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$S.Score.centered, DF20.relapse$S.Score.centered)$p.value
-)
-
-DF20.g2m.df <- 
-  data.frame(
-  "MRDvsVehicle" = wilcox.test(DF20.MRD$G2M.Score.centered, DF20.vehicle$G2M.Score.centered)$p.value, 
-  "MRDvsRelapse" = wilcox.test(DF20.MRD$G2M.Score.centered, DF20.relapse$G2M.Score.centered)$p.value, 
-  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$G2M.Score.centered, DF20.relapse$G2M.Score.centered)$p.value
-)
-
-#DF101 ---------------------------------
-DF101.vehicle <- subset(PDX_DF101, subset = (treatment.status == "vehicle"))
-DF101.MRD <- subset(PDX_DF101, subset = (treatment.status == "MRD"))
-DF101.relapse <- subset(PDX_DF101, subset = (treatment.status == "relapse"))
-
-DF101.sscore.df <- data.frame(
-  "MRDvsVehicle" = wilcox.test(DF101.MRD$S.Score.centered, DF101.vehicle$S.Score.centered)$p.value, 
-  "MRDvsRelapse" = wilcox.test(DF101.MRD$S.Score.centered, DF101.relapse$S.Score.centered)$p.value, 
-  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$S.Score.centered, DF101.relapse$S.Score.centered)$p.value
-)
-
-DF101.g2m.df <- 
-  data.frame(
-  "MRDvsVehicle" = wilcox.test(DF101.MRD$G2M.Score.centered, DF101.vehicle$G2M.Score.centered)$p.value, 
-  "MRDvsRelapse" = wilcox.test(DF101.MRD$G2M.Score.centered, DF101.relapse$G2M.Score.centered)$p.value, 
-  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$G2M.Score.centered, DF101.relapse$G2M.Score.centered)$p.value
-)
-
-#DF68 ---------------------------------
-DF68.vehicle <- subset(PDX_DF68, subset = (treatment.status == "vehicle"))
-DF68.MRD <- subset(PDX_DF68, subset = (treatment.status == "MRD"))
-DF68.relapse <- subset(PDX_DF68, subset = (treatment.status == "relapse"))
-
-DF68.sscore.df <- data.frame(
-  "MRDvsVehicle" = wilcox.test(DF68.MRD$S.Score.centered, DF68.vehicle$S.Score.centered)$p.value, 
-  "MRDvsRelapse" = wilcox.test(DF68.MRD$S.Score.centered, DF68.relapse$S.Score.centered)$p.value, 
-  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$S.Score.centered, DF68.relapse$S.Score.centered)$p.value
-)
-
-DF68.g2m.df <- 
-  data.frame(
-  "MRDvsVehicle" = wilcox.test(DF68.MRD$G2M.Score.centered, DF68.vehicle$G2M.Score.centered)$p.value, 
-  "MRDvsRelapse" = wilcox.test(DF68.MRD$G2M.Score.centered, DF68.relapse$G2M.Score.centered)$p.value, 
-  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$G2M.Score.centered, DF68.relapse$G2M.Score.centered)$p.value
-)
-
-#combine ------------------------------
-sscore.DF <- rbind(DF20.sscore.df, DF101.sscore.df, DF68.sscore.df)
-rownames(sscore.DF) <- c("S.DF20", "S.DF101", "S.DF68")
-
-g2m.DF <- rbind(DF20.g2m.df, DF101.g2m.df, DF68.g2m.df)
-rownames(g2m.DF) <- c("g2m.DF20", "g2m.DF101", "g2m.DF68")
-
-both.DF <- rbind(sscore.DF, g2m.DF)
-DT::datatable(both.DF) %>% 
-  DT::formatSignif(names(both.DF), digits = 2) %>% 
-  DT::formatStyle(names(both.DF), color = DT::styleInterval(0.05, c('red', 'black')))
 ```
 
 * **CONCLUSIONS** 
@@ -297,7 +241,7 @@ for(i in 1:length(PDXs)){
   numCells = nrow(obj@meta.data)
   obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
   
-  p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE)
+  p1 <- VlnPlot(obj, features = hms.centered, group.by = "Phase", pt.size = 0, combine = FALSE, c("#00AFBB", "#E7B800", "#FC4E07"))
   p1[[1]] <- p1[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase"), subtitle = glue("Number of cells in {name}: {numCells}")) +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
     geom_text(label = paste(sum(obj$Phase == "G1"), "cells"), x = "G1", y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
@@ -308,7 +252,7 @@ for(i in 1:length(PDXs)){
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
   
-  p2 <- VlnPlot(obj, features = hms.centered, group.by = "treatment.status", split.by = "Phase", pt.size = 0, combine = FALSE)
+  p2 <- VlnPlot(obj, features = hms.centered, group.by = "treatment.status", split.by = "Phase", pt.size = 0, combine = FALSE, c("#00AFBB", "#FC4E07", "#E7B800"))
   p2[[1]] <- p2[[1]] + labs(title = glue("{name} OXPHOS score by Cell Cycle Phase / Treatment")) +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
   p2[[2]] <- p2[[2]] + labs(title = glue("{name} UPR score by Cell Cycle Phase / Treatment")) +
