@@ -122,6 +122,14 @@ ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)
   geom_bar(stat = "identity") + 
   labs(title = "Number of Malignant Cells Per Sample in SS2 Data") 
 
+numMalignantCellsPerPatientPerTreatment <- table(SS2Malignant$Patient, SS2Malignant$treatment.status) %>%
+  as.data.frame() %>% 
+  dplyr::rename(Patient = Var1, treatment = Var2, numCells = Freq) 
+ggplot(numMalignantCellsPerPatientPerTreatment, aes(x = Patient, y=numCells, fill = treatment)) + 
+  geom_bar(position = "fill", stat = "identity") + 
+  labs(title = "SS2 Number of Malignant Cells Per Patient Per Treatment") + 
+  geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white")
+
 #metrics for patient 8 and 9
 numMalignantCellsPerSample.8 <- table(SS2Malignant.8$Patient, SS2Malignant.8$sample) %>%
   as.data.frame() %>% 
