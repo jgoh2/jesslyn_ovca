@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb0c12c7b993d112e92839ad30724ded2cdc7aa17targetblankb0c12c7a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b0c12c7b993d112e92839ad30724ded2cdc7aa17" target="_blank">b0c12c7</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree21a445ca7b60c57bf538e825bd830d23ba045099targetblank21a445ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/21a445ca7b60c57bf538e825bd830d23ba045099" target="_blank">21a445c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb0c12c7b993d112e92839ad30724ded2cdc7aa17targetblankb0c12c7a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree21a445ca7b60c57bf538e825bd830d23ba045099targetblank21a445ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b0c12c7b993d112e92839ad30724ded2cdc7aa17" target="_blank">b0c12c7</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/21a445ca7b60c57bf538e825bd830d23ba045099" target="_blank">21a445c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -591,6 +591,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/21a445ca7b60c57bf538e825bd830d23ba045099/analysis/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd" target="_blank">21a445c</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+workflowr::wflow_publish(files = “analysis/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd”)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/a15430b09f182c7b908bc0c963559878e0416db1/docs/02.0_Izar2020_SS2_ExploratoryAnalysis.html" target="_blank">a15430b</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -845,6 +879,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/a15430b09f182c7b908bc0c963559878e0416db1/docs/figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant cells metrics-2.png" target="_blank">a15430b</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant cells metrics-2.png" target="_blank">2dc1bee</a>
 </td>
 <td>
@@ -879,7 +924,49 @@ p9 &lt;- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fil
 
 p &lt;- p8 + p9
 p</code></pre>
-<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant%20cells%20metrics-3.png" width="1152" style="display: block; margin: auto;" /> The summary metrics of each patient shows us how little cells we have in each sample. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population. ### STEP 3 UMAP &amp; PCA VISUALIZATIONS We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 1. Intermodel heterogeneity: Do separate by model? 2. Intramodel heterogeneity: a. Do cells separate by treatment status? b. Do cells separate by cell cycle phase? c. Do cells separate due to nFeature and nCount? d. Do cells separate by OXPHOS or UPR hallmark scores?</p>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant%20cells%20metrics-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-malignant-cells-metrics-3">
+Past versions of “malignant cells metrics-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-malignant-cells-metrics-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/a15430b09f182c7b908bc0c963559878e0416db1/docs/figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant cells metrics-3.png" target="_blank">a15430b</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The summary metrics of each patient shows us how little cells we have in each sample. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population.</p>
+</div>
+<div id="step-3-umap-pca-visualizations" class="section level3">
+<h3>STEP 3 UMAP &amp; PCA VISUALIZATIONS</h3>
+<p>We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 1. Intermodel heterogeneity: Do separate by model? 2. Intramodel heterogeneity: a. Do cells separate by treatment status? b. Do cells separate by cell cycle phase? c. Do cells separate due to nFeature and nCount? d. Do cells separate by OXPHOS or UPR hallmark scores?</p>
 <p><strong>1) BY SAMPLE</strong></p>
 <pre class="r"><code>#cluster by patient/ sample? 
 p1 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;Patient&quot;) + labs(title = &quot;SS2 Malignant Cells UMAP by Patient&quot;)
@@ -1016,9 +1103,8 @@ jgoh2
 </div>
 </div>
 <ul>
-<li><p>Cells do not seem to cluster by treatment status. PC_1 and PC_2 do not capture treatment status as well.</p></li>
 <li>Seems like cells do not cluster together by treatment status.</li>
-<li><p>Treatment status is also not captured in PC_1 or PC_2</p></li>
+<li>Treatment status is also not captured in PC_1 or PC_2</li>
 </ul>
 <p><strong>3) BY UPR AND OXPHOS GENESET SCORE</strong></p>
 <pre class="r"><code>hms.centered &lt;- c(&quot;UNUPDATED.OXPHOS37.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
@@ -1128,8 +1214,9 @@ jgoh2
 </div>
 </div>
 <ul>
-<li>There isn’t a clear clustering of cells due to OXPHOS or UPR scores, but it seems like OXPHOS scores might be faintly captured in PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. <strong>4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT</strong></li>
+<li>There isn’t a clear clustering of cells due to OXPHOS or UPR scores, but it seems like OXPHOS scores might be faintly captured in PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis.</li>
 </ul>
+<p><strong>4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT</strong></p>
 <pre class="r"><code>#PCA -------------------- (PCA is known to separate cell by cell cycle really well)
 ccPCA.plots &lt;- vector(&quot;list&quot;, length = 3)
 names(ccPCA.plots) &lt;- SS2.names
