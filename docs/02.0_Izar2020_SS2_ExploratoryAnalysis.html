@@ -12,7 +12,7 @@
 <meta name="author" content="Jesslyn Goh and Mike Cuoco" />
 
 
-<title>Izar 2020 PDX (Cohort 3) Cell Cycle Analysis</title>
+<title>Izar 2020 SS2 (Cohort 2) Exploatory Analysis</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -397,9 +397,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Izar 2020 PDX (Cohort 3) Cell Cycle Analysis</h1>
+<h1 class="title toc-ignore">Izar 2020 SS2 (Cohort 2) Exploatory Analysis</h1>
 <h4 class="author">Jesslyn Goh and Mike Cuoco</h4>
-<h4 class="date">7/29/2020</h4>
+<h4 class="date">7/20/2020</h4>
 
 </div>
 
@@ -567,7 +567,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd</code>) and HTML (<code>docs/03.2_Izar2020_PDX_CellCycleAnalysis.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd</code>) and HTML (<code>docs/02.0_Izar2020_SS2_ExploratoryAnalysis.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -596,7 +596,7 @@ Message
 Rmd
 </td>
 <td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/284aad41a1a7e82fdd119034dd23aeb385fa2f03/analysis/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd" target="_blank">284aad4</a>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/284aad41a1a7e82fdd119034dd23aeb385fa2f03/analysis/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd" target="_blank">284aad4</a>
 </td>
 <td>
 jgoh2
@@ -608,40 +608,6 @@ jgoh2
 workflowr::wflow_publish(files = files)
 </td>
 </tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/analysis/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-<td>
-PDX Exploratory + DE + Cell Cycle Analyses
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/03.2_Izar2020_PDX_CellCycleAnalysis.html" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-<td>
-PDX Exploratory + DE + Cell Cycle Analyses
-</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -649,38 +615,30 @@ PDX Exploratory + DE + Cell Cycle Analyses
 </div>
 </div>
 </div>
-<div id="izar-2020-pdx-cohort-3-data-differantial-expresison-analysis" class="section level1">
-<h1>IZAR 2020 PDX (COHORT 3) DATA DIFFERANTIAL EXPRESISON ANALYSIS</h1>
+<div id="izar-2020-ss2-cohort-2-data-analysis---part-2" class="section level1">
+<h1>IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 2</h1>
 <div id="overview" class="section level3">
 <h3>OVERVIEW</h3>
 <ul>
-<li>The PDX data from Izar2020 consists of <strong>only Malignant cells</strong> from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation:
+<li>The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals:
 <ul>
-<li>DF20 (BRCA WT treatment-naive, clinically platinum sensitive)</li>
-<li>DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant)</li>
-<li>DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant)</li>
+<li>selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates</li>
+<li>Includes both <strong>malignant</strong> and <strong>nonmalignant</strong> populations but differs from 10X data - examines malignant ascites more closely.</li>
+<li>We are only interested in the <strong>malignant</strong> ascites population, specifically samples from <strong>patient 8 and 9</strong> because they are the only patients that have samples from different treatment statuses.</li>
 </ul></li>
-<li>After tumors were established, animals were divided into two groups per model:
-<ul>
-<li>Vehicle (treated with DMSO)</li>
-<li>Carboplatin (treated with IP carboplatin)
-<ul>
-<li>Carboplatin-treated mice for minimal residual disease (<strong>MRD</strong>) group were harvested for scRNA-seq</li>
-<li>The remaining carboplatin-treated mice were harvested at endpoint (<strong>vehicle</strong>)</li>
-</ul></li>
-</ul></li>
-<li>In our 5-part analysis of the Izar 2020 PDX data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses <strong>within</strong> each model.</li>
-<li>We split our PDX analysis into three parts:
+<li>In our 5-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses <strong>within</strong> patients 8 and 9</li>
+<li>We split our SS2 analysis into three parts:
 <ol style="list-style-type: decimal">
-<li><strong>Load Data and Create PDX Seurat Object</strong>
+<li><strong>Load Data and Create SS2 Seurat Object</strong>
 <ol style="list-style-type: lower-alpha">
 <li>The code to this part of our analysis is in the <strong>read_Izar_2020.R</strong> file in the <strong>code</strong> folder. During this part of our analysis we:
 <ol style="list-style-type: lower-roman">
-<li>Load in PDX count matrix and Create Seurat Object</li>
+<li>Load in SS2 count matrix and Create Seurat Object</li>
 <li>Assign Metadata identities including:
 <ul>
-<li>Mouse ID</li>
-<li>Model ID</li>
+<li>Patient ID</li>
+<li>Time</li>
+<li>Sample ID</li>
 <li>Treatment Status</li>
 </ul></li>
 <li>Score cells for <strong>cell cycle</strong> and <strong>hallmark genesets</strong> - <strong>Note</strong>: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the <strong>data</strong> slot.</li>
@@ -689,9 +647,9 @@ PDX Exploratory + DE + Cell Cycle Analyses
 </ol></li>
 <li><strong>Process Data and Exploratory Data Analysis</strong>
 <ol style="list-style-type: lower-alpha">
-<li>The code to this part of our analysis can be found in the <strong>03_Izar2020_PDX_Load</strong> file in the <strong>old/edited</strong> folder. During this part of our analysis we:
+<li>The code to this part of our analysis can be found in the <strong>02_Izar2020_SS2_Load_Plots</strong> file in the <strong>old/edited</strong> folder. During this part of our analysis we:
 <ol style="list-style-type: lower-roman">
-<li>Load in PDX Seurat Object from Part 1 and <strong>subset by model</strong>. Continue analysis separately for each model.</li>
+<li>Load in SS2 Seurat Object from Part 1 and <strong>subset by patients 8 and 9</strong>. Continue analysis separately for each model.</li>
 <li>Scale and FindVariableFeatures (prepares data for dimensionality reduction)</li>
 <li>Dimensionality Reduction (PCA + UMAP)</li>
 <li>Save Seurat Objects</li>
@@ -699,17 +657,17 @@ PDX Exploratory + DE + Cell Cycle Analyses
 </ol></li>
 <li><strong>Exploratory Data Analysis</strong>
 <ol style="list-style-type: lower-alpha">
-<li>The code to this part of our analysis can be found in the <strong>03.0_Izar2020_PDX_Exploratory Analysis</strong> file in the <strong>analysis</strong> folder. During this part of our analysis we:
+<li>The code to this part of our analysis can be found in the <strong>02.0_Izar2020_SS2_Exploratory Analysis</strong> file in the <strong>analysis</strong> folder. During this part of our analysis we:
 <ol style="list-style-type: lower-roman">
-<li>Load in PDX Seurat Object from Part 2. Analyze separately for each model.</li>
-<li>Compute summary metrics for PDX data such as:
+<li>Load in SS2 Seurat Object from Part 2. Analyze separately for patients 8 and 9</li>
+<li>Compute summary metrics for SS2 data such as:
 <ul>
-<li>Number of cells per model per treatment</li>
+<li>Number of cells per patient per treatment</li>
 <li>Number of cells per treatment per cell cycle phase</li>
 </ul></li>
-<li>Visualize how cells separate based on metadata identities via UMAP - Intermodel heterogeneity: How do cells separate by model? - Intramodel heterogeneity:
+<li>Visualize how cells separate based on metadata identities via UMAP and PCA - Intermodel heterogeneity: How do cells separate by sample? - Intramodel heterogeneity:
 <ul>
-<li>How do cells separate by treament status?</li>
+<li>How do cells separate by treament status / sample?</li>
 <li>How do cells separate by cell cycle phase?</li>
 </ul></li>
 </ol></li>
@@ -733,503 +691,185 @@ PDX Exploratory + DE + Cell Cycle Analyses
 </ol></li>
 </ol></li>
 </ul>
-<p>This is the fifth part of our 5-part analysis of the Izar 2020 PDX (Cohort 3) data.</p>
+<p>This is the third part of our 5-part analysis of the Izar 2020 SS2 (Cohort 2) data.</p>
 </div>
-<div id="cell-cycle-analysis-in-depth-explanation" class="section level3">
-<h3>CELL CYCLE ANALYSIS IN-DEPTH EXPLANATION</h3>
-<p>We are interested in answering a few questions for our Cell Cycle Analysis:</p>
-<p><strong>CELL CYCLE ANALYSIS</strong></p>
-<ul>
-<li><strong>QUESTION #1</strong> Are more cells at different cell cycle phases between treatments?
-<ul>
-<li><strong>APPROACH</strong> Violin Plots and UMAP
-<ul>
-<li>Visualize differences in cell cycle score across treatment conditions with:
-<ul>
-<li>Stacked Bar Plot</li>
-<li>Violin Plot</li>
-<li>UMAP by treatment vs. UMAP by cell cycle phase vs. UMAP by S and G2M Score</li>
-</ul></li>
-<li>Statistical test: is the difference in cell cycle scores across treatment conditions statistically</li>
-</ul></li>
-</ul></li>
-<li><strong>QUESTION #2</strong> Is there a correlation between cell cycle phase and the expression of signatures?
-<ul>
-<li><strong>APPROACH</strong> Violin Plots
-<ul>
-<li>Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1.</li>
-<li>Stratify the Violin Plots by cell cycle phase</li>
-</ul></li>
-</ul></li>
-</ul>
-</div>
-<div id="step-1-load-in-seurat-objects-and-genesets" class="section level3">
-<h3>STEP 1 LOAD IN SEURAT OBJECTS AND GENESETS</h3>
+<div id="step-1-load-seurat-object" class="section level3">
+<h3>STEP 1 LOAD SEURAT OBJECT</h3>
 <pre class="r"><code># Load packages
 source(here::here(&#39;packages.R&#39;))
 
-#Read in PDX RDS object
-PDX_All = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_All_processed.RDS&quot;)
-PDX_DF20 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS&quot;)
-PDX_DF101 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS&quot;)
-PDX_DF68 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS&quot;)
+#Read in SS2 RDS object
+SS2Malignant = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant_processed.RDS&quot;)
+SS2Malignant.8 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS&quot;)
+SS2Malignant.9 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS&quot;)
+
+#Read in hallmarks of interest
+hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 4)
+names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, &quot;UNUPDATED.UPR&quot;)
+for(hm in hallmark_names){
+  file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
+  hallmark.list[[hm]] &lt;- file
+}
+
+hallmark.list[[&quot;GO.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/GO.OXPHOS.txt&quot;, skip = 1)
+hallmark.list[[&quot;KEGG.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/KEGG.OXPHOS.txt&quot;, skip = 2)
+hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/oxphos.txt&quot;, skip =1)
+hallmark.list[[&quot;UNUPDATED.UPR&quot;]] &lt;- read_lines(&quot;data/gene_lists/upr.txt&quot;, skip =1)
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(PDX_All@meta.data)[9:48]
+hm.names &lt;- names(SS2Malignant@meta.data)[14:53]
 
 for(i in hm.names){
-    DF20.hm.centered &lt;- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
-    PDX_DF20 &lt;- AddMetaData(PDX_DF20, DF20.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant &lt;- AddMetaData(SS2Malignant, SS2Malignant.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
     
-    DF101.hm.centered &lt;- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
-    PDX_DF101 &lt;- AddMetaData(PDX_DF101, DF101.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    SS2Malignant8.hm.centered &lt;- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 &lt;- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
     
-    DF68.hm.centered &lt;- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
-    PDX_DF68 &lt;- AddMetaData(PDX_DF68, DF68.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    SS2Malignant9.hm.centered &lt;- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 &lt;- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
 }</code></pre>
 </div>
-<div id="step-2-cell-cycle-analysis" class="section level3">
-<h3>STEP 2 CELL CYCLE ANALYSIS</h3>
-<p>In our <strong>Exploratory Analysis</strong> section, we observed that PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis. However, cells did not seem to cluster by treatment status. We now use a more quantitative approach to investigate the correlation between treatment and cell cycle phase.</p>
-<ul>
-<li><strong>QUESTION #1</strong> Are more cells at different cell cycle phases between treatments?</li>
-<li><strong>HYPOTHESIS</strong> There should be less cycling cells in the MRD treatment conditions relative to the other two treatment conditions.
-<ul>
-<li><strong>APPROACH</strong> Violin Plots and UMAP
-<ul>
-<li>Visualize differences in cell cycle score across treatment conditions with:
-<ul>
-<li>Stacked Bar Plot</li>
-<li>Violin Plot</li>
-</ul></li>
-<li>Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant.</li>
-</ul></li>
-</ul></li>
-</ul>
-<pre class="r"><code>#Stacked Bar Plot --------------------------
-hms.centered &lt;- c(&quot;UNUPDATED.OXPHOS37.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
-PDXs &lt;- c(PDX_DF20, PDX_DF101, PDX_DF68)
-PDX.names &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
-bar.plots &lt;- vector(&quot;list&quot;, length = 3)
-names(bar.plots) &lt;- PDX.names
+<div id="step-2-examine-summary-metrics" class="section level3">
+<h3>STEP 2 EXAMINE SUMMARY METRICS</h3>
+<pre class="r"><code>#numMalignantCellsPerSample
+numMalignantCellsPerSample &lt;- table(SS2Malignant$sample, SS2Malignant$cell.type, SS2Malignant$treatment.status) %&gt;%
+  as.data.frame() %&gt;% 
+  dplyr::rename(sample = Var1, celltype = Var2, treatment = Var3, numCells = Freq) %&gt;% 
+  filter(`celltype` == &quot;Malignant&quot;)
+ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)) + 
+  geom_bar(stat = &quot;identity&quot;) + 
+  labs(title = &quot;Number of Malignant Cells Per Sample in SS2 Data&quot;) </code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant%20cells%20metrics-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#metrics for patient 8 and 9
+numMalignantCellsPerSample.8 &lt;- table(SS2Malignant.8$Patient, SS2Malignant.8$sample) %&gt;%
+  as.data.frame() %&gt;% 
+  dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq)
+p8 &lt;- ggplot(numMalignantCellsPerSample.8, aes(x = Patient, y = numCells, fill = sample)) + 
+    geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) + 
+    labs(title = &quot;Number of Malignant Cells Per Sample in Patient 8&quot;) + 
+    geom_text(aes(label = c(&quot;Treatment-naïve&quot;, &quot;On-treatment&quot;, &quot;On-treatment&quot;)), position = &quot;fill&quot;, hjust = 0.5, vjust = 2, color = &quot;white&quot;) + 
+    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), size =3, position = &quot;fill&quot;, hjust = 0.5, vjust = 4, color = &quot;white&quot;)
 
-for(i in 1:length(PDXs)){
-  obj = PDXs[[i]]
-  name = PDX.names[[i]]
+numMalignantCellsPerSample.9 &lt;- table(SS2Malignant.9$Patient, SS2Malignant.9$sample) %&gt;%
+  as.data.frame() %&gt;% 
+  dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq)
+p9 &lt;- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fill = sample)) + 
+    geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) + 
+    labs(title = &quot;Number of Malignant Cells Per Sample in Patient 9&quot;) + 
+    geom_text(aes(label = c(&quot;Treatment-naïve&quot;, &quot;On-treatment&quot;, &quot;On-treatment&quot;)), position = &quot;fill&quot;, hjust = 0.5, vjust = 2, color = &quot;white&quot;) + 
+    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), size =3, position = &quot;fill&quot;, hjust = 0.5, vjust = 4, color = &quot;white&quot;)
+
+p &lt;- p8 + p9
+p</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/malignant%20cells%20metrics-2.png" width="1152" style="display: block; margin: auto;" /> The summary metrics of each patient shows us how little cells we have in each sample. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population. ### STEP 3 UMAP &amp; PCA VISUALIZATIONS We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 1. Intermodel heterogeneity: Do separate by model? 2. Intramodel heterogeneity: a. Do cells separate by treatment status? b. Do cells separate by cell cycle phase? c. Do cells separate due to nFeature and nCount? d. Do cells separate by OXPHOS or UPR hallmark scores?</p>
+<p><strong>1) BY SAMPLE</strong></p>
+<pre class="r"><code>#cluster by patient/ sample? 
+p1 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;Patient&quot;) + labs(title = &quot;SS2 Malignant Cells UMAP by Patient&quot;)
+p2 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;sample&quot;) + labs(title = &quot;SS2 Malignant Cells UMAP by Sample&quot;)
+p1 + p2 </code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" width="960" style="display: block; margin: auto;" /> * SS2 data separates by patient very well. However, it doesn’t seem like it separates by sample within each patient. We will investigate this further by looking into patient 8 and 9 specifically.</p>
+<p><strong>2) BY TREATMENT STATUS WITHIN EACH MODEL</strong></p>
+<pre class="r"><code>p4 &lt;- UMAPPlot(SS2Malignant.8, group.by = &quot;treatment.status&quot;) + 
+  labs(title = &quot;SS2 UMAP Patient 8 Malignant Cells by Treatment&quot;) + theme(plot.title = element_text(size = 12))
+p5 &lt;- UMAPPlot(SS2Malignant.8, group.by = &quot;sample&quot;) + 
+  labs(title = &quot;SS2 UMAP Patient 8 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
+p6 &lt;- PCAPlot(SS2Malignant.8, group.by = &quot;sample&quot;) + labs(title = &quot;SS2 PCA Patient 8 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
+p4 + p5 + p6</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" width="1632" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>p7 &lt;- UMAPPlot(SS2Malignant.9, group.by = &quot;treatment.status&quot;) + 
+  labs(title = &quot;SS2 UMAP Patient 9 Malignant Cells by Treatment&quot;) + theme(plot.title = element_text(size = 12))
+p8 &lt;- UMAPPlot(SS2Malignant.9, group.by = &quot;sample&quot;) + 
+  labs(title = &quot;SS2 UMAP Patient 8 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
+p9 &lt;- PCAPlot(SS2Malignant.9, group.by = &quot;sample&quot;) + labs(title = &quot;SS2 PCA Patient 9 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
+p7 + p8 + p9</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" width="1632" style="display: block; margin: auto;" /> * Cells do not seem to cluster by treatment status. PC_1 and PC_2 do not capture treatment status as well.</p>
+<ul>
+<li>Seems like cells do not cluster together by treatment status.</li>
+<li>Treatment status is also not captured in PC_1 or PC_2</li>
+</ul>
+<p><strong>3) BY UPR AND OXPHOS GENESET SCORE</strong></p>
+<pre class="r"><code>hms.centered &lt;- c(&quot;UNUPDATED.OXPHOS37.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
+
+#UMAP 
+SS2.names &lt;- c(&quot;SS2 Malignant Patient 8&quot;, &quot;SS2 Malignant Patient 9&quot;)
+SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
+UMAP.plots &lt;- vector(&quot;list&quot;, length(SS2s))
+names(UMAP.plots) &lt;- SS2.names
+
+for (i in 1:length(SS2s)){
+  obj &lt;- SS2s[[i]]
+  name &lt;- SS2.names[[i]]
   numCells = nrow(obj@meta.data)
   
-  obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
-  t = table(obj$Phase, obj$treatment.status) %&gt;% 
-    as.data.frame() %&gt;% 
-    rename(Phase = Var1, Treatment = Var2, numCells = Freq)
-
-sum = c()
-z = 1
-while(z &lt; nrow(t)){
-    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
-    sum = c(sum, rep(n,3))
-    z = z + 3
-  }
+  p &lt;- FeaturePlot(obj, features = hms.centered, combine = FALSE)
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} UMAP by HALLMARK Oxphos Scores&quot;)) +
+    theme(plot.title = element_text(size = 10))
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} UMAP by HALLMARK UPR Scores&quot;)) + 
+    theme(plot.title = element_text(size = 10))
   
-t &lt;- t %&gt;% mutate(total = sum) %&gt;% mutate(percent = (numCells/total)*100)
+  p2 &lt;- FeaturePlot(obj, features = hms.centered, reduction = &quot;pca&quot;, combine = FALSE)
+  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} PCA by HALLMARK Oxphos Scores&quot;)) +
+    theme(plot.title = element_text(size = 10))
+  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} PCA by HALLMARK UPR Scores&quot;)) + 
+    theme(plot.title = element_text(size = 10))
   
-  p = t %&gt;% 
-    ggplot(aes(x=Treatment, y=percent, fill=Phase)) + 
-    geom_bar(stat=&quot;identity&quot;) + 
-    labs(title = glue(&quot;{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment&quot;), subtitle = glue(&quot;Total # Cells in {name}: {numCells}&quot;), caption = &quot;Labeled by # cells in each phase per treatment&quot;) +
-    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
-    geom_text(aes(label = numCells), position = &quot;stack&quot;, hjust = 0.5, vjust = 2, size = 3, color = &quot;white&quot;)
-  bar.plots[[i]] &lt;- p
+  UMAP.plots[[name]] &lt;- p[[1]] + p[[2]] + p2[[1]] + p2[[2]]
 }
 
-bar.plots[[&quot;DF20&quot;]] + bar.plots[[&quot;DF101&quot;]] + bar.plots[[&quot;DF68&quot;]] + plot_layout(guides= &#39;collect&#39;)</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle1-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle1-1">
-Past versions of cellcycle1-1.png
-</button>
-</p>
-<div id="fig-cellcycle1-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle1-1.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+UMAP.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/gsUMAP-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>UMAP.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/gsUMAP-2.png" width="1440" style="display: block; margin: auto;" /></p>
 <ul>
-<li><strong>OBSERVATIONS</strong>
-<ul>
-<li>Different fractions of cells do seem to be in different cell cycle phases depending on the treatment condition. However, the trends we see do not necessary agree with our hypothesis that the <strong>MRD</strong> treatment condition will have the highest % of noncycling cells:
-<ul>
-<li>DF20: % Noncycling - Vehicle &gt; Relapse &gt; MRD (does not support our hypothesis)</li>
-<li>DF101: % Noncycling - Vehicle &gt; MRD &gt; Relapse (does not support our hypothesis)</li>
-<li>DF68: % Noncycling - Relapse &gt; Vehicle &gt; MRD (does not support our hypothesis)</li>
-</ul></li>
-<li>In all cases, cells in <strong>MRD</strong> do not seem to have the highest fraction of noncycling G1 cells.</li>
-</ul></li>
+<li>There isn’t a clear clustering of cells due to OXPHOS or UPR scores, but it seems like OXPHOS scores might be faintly captured in PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. <strong>4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT</strong></li>
 </ul>
-<p>To investigate this further, we build violin plots of cell cycle scores separated by treatment status.</p>
-<pre class="r"><code>#VlnPlot -------------------------
-cc.Vln.plots &lt;- vector(&quot;list&quot;, length = 3)
-names(cc.Vln.plots) &lt;- PDX.names
+<pre class="r"><code>#PCA -------------------- (PCA is known to separate cell by cell cycle really well)
+ccPCA.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(ccPCA.plots) &lt;- SS2.names
 
-for (i in 1:length(PDXs)){
-  obj &lt;- PDX.names[[i]]
-  numCells = nrow(PDXs[[i]]@meta.data)
-  
-  my_comparisons &lt;- list(
-    c(&quot;MRD&quot;, &quot;vehicle&quot;),
-    c(&quot;MRD&quot;, &quot;relapse&quot;), 
-    c(&quot;vehicle&quot;, &quot;relapse&quot;)
-  )
-  
-if(obj == &quot;DF101&quot;){
-  p &lt;- VlnPlot(PDXs[[i]], features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F, y.max = 4.3, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
-}
-else{
-  p &lt;- VlnPlot(PDXs[[i]], features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F, y.max = 4, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
-}
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} S.Score across treatment&quot;), x = obj, subtitle = glue(&quot;Number of cells in {obj}: {numCells}&quot;)) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDXs[[i]]$S.Score.centered) -0.03) + 
-    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
-    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDXs[[i]]$S.Score.centered) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
-  
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} G2M.Score across treatment&quot;), x = obj) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
-
-  cc.Vln.plots[[obj]] &lt;- p[[1]] + p[[2]] + plot_layout(guides= &#39;collect&#39;)
-}
-
-cc.Vln.plots[[&quot;DF20&quot;]]</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycleVln-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-1">
-Past versions of cellcycleVln-1.png
-</button>
-</p>
-<div id="fig-cellcycleVln-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cc.Vln.plots[[&quot;DF101&quot;]]</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycleVln-2.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-2">
-Past versions of cellcycleVln-2.png
-</button>
-</p>
-<div id="fig-cellcycleVln-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cc.Vln.plots[[&quot;DF68&quot;]]</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycleVln-3.png" width="1152" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-3">
-Past versions of cellcycleVln-3.png
-</button>
-</p>
-<div id="fig-cellcycleVln-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycleVln-3.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<ul>
-<li><strong>CONCLUSIONS</strong>
-<ul>
-<li>Only comparisons within model <strong>DF20</strong> yielded statistically significant results (p &lt; 0.05) for both <strong>S and G2M scores</strong>:
-<ul>
-<li>DF20: For both S and G2M scores - MRD &gt;&gt; Vehicle; Relapse &gt;&gt; Vehicle</li>
-</ul></li>
-<li>These results do not support our hypothesis that there should be less cycling cells in the <strong>MRD</strong> treatment condition than the other two treatment conditions.</li>
-</ul></li>
-</ul>
-<p>Our results from above collectively suggest that <strong>OXPHOS and UPR</strong> expression, and cell cycle phase, do not significantly correlate with the treatment condition a cell is in. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of <strong>OXPHOS and UPR</strong> and <strong>cell cycle phase</strong>.</p>
-<ul>
-<li><strong>QUESTION #2</strong> Is there a correlation between cell cycle phase and the expression of signatures?</li>
-<li><strong>HYPOTHESIS</strong> We hypothesize that low cycling cells (G1) should express higher levels of <strong>OXPHOS and UPR</strong> genes.
-<ul>
-<li><strong>APPROACH</strong> Violin Plots
-<ul>
-<li>Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1.</li>
-<li>Stratify the Violin Plots by cell cycle phase</li>
-</ul></li>
-</ul></li>
-</ul>
-<pre class="r"><code>cc.exp.plot &lt;- vector(&quot;list&quot;, length = 3)
-names(cc.exp.plot) &lt;- PDX.names
-
-for(i in 1:length(PDXs)){
-  obj = PDXs[[i]]
-  name = PDX.names[[i]]
+for(i in 1:length(SS2s)){
+  obj = SS2s[[i]]
+  name = SS2.names[[i]]
   numCells = nrow(obj@meta.data)
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
   
-  p1 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
-  p1[[1]] &lt;- p1[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
-    geom_text(label = paste(sum(obj$Phase == &quot;G1&quot;), &quot;cells&quot;), x = &quot;G1&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) -0.03) + 
-    geom_text(label = paste(sum(obj$Phase == &quot;G2M&quot;), &quot;cells&quot;), x = &quot;G2M&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03) + 
-    geom_text(label = paste(sum(obj$Phase == &quot;S&quot;), &quot;cells&quot;), x = &quot;S&quot;, y = min(obj$HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered) - 0.03)
+  bys &lt;- PCAPlot(obj, group.by = &quot;sample&quot;) + 
+    labs(title = glue(&quot;{name} PCA by sample&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) +
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
   
-  p1[[2]] &lt;- p1[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase&quot;)) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  bycc &lt;- PCAPlot(obj, group.by = &quot;Phase&quot;) + 
+    labs(title = glue(&quot;{name} PCA by Cell Cycle Phase&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+  
+  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score&quot;, &quot;G2M.Score&quot;), reduction = &quot;pca&quot;,combine = FALSE)
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;)) + theme(plot.title = element_text(size = 12))
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;)) + theme(plot.title = element_text(size = 12))
+  
+  bynFnC &lt;- FeaturePlot(obj, features = c(&quot;nCount_RNA&quot;, &quot;nFeature_RNA&quot;), reduction = &quot;pca&quot;, combine = FALSE)
+  bynFnC[[1]] &lt;- bynFnC[[1]] + labs(title = glue(&quot;{name} PCA by nCount&quot;)) + theme(plot.title = element_text(size = 12))
+  bynFnC[[2]] &lt;- bynFnC[[2]] + labs(title = glue(&quot;{name} PCA by nFeature&quot;)) + theme(plot.title = element_text(size = 12))
 
-  
-  p2 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;treatment.status&quot;, split.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE, c(&quot;#00AFBB&quot;, &quot;#FC4E07&quot;, &quot;#E7B800&quot;))
-  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase / Treatment&quot;)) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
-  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase / Treatment&quot;)) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
-  
-  cc.exp.plot[[i]] &lt;- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= &#39;collect&#39;)
+  ccPCA.plots[[i]] &lt;- bys + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
 }
 
-cc.exp.plot[[&quot;DF20&quot;]]</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle2-1.png" width="1344" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-1">
-Past versions of cellcycle2-1.png
-</button>
-</p>
-<div id="fig-cellcycle2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cc.exp.plot[[&quot;DF101&quot;]]</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle2-2.png" width="1344" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-2">
-Past versions of cellcycle2-2.png
-</button>
-</p>
-<div id="fig-cellcycle2-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cc.exp.plot[[&quot;DF68&quot;]]</code></pre>
-<p><img src="figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle2-3.png" width="1344" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-3">
-Past versions of cellcycle2-3.png
-</button>
-</p>
-<div id="fig-cellcycle2-3" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd/cellcycle2-3.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+ccPCA.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ccPCA.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" width="1440" style="display: block; margin: auto;" /></p>
 <ul>
-<li><strong>OBSERVATIONS</strong>
+<li>Although it doesn’t seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space.
 <ul>
-<li><strong>OXPHOS and UPR</strong> scores comparison across cell cycle phase within each model: S &gt; G1 and G2M (in general) <strong>especially true within DF20</strong></li>
-<li><strong>OXPHOS and UPR</strong> scores comparison across cell cycle phase within each treatment condition per model: S &gt; G1 and G2M especially withtin <strong>MRD</strong> treatment condition for <strong>OXPHOS</strong></li>
-<li>We hypothesized that low / cycling cells (G1) should express higher levels of <strong>OXPHOS and/or UPR genes</strong> based on findings from previous studies that low cycling cells seem to survive cancer treatment. We try to rationalize our findings that cells in S phase actually express higher levels of our hallmarks:
+<li>Looking at the PCA plots, we see that:
 <ul>
-<li>It makes sense that cells in S phase express higher levels of OXPHOS genes because DNA is being replicated in S phase, which requires a lot of energy.</li>
-<li>Even if a cell is found to be in the S phase, it might not mean that it is cycling. It is possible that the cell entered the S phase but does not continue through the cell cycle upon treatment. Furthermore, since DNA is being replicated during S phase and mistakes are most commonly made during DNA replication, it is possible that DNA damage repair programs are also most active during this phase, and may subsequently promote survival upon cancer treatment.</li>
-<li>This rationale would also agree with our results from comparing S and G2M scores across treatment conditions, where we found that cells in <strong>MRD and Relapse</strong> have statistically significantly higher S and G2M scores than cells in <strong>Vehicle</strong>.</li>
-<li>However, this rationale does not explain why we do not see enriched expression of OXPHOS and UPR genes in the MRD treatment condition.</li>
+<li>PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis.</li>
+<li>PC_1 captures nCount and nFeature variation, as cells with higher nCount and nFeature values are near each other on the PC_1 Axis.</li>
 </ul></li>
+<li>However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots.</li>
 </ul></li>
 </ul>
-<p><strong>note: our sample size is extremely small for each condition, which may mean that we have really low power</strong></p>
+<p>We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

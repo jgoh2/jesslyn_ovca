@@ -14,7 +14,7 @@
 
 <title>Izar 2020 PDX (Cohort 3) DE Analysis</title>
 
-<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -27,14 +27,6 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
-<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
-<script src="site_libs/datatables-binding-0.14/datatables.js"></script>
-<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="site_libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
-<link href="site_libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
-<script src="site_libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -414,7 +406,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -423,7 +415,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -432,10 +424,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-30
+<strong>Last updated:</strong> 2020-07-31
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -451,12 +443,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -523,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree6be6c853e8ff1ecf2ad96e905cf37ee9b0412ddatargetblank6be6c85a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/6be6c853e8ff1ecf2ad96e905cf37ee9b0412dda" target="_blank">6be6c85</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree284aad41a1a7e82fdd119034dd23aeb385fa2f03targetblank284aad4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/284aad41a1a7e82fdd119034dd23aeb385fa2f03" target="_blank">284aad4</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree6be6c853e8ff1ecf2ad96e905cf37ee9b0412ddatargetblank6be6c85a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree284aad41a1a7e82fdd119034dd23aeb385fa2f03targetblank284aad4a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/6be6c853e8ff1ecf2ad96e905cf37ee9b0412dda" target="_blank">6be6c85</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/284aad41a1a7e82fdd119034dd23aeb385fa2f03" target="_blank">284aad4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -559,19 +551,8 @@ Ignored files:
     Ignored:    renv/staging/
     Ignored:    vignettes/
 
-Untracked files:
-    Untracked:  analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd
-    Untracked:  analysis/03.2_Izar2020_PDX_CellCycleAnalysis.Rmd
-    Untracked:  data/gene_lists/upr.txt
-
 Unstaged changes:
-    Modified:   analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd
-    Modified:   analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd
-    Modified:   analysis/index.Rmd
-    Modified:   code/loadNupdateHm.R
-    Modified:   code/read_Izar_2020.R
     Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
-    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
 
 </code></pre>
 <p>
@@ -610,6 +591,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/284aad41a1a7e82fdd119034dd23aeb385fa2f03/analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd" target="_blank">284aad4</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+<td>
+PDX Exploratory + DE + Cell Cycle Analyses
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/03.1_Izar2020_PDX_DEAnalysis.html" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+<td>
+PDX Exploratory + DE + Cell Cycle Analyses
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1080,7 +1112,7 @@ for(i in 1:length(PDXs)){
            boxedLabels = TRUE,
            labvjust = 1,
            title= glue(&quot;{PDX.names[[i]]} MRD vs. vehicle DE Genes&quot;), subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;,
-           caption = glue(&quot;{oxphos}: {found} oxphos genes found&quot;)
+           caption = glue(&quot;{oxphos}: {found} DE oxphos genes found&quot;)
            )
     DF.hm.plot[[oxphos]] &lt;- p
   }
@@ -1090,10 +1122,121 @@ for(i in 1:length(PDXs)){
 
 PDX.hm.plots[[&quot;DF20&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosVolcano-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosVolcano-1">
+Past versions of oxphosVolcano-1.png
+</button>
+</p>
+<div id="fig-oxphosVolcano-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosVolcano-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.hm.plots[[&quot;DF101&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosVolcano-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosVolcano-2">
+Past versions of oxphosVolcano-2.png
+</button>
+</p>
+<div id="fig-oxphosVolcano-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosVolcano-2.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.hm.plots[[&quot;DF68&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosVolcano-3.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosVolcano-3">
+Past versions of oxphosVolcano-3.png
+</button>
+</p>
+<div id="fig-oxphosVolcano-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosVolcano-3.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># number of DE oxphos genes found in each geneset within each model -----------------
 DF20.de.df &lt;- data.frame(
   &quot;UNUPDATED.OXPHOS&quot; = sum(rownames(markers[[&quot;DF20&quot;]][which(abs(markers[[&quot;DF20&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]),
@@ -1127,9 +1270,9 @@ DF68.MRDvVehicle                47        25          20</code></pre>
 <li>Although it seems that there are a few overlaps of OXPHOS genes found, it is hard to visualize which ones overlap, and whether the ones that overlap are among the top DE genes (regardless of padj). We therefore create tables for each model, extract the top 5 DE genes from each geneset and compare if they’re the same.</li>
 </ul></li>
 </ul>
-<pre class="r"><code>DF20.top5 &lt;- markers[[&quot;DF20&quot;]] %&gt;% arrange(-avg_logFC) 
-DF101.top5 &lt;- markers[[&quot;DF101&quot;]] %&gt;% arrange(-avg_logFC)
-DF68.top5 &lt;- markers[[&quot;DF68&quot;]] %&gt;% arrange(-avg_logFC)
+<pre class="r"><code>DF20.top5 &lt;- markers[[&quot;DF20&quot;]] %&gt;% arrange(-abs(avg_logFC))
+DF101.top5 &lt;- markers[[&quot;DF101&quot;]] %&gt;% arrange(-abs(avg_logFC))
+DF68.top5 &lt;- markers[[&quot;DF68&quot;]] %&gt;% arrange(-abs(avg_logFC))
 
 DF20.gs.df &lt;- data.frame(
   &quot;UNUPDATED.OXPHOS.DE&quot; = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5), 
@@ -1163,32 +1306,32 @@ DF68.gs.df &lt;- data.frame(
 rownames(DF68.gs.df) &lt;- seq(from = 1, length = nrow(DF20.gs.df))
 
 DF20.gs.df</code></pre>
-<pre><code>  UNUPDATED.OXPHOS.DE avg_logFC GO.OXPHOS.DE avg_logFC.1 KEGG.OXPHOS.DE avg_logFC.2
-1              TIMM10 1.1454854        NUPR1   1.9607774         NDUFB3   0.7948077
-2                IDH1 1.0249810         TEFM   0.9397055          COX5A   0.6066344
-3              NDUFB3 0.7948077        CCNB1   0.9113314        ATP6V0C   0.5936099
-4               IDH3A 0.7579943       NDUFB3   0.7948077         UQCRHL   0.5466615
-5                PDP1 0.7047801         CDK1   0.6944925         NDUFC1   0.5449101</code></pre>
+<pre><code>  UNUPDATED.OXPHOS.DE  avg_logFC GO.OXPHOS.DE avg_logFC.1 KEGG.OXPHOS.DE avg_logFC.2
+1              TIMM10  1.1454854        NUPR1   1.9607774       NDUFA4L2  -1.0646767
+2                IDH1  1.0249810        SURF1  -0.9575538         NDUFB3   0.7948077
+3               SURF1 -0.9575538         TEFM   0.9397055          COX10  -0.6567115
+4              ACADVL -0.9479864        CCNB1   0.9113314          COX15  -0.6314722
+5              MRPL35 -0.8855315       NDUFB3   0.7948077          COX5A   0.6066344</code></pre>
 <pre class="r"><code>DF101.gs.df</code></pre>
 <pre><code>  UNUPDATED.OXPHOS.DE avg_logFC GO.OXPHOS.DE avg_logFC.1 KEGG.OXPHOS.DE avg_logFC.2
-1             ATP6V0C  2.803572         TEFM   0.6790336        ATP6V0C   2.8035722
-2                 BAX  1.723575       UQCRHL   0.6761291         UQCRHL   0.6761291
-3                OPA1  1.259500       MLXIPL   0.6326176           PPA2   0.6393619
-4             ALDH6A1  1.184952          TAZ   0.6218516       ATP6V1C2   0.5641713
-5               GLUD1  1.041589     SLC25A33   0.5817038       ATP6V0A1   0.4422574</code></pre>
+1             ATP6V0C  2.803572       NDUFA9  -1.0849423        ATP6V0C   2.8035722
+2                 BAX  1.723575         SDHD  -1.0338880         NDUFA9  -1.0849423
+3                ECI1 -1.563555      NDUFA12  -0.9821144           SDHD  -1.0338880
+4                OPA1  1.259500       NDUFB1  -0.9460268         NDUFB1  -0.9460268
+5             ALDH6A1  1.184952        COX7B  -0.9355418          COX7B  -0.9355418</code></pre>
 <pre class="r"><code>DF68.gs.df</code></pre>
 <pre><code>  UNUPDATED.OXPHOS.DE avg_logFC GO.OXPHOS.DE avg_logFC.1 KEGG.OXPHOS.DE avg_logFC.2
-1               SURF1 1.5060351        SURF1   1.5060351         TCIRG1   1.0578818
-2              TCIRG1 1.0578818        PINK1   1.1743957         NDUFB3   1.0008525
-3               ACAT1 1.0206609      NDUFAF1   1.0715203          COX15   0.8470823
-4              NDUFB3 1.0008525       NDUFB3   1.0008525       ATP6V1C2   0.7123233
-5                  FH 0.9532247        COX15   0.8470823        NDUFB10   0.6809969</code></pre>
+1                DLST -1.687756        SURF1   1.5060351       ATP6V1G2   -1.518730
+2               SURF1  1.506035        PINK1   1.1743957        ATP6V0C   -1.376521
+3             ATP6V0C -1.376521      NDUFAF1   1.0715203       ATP6V1B2   -1.226365
+4               TIMM9 -1.204707       NDUFB3   1.0008525         TCIRG1    1.057882
+5              TCIRG1  1.057882        COX15   0.8470823         NDUFB3    1.000852</code></pre>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
 <li>Note: All of these top 5 DE OXPHOS genes (logFC &gt; 0.5) have a padj of 1.00</li>
 <li>There are not a lot of overlaps of DE OXPHOS genes across all three genesets for all three models</li>
-<li>Seems like a trend where the top DE OXPHOS genes present within the <strong>UNUPDATED OXPHOS</strong> geneset have higher logFC values in comparison to the other two genesets. The <strong>KEGG OXPHOS</strong> geneset consistently has the lowest logFC values for its top DE genes.</li>
+<li>Seems like a trend where the top DE OXPHOS genes present within the <strong>UNUPDATED OXPHOS</strong> geneset have higher logFC values in comparison to the other two genesets.</li>
 </ul></li>
 <li>Our answers to <strong>QUESTION #1 and #2</strong> seem to suggest that <strong>UNUPDATED.OXPHOS</strong> hallmark geneset is the best our of all the genesets tested because:
 <ol style="list-style-type: decimal">
@@ -1208,21 +1351,41 @@ for (i in 1:length(PDXs)){
   name &lt;- PDX.names[[i]]
   numCells &lt;- nrow(PDXs[[i]]@meta.data)
   
-  p &lt;- VlnPlot(obj, features = oxphos.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F)
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+if(name == &quot;DF68&quot;){
+  p &lt;- VlnPlot(obj, features = oxphos.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), combine = F, y.max = 1.5)
+}
+if(name == &quot;DF101&quot;){
+   p &lt;- VlnPlot(obj, features = oxphos.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), combine = F, y.max = 1.8)
+}
+else{
+  p &lt;- VlnPlot(obj, features = oxphos.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), combine = F, y.max = 2.0)
+}
   p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} UNUPDATED_OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in geneset found in PDX:&quot;, sum(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] %in% rownames(obj)), &quot;out of&quot;, length(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]))) + 
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(obj$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
     geom_text(label = paste(sum(obj$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
-    geom_text(label = paste(sum(obj$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03)
+    geom_text(label = paste(sum(obj$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
   p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} GO_OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in geneset found in PDX:&quot;, sum(hallmark.list[[&quot;GO.OXPHOS&quot;]] %in% rownames(obj)),&quot;out of&quot;, length(hallmark.list[[&quot;GO.OXPHOS&quot;]]))) +
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
   p[[3]] &lt;- p[[3]] + labs(title = glue(&quot;{name} KEGG_OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in geneset found in PDX:&quot;, sum(hallmark.list[[&quot;KEGG.OXPHOS&quot;]] %in% rownames(obj)), &quot;out of&quot;, length(hallmark.list[[&quot;KEGG.OXPHOS&quot;]]))) +
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
   p &lt;- p[[1]] + p[[2]] + p[[3]] + plot_layout(guides= &#39;collect&#39;)
   
@@ -1253,6 +1416,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">8ca1e01</a>
@@ -1294,6 +1468,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">8ca1e01</a>
 </td>
 <td>
@@ -1333,6 +1518,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-3.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/oxphosGS-3.png" target="_blank">8ca1e01</a>
 </td>
 <td>
@@ -1350,101 +1546,6 @@ jgoh2
 <li><strong>OBSERVATIONS</strong>
 <ul>
 <li>The overall trend we see between treatment groups within each model is the same across all three oxphos genesets. However, it seems like the difference in scores is most obvious/drastic when using the <strong>KEGG</strong> geneset.</li>
-<li>We now test for the statistical significance of using each geneset to test whether using the other two genesets would give us more statistically significant results.</li>
-</ul></li>
-</ul>
-<pre class="r"><code>#DF20 ---------------------------------
-DF20.vehicle &lt;- subset(PDX_DF20, subset = (treatment.status == &quot;vehicle&quot;))
-DF20.MRD &lt;- subset(PDX_DF20, subset = (treatment.status == &quot;MRD&quot;))
-DF20.relapse &lt;- subset(PDX_DF20, subset = (treatment.status == &quot;relapse&quot;))
-
-DF20.uhm.oxphos.df &lt;- data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value
-)
-
-DF20.go.oxphos.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.vehicle$GO.OXPHOS35.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value
-)
-
-DF20.kegg.oxphos.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.vehicle$KEGG.OXPHOS36.centered)$p.value,
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value,
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value
-)
-
-#DF101 ---------------------------------
-DF101.vehicle &lt;- subset(PDX_DF101, subset = (treatment.status == &quot;vehicle&quot;))
-DF101.MRD &lt;- subset(PDX_DF101, subset = (treatment.status == &quot;MRD&quot;))
-DF101.relapse &lt;- subset(PDX_DF101, subset = (treatment.status == &quot;relapse&quot;))
-
-DF101.uhm.oxphos.df &lt;- data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value
-)
-
-DF101.go.oxphos.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.vehicle$GO.OXPHOS35.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value
-)
-
-DF101.kegg.oxphos.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.vehicle$KEGG.OXPHOS36.centered)$p.value,
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value,
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value
-)
-
-#DF68 ---------------------------------
-DF68.vehicle &lt;- subset(PDX_DF68, subset = (treatment.status == &quot;vehicle&quot;))
-DF68.MRD &lt;- subset(PDX_DF68, subset = (treatment.status == &quot;MRD&quot;))
-DF68.relapse &lt;- subset(PDX_DF68, subset = (treatment.status == &quot;relapse&quot;))
-
-DF68.uhm.oxphos.df &lt;- data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value
-)
-
-DF68.go.oxphos.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.vehicle$GO.OXPHOS35.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value
-)
-
-DF68.kegg.oxphos.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.vehicle$KEGG.OXPHOS36.centered)$p.value,
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value,
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value
-)
-
-#combine ------------------------------
-uhm.oxphos.DF &lt;- rbind(DF20.uhm.oxphos.df, DF101.uhm.oxphos.df, DF68.uhm.oxphos.df)
-rownames(uhm.oxphos.DF) &lt;- c(&quot;UNUPDATED.HM.OXPHOS.DF20&quot;, &quot;UNUPDATED.HM.OXPHOS.DF101&quot;, &quot;UNUPDATED.HM.OXPHOS.DF68&quot;)
-
-go.oxphos.DF &lt;- rbind(DF20.go.oxphos.df, DF101.go.oxphos.df, DF68.go.oxphos.df)
-rownames(go.oxphos.DF) &lt;- c(&quot;GO.OXPHOS.DF20&quot;, &quot;GO.OXPHOS.DF101&quot;, &quot;GO.OXPHOS.DF68&quot;)
-
-kegg.oxphos.DF &lt;- rbind(DF20.kegg.oxphos.df, DF101.kegg.oxphos.df, DF68.kegg.oxphos.df)
-rownames(kegg.oxphos.DF) &lt;- c(&quot;KEGG.OXPHOS.DF20&quot;, &quot;KEGG.OXPHOS.DF101&quot;, &quot;KEGG.OXPHOS.DF68&quot;)
-
-all.oxphos.DF &lt;- rbind(uhm.oxphos.DF, go.oxphos.DF, kegg.oxphos.DF)
-DT::datatable(all.oxphos.DF) %&gt;% 
-  DT::formatSignif(names(all.oxphos.DF), digits = 2) %&gt;% 
-  DT::formatStyle(names(all.oxphos.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
-<div id="htmlwidget-ce5c3853d8cf75d7e03c" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-ce5c3853d8cf75d7e03c">{"x":{"filter":"none","data":[["UNUPDATED.HM.OXPHOS.DF20","UNUPDATED.HM.OXPHOS.DF101","UNUPDATED.HM.OXPHOS.DF68","GO.OXPHOS.DF20","GO.OXPHOS.DF101","GO.OXPHOS.DF68","KEGG.OXPHOS.DF20","KEGG.OXPHOS.DF101","KEGG.OXPHOS.DF68"],[0.713582333120361,2.93398926074337e-05,0.23354658226192,0.539910629357917,1.05912304507862e-06,0.262203696434015,0.460698666301977,1.81961942711733e-05,0.220082024126051],[0.239306460964626,0.00582504483054365,0.0824469174562721,0.167136317291695,0.000190204318100418,0.0143820901123957,0.177053988013909,2.11507138839815e-05,0.0111176507629096],[0.447916118434429,1.04913548727899e-07,0.843493154318674,0.567722174320975,1.03732209313145e-10,0.82339642391274,0.546075091342282,1.47738702776111e-10,0.897549974026351]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>MRDvsVehicle<\/th>\n      <th>MRDvsRelapse<\/th>\n      <th>VehiclevsRelapse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
-<ul>
 <li>More comparisons are statistically significant when using the <strong>GO</strong> or <strong>KEGG</strong> genesets in comparison to using the <strong>HALLMARK</strong> geneset.
 <ul>
 <li>All comparisons within DF101 are significant
@@ -1452,6 +1553,7 @@ DT::datatable(all.oxphos.DF) %&gt;%
 <li><strong>Vehicle</strong> &gt; <strong>MRD</strong> &gt; <strong>Relapse</strong> (does not support our hypothesis)</li>
 </ul></li>
 <li>DF68 <strong>MRD</strong> &gt; <strong>Relapse</strong> is significant (supports our hypothesis)</li>
+</ul></li>
 </ul></li>
 </ul>
 <p>We also tested how the <strong>UNUPDATED</strong> version of <strong>HALLMARK_UNFOLDED_PROTEIN_RESPONSE</strong> differs from the updated version.</p>
@@ -1484,8 +1586,8 @@ Num Found                  107          105
 </ul>
 <p>After deciding the geneset to use for our data, we can now analyze the differential expression of OXPHOS and UPR genes across treatment condition within each model.</p>
 </div>
-<div id="step-2-de-analysis-1.-visualizing-and-quantifying-de-hallmark-genesets" class="section level3">
-<h3>STEP 2 DE ANALYSIS #1. VISUALIZING AND QUANTIFYING DE HALLMARK GENESETS</h3>
+<div id="step-3-de-analysis-1.-visualizing-and-quantifying-de-hallmark-genesets" class="section level3">
+<h3>STEP 3 DE ANALYSIS #1. VISUALIZING AND QUANTIFYING DE HALLMARK GENESETS</h3>
 <ul>
 <li><strong>QUESTION</strong> Are modules (<strong>OXPHOS and UPR</strong>) differentially expressed across treatment conditions within each model?</li>
 <li><strong>HYPOTHESIS</strong> We hypothesize that the <strong>MRD</strong> treatment condition will express enriched levels of OXPHOS and UPR hallmarks relative to cells in the <strong>vehicle</strong> and <strong>relapse</strong> treatment conditions (MRD &gt; vehicle, MRD &gt; relapse).
@@ -1508,17 +1610,38 @@ names(Vln.plots) &lt;- PDX.names
 for (i in 1:length(PDXs)){
   obj &lt;- PDX.names[[i]]
   numCells &lt;- nrow(PDXs[[i]]@meta.data)
-  p &lt;- VlnPlot(PDXs[[i]], features = hms.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, combine = F)
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  if(obj == &quot;DF101&quot;){
+    p &lt;- VlnPlot(PDXs[[i]], features = hms.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), combine = F, y.max = 1.3)
+  }
+  else if(obj == &quot;DF68&quot;){
+    p &lt;- VlnPlot(PDXs[[i]], features = hms.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), combine = F, y.max = 1.4)
+  }
+  else{
+  p &lt;- VlnPlot(PDXs[[i]], features = hms.centered, group.by = &quot;treatment.status&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), combine = F, y.max = 1.7)
+  }
+  
   p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;OXPHOS scores across treatment in {obj}&quot;), x = obj, subtitle = glue(&quot;Number of cells in {obj}: {numCells}&quot;), caption = &quot;www.gsea-msigdb.org: HALLMARK_OXIDATIVE_PHOSPHORYLATION&quot;) +
     theme(plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDXs[[i]]$UNUPDATED.OXPHOS37.centered) -0.03) + 
     geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDXs[[i]]$UNUPDATED.OXPHOS37.centered) - 0.03) + 
-    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDXs[[i]]$UNUPDATED.OXPHOS37.centered) - 0.03)
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDXs[[i]]$UNUPDATED.OXPHOS37.centered) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
   p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;UPR scores across treatment in {obj}&quot;), x = obj, caption = &quot;www.gsea-msigdb.org: HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) +
     theme(plot.caption = element_text(size = 10)) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.1) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.1, bracket.size = 0, vjust = 1.8)
+  
   p &lt;- p[[1]] + p[[2]] + plot_layout(guides= &#39;collect&#39;)
   
   Vln.plots[[obj]] &lt;- p
@@ -1548,6 +1671,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-1.png" target="_blank">8ca1e01</a>
@@ -1600,6 +1734,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-2.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-2.png" target="_blank">8ca1e01</a>
 </td>
 <td>
@@ -1650,6 +1795,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">8ca1e01</a>
 </td>
 <td>
@@ -1675,85 +1831,6 @@ jgoh2
 </div>
 </div>
 <ul>
-<li><strong>OBSERVATIONS</strong>
-<ul>
-<li>We observe differences in hallmark scores across treatment conditions:
-<ul>
-<li><strong>DF20</strong>
-<ul>
-<li>OXPHOS: MRD &gt; Vehicle ; MRD &gt; Relapse (supports our hypothesis)</li>
-<li>UPR: MRD &gt; Vehicle ; MRD &gt; Relapse (supports our hypothesis)</li>
-</ul></li>
-<li><strong>DF101</strong>
-<ul>
-<li>OXPHOS: Vehicle &gt;&gt; MRD; Vehicle &gt;&gt; Relapse ; MRD &gt; Relapse (does not support our hypothesis)</li>
-<li>UPR: Relapse &gt; MRD &gt; Vehicle (does not support our hypothesis)</li>
-</ul></li>
-<li><strong>DF68</strong>
-<ul>
-<li><strong>OXPHOS: MRD &gt; Vehicle; MRD &gt; Relapse (supports our hypothesis)</strong></li>
-<li>UPR: Relapse &gt; Vehicle &gt; MRD (does not support our hypothesis)</li>
-</ul></li>
-</ul></li>
-<li>Most of the comparisons do not support our hypothesis. We conduct statistical tests to determine whether the differences in OXPHOS and UPR hallmark scores across treatment conditions are statistically significant. We will be using the <strong>wilcoxon rank sum test</strong></li>
-</ul></li>
-</ul>
-<pre class="r"><code>#DF20 ---------------------------------
-DF20.oxphos.df &lt;- data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value
-)
-
-DF20.UPR.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF20.MRD$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF20.vehicle$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF20.MRD$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF20.relapse$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF20.vehicle$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF20.relapse$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value
-)
-
-#DF101 ---------------------------------
-DF101.oxphos.df &lt;- data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value
-)
-
-DF101.UPR.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF101.MRD$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF101.vehicle$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF101.MRD$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF101.relapse$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF101.vehicle$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF101.relapse$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value
-)
-
-#DF68 ---------------------------------
-DF68.oxphos.df &lt;- data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value
-)
-
-DF68.UPR.df &lt;- 
-  data.frame(
-  &quot;MRDvsVehicle&quot; = wilcox.test(DF68.MRD$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF68.vehicle$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  &quot;MRDvsRelapse&quot; = wilcox.test(DF68.MRD$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF68.relapse$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value, 
-  &quot;VehiclevsRelapse&quot; = wilcox.test(DF68.vehicle$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered, DF68.relapse$HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered)$p.value
-)
-
-#combine ------------------------------
-oxphos.DF &lt;- rbind(DF20.oxphos.df, DF101.oxphos.df, DF68.oxphos.df)
-rownames(oxphos.DF) &lt;- c(&quot;OXPHOS.DF20&quot;, &quot;OXPHOS.DF101&quot;, &quot;OXPHOS.DF68&quot;)
-
-UPR.DF &lt;- rbind(DF20.UPR.df, DF101.UPR.df, DF68.UPR.df)
-rownames(UPR.DF) &lt;- c(&quot;UPR.DF20&quot;, &quot;UPR.DF101&quot;, &quot;UPR.DF68&quot;)
-
-all.DF &lt;- rbind(oxphos.DF, UPR.DF)
-DT::datatable(all.DF) %&gt;% 
-  DT::formatSignif(names(all.DF), digits = 2) %&gt;% 
-  DT::formatStyle(names(all.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
-<div id="htmlwidget-65aae89599b535d33635" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-65aae89599b535d33635">{"x":{"filter":"none","data":[["OXPHOS.DF20","OXPHOS.DF101","OXPHOS.DF68","UPR.DF20","UPR.DF101","UPR.DF68"],[0.713582333120361,2.93398926074337e-05,0.23354658226192,0.259515632745525,0.0611180591791374,0.090364942900191],[0.239306460964626,0.00582504483054365,0.0824469174562721,0.406926714374119,0.475311928516495,0.0797917809805292],[0.447916118434429,1.04913548727899e-07,0.843493154318674,0.790468434253961,0.349163158910089,0.680323131768455]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>MRDvsVehicle<\/th>\n      <th>MRDvsRelapse<\/th>\n      <th>VehiclevsRelapse<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
-<ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
 <li>The only statistically significant difference (p &lt; 0.05) in hallmark scores is between treatment conditions within model <strong>DF101</strong> for <strong>OXPHOS</strong></li>
@@ -1767,8 +1844,8 @@ DT::datatable(all.DF) %&gt;%
 </ul>
 <p><strong>have not finalized the statistical test and ranking method to use for GSEA</strong></p>
 </div>
-<div id="step-3-de-analysis-2.-identifying-individual-de-genes" class="section level3">
-<h3>STEP 3 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES</h3>
+<div id="step-4-de-analysis-2.-identifying-individual-de-genes" class="section level3">
+<h3>STEP 4 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES</h3>
 <p><strong>have not finalized the statistical test to use for volcano plot (need to match what we use for GSEA)</strong></p>
 <br>
 <p>
@@ -1790,7 +1867,7 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
  [1] ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4        tidyselect_1.1.0     
@@ -1803,23 +1880,22 @@ other attached packages:
 loaded via a namespace (and not attached):
   [1] Rtsne_0.15         colorspace_1.4-1   ggsignif_0.6.0     rio_0.5.16         ellipsis_0.3.1     ggridges_0.5.2    
   [7] rprojroot_1.3-2    fs_1.4.2           rstudioapi_0.11    farver_2.0.3       leiden_0.3.3       listenv_0.8.0     
- [13] DT_0.14            fansi_0.4.1        lubridate_1.7.9    xml2_1.3.2         codetools_0.2-16   splines_4.0.2     
- [19] knitr_1.29         jsonlite_1.7.0     workflowr_1.6.2    broom_0.7.0        ica_1.0-2          cluster_2.1.0     
- [25] dbplyr_1.4.4       png_0.1-7          uwot_0.1.8         sctransform_0.2.1  compiler_4.0.2     httr_1.4.1        
- [31] backports_1.1.8    assertthat_0.2.1   Matrix_1.2-18      lazyeval_0.2.2     limma_3.44.3       cli_2.0.2         
- [37] later_1.1.0.1      htmltools_0.5.0    tools_4.0.2        rsvd_1.0.3         igraph_1.2.5       gtable_0.3.0      
- [43] RANN_2.6.1         carData_3.0-4      cellranger_1.1.0   vctrs_0.3.2        ape_5.4            nlme_3.1-148      
- [49] crosstalk_1.1.0.1  lmtest_0.9-37      xfun_0.15          globals_0.12.5     openxlsx_4.1.5     rvest_0.3.5       
- [55] lifecycle_0.2.0    irlba_2.3.3        rstatix_0.6.0      future_1.18.0      MASS_7.3-51.6      zoo_1.8-8         
- [61] scales_1.1.1       hms_0.5.3          promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 curl_4.3          
- [67] yaml_2.2.1         reticulate_1.16    pbapply_1.4-2      gridExtra_2.3      reshape_0.8.8      stringi_1.4.6     
- [73] zip_2.0.4          rlang_0.4.7        pkgconfig_2.0.3    evaluate_0.14      lattice_0.20-41    ROCR_1.0-11       
- [79] labeling_0.3       htmlwidgets_1.5.1  RcppAnnoy_0.0.16   plyr_1.8.6         magrittr_1.5       R6_2.4.1          
- [85] generics_0.0.2     DBI_1.1.0          foreign_0.8-80     pillar_1.4.6       haven_2.3.1        whisker_0.4       
- [91] withr_2.2.0        fitdistrplus_1.1-1 abind_1.4-5        survival_3.2-3     future.apply_1.6.0 tsne_0.1-3        
- [97] car_3.0-8          modelr_0.1.8       crayon_1.3.4       KernSmooth_2.23-17 plotly_4.9.2.1     rmarkdown_2.3     
-[103] grid_4.0.2         blob_1.2.1         git2r_0.27.1       reprex_0.3.0       digest_0.6.25      httpuv_1.5.4      
-[109] munsell_0.5.0      viridisLite_0.3.0 </code></pre>
+ [13] fansi_0.4.1        lubridate_1.7.9    xml2_1.3.2         codetools_0.2-16   splines_4.0.2      knitr_1.29        
+ [19] jsonlite_1.7.0     workflowr_1.6.2    broom_0.7.0        ica_1.0-2          cluster_2.1.0      dbplyr_1.4.4      
+ [25] png_0.1-7          uwot_0.1.8         sctransform_0.2.1  compiler_4.0.2     httr_1.4.1         backports_1.1.8   
+ [31] assertthat_0.2.1   Matrix_1.2-18      lazyeval_0.2.2     limma_3.44.3       cli_2.0.2          later_1.1.0.1     
+ [37] htmltools_0.5.0    tools_4.0.2        rsvd_1.0.3         igraph_1.2.5       gtable_0.3.0       RANN_2.6.1        
+ [43] carData_3.0-4      cellranger_1.1.0   vctrs_0.3.2        ape_5.4            nlme_3.1-148       lmtest_0.9-37     
+ [49] xfun_0.15          globals_0.12.5     openxlsx_4.1.5     rvest_0.3.5        lifecycle_0.2.0    irlba_2.3.3       
+ [55] rstatix_0.6.0      future_1.18.0      MASS_7.3-51.6      zoo_1.8-8          scales_1.1.1       hms_0.5.3         
+ [61] promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 curl_4.3           yaml_2.2.1         reticulate_1.16   
+ [67] pbapply_1.4-2      gridExtra_2.3      reshape_0.8.8      stringi_1.4.6      zip_2.0.4          rlang_0.4.7       
+ [73] pkgconfig_2.0.3    evaluate_0.14      lattice_0.20-41    ROCR_1.0-11        labeling_0.3       htmlwidgets_1.5.1 
+ [79] RcppAnnoy_0.0.16   plyr_1.8.6         magrittr_1.5       R6_2.4.1           generics_0.0.2     DBI_1.1.0         
+ [85] foreign_0.8-80     pillar_1.4.6       haven_2.3.1        whisker_0.4        withr_2.2.0        fitdistrplus_1.1-1
+ [91] abind_1.4-5        survival_3.2-3     future.apply_1.6.0 tsne_0.1-3         car_3.0-8          modelr_0.1.8      
+ [97] crayon_1.3.4       KernSmooth_2.23-17 plotly_4.9.2.1     rmarkdown_2.3      grid_4.0.2         blob_1.2.1        
+[103] git2r_0.27.1       reprex_0.3.0       digest_0.6.25      httpuv_1.5.4       munsell_0.5.0      viridisLite_0.3.0 </code></pre>
 </div>
 </div>
 </div>
