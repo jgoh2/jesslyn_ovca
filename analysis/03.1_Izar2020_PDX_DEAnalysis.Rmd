@@ -141,7 +141,7 @@ for(i in hm.names){
 
 * We determine which geneset to use by asking these questions: 
     1. How many and which genes are not found in the PDX Seurat Object for each geneset?
-    2. What makes the genesets different from each other? Which genes in each geneset are the most DE? Are they the same?
+    2. What makes the genesets different from each other? Which genes in each geneset are the most DE (or have the higest logFC)? Are they the same?
         a. Volcano Plot: Call FindMarkers on each model, plot onto Volcano Plot, label cells by each geneset 
     3. Which geneset gives us the most statistically significant results? 
         a. VlnPlot: Plot hallmark scores for each geneset group by treatment status for each model 
@@ -152,28 +152,28 @@ for(i in hm.names){
 ```{r oxphosMetrics, message=FALSE, warning=FALSE, fig.align = 'center'}
 
 hm.length.df <- data.frame(
-  "UNUPDATED.HM.OXPHOS" = length(hallmark.list[["UNUPDATED.OXPHOS"]]),
+  "UNUPDATED.OXPHOS" = length(hallmark.list[["UNUPDATED.OXPHOS"]]),
   "HALLMARK.OXPHOS" = length(hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]]), 
   "GO.OXPHOS" = length(hallmark.list[["GO.OXPHOS"]]), 
   "KEGG.OXPHOS" = length(hallmark.list[["KEGG.OXPHOS"]])
 )
 
 Found.df <- data.frame(
-  "UNUPDATED.HM.OXPHOS" = sum((hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDX_All))),
+  "UNUPDATED.OXPHOS" = sum((hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDX_All))),
   "HALLMARK.OXPHOS" = sum((hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]] %in% rownames(PDX_All))), 
   "GO.OXPHOS" = sum((hallmark.list[["GO.OXPHOS"]] %in% rownames(PDX_All))), 
   "KEGG.OXPHOS" = sum((hallmark.list[["KEGG.OXPHOS"]] %in% rownames(PDX_All)))
 )
 
 PFound.df <- data.frame(
-  "UNUPDATED.HM.OXPHOS" = (sum((hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDX_All)))/length(hallmark.list[["UNUPDATED.OXPHOS"]]))*100,
+  "UNUPDATED.OXPHOS" = (sum((hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDX_All)))/length(hallmark.list[["UNUPDATED.OXPHOS"]]))*100,
   "HALLMARK.OXPHOS" = (sum((hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]] %in% rownames(PDX_All)))/length(hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]])) * 100, 
   "GO.OXPHOS" = (sum((hallmark.list[["GO.OXPHOS"]] %in% rownames(PDX_All)))/length(hallmark.list[["GO.OXPHOS"]]))*100, 
   "KEGG.OXPHOS" = (sum((hallmark.list[["KEGG.OXPHOS"]] %in% rownames(PDX_All)))/length(hallmark.list[["KEGG.OXPHOS"]]))*100
 )
 
 NA.df <- data.frame(
-  "UNUPDATED.HM.OXPHOS" = sum(!(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDX_All))),
+  "UNUPDATED.OXPHOS" = sum(!(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDX_All))),
   "HALLMARK.OXPHOS" = sum(!(hallmark.list[["HALLMARK_OXIDATIVE_PHOSPHORYLATION"]] %in% rownames(PDX_All))), 
   "GO.OXPHOS" = sum(!(hallmark.list[["GO.OXPHOS"]] %in% rownames(PDX_All))), 
   "KEGG.OXPHOS" = sum(!(hallmark.list[["KEGG.OXPHOS"]] %in% rownames(PDX_All)))
@@ -205,7 +205,7 @@ for(i in names){
 **ANSWERING QUESTION 2: Which genes in each geneset are the most DE? Are they the same?**
 * Used the **wilcoxon rank sum test** for FindMarkers 
 
-```{r oxphosVolcano, message=FALSE, warning=FALSE, fig.align='center', fig.width=15, fig.height=8}
+```{r oxphosVolcano, message=FALSE, warning=FALSE, fig.align='center', fig.width=18, fig.height=8}
 PDXs <- c(PDX_DF20, PDX_DF101, PDX_DF68)
 PDX.names <- c("DF20", "DF101", "DF68")
 oxphos.hm <- c("UNUPDATED.OXPHOS", "GO.OXPHOS", "KEGG.OXPHOS")
@@ -246,8 +246,8 @@ for(i in 1:length(PDXs)){
            drawConnectors = TRUE,
            boxedLabels = TRUE,
            labvjust = 1,
-           title= glue("{PDX.names[[i]]} MRD vs. vehicle DE Genes"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05",
-           caption = glue("{oxphos}: {found} DE oxphos genes found")
+           title= glue("{PDX.names[[i]]} MRD vs. vehicle"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05",
+           caption = glue("{oxphos}: {found} high LFC oxphos genes found")
            )
     DF.hm.plot[[oxphos]] <- p
   }
@@ -281,11 +281,19 @@ DF68.de.df <- data.frame(
 all.de.df <- rbind(DF20.de.df, DF101.de.df, DF68.de.df)
 rownames(all.de.df) <- c("DF20.MRDvVehicle", "DF101.MRDvVehicle", "DF68.MRDvVehicle")
 all.de.df
+
+percent.logFC <- data.frame(
+  "UNUPDATED.OXPHOS" = round(all.de.df[, "UNUPDATED.OXPHOS"]/all.df["Found", "UNUPDATED.OXPHOS"]*100, 2), 
+  "GO.OXPHOS" = round(all.de.df[, "GO.OXPHOS"]/all.df["Found", "GO.OXPHOS"]*100, 2), 
+  "KEGG.OXPHOS" = round(all.de.df[, "KEGG.OXPHOS"]/all.df["Found", "KEGG.OXPHOS"]*100, 2)
+)
+rownames(percent.logFC) <- c("DF20 %Found highLFC", "DF101 %Found highLFC", "DF68 %Found highLFC")
+rbind(all.df[,names(all.df) != "HALLMARK.OXPHOS"], percent.logFC)
 ```
 
 * **OBSERVATIONS** 
-    - **UNUPDATED.OXPHOS** geneset consistently has the most DE OXPHOS genes (logFC > 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle. 
-    - Although it seems that there are a few overlaps of OXPHOS genes found, it is hard to visualize which ones overlap, and whether the ones that overlap are among the top DE genes (regardless of padj). We therefore create tables for each model, extract the top 5 DE genes from each geneset and compare if they're the same. 
+    - **UNUPDATED.OXPHOS** geneset consistently has the most OXPHOS genes with **high logFC** (logFC > 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle. However, **GO.OXPHOS** seems to have the highest percentage of OXPHOS genes with high logFC out of the OXPHOS genes Found on average. 
+    - Although it seems that there are a few overlaps of OXPHOS genes found, it is hard to visualize which ones overlap, and whether the ones that overlap are among the top genes with high logFC (regardless of padj). We therefore create tables for each model, extract the top 5 high logFC genes from each geneset and compare if they're the same. 
 
 ```{r oxphosGSDE, message=FALSE, warning=FALSE}
 
@@ -294,32 +302,32 @@ DF101.top5 <- markers[["DF101"]] %>% arrange(-abs(avg_logFC))
 DF68.top5 <- markers[["DF68"]] %>% arrange(-abs(avg_logFC))
 
 DF20.gs.df <- data.frame(
-  "UNUPDATED.OXPHOS.DE" = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
+  "UNUPDATED.OXPHOS" = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
   "UNUPDATED.OXPHOS" = select(DF20.top5[head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5),], avg_logFC),
-  "GO.OXPHOS.DE" = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
+  "GO.OXPHOS" = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
   "GO.OXPHOS" = select(DF20.top5[head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),], avg_logFC),
-  "KEGG.OXPHOS.DE" = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
+  "KEGG.OXPHOS" = head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
   "KEGG.OXPHOS" = select(DF20.top5[head(rownames(DF20.top5)[which(rownames(DF20.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5),], avg_logFC)
 )
 rownames(DF20.gs.df) <- seq(from = 1, length = nrow(DF20.gs.df))
 
 DF101.gs.df <- data.frame(
-  "UNUPDATED.OXPHOS.DE" = head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
+  "UNUPDATED.OXPHOS" = head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
   "UNUPDATED.OXPHOS" = select(DF101.top5[head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5),], avg_logFC),
-  "GO.OXPHOS.DE" = head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
+  "GO.OXPHOS" = head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
   "GO.OXPHOS" = select(DF101.top5[head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),], avg_logFC),
-  "KEGG.OXPHOS.DE" = head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
+  "KEGG.OXPHOS" = head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
   "KEGG.OXPHOS" = select(DF101.top5[head(rownames(DF101.top5)[which(rownames(DF101.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5),], avg_logFC)
 )
 rownames(DF101.gs.df) <- seq(from = 1, length = nrow(DF20.gs.df))
 
 
 DF68.gs.df <- data.frame(
-  "UNUPDATED.OXPHOS.DE" = head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
+  "UNUPDATED.OXPHOS" = head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5), 
   "UNUPDATED.OXPHOS" = select(DF68.top5[head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["UNUPDATED.OXPHOS"]])], 5),], avg_logFC),
-  "GO.OXPHOS.DE" = head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
+  "GO.OXPHOS" = head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),
   "GO.OXPHOS" = select(DF68.top5[head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["GO.OXPHOS"]])], 5),], avg_logFC),
-  "KEGG.OXPHOS.DE" = head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
+  "KEGG.OXPHOS" = head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5), 
   "KEGG.OXPHOS" = select(DF68.top5[head(rownames(DF68.top5)[which(rownames(DF68.top5) %in% hallmark.list[["KEGG.OXPHOS"]])], 5),], avg_logFC)
 )
 rownames(DF68.gs.df) <- seq(from = 1, length = nrow(DF20.gs.df))
@@ -330,19 +338,19 @@ DF68.gs.df
 ```
 
 * **OBSERVATIONS** 
-    - Note: All of these top 5 DE OXPHOS genes (logFC > 0.5) have a padj of 1.00
-    - There are not a lot of overlaps of DE OXPHOS genes across all three genesets for all three models 
-    - Seems like a trend where the top DE OXPHOS genes present within the **UNUPDATED OXPHOS** geneset have higher logFC values in comparison to the other two genesets.
+    - Note: All of these top 5 high logFC OXPHOS genes (logFC > 0.5) have a padj of 1.00
+    - There are not a lot of overlaps of high logFC OXPHOS genes across all three genesets for all three models 
+    - Seems like a trend where the top high logFC OXPHOS genes present within the **UNUPDATED OXPHOS** geneset have higher logFC values in comparison to the other two genesets.
     
 * Our answers to **QUESTION #1 and #2** seem to suggest that **UNUPDATED.OXPHOS** hallmark geneset is the best our of all the genesets tested because: 
     1. It has the least number of genes that are not found within the PDX Seurat Object, and the highest percentage of genes that are found. 
-    2. It has the most DE OXPHOS genes (logFC > 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle
-    3. The DE OXPHOS genes present within this geneset have relatively higher logFC values (they are more DE, regardless of padj) in comparison to the DE OXPHOS genes present in the other two genesets. 
+    2. It has the most number of high logFC OXPHOS genes (logFC > 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle
+    3. The high logFC OXPHOS genes present within this geneset have relatively higher logFC values (they are more DE, regardless of padj) in comparison to the high logFC OXPHOS genes present in the other two genesets. 
 * We answer our 3rd question to confirm whether the **UNUPDATED.OXPHOS** geneset is indeed the most appropriate one for our data relative to the other two genesets. 
 
 **ANSWERING QUESTION #3: which geneset gives us the most statistically significant results**
 
-```{r oxphosGS, message=FALSE, warning=FALSE, fig.align='center', fig.width=15, fig.height=8}
+```{r oxphosGS, message=FALSE, warning=FALSE, fig.align='center', fig.width=18, fig.height=8}
 oxphos.centered <- c("UNUPDATED.OXPHOS37.centered", "GO.OXPHOS35.centered", "KEGG.OXPHOS36.centered")
 Oxphos.Vln.plots <- vector("list", length(PDXs))
 names(Oxphos.Vln.plots) <- PDX.names
@@ -367,7 +375,12 @@ if(name == "DF101"){
 else{
   p <- VlnPlot(obj, features = oxphos.centered, group.by = "treatment.status", pt.size = 0, cols = c("#00AFBB", "#E7B800", "#FC4E07"), combine = F, y.max = 2.0)
 }
-  p[[1]] <- p[[1]] + labs(title = glue("{name} UNUPDATED_OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in geneset found in PDX:", sum(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(obj)), "out of", length(hallmark.list[["UNUPDATED.OXPHOS"]]))) + 
+  
+  unupdated.found <- sum(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(obj))
+  unupdated.length <- length(hallmark.list[["UNUPDATED.OXPHOS"]])
+  unupdated.pFound <- round((unupdated.found / unupdated.length)*100, 2)
+  
+  p[[1]] <- p[[1]] + labs(title = glue("{name} UNUPDATED_OXPHOS scores across treatment"), x = name, subtitle = glue("{numCells} Malignant Cells, {unupdated.found} out of {unupdated.length} OXPHOS genes found ({unupdated.pFound}%)")) + 
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(obj$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
@@ -376,15 +389,27 @@ else{
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
-  p[[2]] <- p[[2]] + labs(title = glue("{name} GO_OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in geneset found in PDX:", sum(hallmark.list[["GO.OXPHOS"]] %in% rownames(obj)),"out of", length(hallmark.list[["GO.OXPHOS"]]))) +
+  go.found <- sum(hallmark.list[["GO.OXPHOS"]] %in% rownames(obj))
+  go.length <- length(hallmark.list[["GO.OXPHOS"]])
+  go.pFound <- round((go.found / go.length)*100, 2)
+  p[[2]] <- p[[2]] + labs(title = glue("{name} GO_OXPHOS scores across treatment"), x = name, subtitle = glue("{numCells} Malignant Cells, {go.found} out of {go.length} OXPHOS genes found ({go.pFound}%)")) +
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(obj$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(obj$GO.OXPHOS35.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == "MRD"), "cells"), x = "MRD", y = min(obj$GO.OXPHOS35.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == "relapse"), "cells"), x = "relapse", y = min(obj$GO.OXPHOS35.centered) - 0.03) +
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
-  p[[3]] <- p[[3]] + labs(title = glue("{name} KEGG_OXPHOS scores across treatment"), x = name, subtitle = glue("Number of cells in {name}: {numCells}"), caption = paste("# OXPHOS genes in geneset found in PDX:", sum(hallmark.list[["KEGG.OXPHOS"]] %in% rownames(obj)), "out of", length(hallmark.list[["KEGG.OXPHOS"]]))) +
+  kegg.found <- sum(hallmark.list[["KEGG.OXPHOS"]] %in% rownames(obj))
+  kegg.length <- length(hallmark.list[["KEGG.OXPHOS"]])
+  kegg.pFound <- round((kegg.found / kegg.length)*100, 2)
+  p[[3]] <- p[[3]] + labs(title = glue("{name} KEGG_OXPHOS scores across treatment"), x = name, subtitle = glue("{numCells} Malignant Cells, {kegg.found} out of {kegg.length} OXPHOS genes found ({kegg.pFound}%)")) +
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(obj$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(obj$KEGG.OXPHOS36.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == "MRD"), "cells"), x = "MRD", y = min(obj$KEGG.OXPHOS36.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$treatment.status == "relapse"), "cells"), x = "relapse", y = min(obj$KEGG.OXPHOS36.centered) - 0.03) +
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
@@ -404,6 +429,99 @@ Oxphos.Vln.plots[["DF68"]]
         - All comparisons within DF101 are significant 
             * **Vehicle** > **MRD** > **Relapse** (does not support our hypothesis)
         - DF68 **MRD** > **Relapse** is significant (supports our hypothesis)
+
+* **SUMMARY STATISTICS**
+```{r oxphosStat, message=FALSE, warning=FALSE}
+#DF20 ---------------------------------
+DF20.vehicle <- subset(PDX_DF20, subset = (treatment.status == "vehicle"))
+DF20.MRD <- subset(PDX_DF20, subset = (treatment.status == "MRD"))
+DF20.relapse <- subset(PDX_DF20, subset = (treatment.status == "relapse"))
+
+DF20.hm.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value
+)
+
+DF20.go.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.vehicle$GO.OXPHOS35.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$GO.OXPHOS35.centered, DF20.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF20.kegg.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value,
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$KEGG.OXPHOS36.centered, DF20.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#DF101 ---------------------------------
+DF101.vehicle <- subset(PDX_DF101, subset = (treatment.status == "vehicle"))
+DF101.MRD <- subset(PDX_DF101, subset = (treatment.status == "MRD"))
+DF101.relapse <- subset(PDX_DF101, subset = (treatment.status == "relapse"))
+
+DF101.hm.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value
+)
+
+DF101.go.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.vehicle$GO.OXPHOS35.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$GO.OXPHOS35.centered, DF101.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF101.kegg.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value,
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$KEGG.OXPHOS36.centered, DF101.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#DF68 ---------------------------------
+DF68.vehicle <- subset(PDX_DF68, subset = (treatment.status == "vehicle"))
+DF68.MRD <- subset(PDX_DF68, subset = (treatment.status == "MRD"))
+DF68.relapse <- subset(PDX_DF68, subset = (treatment.status == "relapse"))
+
+DF68.hm.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value
+)
+
+DF68.go.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.vehicle$GO.OXPHOS35.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$GO.OXPHOS35.centered, DF68.relapse$GO.OXPHOS35.centered)$p.value
+)
+
+DF68.kegg.oxphos.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.vehicle$KEGG.OXPHOS36.centered)$p.value,
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value,
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$KEGG.OXPHOS36.centered, DF68.relapse$KEGG.OXPHOS36.centered)$p.value
+)
+
+#combine ------------------------------
+hm.oxphos.DF <- rbind(DF20.hm.oxphos.df, DF101.hm.oxphos.df, DF68.hm.oxphos.df)
+rownames(hm.oxphos.DF) <- c("HM.OXPHOS.DF20", "HM.OXPHOS.DF101", "HM.OXPHOS.DF68")
+
+go.oxphos.DF <- rbind(DF20.go.oxphos.df, DF101.go.oxphos.df, DF68.go.oxphos.df)
+rownames(go.oxphos.DF) <- c("GO.OXPHOS.DF20", "GO.OXPHOS.DF101", "GO.OXPHOS.DF68")
+
+kegg.oxphos.DF <- rbind(DF20.kegg.oxphos.df, DF101.kegg.oxphos.df, DF68.kegg.oxphos.df)
+rownames(kegg.oxphos.DF) <- c("KEGG.OXPHOS.DF20", "KEGG.OXPHOS.DF101", "KEGG.OXPHOS.DF68")
+
+all.oxphos.DF <- rbind(hm.oxphos.DF, go.oxphos.DF, kegg.oxphos.DF)
+DT::datatable(all.oxphos.DF) %>% 
+  DT::formatSignif(names(all.oxphos.DF), digits = 2) %>% 
+  DT::formatStyle(names(all.oxphos.DF), color = DT::styleInterval(0.05, c('red', 'black')))
+```
 
 We also tested how the **UNUPDATED** version of **HALLMARK_UNFOLDED_PROTEIN_RESPONSE** differs from the updated version.
 ```{r uprGS, message = FALSE, warning = FALSE}
@@ -469,7 +587,10 @@ for (i in 1:length(PDXs)){
   p <- VlnPlot(PDXs[[i]], features = hms.centered, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), combine = F, y.max = 1.7)
   }
   
-  p[[1]] <- p[[1]] + labs(title = glue("OXPHOS scores across treatment in {obj}"), x = obj, subtitle = glue("Number of cells in {obj}: {numCells}"), caption = "www.gsea-msigdb.org: HALLMARK_OXIDATIVE_PHOSPHORYLATION") +
+  unupdated.found <- sum(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(PDXs[[i]]))
+  unupdated.length <- length(hallmark.list[["UNUPDATED.OXPHOS"]])
+  unupdated.pFound <- round((unupdated.found / unupdated.length)*100, 2)
+  p[[1]] <- p[[1]] + labs(title = glue("OXPHOS scores across treatment in {obj}"), x = obj, subtitle = glue("{numCells} Malignant Cells, {unupdated.found} out of {unupdated.length} OXPHOS genes found ({unupdated.pFound}%)"), caption = "www.gsea-msigdb.org: HALLMARK_OXIDATIVE_PHOSPHORYLATION") +
     theme(plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDXs[[i]]$UNUPDATED.OXPHOS37.centered) -0.03) + 
@@ -478,9 +599,15 @@ for (i in 1:length(PDXs)){
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  p[[2]] <- p[[2]] + labs(title = glue("UPR scores across treatment in {obj}"), x = obj, caption = "www.gsea-msigdb.org: HALLMARK_UNFOLDED_PROTEIN_RESPONSE") +
+  UPR.found <- sum(hallmark.list[["UNUPDATED.UPR"]] %in% rownames(PDXs[[i]]))
+  UPR.length <- length(hallmark.list[["UNUPDATED.UPR"]])
+  UPR.pFound <- round((UPR.found / UPR.length)*100, 2)
+  p[[2]] <- p[[2]] + labs(title = glue("UPR scores across treatment in {obj}"), x = obj, caption = "www.gsea-msigdb.org: HALLMARK_UNFOLDED_PROTEIN_RESPONSE", subtitle= glue("{numCells} Malignant Cells, {UPR.found} out of {UPR.length} UPR genes found ({UPR.pFound}%)")) +
     theme(plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDXs[[i]]$UNUPDATED.UPR38.centered) -0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDXs[[i]]$UNUPDATED.UPR38.centered) - 0.03) + 
+    geom_text(label = paste(sum(PDXs[[i]]$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDXs[[i]]$UNUPDATED.UPR38.centered) - 0.03) +
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.1) + 
     stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.1, bracket.size = 0, vjust = 1.8)
   
@@ -500,6 +627,58 @@ Vln.plots[["DF68"]]
     - However, the trends found in DF101 do not agree with our hypothesis that cells in **MRD** differentially enrich OXPHOS genes)
 
 Considering how our approach with analyzing and comparing **module score** did not support our hypothesis, we try to confirm our results again with our second appraoch: **GSEA**
+
+* **STATISTICAL SUMMARY**
+```{r DEAnalysis1 Statistical test, message = FALSE, warning = FALSE}
+#DF20 ---------------------------------
+
+DF20.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$UNUPDATED.OXPHOS37.centered, DF20.relapse$UNUPDATED.OXPHOS37.centered)$p.value
+)
+DF20.UPR.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF20.MRD$UNUPDATED.UPR38.centered, DF20.vehicle$UNUPDATED.UPR38.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF20.MRD$UNUPDATED.UPR38.centered, DF20.relapse$UNUPDATED.UPR38.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF20.vehicle$UNUPDATED.UPR38.centered, DF20.relapse$UNUPDATED.UPR38.centered)$p.value
+)
+#DF101 ---------------------------------
+
+DF101.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$UNUPDATED.OXPHOS37.centered, DF101.relapse$UNUPDATED.OXPHOS37.centered)$p.value
+)
+DF101.UPR.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF101.MRD$UNUPDATED.UPR38.centered, DF101.vehicle$UNUPDATED.UPR38.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF101.MRD$UNUPDATED.UPR38.centered, DF101.relapse$UNUPDATED.UPR38.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF101.vehicle$UNUPDATED.UPR38.centered, DF101.relapse$UNUPDATED.UPR38.centered)$p.value
+)
+#DF68 ---------------------------------
+
+DF68.oxphos.df <- data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.vehicle$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$UNUPDATED.OXPHOS37.centered, DF68.relapse$UNUPDATED.OXPHOS37.centered)$p.value
+)
+DF68.UPR.df <- 
+  data.frame(
+  "MRDvsVehicle" = wilcox.test(DF68.MRD$UNUPDATED.UPR38.centered, DF68.vehicle$UNUPDATED.UPR38.centered)$p.value, 
+  "MRDvsRelapse" = wilcox.test(DF68.MRD$UNUPDATED.UPR38.centered, DF68.relapse$UNUPDATED.UPR38.centered)$p.value, 
+  "VehiclevsRelapse" = wilcox.test(DF68.vehicle$UNUPDATED.UPR38.centered, DF68.relapse$UNUPDATED.UPR38.centered)$p.value
+)
+#combine ------------------------------
+oxphos.DF <- rbind(DF20.oxphos.df, DF101.oxphos.df, DF68.oxphos.df)
+rownames(oxphos.DF) <- c("OXPHOS.DF20", "OXPHOS.DF101", "OXPHOS.DF68")
+UPR.DF <- rbind(DF20.UPR.df, DF101.UPR.df, DF68.UPR.df)
+rownames(UPR.DF) <- c("UPR.DF20", "UPR.DF101", "UPR.DF68")
+all.DF <- rbind(oxphos.DF, UPR.DF)
+DT::datatable(all.DF) %>% 
+  DT::formatSignif(names(all.DF), digits = 2) %>% 
+  DT::formatStyle(names(all.DF), color = DT::styleInterval(0.05, c('red', 'black')))
+```
 
 * **APPROACH #2** Geneset Enrichment Analysis (GSEA)
       - GSEA enrichment plots for hallmarks of interest between condition.1 vs. condition.2 

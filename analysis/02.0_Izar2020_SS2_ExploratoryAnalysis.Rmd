@@ -138,7 +138,8 @@ p8 <- ggplot(numMalignantCellsPerSample.8, aes(x = Patient, y = numCells, fill =
     geom_bar(position = "fill", stat = "identity") + 
     labs(title = "Number of Malignant Cells Per Sample in Patient 8") + 
     geom_text(aes(label = c("Treatment-naïve", "On-treatment", "On-treatment")), position = "fill", hjust = 0.5, vjust = 2, color = "white") + 
-    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white")
+    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
 numMalignantCellsPerSample.9 <- table(SS2Malignant.9$Patient, SS2Malignant.9$sample) %>%
   as.data.frame() %>% 
@@ -147,7 +148,8 @@ p9 <- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fill =
     geom_bar(position = "fill", stat = "identity") + 
     labs(title = "Number of Malignant Cells Per Sample in Patient 9") + 
     geom_text(aes(label = c("Treatment-naïve", "On-treatment", "On-treatment")), position = "fill", hjust = 0.5, vjust = 2, color = "white") + 
-    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white")
+    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
 p <- p8 + p9
 p
@@ -166,8 +168,12 @@ We are interested in finding out how cells cluster together. This helps us quali
 **1) BY SAMPLE**
 ```{r UMAPbyModel, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=10, fig.height=5}
 #cluster by patient/ sample? 
-p1 <- UMAPPlot(SS2Malignant, group.by = "Patient") + labs(title = "SS2 Malignant Cells UMAP by Patient")
-p2 <- UMAPPlot(SS2Malignant, group.by = "sample") + labs(title = "SS2 Malignant Cells UMAP by Sample")
+p1 <- UMAPPlot(SS2Malignant, group.by = "Patient") + 
+  labs(title = "SS2 Malignant Cells UMAP by Patient", subtitle = paste(nrow(SS2Malignant@meta.data),"Malignant Cells")) + 
+  coord_fixed()
+p2 <- UMAPPlot(SS2Malignant, group.by = "sample") + 
+  labs(title = "SS2 Malignant Cells UMAP by Sample", subtitle = paste(nrow(SS2Malignant@meta.data),"Malignant Cells")) + 
+  coord_fixed()
 p1 + p2 
 ```
 * SS2 data separates by patient very well. However, it doesn't seem like it separates by sample within each patient. We will investigate this further by looking into patient 8 and 9 specifically. 
@@ -177,17 +183,25 @@ p1 + p2
 ```{r PbyTreatment, message=FALSE, warning=FALSE, fig.align = 'center', fig.width=17, fig.height=5}
 
 p4 <- UMAPPlot(SS2Malignant.8, group.by = "treatment.status") + 
-  labs(title = "SS2 UMAP Patient 8 Malignant Cells by Treatment") + theme(plot.title = element_text(size = 12))
+  labs(title = "SS2 UMAP Patient 8 by Treatment", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells")) + 
+  theme(plot.title = element_text(size = 12))
 p5 <- UMAPPlot(SS2Malignant.8, group.by = "sample") + 
-  labs(title = "SS2 UMAP Patient 8 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
-p6 <- PCAPlot(SS2Malignant.8, group.by = "sample") + labs(title = "SS2 PCA Patient 8 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
+  labs(title = "SS2 UMAP Patient 8 by Sample", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells")) + 
+  theme(plot.title = element_text(size = 12))
+p6 <- PCAPlot(SS2Malignant.8, group.by = "sample") + 
+  labs(title = "SS2 PCA Patient 8 by Sample", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells")) + 
+  theme(plot.title = element_text(size = 12))
 p4 + p5 + p6
 
 p7 <- UMAPPlot(SS2Malignant.9, group.by = "treatment.status") + 
-  labs(title = "SS2 UMAP Patient 9 Malignant Cells by Treatment") + theme(plot.title = element_text(size = 12))
+  labs(title = "SS2 UMAP Patient 9 by Treatment", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
+  theme(plot.title = element_text(size = 12))
 p8 <- UMAPPlot(SS2Malignant.9, group.by = "sample") + 
-  labs(title = "SS2 UMAP Patient 8 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
-p9 <- PCAPlot(SS2Malignant.9, group.by = "sample") + labs(title = "SS2 PCA Patient 9 Malignant Cells by Sample") + theme(plot.title = element_text(size = 12))
+  labs(title = "SS2 UMAP Patient 9 by Sample", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
+  theme(plot.title = element_text(size = 12))
+p9 <- PCAPlot(SS2Malignant.9, group.by = "sample") + 
+  labs(title = "SS2 PCA Patient 9 by Sample", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
+  theme(plot.title = element_text(size = 12))
 p7 + p8 + p9
 ```
 * Seems like cells do not cluster together by treatment status. 
@@ -196,11 +210,10 @@ p7 + p8 + p9
 
 **3) BY UPR AND OXPHOS GENESET SCORE**
 
-```{r gsUMAP, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 15, fig.height = 6}
-hms.centered <- c("UNUPDATED.OXPHOS37.centered", "UNUPDATED.UPR38.centered")
-
+```{r gsUMAP, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 16, fig.height = 8}
+hms.centered = c("GO.OXPHOS35.centered", "UNUPDATED.UPR38.centered")
 #UMAP 
-SS2.names <- c("SS2 Malignant Patient 8", "SS2 Malignant Patient 9")
+SS2.names <- c("SS2 Patient 8", "SS2 Patient 9")
 SS2s <- c(SS2Malignant.8, SS2Malignant.9)
 UMAP.plots <- vector("list", length(SS2s))
 names(UMAP.plots) <- SS2.names
@@ -211,29 +224,29 @@ for (i in 1:length(SS2s)){
   numCells = nrow(obj@meta.data)
   
   p <- FeaturePlot(obj, features = hms.centered, combine = FALSE)
-  p[[1]] <- p[[1]] + labs(title = glue("{name} UMAP by HALLMARK Oxphos Scores")) +
-    theme(plot.title = element_text(size = 10))
-  p[[2]] <- p[[2]] + labs(title = glue("{name} UMAP by HALLMARK UPR Scores")) + 
-    theme(plot.title = element_text(size = 10))
+  p[[1]] <- p[[1]] + labs(title = glue("{name} UMAP by OXPHOS Scores"), subtitle = glue("{numCells} Malignant Cells"), caption = "GO_OXIDATIVE_PHOSPHORYLATION") +
+    coord_fixed()
+  p[[2]] <- p[[2]] + labs(title = glue("{name} UMAP by UPR Scores"), subtitle = glue("{numCells} Malignant Cells"), caption = "HALLMARK_UNFOLDED_PROTEIN_RESPONSE") + 
+    coord_fixed()
   
   p2 <- FeaturePlot(obj, features = hms.centered, reduction = "pca", combine = FALSE)
-  p2[[1]] <- p2[[1]] + labs(title = glue("{name} PCA by HALLMARK Oxphos Scores")) +
-    theme(plot.title = element_text(size = 10))
-  p2[[2]] <- p2[[2]] + labs(title = glue("{name} PCA by HALLMARK UPR Scores")) + 
-    theme(plot.title = element_text(size = 10))
+  p2[[1]] <- p2[[1]] + labs(title = glue("{name} PCA by OXPHOS Scores"), subtitle = glue("{numCells} Malignant Cells"), caption = "GO_OXIDATIVE_PHOSPHORYLATION") +
+    coord_fixed()
+  p2[[2]] <- p2[[2]] + labs(title = glue("{name} PCA by UPR Scores"), subtitle = glue("{numCells} Malignant Cells"), caption = "HALLMARK_UNFOLDED_PROTEIN_RESPONSE") + 
+    coord_fixed()
   
   UMAP.plots[[name]] <- p[[1]] + p[[2]] + p2[[1]] + p2[[2]]
 }
 
-UMAP.plots[["SS2 Malignant Patient 8"]]
-UMAP.plots[["SS2 Malignant Patient 9"]]
+UMAP.plots[["SS2 Patient 8"]]
+UMAP.plots[["SS2 Patient 9"]]
 ```
 
 * There isn't a clear clustering of cells due to OXPHOS or UPR scores, but it seems like OXPHOS scores might be faintly captured in PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. 
 
 **4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT** 
 
-```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=15, fig.height=6}
+```{r cellcyleUMAP, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=14, fig.height=7}
 #PCA -------------------- (PCA is known to separate cell by cell cycle really well)
 ccPCA.plots <- vector("list", length = 3)
 names(ccPCA.plots) <- SS2.names
@@ -245,26 +258,34 @@ for(i in 1:length(SS2s)){
   obj$Phase <- factor(obj$Phase, levels = c("G1", "S", "G2M"))
   
   bys <- PCAPlot(obj, group.by = "sample") + 
-    labs(title = glue("{name} PCA by sample"), subtitle = glue("Number of cells in {name}: {numCells}")) +
-    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+    labs(title = glue("{name} PCA by sample"), subtitle = glue("{numCells} Malignant Cells")) +
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
   
   bycc <- PCAPlot(obj, group.by = "Phase") + 
-    labs(title = glue("{name} PCA by Cell Cycle Phase")) + 
-    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+    labs(title = glue("{name} PCA by Cell Cycle Phase"), subtitle = glue("{numCells} Malignant Cells")) + 
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
   
   byscore <- FeaturePlot(obj, features = c("S.Score", "G2M.Score"), reduction = "pca",combine = FALSE)
-  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score")) + theme(plot.title = element_text(size = 12))
-  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score")) + theme(plot.title = element_text(size = 12))
+  byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
+  byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
   
   bynFnC <- FeaturePlot(obj, features = c("nCount_RNA", "nFeature_RNA"), reduction = "pca", combine = FALSE)
-  bynFnC[[1]] <- bynFnC[[1]] + labs(title = glue("{name} PCA by nCount")) + theme(plot.title = element_text(size = 12))
-  bynFnC[[2]] <- bynFnC[[2]] + labs(title = glue("{name} PCA by nFeature")) + theme(plot.title = element_text(size = 12))
+  bynFnC[[1]] <- bynFnC[[1]] + labs(title = glue("{name} PCA by nCount"), subtitle = glue("{numCells} Malignant Cells")) + 
+    theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
+  bynFnC[[2]] <- bynFnC[[2]] + labs(title = glue("{name} PCA by nFeature"), subtitle = glue("{numCells} Malignant Cells")) + 
+    theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
 
   ccPCA.plots[[i]] <- bys + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
 }
 
-ccPCA.plots[["SS2 Malignant Patient 8"]]
-ccPCA.plots[["SS2 Malignant Patient 9"]]
+ccPCA.plots[["SS2 Patient 8"]]
+ccPCA.plots[["SS2 Patient 9"]]
 ```
 
 - Although it doesn't seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space.  
@@ -274,6 +295,58 @@ ccPCA.plots[["SS2 Malignant Patient 9"]]
     - However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots. 
     
 We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections. 
+
+**5) Investigating Correlation between nCount, nFeature and Hallmark Scores**
+Our PCA visualizations above suggest that OXPHOS socres may be faintly captured by PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. However, our PCA visualization of nFeature and nCount reveal that PC_1 strongly captures nCount and nFeature variation, and the same cells with higher OXPHOS scores seem to also have higher nFeature and nCount. 
+
+* Here, we investigate whether there is a correlation between nCount, nFeature and Hallmark Scores. It is possible that cells that appear to have higher OXPHOS counts simply have higher nCount or nFeature in general.
+* This would bring bias to our analysis because it is possible that cells that appear to have enriched or depleted OXPHOS expression actually have more or less (dropouts) genes than other cells in general.
+* Although this bias in gene count should have been addressed by RPKM/CPM/TPM normalization, we would still like to confirm that the differential expression of our hallmarks of interest is not driven by technical (rather than biological) factors such as nFeature/nCount. 
+
+```{r nCountvsHM, message=FALSE, warning = FALSE, fig.align='center', fig.width = 10, fig.height = 8}
+
+P8.oxphosVsnCount <- ggplot(SS2Malignant.8@meta.data) + 
+  geom_point(alpha = 0.5, aes(x = nCount_RNA, y = GO.OXPHOS35.centered, colour = sample)) + 
+  theme_bw() +
+  labs(title = "SS2 Patient 8 Malignant Cells OXPHOS vs. nCount", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells", "(R = 0.25, p = 9.2e-04)")) + 
+    theme(plot.title = element_text(size = 12))
+
+P8.oxphosVsnFeature <- ggplot(SS2Malignant.8@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = sample)) + 
+  geom_abline(intercept = -0.5, slope = 1) +
+  theme_bw() + 
+  labs(title = "SS2 Patient 8 Malignant Cells OXPHOS vs. nFeature", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells", "(R = 0.34, p = 3.9e-06)")) + 
+  theme(plot.title = element_text(size = 12))
+
+P9.oxphosVsnCount <- ggplot(SS2Malignant.9@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = sample)) + 
+  theme_bw() + 
+  labs(title = "SS2 Patient 9 Malignant Cells OXPHOS vs. nCount", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells", "(R = -0.021, p = 0.76)")) + 
+    theme(plot.title = element_text(size = 12))
+
+P9.oxphosVsnFeature <- ggplot(SS2Malignant.9@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = sample)) + 
+  geom_abline(intercept = -0.5, slope = 1) +
+  theme_bw() + 
+  labs(title = "SS2 Patient 9 Malignant Cells OXPHOS vs. nFeature", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells", "(R = 0.051, p = 0.45)")) + 
+    theme(plot.title = element_text(size = 12))
+
+P8.oxphosVsnCount + P8.oxphosVsnFeature + P9.oxphosVsnCount + P9.oxphosVsnFeature + plot_layout(guides= 'collect')
+
+```
+* There doesn't seem to be a correlation between OXPHOS and nFeature/nCount 
+* We are interested in discovering which PC captures OXPHOS and UPR scores
+
+**6) Investigating PC that captures OXPHOS and/or UPR scores** 
+```{r PC, message = FALSE, warning = FALSE, fig.align='center', fig.width = 10, fig.height = 5}
+
+#GO.OXPHOS --------------
+P8.PCA.cells <- SS2Malignant.8@reductions$pca@cell.embeddings %>% as.data.frame()
+
+
+P9.PCA <- SS2Malignant.9@reductions$pca@feature.loadings
+
+```
 
 
 
