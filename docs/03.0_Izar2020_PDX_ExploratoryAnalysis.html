@@ -424,7 +424,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-31
+<strong>Last updated:</strong> 2020-08-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree284aad41a1a7e82fdd119034dd23aeb385fa2f03targetblank284aad4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/284aad41a1a7e82fdd119034dd23aeb385fa2f03" target="_blank">284aad4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeeaa900ebf0881bea5dc0b4a7395e3b2b0da3a17etargetblankeaa900ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e" target="_blank">eaa900e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree284aad41a1a7e82fdd119034dd23aeb385fa2f03targetblank284aad4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeeaa900ebf0881bea5dc0b4a7395e3b2b0da3a17etargetblankeaa900ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/284aad41a1a7e82fdd119034dd23aeb385fa2f03" target="_blank">284aad4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e" target="_blank">eaa900e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -591,6 +591,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">eaa900e</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -784,7 +818,8 @@ numCellsPerTreatmentPerModel %&gt;%
   ggplot(aes(x=model, fill=treatmentStatus, y=numCells)) +
   geom_bar(stat=&quot;identity&quot;, position=&quot;fill&quot;) + labs(fill = &quot;treatmentStatus&quot;, x = &quot;model&quot;) +
   geom_text(aes(label = numCells), position = &quot;fill&quot;, hjust = 0.5, vjust = 2, size = 3, color = &quot;white&quot;) + 
-  labs(title = &quot;Number of Cells Per Treatment Per Model&quot;)</code></pre>
+  labs(title = &quot;Number of Malignant Cells Per Treatment Per Model&quot;) + 
+  scale_fill_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))</code></pre>
 <p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PDXmetrics-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PDXmetrics-1">
@@ -829,7 +864,9 @@ jgoh2
 <h3>STEP 3 UMAP &amp; PCA VISUALIZATIONS</h3>
 <p>We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 1. Intermodel heterogeneity: Do separate by model? 2. Intramodel heterogeneity: a. Do cells separate by treatment status? b. Do cells separate by cell cycle phase? c. Do cells separate due to nFeature and nCount? d. Do cells separate by OXPHOS or UPR hallmark scores?</p>
 <p><strong>1) BY MODEL</strong></p>
-<pre class="r"><code>UMAPPlot(PDX_All, group.by = &quot;model_ID&quot;) + labs(title = &quot;PDX UMAP by Model&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_All@meta.data)))</code></pre>
+<pre class="r"><code>UMAPPlot(PDX_All, group.by = &quot;model_ID&quot;) + 
+  labs(title = &quot;PDX UMAP by Model&quot;, subtitle = paste(nrow(PDX_All@meta.data), &quot;Malignant Cells&quot;)) + 
+  coord_fixed()</code></pre>
 <p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-UMAPbyModel-1">
@@ -872,9 +909,9 @@ jgoh2
 <li>PDX data separates by model very well.</li>
 </ul>
 <p><strong>2) BY TREATMENT STATUS WITHIN EACH MODEL</strong></p>
-<pre class="r"><code>DF20.byt &lt;- UMAPPlot(PDX_DF20, group.by = &quot;treatment.status&quot;) + labs(title = &quot;DF20 UMAP by Treatment&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_DF20@meta.data)))
-DF101.byt &lt;- UMAPPlot(PDX_DF101, group.by = &quot;treatment.status&quot;) + labs(title = &quot;DF101 UMAP by Treatment&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_DF20@meta.data)))
-DF68.byt &lt;- UMAPPlot(PDX_DF68, group.by = &quot;treatment.status&quot;) + labs(title = &quot;DF68 UMAP by Treatment&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_DF20@meta.data)))
+<pre class="r"><code>DF20.byt &lt;- UMAPPlot(PDX_DF20, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF20 UMAP by Treatment&quot;, subtitle = paste(nrow(PDX_DF20@meta.data), &quot;Malignant Cells&quot;))
+DF101.byt &lt;- UMAPPlot(PDX_DF101, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF101 UMAP by Treatment&quot;, subtitle = paste(nrow(PDX_DF101@meta.data), &quot;Malignant Cells&quot;))
+DF68.byt &lt;- UMAPPlot(PDX_DF68, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF68 UMAP by Treatment&quot;, subtitle = paste(nrow(PDX_DF68@meta.data), &quot;Malignant Cells&quot;))
 
 DF20.byt + DF101.byt + DF68.byt</code></pre>
 <p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" width="960" style="display: block; margin: auto;" /></p>
@@ -915,9 +952,9 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code>DF20.pca.byt &lt;- PCAPlot(PDX_DF20, group.by = &quot;treatment.status&quot;) + labs(title = &quot;DF20 PCA by Treatment&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_DF20@meta.data)))
-DF101.pca.byt &lt;- PCAPlot(PDX_DF101, group.by  =&quot;treatment.status&quot;) + labs(title = &quot;DF101 PCA by Treatment&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_DF20@meta.data)))
-DF68.pca.byt &lt;- PCAPlot(PDX_DF68, group.by = &quot;treatment.status&quot;) + labs(title = &quot;DF68 PCA by Treatment&quot;, subtitle = paste(&quot;Number of Cells:&quot;, nrow(PDX_DF20@meta.data)))
+<pre class="r"><code>DF20.pca.byt &lt;- PCAPlot(PDX_DF20, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF20 PCA by Treatment&quot;, subtitle = paste(nrow(PDX_DF20@meta.data), &quot;Malignant Cells&quot;))
+DF101.pca.byt &lt;- PCAPlot(PDX_DF101, group.by  =&quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF101 PCA by Treatment&quot;, subtitle = paste(nrow(PDX_DF101@meta.data), &quot;Malignant Cells&quot;))
+DF68.pca.byt &lt;- PCAPlot(PDX_DF68, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF68 PCA by Treatment&quot;, subtitle = paste(nrow(PDX_DF68@meta.data), &quot;Malignant Cells&quot;))
 
 DF20.pca.byt + DF101.pca.byt + DF68.pca.byt</code></pre>
 <p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" width="960" style="display: block; margin: auto;" /></p>
@@ -975,17 +1012,18 @@ for (i in 1:length(PDXs)){
   obj &lt;- PDX.names[[i]]
   numCells = nrow(PDXs[[i]]@meta.data)
   umap &lt;- UMAPPlot(PDXs[[i]], group.by = &quot;treatment.status&quot;) + 
-    labs(title = glue(&quot;{obj} UMAP by Treatment&quot;), subtitle = glue(&quot;Number of cells in {obj}: {numCells}&quot;))+
-    theme(plot.subtitle = element_text(size = 8))
+    labs(title = glue(&quot;{obj} UMAP by Treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;))+
+    theme(plot.subtitle = element_text(size = 10))
+  
   p &lt;- FeaturePlot(PDXs[[i]], features = hms.centered, combine = FALSE)
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} UMAP by Oxphos Scores&quot;))
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} UMAP by UPR Scores&quot;))
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} UMAP by Oxphos Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION&quot;) 
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} UMAP by UPR Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) 
   
   UMAP.plots[[obj]] &lt;- umap + p[[1]] + p[[2]]
 }
 
-UMAP.plots[[&quot;DF20&quot;]]</code></pre>
-<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-1.png" width="1152" style="display: block; margin: auto;" /></p>
+UMAP.plots[[&quot;DF20&quot;]] </code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-1.png" width="1920" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEanalysis1-UMAP-1">
 Past versions of “DEanalysis1 UMAP-1.png”
@@ -1024,7 +1062,7 @@ jgoh2
 </div>
 </div>
 <pre class="r"><code>UMAP.plots[[&quot;DF101&quot;]]</code></pre>
-<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-2.png" width="1920" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEanalysis1-UMAP-2">
 Past versions of “DEanalysis1 UMAP-2.png”
@@ -1063,7 +1101,7 @@ jgoh2
 </div>
 </div>
 <pre class="r"><code>UMAP.plots[[&quot;DF68&quot;]]</code></pre>
-<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-3.png" width="1920" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEanalysis1-UMAP-3">
 Past versions of “DEanalysis1 UMAP-3.png”
@@ -1116,15 +1154,15 @@ for(i in 1:length(PDXs)){
   numCells = nrow(obj@meta.data)
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
   
-  byt &lt;- UMAPPlot(obj, group.by = &quot;treatment.status&quot;) + 
-    labs(title = glue(&quot;{name} UMAP by treatment&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  bycc &lt;- UMAPPlot(obj, group.by = &quot;Phase&quot;) + 
-    labs(title = glue(&quot;{name} UMAP by CellCycle Phase&quot;)) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), combine = FALSE)
-  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} UMAP by S Score&quot;))
-  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} UMAP by G2M Score&quot;))
+  byt &lt;- UMAPPlot(obj, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} UMAP by treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) 
+  bycc &lt;- UMAPPlot(obj, group.by = &quot;Phase&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} UMAP by CC Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) 
+  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), pt.size = 0.5, combine = FALSE)
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} UMAP by S Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} UMAP by G2M Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
   
   ccUMAP.plots[[i]] &lt;- byt + bycc + byscore[[1]] + byscore[[2]]
 }
@@ -1256,140 +1294,29 @@ for(i in 1:length(PDXs)){
   numCells = nrow(obj@meta.data)
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
   
-  byt &lt;- PCAPlot(obj, group.by = &quot;treatment.status&quot;) + 
-    labs(title = glue(&quot;{name} PCA by treatment&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  bycc &lt;- PCAPlot(obj, group.by = &quot;Phase&quot;) + 
-    labs(title = glue(&quot;{name} PCA by CellCycle Phase&quot;)) + 
-    theme(plot.title = element_text(hjust = 0.5))
-  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), reduction = &quot;pca&quot;,combine = FALSE)
-  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;))
-  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;))
+  byt &lt;- PCAPlot(obj, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} PCA by treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cell&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10))
+  bycc &lt;- PCAPlot(obj, group.by = &quot;Phase&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} PCA by CC Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10))
+  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), pt.size = 0.5, reduction = &quot;pca&quot;,combine = FALSE)
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
   
-  bynFnC &lt;- FeaturePlot(obj, features = c(&quot;nCount_RNA&quot;, &quot;nFeature_RNA&quot;), reduction = &quot;pca&quot;, combine = FALSE)
-  bynFnC[[1]] &lt;- bynFnC[[1]] + labs(title = glue(&quot;{name} PCA by nCount&quot;))
-  bynFnC[[2]] &lt;- bynFnC[[2]] + labs(title = glue(&quot;{name} PCA by nFeature&quot;))
+  bynFnC &lt;- FeaturePlot(obj, features = c(&quot;nCount_RNA&quot;, &quot;nFeature_RNA&quot;), reduction = &quot;pca&quot;, pt.size = 0.5, combine = FALSE)
+  bynFnC[[1]] &lt;- bynFnC[[1]] + labs(title = glue(&quot;{name} PCA by nCount&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  bynFnC[[2]] &lt;- bynFnC[[2]] + labs(title = glue(&quot;{name} PCA by nFeature&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
   
   ccPCA.plots[[i]] &lt;- byt + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
 }
 
 ccPCA.plots[[&quot;DF20&quot;]]</code></pre>
-<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-4.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-4">
-Past versions of cellcyleUMAP-4.png
-</button>
-</p>
-<div id="fig-cellcyleUMAP-4" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-4.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ccPCA.plots[[&quot;DF101&quot;]]</code></pre>
-<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-5.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-5">
-Past versions of cellcyleUMAP-5.png
-</button>
-</p>
-<div id="fig-cellcyleUMAP-5" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-5.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-2.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>ccPCA.plots[[&quot;DF68&quot;]]</code></pre>
-<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-6.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-6">
-Past versions of cellcyleUMAP-6.png
-</button>
-</p>
-<div id="fig-cellcyleUMAP-6" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-6.png" target="_blank">c8bb9fc</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-30
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-3.png" width="960" style="display: block; margin: auto;" /></p>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
@@ -1404,6 +1331,45 @@ jgoh2
 </ul></li>
 </ul>
 <p>We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections.</p>
+<p><strong>5) Investigating Correlation between nCount, nFeature and Hallmark Scores</strong> * Here, we investigate whether there is a correlation between nCount, nFeature and Hallmark Scores. It is possible that cells that appear to have higher OXPHOS counts simply have higher nCount or nFeature in general. * This would bring bias to our analysis because it is possible that cells that appear to have enriched or depleted OXPHOS expression actually have more or less (dropouts) genes than other cells in general. * Although this bias in gene count should have been addressed by RPKM/CPM/TPM normalization, we would still like to confirm that the differential expression of our hallmarks of interest is not driven by technical (rather than biological) factors such as nFeature/nCount.</p>
+<pre class="r"><code>#DF20 -------
+DF20.oxphosVsnCount &lt;- ggplot(PDX_DF20@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF20 OXPHOS vs. nCount&quot;, subtitle = paste(nrow(PDX_DF20@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.52, p &lt; 2.2e-16)&quot;)) 
+
+DF20.oxphosVsnFeature &lt;- ggplot(PDX_DF20@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF20 OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(PDX_DF20@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.42, p  &lt; 2.2e-16)&quot;))
+
+#DF101 -------
+DF101.oxphosVsnCount &lt;- ggplot(PDX_DF101@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF101 OXPHOS vs. nCount&quot;, subtitle = paste(nrow(PDX_DF101@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.37, p &lt; 2.7e-06)&quot;))
+
+DF101.oxphosVsnFeature &lt;- ggplot(PDX_DF101@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF101 OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(PDX_DF101@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.44, p  &lt; 1.1e-08)&quot;))
+
+#DF68 -------
+DF68.oxphosVsnCount &lt;- ggplot(PDX_DF68@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF68 OXPHOS vs. nCount&quot;, subtitle = paste(nrow(PDX_DF68@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.46, p &lt; 3.2e-09)&quot;))
+
+DF68.oxphosVsnFeature &lt;- ggplot(PDX_DF68@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF68 OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(PDX_DF68@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.42, p  &lt; 1.3e-07)&quot;))
+
+DF20.oxphosVsnCount + DF20.oxphosVsnFeature</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/nCountvsHM-1.png" width="960" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Weak to no correlation between OXPHOS score and nCount/nFeature</li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

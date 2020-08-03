@@ -14,7 +14,7 @@
 
 <title>Izar 2020 SS2 (Cohort 2) DE Analysis</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -27,6 +27,14 @@
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.14/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
@@ -424,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-31
+<strong>Last updated:</strong> 2020-08-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -515,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree284aad41a1a7e82fdd119034dd23aeb385fa2f03targetblank284aad4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/284aad41a1a7e82fdd119034dd23aeb385fa2f03" target="_blank">284aad4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeeaa900ebf0881bea5dc0b4a7395e3b2b0da3a17etargetblankeaa900ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e" target="_blank">eaa900e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree284aad41a1a7e82fdd119034dd23aeb385fa2f03targetblank284aad4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeeaa900ebf0881bea5dc0b4a7395e3b2b0da3a17etargetblankeaa900ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/284aad41a1a7e82fdd119034dd23aeb385fa2f03" target="_blank">284aad4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e" target="_blank">eaa900e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -591,6 +599,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">eaa900e</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/02.1_Izar2020_SS2_DEAnalysis.html" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -863,7 +905,7 @@ for(i in hm.names){
 <li>We determine which geneset to use by asking these questions:
 <ol style="list-style-type: decimal">
 <li>How many and which genes are not found in the SS2 Seurat Object for each geneset?</li>
-<li>What makes the genesets different from each other? Which genes in each geneset are the most DE? Are they the same?
+<li>What makes the genesets different from each other? Which genes in each geneset are the most DE or have the higest logFC? Are they the same?
 <ol style="list-style-type: lower-alpha">
 <li>Volcano Plot: Call FindMarkers on each model, plot onto Volcano Plot, label cells by each geneset</li>
 </ol></li>
@@ -928,13 +970,16 @@ for(i in names){
 </ul></li>
 <li>We now wonder:
 <ul>
-<li>Which OXPHOS genes are the most DE if we call FindMarkers?</li>
+<li>Which OXPHOS genes are the most DE (or have the highest logFC) if we call FindMarkers?</li>
 <li>Which geneset(s) do the most DE OXPHOS genes belong to?</li>
 </ul></li>
 </ul>
-<p><strong>ANSWERING QUESTION 2: Which genes in each geneset are the most DE? Are they the same?</strong> * Used the <strong>wilcoxon rank sum test</strong> for FindMarkers</p>
+<p><strong>ANSWERING QUESTION 2: Which genes in each geneset are the most DE? Are they the same?</strong></p>
+<ul>
+<li>Used the <strong>wilcoxon rank sum test</strong> for FindMarkers</li>
+</ul>
 <pre class="r"><code>SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
-SS2.names &lt;- c(&quot;SS2 Malignant Patient 8&quot;, &quot;SS2 Malignant Patient 9&quot;)
+SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
 oxphos.hm &lt;- c(&quot;UNUPDATED.OXPHOS&quot;, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;)
 SS2.hm.plots &lt;- vector(&quot;list&quot;, length = 3)
 names(SS2.hm.plots) &lt;- SS2.names
@@ -942,8 +987,8 @@ names(SS2.hm.plots) &lt;- SS2.names
 SS2.markers &lt;- vector(&quot;list&quot;, length = 3)
 names(SS2.markers) &lt;- SS2.names
 
-SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]] &lt;- FindMarkers(SS2Malignant.8, group.by = &quot;sample&quot;, ident.1 = &quot;8.1&quot;, ident.2 = &quot;8.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0) 
-SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]]  &lt;- FindMarkers(SS2Malignant.9, group.by = &quot;sample&quot;, ident.1 = &quot;9.1&quot;, ident.2 = &quot;9.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+SS2.markers[[&quot;SS2 Patient 8&quot;]] &lt;- FindMarkers(SS2Malignant.8, group.by = &quot;sample&quot;, ident.1 = &quot;8.1&quot;, ident.2 = &quot;8.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0) 
+SS2.markers[[&quot;SS2 Patient 9&quot;]]  &lt;- FindMarkers(SS2Malignant.9, group.by = &quot;sample&quot;, ident.1 = &quot;9.1&quot;, ident.2 = &quot;9.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
 
 for(i in 1:length(SS2s)){
     SS2 &lt;- SS2.names[[i]]
@@ -973,7 +1018,7 @@ for(i in 1:length(SS2s)){
            boxedLabels = TRUE,
            labvjust = 1,
            title= glue(&quot;{SS2} p.1 vs. p.0&quot;), subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;,
-           caption = glue(&quot;{oxphos}: {found} DE oxphos genes found&quot;)
+           caption = glue(&quot;{oxphos}: {found} high LFC oxphos genes found&quot;)
            )
     DF.hm.plot[[oxphos]] &lt;- p
   }
@@ -981,85 +1026,173 @@ for(i in 1:length(SS2s)){
   SS2.hm.plots[[SS2]] &lt;- DF.hm.plot[[&quot;UNUPDATED.OXPHOS&quot;]] + DF.hm.plot[[&quot;GO.OXPHOS&quot;]] + DF.hm.plot[[&quot;KEGG.OXPHOS&quot;]]
 }
 
-SS2.hm.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
-<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" width="1440" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>SS2.hm.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
-<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" width="1440" style="display: block; margin: auto;" /></p>
+SS2.hm.plots[[&quot;SS2 Patient 8&quot;]]</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" width="1824" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosVolcano-1">
+Past versions of oxphosVolcano-1.png
+</button>
+</p>
+<div id="fig-oxphosVolcano-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>SS2.hm.plots[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" width="1824" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosVolcano-2">
+Past versions of oxphosVolcano-2.png
+</button>
+</p>
+<div id="fig-oxphosVolcano-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code># number of DE oxphos genes found in each geneset within each model -----------------
 P8.de.df &lt;- data.frame(
-  &quot;UNUPDATED.DE.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]][which(abs(SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]),
-  &quot;GO.DE.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]][which(abs(SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]]),
-  &quot;KEGG.DE.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]][which(abs(SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])
+  &quot;UNUPDATED.HM.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Patient 8&quot;]][which(abs(SS2.markers[[&quot;SS2 Patient 8&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]),
+  &quot;GO.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Patient 8&quot;]][which(abs(SS2.markers[[&quot;SS2 Patient 8&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]]),
+  &quot;KEGG.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Patient 8&quot;]][which(abs(SS2.markers[[&quot;SS2 Patient 8&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])
 )
 
 P9.de.df &lt;- data.frame(
-  &quot;UNUPDATED.DE.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]][which(abs(SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]),
-  &quot;GO.DE.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]][which(abs(SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]]),
-  &quot;KEGG.DE.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]][which(abs(SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])
+  &quot;UNUPDATED.HM.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Patient 9&quot;]][which(abs(SS2.markers[[&quot;SS2 Patient 9&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]),
+  &quot;GO.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Patient 9&quot;]][which(abs(SS2.markers[[&quot;SS2 Patient 9&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]]),
+  &quot;KEGG.OXPHOS&quot; = sum(rownames(SS2.markers[[&quot;SS2 Patient 9&quot;]][which(abs(SS2.markers[[&quot;SS2 Patient 9&quot;]]$avg_logFC) &gt; 0.5),]) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])
 )
 
 all.de.df &lt;- rbind(P8.de.df, P9.de.df)
 rownames(all.de.df) &lt;- c(&quot;P8.1vs8.0&quot;, &quot;P9.1vs9.0&quot;)
 all.de.df</code></pre>
-<pre><code>          UNUPDATED.DE.OXPHOS GO.DE.OXPHOS KEGG.DE.OXPHOS
-P8.1vs8.0                  26           23             16
-P9.1vs9.0                   5            3              1</code></pre>
+<pre><code>          UNUPDATED.HM.OXPHOS GO.OXPHOS KEGG.OXPHOS
+P8.1vs8.0                  26        23          16
+P9.1vs9.0                   5         3           1</code></pre>
+<pre class="r"><code>percent.logFC &lt;- data.frame(
+  &quot;UNUPDATED.HM.OXPHOS&quot; = round(all.de.df[, &quot;UNUPDATED.HM.OXPHOS&quot;]/all.df[&quot;Found&quot;, &quot;UNUPDATED.HM.OXPHOS&quot;]*100, 2), 
+  &quot;GO.OXPHOS&quot; = round(all.de.df[, &quot;GO.OXPHOS&quot;]/all.df[&quot;Found&quot;, &quot;GO.OXPHOS&quot;]*100, 2), 
+  &quot;KEGG.OXPHOS&quot; = round(all.de.df[, &quot;KEGG.OXPHOS&quot;]/all.df[&quot;Found&quot;, &quot;KEGG.OXPHOS&quot;]*100, 2)
+)
+rownames(percent.logFC) &lt;- c(&quot;P8 %Found highLFC&quot;, &quot;P9 %Found highLFC&quot;)
+rbind(all.df[,names(all.df) != &quot;HALLMARK.OXPHOS&quot;], percent.logFC)</code></pre>
+<pre><code>                  UNUPDATED.HM.OXPHOS GO.OXPHOS KEGG.OXPHOS
+NumGenes                       200.00     144.0      131.00
+Found                          184.00     107.0      101.00
+%Found                          92.00      74.0       77.00
+Not Found                       16.00      37.0       30.00
+P8 %Found highLFC               14.13      21.5       15.84
+P9 %Found highLFC                2.72       2.8        0.99</code></pre>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li><strong>UNUPDATED.OXPHOS</strong> geneset consistently has the most DE OXPHOS genes (logFC &gt; 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle.</li>
-<li>Although it seems that there are a few overlaps of OXPHOS genes found, it is hard to visualize which ones overlap, and whether the ones that overlap are among the top DE genes (regardless of padj). We therefore create tables for each model, extract the top 5 DE genes from each geneset and compare if they’re the same.</li>
+<li><strong>UNUPDATED.OXPHOS</strong> geneset consistently has the most number OXPHOS genes with <strong>high logFC</strong> (logFC &gt; 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle. However, <strong>GO.OXPHOS</strong> actually has the highest percentage of OXPHOS genes with high logFC out of the OXPHOS genes Found.</li>
+<li>Although it seems that there are a few overlaps of OXPHOS genes found, it is hard to visualize which ones overlap, and whether the ones that overlap are among the top DE genes (regardless of padj). We therefore create tables for each model, extract 5 genes with the highest logFC from each geneset and compare if they’re the same.</li>
 </ul></li>
 </ul>
-<pre class="r"><code>p8.top5 &lt;- SS2.markers[[&quot;SS2 Malignant Patient 8&quot;]] %&gt;% arrange(-abs(avg_logFC))
-p9.top5 &lt;- SS2.markers[[&quot;SS2 Malignant Patient 9&quot;]] %&gt;% arrange(-abs(avg_logFC))
+<pre class="r"><code>p8.top5 &lt;- SS2.markers[[&quot;SS2 Patient 8&quot;]] %&gt;% arrange(-abs(avg_logFC))
+p9.top5 &lt;- SS2.markers[[&quot;SS2 Patient 9&quot;]] %&gt;% arrange(-abs(avg_logFC))
 
 p8.gs.df &lt;- data.frame(
-  &quot;UNUPDATED.OXPHOS.DE&quot; = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5), 
+  &quot;UNUPDATED.OXPHOS&quot; = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5), 
   &quot;UNUPDATED.OXPHOS&quot; = select(p8.top5[head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5),], avg_logFC),
-  &quot;GO.OXPHOS.DE&quot; = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]])], 5),
+  &quot;GO.OXPHOS&quot; = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]])], 5),
   &quot;GO.OXPHOS&quot; = select(p8.top5[head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]])], 5),], avg_logFC),
-  &quot;KEGG.OXPHOS.DE&quot; = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])], 5), 
+  &quot;KEGG.OXPHOS&quot; = head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])], 5), 
   &quot;KEGG.OXPHOS&quot; = select(p8.top5[head(rownames(p8.top5)[which(rownames(p8.top5) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])], 5),], avg_logFC)
 )
 rownames(p8.gs.df) &lt;- seq(from = 1, length = nrow(p8.gs.df))
 
 p9.gs.df &lt;- data.frame(
-  &quot;UNUPDATED.OXPHOS.DE&quot; = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5), 
+  &quot;UNUPDATED.OXPHOS&quot; = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5), 
   &quot;UNUPDATED.OXPHOS&quot; = select(p9.top5[head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])], 5),], avg_logFC),
-  &quot;GO.OXPHOS.DE&quot; = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]])], 5),
+  &quot;GO.OXPHOS&quot; = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]])], 5),
   &quot;GO.OXPHOS&quot; = select(p9.top5[head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;GO.OXPHOS&quot;]])], 5),], avg_logFC),
-  &quot;KEGG.OXPHOS.DE&quot; = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])], 5), 
+  &quot;KEGG.OXPHOS&quot; = head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])], 5), 
   &quot;KEGG.OXPHOS&quot; = select(p9.top5[head(rownames(p9.top5)[which(rownames(p9.top5) %in% hallmark.list[[&quot;KEGG.OXPHOS&quot;]])], 5),], avg_logFC)
 )
 rownames(p9.gs.df) &lt;- seq(from = 1, length = nrow(p9.gs.df))
 
 p8.gs.df</code></pre>
-<pre><code>  UNUPDATED.OXPHOS.DE  avg_logFC GO.OXPHOS.DE avg_logFC.1 KEGG.OXPHOS.DE avg_logFC.2
-1                NQO2  1.2232801       MLXIPL  -1.4084023       NDUFA4L2  -1.3529251
-2                 OAT  0.9683255      CHCHD10  -0.9787089         NDUFB1  -0.9501970
-3              NDUFB1 -0.9501970       NDUFB1  -0.9501970         NDUFA3  -0.9273634
-4              NDUFA3 -0.9273634       NDUFA3  -0.9273634         NDUFB3  -0.9247449
-5              NDUFB3 -0.9247449       NDUFB3  -0.9247449       ATP6V1B2   0.8188562</code></pre>
+<pre><code>  UNUPDATED.OXPHOS  avg_logFC GO.OXPHOS avg_logFC.1 KEGG.OXPHOS avg_logFC.2
+1             NQO2  1.2232801    MLXIPL  -1.4084023    NDUFA4L2  -1.3529251
+2              OAT  0.9683255   CHCHD10  -0.9787089      NDUFB1  -0.9501970
+3           NDUFB1 -0.9501970    NDUFB1  -0.9501970      NDUFA3  -0.9273634
+4           NDUFA3 -0.9273634    NDUFA3  -0.9273634      NDUFB3  -0.9247449
+5           NDUFB3 -0.9247449    NDUFB3  -0.9247449    ATP6V1B2   0.8188562</code></pre>
 <pre class="r"><code>p9.gs.df</code></pre>
-<pre><code>  UNUPDATED.OXPHOS.DE avg_logFC GO.OXPHOS.DE avg_logFC.1 KEGG.OXPHOS.DE avg_logFC.2
-1            SLC25A20 0.9290268     SLC25A33  -0.9222536       ATP6V1B1   0.6114638
-2               RHOT1 0.8159080        SURF1   0.6201898       ATP6V0A4  -0.4970007
-3               MTRF1 0.6758994      DNAJC15  -0.5914836       NDUFA4L2  -0.3899799
-4               SURF1 0.6201898         COQ9   0.4983459       ATP6V0A2  -0.3867169
-5                MTRR 0.6044816         ISCU   0.4919133       ATP6V0A1  -0.3449714</code></pre>
+<pre><code>  UNUPDATED.OXPHOS avg_logFC GO.OXPHOS avg_logFC.1 KEGG.OXPHOS avg_logFC.2
+1         SLC25A20 0.9290268  SLC25A33  -0.9222536    ATP6V1B1   0.6114638
+2            RHOT1 0.8159080     SURF1   0.6201898    ATP6V0A4  -0.4970007
+3            MTRF1 0.6758994   DNAJC15  -0.5914836    NDUFA4L2  -0.3899799
+4            SURF1 0.6201898      COQ9   0.4983459    ATP6V0A2  -0.3867169
+5             MTRR 0.6044816      ISCU   0.4919133    ATP6V0A1  -0.3449714</code></pre>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
-<li>Note: All of these top 5 DE OXPHOS genes (logFC &gt; 0.5) have a padj of 1.00</li>
-<li>There are quite a few overlaps of DE OXPHOS genes across all three genesets for both patient 8 and 9</li>
-<li>The <strong>UNUPDATED.OXPHOS.DE</strong> and the <strong>GO.OXPHOS</strong> genesets both seem to have top DE OXPHOS genes with higher logFC values relative to <strong>KEGG.OXPHOS</strong></li>
+<li>Note: All of these top 5 OXPHOS genes (logFC &gt; 0.5) have a padj of 1.00</li>
+<li>There are quite a few overlaps of OXPHOS genes with high LFC across all three genesets for both patient 8 and 9</li>
+<li>The <strong>UNUPDATED.OXPHOS</strong> and the <strong>GO.OXPHOS</strong> genesets both seem to have top OXPHOS genes with higher logFC values relative to <strong>KEGG.OXPHOS</strong></li>
 </ul></li>
 <li>Our answers to <strong>QUESTION #1 and #2</strong> seem to suggest that <strong>UNUPDATED.OXPHOS</strong> hallmark geneset is the best our of all the genesets tested because:
 <ol style="list-style-type: decimal">
 <li>It has the least number of genes that are not found within the SS2 Seurat Object, and the highest percentage of genes that are found.</li>
-<li>It has the most DE OXPHOS genes (logFC &gt; 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle</li>
-<li>The DE OXPHOS genes present within this geneset have relatively higher logFC values (they are more DE, regardless of padj) in comparison to the DE OXPHOS genes present in the other two genesets, especially KEGG.</li>
+<li>It has OXPHOS genes with the highest LFC (logFC &gt; 0.5, regardless of padj) relative to the other two genesets for each model comparison between MRD and vehicle</li>
+<li>The high LFC OXPHOS genes present within this geneset have relatively higher logFC values (regardless of padj) in comparison to the high LFC OXPHOS genes present in the other two genesets, especially KEGG.</li>
 </ol></li>
 <li>We answer our 3rd question to confirm whether the <strong>UNUPDATED.OXPHOS</strong> geneset is indeed the most appropriate one for our data relative to the other two genesets.</li>
 </ul>
@@ -1086,7 +1219,10 @@ for (i in 1:length(SS2s)){
   else{
     p &lt;- VlnPlot(obj, features = oxphos.centered, group.by = &quot;sample&quot;, pt.size = 0, combine = F, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = 1.0)
   }
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} UNUPDATED.OXPHOS scores across sample&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in geneset found in SS2:&quot;, sum(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] %in% rownames(obj)), &quot;out of&quot;, length(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]]))) + 
+  unupdated.found &lt;- sum(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] %in% rownames(obj))
+  unupdated.length &lt;- length(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])
+  unupdated.pFound &lt;- round((unupdated.found / unupdated.length)*100, 2)
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} UNUPDATED.OXPHOS scores across sample&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells, {unupdated.found} out of {unupdated.length} OXPHOS genes found ({unupdated.pFound}%)&quot;)) + 
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
@@ -1095,15 +1231,27 @@ for (i in 1:length(SS2s)){
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} GO.OXPHOS scores across sample&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in geneset found in SS2:&quot;, sum(hallmark.list[[&quot;GO.OXPHOS&quot;]] %in% rownames(obj)),&quot;out of&quot;, length(hallmark.list[[&quot;GO.OXPHOS&quot;]]))) +
+  GO.found &lt;- sum(hallmark.list[[&quot;GO.OXPHOS&quot;]] %in% rownames(obj))
+  GO.length &lt;- length(hallmark.list[[&quot;GO.OXPHOS&quot;]])
+  GO.pFound &lt;- round((GO.found / GO.length)*100,2)
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} GO.OXPHOS scores across sample&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells, {GO.found} out of {GO.length} OXPHOS genes found ({GO.pFound}%)&quot;)) +
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$GO.OXPHOS35.centered) -0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(obj$GO.OXPHOS35.centered) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(obj$GO.OXPHOS35.centered) - 0.03) +
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  p[[3]] &lt;- p[[3]] + labs(title = glue(&quot;{name} KEGG.OXPHOS scores across sample&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in geneset found in SS2:&quot;, sum(hallmark.list[[&quot;KEGG.OXPHOS&quot;]] %in% rownames(obj)), &quot;out of&quot;, length(hallmark.list[[&quot;KEGG.OXPHOS&quot;]]))) +
+  KEGG.found &lt;- sum(hallmark.list[[&quot;KEGG.OXPHOS&quot;]] %in% rownames(obj))
+  KEGG.length &lt;- length(hallmark.list[[&quot;KEGG.OXPHOS&quot;]])
+  KEGG.pFound &lt;- round((KEGG.found / KEGG.length)*100,2)
+  p[[3]] &lt;- p[[3]] + labs(title = glue(&quot;{name} KEGG.OXPHOS scores across sample&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells, {KEGG.found} out of {KEGG.length} OXPHOS genes found ({KEGG.pFound}%)&quot;)) +
     theme(plot.title = element_text(size = 12), plot.caption = element_text(size = 10)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$KEGG.OXPHOS36.centered) -0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(obj$KEGG.OXPHOS36.centered) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(obj$KEGG.OXPHOS36.centered) - 0.03) +
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
@@ -1112,10 +1260,84 @@ for (i in 1:length(SS2s)){
   SS2.Oxphos.Vln.plots[[name]] &lt;- p
 }
 
-SS2.Oxphos.Vln.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
+SS2.Oxphos.Vln.plots[[&quot;SS2 Patient 8&quot;]]</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>SS2.Oxphos.Vln.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosGS-1">
+Past versions of oxphosGS-1.png
+</button>
+</p>
+<div id="fig-oxphosGS-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>SS2.Oxphos.Vln.plots[[&quot;SS2 Patient 9&quot;]]</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-oxphosGS-2">
+Past versions of oxphosGS-2.png
+</button>
+</p>
+<div id="fig-oxphosGS-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
@@ -1127,12 +1349,75 @@ SS2.Oxphos.Vln.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
 <li>Although the <strong>UNUPDATED</strong> seems like the most suitable one for criteria 1 and 2, the <strong>GO</strong> geneset gives us the best result for the 3rd criterion:
 <ol style="list-style-type: decimal">
 <li>Question 1: <strong>GO</strong> has the most number of unfound genes in the SS2 object. However:</li>
-<li>Question 2: It has a pretty close tie in comparison to the <strong>UNUPDATED</strong> geneset, where they had similar numbers of DE OXPHOS genes present from FindMarkers, and the top DE OXPHOS genes in both genesets have comparable logFC.</li>
+<li>Question 2: It has a pretty close tie in comparison to the <strong>UNUPDATED</strong> geneset, where they had similar numbers of high LFC OXPHOS genes present from FindMarkers, and the top high LFC OXPHOS genes in both genesets have comparable logFC.</li>
 <li>Question 3: <strong>GO</strong> gives us statistically significant results in both patients.</li>
 </ol></li>
 </ul></li>
-<li>Therefore, considering these three criteria, we decide that the <strong>GO</strong> geneset is best for our SS2 data.</li>
+<li><p>Therefore, considering these three criteria, we decide that the <strong>GO</strong> geneset is best for our SS2 data.</p></li>
+<li><p><strong>SUMMARY STATISTICS</strong></p></li>
 </ul>
+<pre class="r"><code>#Patient 8 ---------------------------------
+SS2Malignant8.0 &lt;- subset(SS2Malignant.8, subset = (sample == &quot;8.0&quot;))
+SS2Malignant8.1 &lt;- subset(SS2Malignant.8, subset = (sample == &quot;8.1&quot;))
+SS2Malignant8.2 &lt;- subset(SS2Malignant.8, subset = (sample == &quot;8.2&quot;))
+
+SS2M8.uhm.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$UNUPDATED.OXPHOS37.centered, SS2Malignant8.1$UNUPDATED.OXPHOS37.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$UNUPDATED.OXPHOS37.centered, SS2Malignant8.2$UNUPDATED.OXPHOS37.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$UNUPDATED.OXPHOS37.centered, SS2Malignant8.2$UNUPDATED.OXPHOS37.centered)$p.value
+)
+
+SS2M8.go.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$GO.OXPHOS35.centered, SS2Malignant8.1$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$GO.OXPHOS35.centered, SS2Malignant8.2$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$GO.OXPHOS35.centered, SS2Malignant8.2$GO.OXPHOS35.centered)$p.value
+)
+
+SS2M8.kegg.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$KEGG.OXPHOS36.centered, SS2Malignant8.1$KEGG.OXPHOS36.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$KEGG.OXPHOS36.centered, SS2Malignant8.2$KEGG.OXPHOS36.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$KEGG.OXPHOS36.centered, SS2Malignant8.2$KEGG.OXPHOS36.centered)$p.value
+)
+
+#Patient 9 ---------------------------------
+SS2Malignant9.0 &lt;- subset(SS2Malignant.9, subset = (sample == &quot;9.0&quot;))
+SS2Malignant9.1 &lt;- subset(SS2Malignant.9, subset = (sample == &quot;9.1&quot;))
+SS2Malignant9.2 &lt;- subset(SS2Malignant.9, subset = (sample == &quot;9.2&quot;))
+
+SS2M9.uhm.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$UNUPDATED.OXPHOS37.centered, SS2Malignant9.1$UNUPDATED.OXPHOS37.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$UNUPDATED.OXPHOS37.centered, SS2Malignant9.2$UNUPDATED.OXPHOS37.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$UNUPDATED.OXPHOS37.centered, SS2Malignant9.2$UNUPDATED.OXPHOS37.centered)$p.value
+)
+
+SS2M9.go.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$GO.OXPHOS35.centered, SS2Malignant9.1$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$GO.OXPHOS35.centered, SS2Malignant9.2$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$GO.OXPHOS35.centered, SS2Malignant9.2$GO.OXPHOS35.centered)$p.value
+)
+
+SS2M9.kegg.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$KEGG.OXPHOS36.centered, SS2Malignant9.1$KEGG.OXPHOS36.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$KEGG.OXPHOS36.centered, SS2Malignant9.2$KEGG.OXPHOS36.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$KEGG.OXPHOS36.centered, SS2Malignant9.2$KEGG.OXPHOS36.centered)$p.value
+)
+
+#combine ------------------------------
+hm.oxphos.DF &lt;- rbind(SS2M8.uhm.oxphos.df, SS2M9.uhm.oxphos.df)
+rownames(hm.oxphos.DF) &lt;- c(&quot;HM.OXPHOS.P8&quot;, &quot;HM.OXPHOS.P9&quot;)
+
+go.oxphos.DF &lt;- rbind(SS2M8.go.oxphos.df, SS2M9.go.oxphos.df)
+rownames(go.oxphos.DF) &lt;- c(&quot;GO.OXPHOS.P8&quot;, &quot;GO.OXPHOS.P9&quot;)
+
+kegg.oxphos.DF &lt;- rbind(SS2M8.kegg.oxphos.df, SS2M9.kegg.oxphos.df)
+rownames(kegg.oxphos.DF) &lt;- c(&quot;KEGG.OXPHOS.P8&quot;, &quot;KEGG.OXPHOS.P9&quot;)
+
+all.oxphos.DF &lt;- rbind(hm.oxphos.DF, go.oxphos.DF, kegg.oxphos.DF)
+DT::datatable(all.oxphos.DF) %&gt;% 
+  DT::formatSignif(names(all.oxphos.DF), digits = 2) %&gt;% 
+  DT::formatStyle(names(all.oxphos.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
+<div id="htmlwidget-083589c672db51986bc9" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-083589c672db51986bc9">{"x":{"filter":"none","data":[["HM.OXPHOS.P8","HM.OXPHOS.P9","GO.OXPHOS.P8","GO.OXPHOS.P9","KEGG.OXPHOS.P8","KEGG.OXPHOS.P9"],[0.58930350049368,0.0464720300184718,0.000339318748689973,0.0190245051404588,6.24156199478991e-06,0.0942193144337262],[0.220015383500347,6.72235448476789e-06,0.269743959866866,1.69404656647645e-08,0.727816127261694,0.000106461761284465],[0.166517130048091,0.0101374813505879,4.44658697062741e-05,0.00173577056022313,6.02889936722681e-06,0.0677168487213037]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>p.0vsp.1<\/th>\n      <th>p.1vsp.2<\/th>\n      <th>p.0vsp.2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <p>We also tested how the <strong>UNUPDATED</strong> version of <strong>HALLMARK_UNFOLDED_PROTEIN_RESPONSE</strong> differs from the updated version.</p>
 <pre class="r"><code>upr.length.df &lt;- data.frame(
   &quot;UNUPDATED.HM.UPR&quot; = length(hallmark.list[[&quot;UNUPDATED.UPR&quot;]]),
@@ -1182,7 +1467,7 @@ Num Found                  107          105
 <pre class="r"><code>hms.centered = c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
 
 #VlnPlot
-SS2.names &lt;- c(&quot;SS2 Malignant Patient 8&quot;, &quot;SS2 Malignant Patient 9&quot;)
+SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
 SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
 SS2.Vln.plots &lt;- vector(&quot;list&quot;, length(SS2s))
 names(SS2.Vln.plots) &lt;- SS2.names
@@ -1204,8 +1489,12 @@ for (i in 1:length(SS2s)){
   else{
     p &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;sample&quot;, pt.size = 0, combine = F, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = 1.0)
   }
-
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;), caption = paste(&quot;# OXPHOS genes in GO geneset found in SS2:&quot;, sum(hallmark.list[[&quot;GO.OXPHOS&quot;]] %in% rownames(obj)), &quot;out of&quot;, length(hallmark.list[[&quot;GO.OXPHOS&quot;]]))) +
+  
+  GO.found &lt;- sum(hallmark.list[[&quot;GO.OXPHOS&quot;]] %in% rownames(obj))
+  GO.length &lt;- length(hallmark.list[[&quot;GO.OXPHOS&quot;]])
+  GO.pFound &lt;- round((GO.found / GO.length) * 100,2)
+    
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} OXPHOS scores across treatment&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells, {GO.found} out of {GO.length} OXPHOS genes found ({GO.pFound}%)&quot;), caption = &quot;GO_OXIDATIVE_PHOSPHORYLATION&quot;) +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
     geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
     geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
@@ -1213,8 +1502,14 @@ for (i in 1:length(SS2s)){
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
   
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} UPR scores across treatment&quot;), x = name, caption = paste(&quot;# UPR genes in HALLMARK.UPR geneset found in SS2:&quot;, sum(hallmark.list[[&quot;UNUPDATED.UPR&quot;]] %in% rownames(obj)), &quot;out of&quot;, length(hallmark.list[[&quot;UNUPDATED.UPR&quot;]]))) +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+  UPR.found &lt;- sum(hallmark.list[[&quot;UNUPDATED.UPR&quot;]] %in% rownames(obj))
+  UPR.length &lt;- length(hallmark.list[[&quot;UNUPDATED.UPR&quot;]])
+  UPR.pFound &lt;- round((UPR.found / UPR.length) * 100,2)
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} UPR scores across treatment&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells, {UPR.found} out of {UPR.length} UPR genes found ({UPR.pFound}%)&quot;), caption = &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$UNUPDATED.UPR38.centered) -0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(obj$UNUPDATED.UPR38.centered) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(obj$UNUPDATED.UPR38.centered) - 0.03)
   p &lt;- p[[1]] + p[[2]] + plot_layout(guides= &#39;collect&#39;) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
@@ -1222,7 +1517,7 @@ for (i in 1:length(SS2s)){
   SS2.Vln.plots[[name]] &lt;- p
 }
 
-SS2.Vln.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
+SS2.Vln.plots[[&quot;SS2 Patient 8&quot;]]</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" width="1920" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-DEAnalysis1VlnPlot-1">
@@ -1248,6 +1543,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/cdd10f957d932d708833a7b496e26c575b9e65fd/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">cdd10f9</a>
 </td>
 <td>
@@ -1261,7 +1567,7 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code>SS2.Vln.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
+<pre class="r"><code>SS2.Vln.plots[[&quot;SS2 Patient 9&quot;]]</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" width="1920" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-DEAnalysis1VlnPlot-2">
@@ -1285,6 +1591,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/cdd10f957d932d708833a7b496e26c575b9e65fd/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">cdd10f9</a>
@@ -1318,7 +1635,49 @@ jgoh2
 <li>The trends that support our hypothesis for both OXPHOS and UPR are not consistent across patients 8 and 9. Since our sample size is so small, we’re also not sure how representative this data is of the true population.</li>
 <li>We are, however, not sure how to compare between p.1 vs. p.2 because they are both categorized as “on-treatment” and the clinical status of samples obtained from patients 8 and 9 is “Recurrent”, instead of denoting two types of treatment status “Diagnosis/Initial treatment” that corresponds to the two treatment timepoints for the 10X data.</li>
 </ul></li>
+<li><strong>STATISTICAL SUMMARY</strong></li>
 </ul>
+<pre class="r"><code>#Patient 8 ---------------------------------
+SS2M8.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$GO.OXPHOS35.centered, SS2Malignant8.1$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$GO.OXPHOS35.centered, SS2Malignant8.2$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$GO.OXPHOS35.centered, SS2Malignant8.2$GO.OXPHOS35.centered)$p.value
+)
+
+SS2M8.UPR.df &lt;- 
+  data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$UNUPDATED.UPR38.centered, SS2Malignant8.1$UNUPDATED.UPR38.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$UNUPDATED.UPR38.centered, SS2Malignant8.2$UNUPDATED.UPR38.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$UNUPDATED.UPR38.centered, SS2Malignant8.2$UNUPDATED.UPR38.centered)$p.value
+)
+
+#Patient 9 ---------------------------------
+SS2M9.oxphos.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$GO.OXPHOS35.centered, SS2Malignant9.1$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$GO.OXPHOS35.centered, SS2Malignant9.2$GO.OXPHOS35.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$GO.OXPHOS35.centered, SS2Malignant9.2$GO.OXPHOS35.centered)$p.value
+)
+
+SS2M9.UPR.df &lt;- 
+  data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$UNUPDATED.UPR38.centered, SS2Malignant9.1$UNUPDATED.UPR38.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$UNUPDATED.UPR38.centered, SS2Malignant9.2$UNUPDATED.UPR38.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$UNUPDATED.UPR38.centered, SS2Malignant9.2$UNUPDATED.UPR38.centered)$p.value
+)
+
+#combine ------------------------------
+SS2.oxphos.DF &lt;- rbind(SS2M8.oxphos.df, SS2M9.oxphos.df)
+rownames(SS2.oxphos.DF) &lt;- c(&quot;OXPHOS.PATIENT8&quot;, &quot;OXPHOS.PATIENT9&quot;)
+
+SS2.UPR.DF &lt;- rbind(SS2M8.UPR.df, SS2M9.UPR.df)
+rownames(SS2.UPR.DF) &lt;- c(&quot;UPR.PATIENT8&quot;, &quot;UPR.PATIENT9&quot;)
+
+SS2.all.DF &lt;- rbind(SS2.oxphos.DF, SS2.UPR.DF)
+DT::datatable(SS2.all.DF) %&gt;% 
+  DT::formatSignif(names(SS2.all.DF), digits = 2) %&gt;% 
+  DT::formatStyle(names(SS2.all.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
+<div id="htmlwidget-48924e2df682953c13a9" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-48924e2df682953c13a9">{"x":{"filter":"none","data":[["OXPHOS.PATIENT8","OXPHOS.PATIENT9","UPR.PATIENT8","UPR.PATIENT9"],[0.000339318748689973,0.0190245051404588,0.00152316029011599,0.311319135879268],[0.269743959866866,1.69404656647645e-08,0.422466950116867,0.993418338164825],[4.44658697062741e-05,0.00173577056022313,0.00937011646978584,0.220657912556308]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>p.0vsp.1<\/th>\n      <th>p.1vsp.2<\/th>\n      <th>p.0vsp.2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <p>We try to confirm our results again with our second appraoch: <strong>GSEA</strong></p>
 <ul>
 <li><strong>APPROACH #2</strong> Geneset Enrichment Analysis (GSEA) - GSEA enrichment plots for hallmarks of interest between condition.1 vs. condition.2 - Rank genes and compute GSEA enrichment scores - Statistical test: how significant are the enrichment scores?</li>
@@ -1361,22 +1720,23 @@ other attached packages:
 loaded via a namespace (and not attached):
   [1] Rtsne_0.15         colorspace_1.4-1   ggsignif_0.6.0     rio_0.5.16         ellipsis_0.3.1     ggridges_0.5.2    
   [7] rprojroot_1.3-2    fs_1.4.2           rstudioapi_0.11    farver_2.0.3       leiden_0.3.3       listenv_0.8.0     
- [13] fansi_0.4.1        lubridate_1.7.9    xml2_1.3.2         codetools_0.2-16   splines_4.0.2      knitr_1.29        
- [19] jsonlite_1.7.0     workflowr_1.6.2    broom_0.7.0        ica_1.0-2          cluster_2.1.0      dbplyr_1.4.4      
- [25] png_0.1-7          uwot_0.1.8         sctransform_0.2.1  compiler_4.0.2     httr_1.4.1         backports_1.1.8   
- [31] assertthat_0.2.1   Matrix_1.2-18      lazyeval_0.2.2     limma_3.44.3       cli_2.0.2          later_1.1.0.1     
- [37] htmltools_0.5.0    tools_4.0.2        rsvd_1.0.3         igraph_1.2.5       gtable_0.3.0       RANN_2.6.1        
- [43] carData_3.0-4      cellranger_1.1.0   vctrs_0.3.2        ape_5.4            nlme_3.1-148       lmtest_0.9-37     
- [49] xfun_0.15          globals_0.12.5     openxlsx_4.1.5     rvest_0.3.5        lifecycle_0.2.0    irlba_2.3.3       
- [55] rstatix_0.6.0      future_1.18.0      MASS_7.3-51.6      zoo_1.8-8          scales_1.1.1       hms_0.5.3         
- [61] promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 curl_4.3           yaml_2.2.1         reticulate_1.16   
- [67] pbapply_1.4-2      gridExtra_2.3      reshape_0.8.8      stringi_1.4.6      zip_2.0.4          rlang_0.4.7       
- [73] pkgconfig_2.0.3    evaluate_0.14      lattice_0.20-41    ROCR_1.0-11        labeling_0.3       htmlwidgets_1.5.1 
- [79] RcppAnnoy_0.0.16   plyr_1.8.6         magrittr_1.5       R6_2.4.1           generics_0.0.2     DBI_1.1.0         
- [85] foreign_0.8-80     pillar_1.4.6       haven_2.3.1        whisker_0.4        withr_2.2.0        fitdistrplus_1.1-1
- [91] abind_1.4-5        survival_3.2-3     future.apply_1.6.0 tsne_0.1-3         car_3.0-8          modelr_0.1.8      
- [97] crayon_1.3.4       KernSmooth_2.23-17 plotly_4.9.2.1     rmarkdown_2.3      grid_4.0.2         blob_1.2.1        
-[103] git2r_0.27.1       reprex_0.3.0       digest_0.6.25      httpuv_1.5.4       munsell_0.5.0      viridisLite_0.3.0 </code></pre>
+ [13] DT_0.14            fansi_0.4.1        lubridate_1.7.9    xml2_1.3.2         codetools_0.2-16   splines_4.0.2     
+ [19] knitr_1.29         jsonlite_1.7.0     workflowr_1.6.2    broom_0.7.0        ica_1.0-2          cluster_2.1.0     
+ [25] dbplyr_1.4.4       png_0.1-7          uwot_0.1.8         sctransform_0.2.1  compiler_4.0.2     httr_1.4.1        
+ [31] backports_1.1.8    assertthat_0.2.1   Matrix_1.2-18      lazyeval_0.2.2     limma_3.44.3       cli_2.0.2         
+ [37] later_1.1.0.1      htmltools_0.5.0    tools_4.0.2        rsvd_1.0.3         igraph_1.2.5       gtable_0.3.0      
+ [43] RANN_2.6.1         carData_3.0-4      cellranger_1.1.0   vctrs_0.3.2        ape_5.4            nlme_3.1-148      
+ [49] crosstalk_1.1.0.1  lmtest_0.9-37      xfun_0.15          globals_0.12.5     openxlsx_4.1.5     rvest_0.3.5       
+ [55] lifecycle_0.2.0    irlba_2.3.3        rstatix_0.6.0      future_1.18.0      MASS_7.3-51.6      zoo_1.8-8         
+ [61] scales_1.1.1       hms_0.5.3          promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 curl_4.3          
+ [67] yaml_2.2.1         reticulate_1.16    pbapply_1.4-2      gridExtra_2.3      reshape_0.8.8      stringi_1.4.6     
+ [73] zip_2.0.4          rlang_0.4.7        pkgconfig_2.0.3    evaluate_0.14      lattice_0.20-41    ROCR_1.0-11       
+ [79] labeling_0.3       htmlwidgets_1.5.1  RcppAnnoy_0.0.16   plyr_1.8.6         magrittr_1.5       R6_2.4.1          
+ [85] generics_0.0.2     DBI_1.1.0          foreign_0.8-80     pillar_1.4.6       haven_2.3.1        whisker_0.4       
+ [91] withr_2.2.0        fitdistrplus_1.1-1 abind_1.4-5        survival_3.2-3     future.apply_1.6.0 tsne_0.1-3        
+ [97] car_3.0-8          modelr_0.1.8       crayon_1.3.4       KernSmooth_2.23-17 plotly_4.9.2.1     rmarkdown_2.3     
+[103] grid_4.0.2         blob_1.2.1         git2r_0.27.1       reprex_0.3.0       digest_0.6.25      httpuv_1.5.4      
+[109] munsell_0.5.0      viridisLite_0.3.0 </code></pre>
 </div>
 </div>
 </div>

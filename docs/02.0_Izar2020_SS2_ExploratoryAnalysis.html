@@ -424,7 +424,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-07-31
+<strong>Last updated:</strong> 2020-08-03
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -515,16 +515,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree21a445ca7b60c57bf538e825bd830d23ba045099targetblank21a445ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/21a445ca7b60c57bf538e825bd830d23ba045099" target="_blank">21a445c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeeaa900ebf0881bea5dc0b4a7395e3b2b0da3a17etargetblankeaa900ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e" target="_blank">eaa900e</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree21a445ca7b60c57bf538e825bd830d23ba045099targetblank21a445ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeeaa900ebf0881bea5dc0b4a7395e3b2b0da3a17etargetblankeaa900ea" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/21a445ca7b60c57bf538e825bd830d23ba045099" target="_blank">21a445c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e" target="_blank">eaa900e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -591,6 +591,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e/analysis/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd" target="_blank">eaa900e</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/8b4b72fa870ceb2dc163eb3f96a3eef136162ecd/docs/02.0_Izar2020_SS2_ExploratoryAnalysis.html" target="_blank">8b4b72f</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -911,7 +945,8 @@ p8 &lt;- ggplot(numMalignantCellsPerSample.8, aes(x = Patient, y = numCells, fil
     geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) + 
     labs(title = &quot;Number of Malignant Cells Per Sample in Patient 8&quot;) + 
     geom_text(aes(label = c(&quot;Treatment-naïve&quot;, &quot;On-treatment&quot;, &quot;On-treatment&quot;)), position = &quot;fill&quot;, hjust = 0.5, vjust = 2, color = &quot;white&quot;) + 
-    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), size =3, position = &quot;fill&quot;, hjust = 0.5, vjust = 4, color = &quot;white&quot;)
+    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), size =3, position = &quot;fill&quot;, hjust = 0.5, vjust = 4, color = &quot;white&quot;) + 
+  scale_fill_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
 
 numMalignantCellsPerSample.9 &lt;- table(SS2Malignant.9$Patient, SS2Malignant.9$sample) %&gt;%
   as.data.frame() %&gt;% 
@@ -920,7 +955,8 @@ p9 &lt;- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fil
     geom_bar(position = &quot;fill&quot;, stat = &quot;identity&quot;) + 
     labs(title = &quot;Number of Malignant Cells Per Sample in Patient 9&quot;) + 
     geom_text(aes(label = c(&quot;Treatment-naïve&quot;, &quot;On-treatment&quot;, &quot;On-treatment&quot;)), position = &quot;fill&quot;, hjust = 0.5, vjust = 2, color = &quot;white&quot;) + 
-    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), size =3, position = &quot;fill&quot;, hjust = 0.5, vjust = 4, color = &quot;white&quot;)
+    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), size =3, position = &quot;fill&quot;, hjust = 0.5, vjust = 4, color = &quot;white&quot;) + 
+  scale_fill_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
 
 p &lt;- p8 + p9
 p</code></pre>
@@ -969,8 +1005,12 @@ jgoh2
 <p>We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 1. Intermodel heterogeneity: Do separate by model? 2. Intramodel heterogeneity: a. Do cells separate by treatment status? b. Do cells separate by cell cycle phase? c. Do cells separate due to nFeature and nCount? d. Do cells separate by OXPHOS or UPR hallmark scores?</p>
 <p><strong>1) BY SAMPLE</strong></p>
 <pre class="r"><code>#cluster by patient/ sample? 
-p1 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;Patient&quot;) + labs(title = &quot;SS2 Malignant Cells UMAP by Patient&quot;)
-p2 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;sample&quot;) + labs(title = &quot;SS2 Malignant Cells UMAP by Sample&quot;)
+p1 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;Patient&quot;) + 
+  labs(title = &quot;SS2 Malignant Cells UMAP by Patient&quot;, subtitle = paste(nrow(SS2Malignant@meta.data),&quot;Malignant Cells&quot;)) + 
+  coord_fixed()
+p2 &lt;- UMAPPlot(SS2Malignant, group.by = &quot;sample&quot;) + 
+  labs(title = &quot;SS2 Malignant Cells UMAP by Sample&quot;, subtitle = paste(nrow(SS2Malignant@meta.data),&quot;Malignant Cells&quot;)) + 
+  coord_fixed()
 p1 + p2 </code></pre>
 <p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>
@@ -1015,10 +1055,14 @@ jgoh2
 </ul>
 <p><strong>2) BY TREATMENT STATUS WITHIN EACH MODEL</strong></p>
 <pre class="r"><code>p4 &lt;- UMAPPlot(SS2Malignant.8, group.by = &quot;treatment.status&quot;) + 
-  labs(title = &quot;SS2 UMAP Patient 8 Malignant Cells by Treatment&quot;) + theme(plot.title = element_text(size = 12))
+  labs(title = &quot;SS2 UMAP Patient 8 by Treatment&quot;, subtitle = paste(nrow(SS2Malignant.8@meta.data),&quot;Malignant Cells&quot;)) + 
+  theme(plot.title = element_text(size = 12))
 p5 &lt;- UMAPPlot(SS2Malignant.8, group.by = &quot;sample&quot;) + 
-  labs(title = &quot;SS2 UMAP Patient 8 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
-p6 &lt;- PCAPlot(SS2Malignant.8, group.by = &quot;sample&quot;) + labs(title = &quot;SS2 PCA Patient 8 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
+  labs(title = &quot;SS2 UMAP Patient 8 by Sample&quot;, subtitle = paste(nrow(SS2Malignant.8@meta.data),&quot;Malignant Cells&quot;)) + 
+  theme(plot.title = element_text(size = 12))
+p6 &lt;- PCAPlot(SS2Malignant.8, group.by = &quot;sample&quot;) + 
+  labs(title = &quot;SS2 PCA Patient 8 by Sample&quot;, subtitle = paste(nrow(SS2Malignant.8@meta.data),&quot;Malignant Cells&quot;)) + 
+  theme(plot.title = element_text(size = 12))
 p4 + p5 + p6</code></pre>
 <p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" width="1632" style="display: block; margin: auto;" /></p>
 <p>
@@ -1059,10 +1103,14 @@ jgoh2
 </div>
 </div>
 <pre class="r"><code>p7 &lt;- UMAPPlot(SS2Malignant.9, group.by = &quot;treatment.status&quot;) + 
-  labs(title = &quot;SS2 UMAP Patient 9 Malignant Cells by Treatment&quot;) + theme(plot.title = element_text(size = 12))
+  labs(title = &quot;SS2 UMAP Patient 9 by Treatment&quot;, subtitle = paste(nrow(SS2Malignant.9@meta.data),&quot;Malignant Cells&quot;)) + 
+  theme(plot.title = element_text(size = 12))
 p8 &lt;- UMAPPlot(SS2Malignant.9, group.by = &quot;sample&quot;) + 
-  labs(title = &quot;SS2 UMAP Patient 8 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
-p9 &lt;- PCAPlot(SS2Malignant.9, group.by = &quot;sample&quot;) + labs(title = &quot;SS2 PCA Patient 9 Malignant Cells by Sample&quot;) + theme(plot.title = element_text(size = 12))
+  labs(title = &quot;SS2 UMAP Patient 9 by Sample&quot;, subtitle = paste(nrow(SS2Malignant.9@meta.data),&quot;Malignant Cells&quot;)) + 
+  theme(plot.title = element_text(size = 12))
+p9 &lt;- PCAPlot(SS2Malignant.9, group.by = &quot;sample&quot;) + 
+  labs(title = &quot;SS2 PCA Patient 9 by Sample&quot;, subtitle = paste(nrow(SS2Malignant.9@meta.data),&quot;Malignant Cells&quot;)) + 
+  theme(plot.title = element_text(size = 12))
 p7 + p8 + p9</code></pre>
 <p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" width="1632" style="display: block; margin: auto;" /></p>
 <p>
@@ -1107,10 +1155,9 @@ jgoh2
 <li>Treatment status is also not captured in PC_1 or PC_2</li>
 </ul>
 <p><strong>3) BY UPR AND OXPHOS GENESET SCORE</strong></p>
-<pre class="r"><code>hms.centered &lt;- c(&quot;UNUPDATED.OXPHOS37.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
-
+<pre class="r"><code>hms.centered = c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
 #UMAP 
-SS2.names &lt;- c(&quot;SS2 Malignant Patient 8&quot;, &quot;SS2 Malignant Patient 9&quot;)
+SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
 SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
 UMAP.plots &lt;- vector(&quot;list&quot;, length(SS2s))
 names(UMAP.plots) &lt;- SS2.names
@@ -1121,22 +1168,22 @@ for (i in 1:length(SS2s)){
   numCells = nrow(obj@meta.data)
   
   p &lt;- FeaturePlot(obj, features = hms.centered, combine = FALSE)
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} UMAP by HALLMARK Oxphos Scores&quot;)) +
-    theme(plot.title = element_text(size = 10))
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} UMAP by HALLMARK UPR Scores&quot;)) + 
-    theme(plot.title = element_text(size = 10))
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} UMAP by OXPHOS Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;GO_OXIDATIVE_PHOSPHORYLATION&quot;) +
+    coord_fixed()
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} UMAP by UPR Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) + 
+    coord_fixed()
   
   p2 &lt;- FeaturePlot(obj, features = hms.centered, reduction = &quot;pca&quot;, combine = FALSE)
-  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} PCA by HALLMARK Oxphos Scores&quot;)) +
-    theme(plot.title = element_text(size = 10))
-  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} PCA by HALLMARK UPR Scores&quot;)) + 
-    theme(plot.title = element_text(size = 10))
+  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} PCA by OXPHOS Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;GO_OXIDATIVE_PHOSPHORYLATION&quot;) +
+    coord_fixed()
+  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} PCA by UPR Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) + 
+    coord_fixed()
   
   UMAP.plots[[name]] &lt;- p[[1]] + p[[2]] + p2[[1]] + p2[[2]]
 }
 
-UMAP.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
-<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/gsUMAP-1.png" width="1440" style="display: block; margin: auto;" /></p>
+UMAP.plots[[&quot;SS2 Patient 8&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/gsUMAP-1.png" width="1536" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-gsUMAP-1">
 Past versions of gsUMAP-1.png
@@ -1174,8 +1221,8 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code>UMAP.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
-<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/gsUMAP-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>UMAP.plots[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/gsUMAP-2.png" width="1536" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-gsUMAP-2">
 Past versions of gsUMAP-2.png
@@ -1228,26 +1275,34 @@ for(i in 1:length(SS2s)){
   obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
   
   bys &lt;- PCAPlot(obj, group.by = &quot;sample&quot;) + 
-    labs(title = glue(&quot;{name} PCA by sample&quot;), subtitle = glue(&quot;Number of cells in {name}: {numCells}&quot;)) +
-    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+    labs(title = glue(&quot;{name} PCA by sample&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) +
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
   
   bycc &lt;- PCAPlot(obj, group.by = &quot;Phase&quot;) + 
-    labs(title = glue(&quot;{name} PCA by Cell Cycle Phase&quot;)) + 
-    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12))
+    labs(title = glue(&quot;{name} PCA by Cell Cycle Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
   
   byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score&quot;, &quot;G2M.Score&quot;), reduction = &quot;pca&quot;,combine = FALSE)
-  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;)) + theme(plot.title = element_text(size = 12))
-  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;)) + theme(plot.title = element_text(size = 12))
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
   
   bynFnC &lt;- FeaturePlot(obj, features = c(&quot;nCount_RNA&quot;, &quot;nFeature_RNA&quot;), reduction = &quot;pca&quot;, combine = FALSE)
-  bynFnC[[1]] &lt;- bynFnC[[1]] + labs(title = glue(&quot;{name} PCA by nCount&quot;)) + theme(plot.title = element_text(size = 12))
-  bynFnC[[2]] &lt;- bynFnC[[2]] + labs(title = glue(&quot;{name} PCA by nFeature&quot;)) + theme(plot.title = element_text(size = 12))
+  bynFnC[[1]] &lt;- bynFnC[[1]] + labs(title = glue(&quot;{name} PCA by nCount&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
+  bynFnC[[2]] &lt;- bynFnC[[2]] + labs(title = glue(&quot;{name} PCA by nFeature&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
+    coord_fixed()
 
   ccPCA.plots[[i]] &lt;- bys + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
 }
 
-ccPCA.plots[[&quot;SS2 Malignant Patient 8&quot;]]</code></pre>
-<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" width="1440" style="display: block; margin: auto;" /></p>
+ccPCA.plots[[&quot;SS2 Patient 8&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-1">
 Past versions of cellcyleUMAP-1.png
@@ -1285,8 +1340,8 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code>ccPCA.plots[[&quot;SS2 Malignant Patient 9&quot;]]</code></pre>
-<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ccPCA.plots[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" width="1344" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-2">
 Past versions of cellcyleUMAP-2.png
@@ -1336,6 +1391,46 @@ jgoh2
 </ul></li>
 </ul>
 <p>We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections.</p>
+<p><strong>5) Investigating Correlation between nCount, nFeature and Hallmark Scores</strong> Our PCA visualizations above suggest that OXPHOS socres may be faintly captured by PC_1, where cells with higher OXPHOS scores tend to be around the same area on the PC_1 axis. However, our PCA visualization of nFeature and nCount reveal that PC_1 strongly captures nCount and nFeature variation, and the same cells with higher OXPHOS scores seem to also have higher nFeature and nCount.</p>
+<ul>
+<li>Here, we investigate whether there is a correlation between nCount, nFeature and Hallmark Scores. It is possible that cells that appear to have higher OXPHOS counts simply have higher nCount or nFeature in general.</li>
+<li>This would bring bias to our analysis because it is possible that cells that appear to have enriched or depleted OXPHOS expression actually have more or less (dropouts) genes than other cells in general.</li>
+<li>Although this bias in gene count should have been addressed by RPKM/CPM/TPM normalization, we would still like to confirm that the differential expression of our hallmarks of interest is not driven by technical (rather than biological) factors such as nFeature/nCount.</li>
+</ul>
+<pre class="r"><code>P8.oxphosVsnCount &lt;- ggplot(SS2Malignant.8@meta.data) + 
+  geom_point(alpha = 0.5, aes(x = nCount_RNA, y = GO.OXPHOS35.centered, colour = sample)) + 
+  theme_bw() +
+  labs(title = &quot;SS2 Patient 8 Malignant Cells OXPHOS vs. nCount&quot;, subtitle = paste(nrow(SS2Malignant.8@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.25, p = 9.2e-04)&quot;)) + 
+    theme(plot.title = element_text(size = 12))
+
+P8.oxphosVsnFeature &lt;- ggplot(SS2Malignant.8@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = sample)) + 
+  geom_abline(intercept = -0.5, slope = 1) +
+  theme_bw() + 
+  labs(title = &quot;SS2 Patient 8 Malignant Cells OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(SS2Malignant.8@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.34, p = 3.9e-06)&quot;)) + 
+  theme(plot.title = element_text(size = 12))
+
+P9.oxphosVsnCount &lt;- ggplot(SS2Malignant.9@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = sample)) + 
+  theme_bw() + 
+  labs(title = &quot;SS2 Patient 9 Malignant Cells OXPHOS vs. nCount&quot;, subtitle = paste(nrow(SS2Malignant.9@meta.data),&quot;Malignant Cells&quot;, &quot;(R = -0.021, p = 0.76)&quot;)) + 
+    theme(plot.title = element_text(size = 12))
+
+P9.oxphosVsnFeature &lt;- ggplot(SS2Malignant.9@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = sample)) + 
+  geom_abline(intercept = -0.5, slope = 1) +
+  theme_bw() + 
+  labs(title = &quot;SS2 Patient 9 Malignant Cells OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(SS2Malignant.9@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.051, p = 0.45)&quot;)) + 
+    theme(plot.title = element_text(size = 12))
+
+P8.oxphosVsnCount + P8.oxphosVsnFeature + P9.oxphosVsnCount + P9.oxphosVsnFeature + plot_layout(guides= &#39;collect&#39;)</code></pre>
+<p><img src="figure/02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd/nCountvsHM-1.png" width="960" style="display: block; margin: auto;" /> * There doesn’t seem to be a correlation between OXPHOS and nFeature/nCount * We are interested in discovering which PC captures OXPHOS and UPR scores</p>
+<p><strong>6) Investigating PC that captures OXPHOS and/or UPR scores</strong></p>
+<pre class="r"><code>#GO.OXPHOS --------------
+P8.PCA.cells &lt;- SS2Malignant.8@reductions$pca@cell.embeddings %&gt;% as.data.frame()
+
+
+P9.PCA &lt;- SS2Malignant.9@reductions$pca@feature.loadings</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
