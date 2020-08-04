@@ -119,16 +119,20 @@ numMalignantCellsPerSample <- table(SS2Malignant$sample, SS2Malignant$cell.type,
   dplyr::rename(sample = Var1, celltype = Var2, treatment = Var3, numCells = Freq) %>% 
   filter(`celltype` == "Malignant")
 ggplot(numMalignantCellsPerSample, aes(x = sample, y=numCells, fill = treatment)) + 
+  theme_bw() + 
   geom_bar(stat = "identity") + 
   labs(title = "Number of Malignant Cells Per Sample in SS2 Data") 
 
 numMalignantCellsPerPatientPerTreatment <- table(SS2Malignant$Patient, SS2Malignant$treatment.status) %>%
   as.data.frame() %>% 
   dplyr::rename(Patient = Var1, treatment = Var2, numCells = Freq) 
+numCells.NA <- numMalignantCellsPerPatientPerTreatment$numCells
+numCells.NA[2] <- 252
 ggplot(numMalignantCellsPerPatientPerTreatment, aes(x = Patient, y=numCells, fill = treatment)) + 
   geom_bar(position = "fill", stat = "identity") + 
+  theme_bw() + 
   labs(title = "SS2 Number of Malignant Cells Per Patient Per Treatment") + 
-  geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white")
+  geom_text(aes(label = paste(numCells.NA, "Cells")), size =6, position = "fill", hjust = 0.5, vjust = 4, color = "white", na.rm = TRUE)
 
 #metrics for patient 8 and 9
 numMalignantCellsPerSample.8 <- table(SS2Malignant.8$Patient, SS2Malignant.8$sample) %>%
@@ -136,19 +140,21 @@ numMalignantCellsPerSample.8 <- table(SS2Malignant.8$Patient, SS2Malignant.8$sam
   dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq)
 p8 <- ggplot(numMalignantCellsPerSample.8, aes(x = Patient, y = numCells, fill = sample)) + 
     geom_bar(position = "fill", stat = "identity") + 
+  theme_bw() + 
     labs(title = "Number of Malignant Cells Per Sample in Patient 8") + 
-    geom_text(aes(label = c("Treatment-naïve", "On-treatment", "On-treatment")), position = "fill", hjust = 0.5, vjust = 2, color = "white") + 
-    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
-  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+    geom_text(aes(label = c("Treatment-naïve", "On-treatment Timepoint #1", "On-treatment Timepoint #2")), position = "fill", hjust = 0.5, vjust = 2, color = "white", size = 7) + 
+    geom_text(aes(label = paste(numCells, "cells")), size =7, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
+      scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
 numMalignantCellsPerSample.9 <- table(SS2Malignant.9$Patient, SS2Malignant.9$sample) %>%
   as.data.frame() %>% 
   dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq)
 p9 <- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fill = sample)) + 
     geom_bar(position = "fill", stat = "identity") + 
+  theme_bw() + 
     labs(title = "Number of Malignant Cells Per Sample in Patient 9") + 
-    geom_text(aes(label = c("Treatment-naïve", "On-treatment", "On-treatment")), position = "fill", hjust = 0.5, vjust = 2, color = "white") + 
-    geom_text(aes(label = paste(numCells, "cells")), size =3, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
+    geom_text(aes(label = c("Treatment-naïve", "On-treatment Timepoint #1", "On-treatment Timepoint #2")), position = "fill", hjust = 0.5, vjust = 2, color = "white", size = 7) + 
+    geom_text(aes(label = paste(numCells, "cells")), size =7, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
   scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
 p <- p8 + p9
@@ -166,15 +172,29 @@ We are interested in finding out how cells cluster together. This helps us quali
         d. Do cells separate by OXPHOS or UPR hallmark scores? 
         
 **1) BY SAMPLE**
-```{r UMAPbyModel, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=10, fig.height=5}
+```{r UMAPbyModel, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=15, fig.height=5}
 #cluster by patient/ sample? 
-p1 <- UMAPPlot(SS2Malignant, group.by = "Patient") + 
+p1 <- UMAPPlot(SS2Malignant, group.by = "Patient", pt.size= 0.5) + 
   labs(title = "SS2 Malignant Cells UMAP by Patient", subtitle = paste(nrow(SS2Malignant@meta.data),"Malignant Cells")) + 
-  coord_fixed()
-p2 <- UMAPPlot(SS2Malignant, group.by = "sample") + 
+  coord_fixed()  + 
+  theme(plot.title = element_text(size = 14))
+p2 <- UMAPPlot(SS2Malignant, group.by = "sample", pt.size = 0.5) + 
   labs(title = "SS2 Malignant Cells UMAP by Sample", subtitle = paste(nrow(SS2Malignant@meta.data),"Malignant Cells")) + 
-  coord_fixed()
-p1 + p2 
+  coord_fixed()  + 
+  theme(plot.title = element_text(size = 14))
+
+p3 <- UMAPPlot(SS2Malignant, group.by = "treatment.status", pt.size = 0.5) + 
+  labs(title = "SS2 Malignant Cells UMAP by Treatment", subtitle = paste(nrow(SS2Malignant@meta.data),"Malignant Cells")) + 
+  coord_fixed()  + 
+  theme(plot.title = element_text(size = 14))
+
+p4 <- UMAPPlot(SS2Malignant, group.by = "Phase", pt.size = 0.5) + 
+  labs(title = "SS2 Malignant Cells UMAP by CC Phase", subtitle = paste(nrow(SS2Malignant@meta.data),"Malignant Cells")) + 
+  coord_fixed() +
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+  theme(plot.title = element_text(size = 14))
+
+p1 + p3 + p4
 ```
 * SS2 data separates by patient very well. However, it doesn't seem like it separates by sample within each patient. We will investigate this further by looking into patient 8 and 9 specifically. 
 
@@ -187,22 +207,28 @@ p4 <- UMAPPlot(SS2Malignant.8, group.by = "treatment.status") +
   theme(plot.title = element_text(size = 12))
 p5 <- UMAPPlot(SS2Malignant.8, group.by = "sample") + 
   labs(title = "SS2 UMAP Patient 8 by Sample", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells")) + 
-  theme(plot.title = element_text(size = 12))
+  theme(plot.title = element_text(size = 12)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+
+
 p6 <- PCAPlot(SS2Malignant.8, group.by = "sample") + 
   labs(title = "SS2 PCA Patient 8 by Sample", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells")) + 
-  theme(plot.title = element_text(size = 12))
-p4 + p5 + p6
+  theme(plot.title = element_text(size = 12)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+p4 + p5 + p6 + plot_layout(guides = "collect")
 
 p7 <- UMAPPlot(SS2Malignant.9, group.by = "treatment.status") + 
   labs(title = "SS2 UMAP Patient 9 by Treatment", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
   theme(plot.title = element_text(size = 12))
 p8 <- UMAPPlot(SS2Malignant.9, group.by = "sample") + 
   labs(title = "SS2 UMAP Patient 9 by Sample", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
-  theme(plot.title = element_text(size = 12))
+  theme(plot.title = element_text(size = 12)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 p9 <- PCAPlot(SS2Malignant.9, group.by = "sample") + 
   labs(title = "SS2 PCA Patient 9 by Sample", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
-  theme(plot.title = element_text(size = 12))
-p7 + p8 + p9
+  theme(plot.title = element_text(size = 12)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+p7 + p8 + p9 + plot_layout(guides = "collect")
 ```
 * Seems like cells do not cluster together by treatment status. 
 * Treatment status is also not captured in PC_1 or PC_2
@@ -260,14 +286,16 @@ for(i in 1:length(SS2s)){
   bys <- PCAPlot(obj, group.by = "sample") + 
     labs(title = glue("{name} PCA by sample"), subtitle = glue("{numCells} Malignant Cells")) +
     theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
-    coord_fixed()
+    coord_fixed() + 
+    scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   
   bycc <- PCAPlot(obj, group.by = "Phase") + 
     labs(title = glue("{name} PCA by Cell Cycle Phase"), subtitle = glue("{numCells} Malignant Cells")) + 
     theme(plot.title = element_text(hjust = 0.5)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
-    coord_fixed()
+    coord_fixed() + 
+    scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   
-  byscore <- FeaturePlot(obj, features = c("S.Score", "G2M.Score"), reduction = "pca",combine = FALSE)
+  byscore <- FeaturePlot(obj, features = c("S.Score", "G2M.Score.centered"), reduction = "pca",combine = FALSE)
   byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 
     coord_fixed()
   byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 10)) + 

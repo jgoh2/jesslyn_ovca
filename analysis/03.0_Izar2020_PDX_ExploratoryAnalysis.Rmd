@@ -144,7 +144,8 @@ We are interested in finding out how cells cluster together. This helps us quali
 
 UMAPPlot(PDX_All, group.by = "model_ID") + 
   labs(title = "PDX UMAP by Model", subtitle = paste(nrow(PDX_All@meta.data), "Malignant Cells")) + 
-  coord_fixed()
+  coord_fixed() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 ```
 * PDX data separates by model very well. 
 
@@ -152,17 +153,23 @@ UMAPPlot(PDX_All, group.by = "model_ID") +
 
 ```{r PbyTreatment, message=FALSE, warning=FALSE, fig.align = 'center', fig.width=10, fig.height=3}
 
-DF20.byt <- UMAPPlot(PDX_DF20, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF20 UMAP by Treatment", subtitle = paste(nrow(PDX_DF20@meta.data), "Malignant Cells"))
-DF101.byt <- UMAPPlot(PDX_DF101, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF101 UMAP by Treatment", subtitle = paste(nrow(PDX_DF101@meta.data), "Malignant Cells"))
-DF68.byt <- UMAPPlot(PDX_DF68, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF68 UMAP by Treatment", subtitle = paste(nrow(PDX_DF68@meta.data), "Malignant Cells"))
+DF20.byt <- UMAPPlot(PDX_DF20, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF20 UMAP by Treatment", subtitle = paste(nrow(PDX_DF20@meta.data), "Malignant Cells")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+DF101.byt <- UMAPPlot(PDX_DF101, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF101 UMAP by Treatment", subtitle = paste(nrow(PDX_DF101@meta.data), "Malignant Cells"))+ 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+DF68.byt <- UMAPPlot(PDX_DF68, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF68 UMAP by Treatment", subtitle = paste(nrow(PDX_DF68@meta.data), "Malignant Cells"))+ 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
-DF20.byt + DF101.byt + DF68.byt
+DF20.byt + DF101.byt + DF68.byt + plot_layout(guides = "collect")
 
-DF20.pca.byt <- PCAPlot(PDX_DF20, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF20 PCA by Treatment", subtitle = paste(nrow(PDX_DF20@meta.data), "Malignant Cells"))
-DF101.pca.byt <- PCAPlot(PDX_DF101, group.by  ="treatment.status", pt.size = 0.5) + labs(title = "DF101 PCA by Treatment", subtitle = paste(nrow(PDX_DF101@meta.data), "Malignant Cells"))
-DF68.pca.byt <- PCAPlot(PDX_DF68, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF68 PCA by Treatment", subtitle = paste(nrow(PDX_DF68@meta.data), "Malignant Cells"))
+DF20.pca.byt <- PCAPlot(PDX_DF20, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF20 PCA by Treatment", subtitle = paste(nrow(PDX_DF20@meta.data), "Malignant Cells")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+DF101.pca.byt <- PCAPlot(PDX_DF101, group.by  ="treatment.status", pt.size = 0.5) + labs(title = "DF101 PCA by Treatment", subtitle = paste(nrow(PDX_DF101@meta.data), "Malignant Cells")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+DF68.pca.byt <- PCAPlot(PDX_DF68, group.by = "treatment.status", pt.size = 0.5) + labs(title = "DF68 PCA by Treatment", subtitle = paste(nrow(PDX_DF68@meta.data), "Malignant Cells")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
-DF20.pca.byt + DF101.pca.byt + DF68.pca.byt
+DF20.pca.byt + DF101.pca.byt + DF68.pca.byt + plot_layout(guides = "collect")
 
 ```
 
@@ -185,7 +192,8 @@ for (i in 1:length(PDXs)){
   numCells = nrow(PDXs[[i]]@meta.data)
   umap <- UMAPPlot(PDXs[[i]], group.by = "treatment.status") + 
     labs(title = glue("{obj} UMAP by Treatment"), subtitle = glue("{numCells} Malignant Cells"))+
-    theme(plot.subtitle = element_text(size = 10))
+    theme(plot.subtitle = element_text(size = 10)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   
   p <- FeaturePlot(PDXs[[i]], features = hms.centered, combine = FALSE)
   p[[1]] <- p[[1]] + labs(title = glue("{obj} UMAP by Oxphos Scores"), subtitle = glue("{numCells} Malignant Cells"), caption = "HALLMARK_OXIDATIVE_PHOSPHORYLATION") 
@@ -217,10 +225,12 @@ for(i in 1:length(PDXs)){
   
   byt <- UMAPPlot(obj, group.by = "treatment.status", pt.size = 0.5) + 
     labs(title = glue("{name} UMAP by treatment"), subtitle = glue("{numCells} Malignant Cells")) + 
-    theme(plot.title = element_text(hjust = 0.5, size = 10)) 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   bycc <- UMAPPlot(obj, group.by = "Phase", pt.size = 0.5) + 
     labs(title = glue("{name} UMAP by CC Phase"), subtitle = glue("{numCells} Malignant Cells")) + 
-    theme(plot.title = element_text(hjust = 0.5, size = 10)) 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   byscore <- FeaturePlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), pt.size = 0.5, combine = FALSE)
   byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} UMAP by S Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 10))
   byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} UMAP by G2M Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 10))
@@ -246,10 +256,12 @@ for(i in 1:length(PDXs)){
   
   byt <- PCAPlot(obj, group.by = "treatment.status", pt.size = 0.5) + 
     labs(title = glue("{name} PCA by treatment"), subtitle = glue("{numCells} Malignant Cell")) + 
-    theme(plot.title = element_text(hjust = 0.5, size = 10))
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   bycc <- PCAPlot(obj, group.by = "Phase", pt.size = 0.5) + 
     labs(title = glue("{name} PCA by CC Phase"), subtitle = glue("{numCells} Malignant Cells")) + 
-    theme(plot.title = element_text(hjust = 0.5, size = 10))
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
   byscore <- FeaturePlot(obj, features = c("S.Score.centered", "G2M.Score.centered"), pt.size = 0.5, reduction = "pca",combine = FALSE)
   byscore[[1]] <- byscore[[1]] + labs(title = glue("{name} PCA by centered S Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 10))
   byscore[[2]] <- byscore[[2]] + labs(title = glue("{name} PCA by centered G2M Score"), subtitle = glue("{numCells} Malignant Cells")) + theme(plot.title = element_text(size = 10))
@@ -280,7 +292,7 @@ We will investigate further into the correlation between treatment status, hallm
 * This would bring bias to our analysis because it is possible that cells that appear to have enriched or depleted OXPHOS expression actually have more or less (dropouts) genes than other cells in general.
 * Although this bias in gene count should have been addressed by RPKM/CPM/TPM normalization, we would still like to confirm that the differential expression of our hallmarks of interest is not driven by technical (rather than biological) factors such as nFeature/nCount. 
 
-```{r nCountvsHM, message=FALSE, warning = FALSE, fig.align='center', fig.width = 10, fig.height=4}
+```{r nCountvsHM, message=FALSE, warning = FALSE, fig.align='center', fig.width = 10, fig.height=12}
 #DF20 -------
 DF20.oxphosVsnCount <- ggplot(PDX_DF20@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
   geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
@@ -314,7 +326,7 @@ DF68.oxphosVsnFeature <- ggplot(PDX_DF68@meta.data, aes(x = nFeature_RNA, y = GO
   theme_bw() + 
   labs(title = "PDX DF68 OXPHOS vs. nFeature", subtitle = paste(nrow(PDX_DF68@meta.data),"Malignant Cells", "(R = 0.42, p  < 1.3e-07)"))
 
-DF20.oxphosVsnCount + DF20.oxphosVsnFeature
+DF20.oxphosVsnCount + DF20.oxphosVsnFeature + DF101.oxphosVsnCount + DF101.oxphosVsnFeature + DF68.oxphosVsnCount + DF68.oxphosVsnFeature + plot_layout(ncol =2, nrow = 3)
 ```
 
 * Weak to no correlation between OXPHOS score and nCount/nFeature

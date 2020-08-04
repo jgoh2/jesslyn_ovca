@@ -160,7 +160,8 @@ t <- t %>% mutate(total = sum) %>% mutate(percent = (numCells/total)*100)
     geom_bar(stat="identity") + 
     labs(title = glue("{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment"), subtitle = glue("{numCells} Malignant Cells"), caption = "Labeled by # cells in each phase per treatment") +
     theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
-    geom_text(aes(label = numCells), position = "stack", hjust = 0.5, vjust = 2, size = 3, color = "white")
+    geom_text(aes(label = glue("{numCells} Cells")), position = "stack", hjust = 0.5, vjust = 2, size = 3, color = "white")+ 
+    scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) 
   bar.plots[[i]] <- p
 }
 
@@ -192,10 +193,10 @@ for (i in 1:length(PDXs)){
   )
   
 if(obj == "DF101"){
-  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F, y.max = 4.3, c("#00AFBB", "#E7B800", "#FC4E07"))
+  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F, y.max = 4.3, cols = c("#00AFBB", "#E7B800", "#FC4E07"))
 }
 else{
-  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F, y.max = 4, c("#00AFBB", "#E7B800", "#FC4E07"))
+  p <- VlnPlot(PDXs[[i]], features = c("S.Score.centered", "G2M.Score.centered"), group.by = "treatment.status", pt.size = 0, combine = F, y.max = 4, cols = c("#00AFBB", "#E7B800", "#FC4E07"))
 }
   p[[1]] <- p[[1]] + labs(title = glue("{obj} S.Score across treatment"), x = obj, subtitle = glue("{numCells} Malignant Cells")) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
