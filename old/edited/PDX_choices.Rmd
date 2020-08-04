@@ -45,6 +45,7 @@ source(here::here('packages.R'))
 
 #Read in PDX RDS object
 PDX = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
+PDX@meta.data <- PDX@meta.data[,-(9:49)]
 
 treatment_levels <- c("vehicle", "MRD", "relapse")
 PDX$treatment.status = factor(PDX$treatment.status, levels = treatment_levels)
@@ -56,12 +57,17 @@ g2m.genes <- ccgenes[44:97]
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names))
-names(hallmark.list) <- hallmark_names
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
 }
+
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
 
 if(!dir.exists("jesslyn_plots/PDX_test")){dir.create("jesslyn_plots/PDX_test")}
 ```
@@ -331,23 +337,29 @@ We wonder if it would be better to "force" AddModuleScore in using the "scale.da
 hms <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33", "HALLMARK_P53_PATHWAY26")
 
 #Scenario 1: Using the "data" slot (basically scenario 2 from above, DF20_score object)
-p1 <- VlnPlot(DF20_score, features = hms, combine= F) 
-p1[[1]] <- p1[[1]] + labs(title = "OXPHOS ('data')", x = "DF20")
-p1[[2]] <- p1[[2]] + labs(title = "UPR ('data')", x = "DF20")
-p1[[3]] <- p1[[3]] + labs(title = "p53 ('data')",  x = "DF20")
+p1 <- VlnPlot(DF20_score, features = hms, combine= F, cols = c("#00AFBB"), pt.size = 0) 
+p1[[1]] <- p1[[1]] + labs(title = "OXPHOS ('data')", x = "DF20") + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p1[[2]] <- p1[[2]] + labs(title = "UPR ('data')", x = "DF20") + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p1[[3]] <- p1[[3]] + labs(title = "p53 ('data')",  x = "DF20") + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #Scenario 2: Using the "scale.data" slot
 scale.data <- GetAssayData(object = DF20_scale_center, slot = "scale.data")
 DF20_scale_center_forced <- SetAssayData(object = DF20_scale_center, slot = "data", new.data = scale.data, assay = "RNA")
 
 DF20_scale.dataSlot <- AddModuleScore(DF20_scale_center_forced, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
-p2 <- VlnPlot(DF20_scale.dataSlot, features = hms, combine = F) 
-p2[[1]] <- p2[[1]] + labs(title = "OXPHOS ('scale.data')", x = "DF20")
-p2[[2]]<- p2[[2]] + labs(title = "UPR ('scale.data')", x = "DF20")
-p2[[3]] <- p2[[3]] + labs(title = "p53 ('scale.data')",  x = "DF20")
+p2 <- VlnPlot(DF20_scale.dataSlot, pt.size = 0, features = hms, combine = F, cols= c("#E7B800")) 
+p2[[1]] <- p2[[1]] + labs(title = "OXPHOS ('scale.data')", x = "DF20") + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p2[[2]]<- p2[[2]] + labs(title = "UPR ('scale.data')", x = "DF20") + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p2[[3]] <- p2[[3]] + labs(title = "p53 ('scale.data')",  x = "DF20") + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #Scenario 3: Using the "data" slot, center the scores afterward, reassign to metadata
-hm.names <- names(DF20_score@meta.data)[9:42]
+hm.names <- names(DF20_score@meta.data)[9:46]
 hms.centered <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered", "HALLMARK_P53_PATHWAY26.centered")
 
 for(i in hm.names){
@@ -355,10 +367,13 @@ for(i in hm.names){
     DF20_score <- AddMetaData(DF20_score, hm.centered, col.name = glue("{i}.centered"))
 }
 
-p3 <- VlnPlot(DF20_score, features = hms.centered, combine = F) 
-p3[[1]] <- p3[[1]] + labs(title = "OXPHOS ('data' score centered)", x = "DF20")
-p3[[2]] <- p3[[2]] + labs(title = "UPR ('data' score centered)", x = "DF20")
-p3[[3]] <- p3[[3]] + labs(title = "p53 ('data' score centered)",  x = "DF20")
+p3 <- VlnPlot(DF20_score, features = hms.centered, pt.size = 0, combine = F, cols = c("#FC4E07")) 
+p3[[1]] <- p3[[1]] + labs(title = "OXPHOS ('data' score centered)", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p3[[2]] <- p3[[2]] + labs(title = "UPR ('data' score centered)", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p3[[3]] <- p3[[3]] + labs(title = "p53 ('data' score centered)",  x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #COMPARE 
 p1[[1]] + p3[[1]] + p2[[1]] + plot_layout(guides= 'collect', nrow = 1, ncol = 3)
@@ -385,7 +400,7 @@ DF20_scale.data.df <- DF20_scale.dataSlot@meta.data %>% as.data.frame()
 
 sd.df = data.frame(
     "DF20_data" = apply(DF20_data.df[9:42], 2, sd),
-    "DF20_data.centered" = apply(DF20_data.df[43:76], 2, sd),
+    "DF20_data.centered" = apply(DF20_data.df[50:83], 2, sd),
     "DF20_scale.data" = apply(DF20_scale.data.df[9:42],2,sd)
 ) 
 
@@ -393,7 +408,8 @@ plot.df = reshape2::melt(sd.df)
 
 ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
   labs(x = "DF20 AddModuleScore senario", y = "variance/module", title = "Comparing DF20 variance in module score") +
-  theme_bw()
+  theme_bw() + 
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 
 ggsave(filename = "DF20_AddModuleScore_variance.png", path = "jesslyn_plots/PDX_test", width = 10, height = 5)
 ```
@@ -406,22 +422,35 @@ To further investigate this issue, we now split the violin plot (still focusing 
 
 ```{r VlnPlot by treatment, message = FALSE, fig.align= 'center', fig.height= 5, fig.width=15}
 #Scenario 1: Using the "data" slot
-p1 <- VlnPlot(DF20_score, features = hms, combine= F, group.by = "treatment.status") 
-p1[[1]] <- p1[[1]] + labs(title = "OXPHOS ('data')", x = "DF20")
-p1[[2]] <- p1[[2]] + labs(title = "UPR ('data')", x = "DF20")
-p1[[3]] <- p1[[3]] + labs(title = "p53 ('data')",  x = "DF20")
+
+p1 <- VlnPlot(DF20_score, features = hms, combine= F, group.by = "treatment.status", cols = c("#00AFBB", "#E7B800", "#FC4E07"), pt.size = 0) 
+p1[[1]] <- p1[[1]] + labs(title = "OXPHOS ('data')", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+p1[[2]] <- p1[[2]] + labs(title = "UPR ('data')", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+p1[[3]] <- p1[[3]] + labs(title = "p53 ('data')",  x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #Scenario 2: Using the "scale.data" slot
-p2 <- VlnPlot(DF20_scale.dataSlot, features = hms, combine = F, group.by = "treatment.status") 
-p2[[1]] <- p2[[1]] + labs(title = "OXPHOS ('scale.data')", x = "DF20")
-p2[[2]]<- p2[[2]] + labs(title = "UPR ('scale.data')", x = "DF20")
-p2[[3]] <- p2[[3]] + labs(title = "p53 ('scale.data')",  x = "DF20")
+p2 <- VlnPlot(DF20_scale.dataSlot, features = hms, combine = F, group.by = "treatment.status", cols = c("#00AFBB", "#E7B800", "#FC4E07"), pt.size = 0) 
+p2[[1]] <- p2[[1]] + labs(title = "OXPHOS ('scale.data')", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+p2[[2]]<- p2[[2]] + labs(title = "UPR ('scale.data')", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+
+p2[[3]] <- p2[[3]] + labs(title = "p53 ('scale.data')",  x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #Scenario 3: Using the "data" slot, center the scores afterward, reassign to metadata
-p3 <- VlnPlot(DF20_score, features = hms.centered, combine = F, group.by = "treatment.status") 
-p3[[1]] <- p3[[1]] + labs(title = "OXPHOS ('data' score centered)", x = "DF20")
-p3[[2]] <- p3[[2]] + labs(title = "UPR ('data' score centered)", x = "DF20")
-p3[[3]] <- p3[[3]] + labs(title = "p53 ('data' score centered)",  x = "DF20")
+p3 <- VlnPlot(DF20_score, features = hms.centered, combine = F, group.by = "treatment.status", cols = c("#00AFBB", "#E7B800", "#FC4E07"), pt.size = 0) 
+p3[[1]] <- p3[[1]] + labs(title = "OXPHOS ('data' score centered)", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+
+p3[[2]] <- p3[[2]] + labs(title = "UPR ('data' score centered)", x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+
+p3[[3]] <- p3[[3]] + labs(title = "p53 ('data' score centered)",  x = "DF20") + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #COMPARE 
 p1[[1]] + p3[[1]] + p2[[1]] + plot_layout(guides= 'collect', nrow = 1, ncol = 3)
@@ -848,6 +877,7 @@ FC + diff
     - Ranking by padj values ascending, then by logFC descending (demonstrated above, will include again below)
     - Ranking by logFC descending, then by padj values ascending 
     - Rank by AUC 
+    - Ranking by first filtering out genes with padj > 0.05, then rank by logFC descending
 
 ```{r FindMarkers rank by padj, message=FALSE, warning = FALSE, fig.align='center', fig.width=20, fig.height =15}
 all.volcano
@@ -943,11 +973,11 @@ Meanwhile, we rank each gene by their **auc** value, and a create VolcanoPlot to
 wilcoxauc.plot <- EnhancedVolcano(wilcoxauc.test, lab= wilcoxauc.test$rank, selectLab = wilcoxauc.test$rank, x='logFC', y='padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
       title= "DF20 MRD vs. vehicle DE Genes - WilcoxAUC (ranked by AUC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled by gene ranks (ranked by AUC)", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
 
-wilcox.volcano <- wilcox.volcano + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+wilcox.volcano <- wilcox.volcano + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
 
-wilcox.FCrank.plot <- wilcox.FCrank.plot + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+wilcox.FCrank.plot <- wilcox.FCrank.plot + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
 
 ranks.plot <- wilcoxauc.plot + wilcox.volcano + wilcox.FCrank.plot
 ranks.plot
@@ -960,4 +990,74 @@ ranks.plot
         - Although this can also be achieved by ranking genes by logFC, we demonstrated above that doing so will result in top ranked genes with a padj value of 1. 
         - However, if we ranked by padj values first, top ranked genes would be a mixture of those that are upregulated and depleted. 
 
-**Conclusion**: Although ranking genes by AUC seems like the best method, the drastic difference in logFC and padj values we get from the **wilcoxauc** vs. **wilcox** statistical tests is a concerning factor, and we're not sure which metric to trust.
+- Although ranking genes by AUC seems like the best method for now, the drastic difference in logFC and padj values we get from the **wilcoxauc** vs. **wilcox** statistical tests is a concerning factor, and we're not sure which metric to trust.
+    * We therefore try to rank by logFC again, but filter out not statistically significant genes first. We will investigate how the rankings look on the volcano plot again. As above, we will focus on **wilcox**. 
+
+**TESTING FILTER OUT PADJ FIRST, THEN RANK BY LOGFC**
+
+```{r wilcoxRank, message=TRUE, warning = TRUE, fig.align='center', fig.width = 15, fig.height = 15}
+
+wilcox.fpFC <- wilcox %>% select(-wilcox.rank) %>% filter(wilcox.padj < 0.05)
+wilcox.fpFC <- wilcox.fpFC %>% arrange(-wilcox.logFC)
+wilcox.fpFC <- wilcox.fpFC %>% mutate("wilcox.rank" = seq(from = 1, length = nrow(wilcox.fpFC)))
+
+wilcox.fpFC.plot <- EnhancedVolcano(wilcox.fpFC, lab= wilcox.fpFC$wilcox.rank, selectLab = wilcox.fpFC$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (logFC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8)) 
+
+p <- wilcox.volcano + wilcox.FCrank.plot + wilcoxauc.plot + wilcox.fpFC.plot
+ggsave(plot = p, filename = "ranktest.png", path = "jesslyn_plots/PDX_test", width = 15, height = 15)
+```
+
+It seems like filtering our padj first, then ranking by logFC might be the best option because: 
+    - The most enriched genes are all at the top 
+    - The most depleted genes are all at the bottom 
+    - They are all statistically significant 
+    - False positives are at the middle of the ranked list which doesn't matter
+
+**We now test which statistical test might be the best one based on this method of ranking** 
+```{r statTestRank, message=TRUE, warning = TRUE, fig.align='center', fig.width = 15, fig.height = 15}
+
+wilcox.fpFC.plot <- EnhancedVolcano(wilcox.fpFC, lab= wilcox.fpFC$wilcox.rank, selectLab = wilcox.fpFC$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) 
+
+# ---
+
+t.fpFC <- t.test %>% select(-t.rank) %>% filter(t.padj < 0.05)
+t.fpFC <- t.fpFC %>% arrange(-t.logFC)
+t.fpFC <- t.fpFC %>% mutate("t.rank" = seq(from = 1, length = nrow(t.fpFC)))
+
+t.fpFC.plot <- EnhancedVolcano(t.fpFC, lab= t.fpFC$t.rank, selectLab = t.fpFC$t.rank, x='t.logFC', y='t.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - t (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) 
+
+# ----
+  
+MAST.fpFC <- MAST %>% select(-MAST.rank) %>% filter(MAST.padj < 0.05)
+MAST.fpFC <- MAST.fpFC %>% arrange(-MAST.logFC)
+MAST.fpFC <- MAST.fpFC %>% mutate("MAST.rank" = seq(from = 1, length = nrow(MAST.fpFC)))
+
+MAST.fpFC.plot <- EnhancedVolcano(MAST.fpFC, lab= MAST.fpFC$MAST.rank, selectLab = MAST.fpFC$MAST.rank, x='MAST.logFC', y='MAST.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - MAST (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+
+# ---
+LR.fpFC <- LR %>% select(-LR.rank) %>% filter(LR.padj < 0.05)
+LR.fpFC <- LR.fpFC %>% arrange(-LR.logFC)
+LR.fpFC <- LR.fpFC %>% mutate("LR.rank" = seq(from = 1, length = nrow(LR.fpFC)))
+
+LR.fpFC.plot <- EnhancedVolcano(LR.fpFC, lab= LR.fpFC$LR.rank, selectLab =LR.fpFC$LR.rank, x='LR.logFC', y='LR.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - LR (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+
+
+p2 <- wilcox.fpFC.plot + t.fpFC.plot + MAST.fpFC.plot + LR.fpFC.plot 
+ggsave(plot = p2, filename = "statisticaltest.rank.png", path = "jesslyn_plots/PDX_test", width = 15, height = 15)
+```
+
+* It seems like **wilcox** is the best statistical test to use considering how it identified the most DE genes, and the false positives are more towards the middle of the rank in comparison to the t.test and LR, which have false positives towards the top of the rank. 
+
+
+

@@ -372,6 +372,7 @@ P8.oxphosVsnCount + P8.oxphosVsnFeature + P9.oxphosVsnCount + P9.oxphosVsnFeatur
 P8.PCA.cells <- SS2Malignant.8@reductions$pca@cell.embeddings %>% as.data.frame()
 
 
+
 P9.PCA <- SS2Malignant.9@reductions$pca@feature.loadings
 
 ```

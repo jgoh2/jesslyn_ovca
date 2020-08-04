@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 options(width=120)
 ```
 
-# IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 1
+# IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 2
 
 ### OVERVIEW
 * The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals: 
@@ -24,7 +24,7 @@ options(width=120)
     - Includes both **malignant** and **nonmalignant** populations but differs from 10X data - examines malignant ascites more closely. 
     - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses. 
     
-* In our 3-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9 
+* In our 5-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses **within** patients 8 and 9 
 * We split our SS2 analysis into three parts: 
     1. **Load Data and Create SS2 Seurat Object**
         a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
@@ -39,30 +39,36 @@ options(width=120)
             iv. Save Seurat Object
           
     2. **Process Data and Exploratory Data Analysis**
-        a. The code to this part of our analysis can be found in the **03_Izar2020_SS2_Load_Plots.Rmd** file in the **old/edited** folder. During this part of our analysis we: 
-            i. Load in SS2 Seurat Object from Part 1 and **subset for Malignant cells then for patient 8 and 9**. Continue analysis separately for each patient. 
+        a. The code to this part of our analysis can be found in the **02_Izar2020_SS2_Load_Plots** file in the **old/edited** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 1 and **subset by patients 8 and 9**. Continue analysis separately for each model. 
             ii. Scale and FindVariableFeatures (prepares data for dimensionality reduction)
             iii. Dimensionality Reduction (PCA + UMAP)
-            iv. Visualize how cells separate based on metadata identities via UMAP 
-                  - Intermodel heterogeneity: How do cells separate by model? 
-                  - Intramodel heterogeneity: 
-                      * How do cells separate by treament status? 
-                      * How do cells separate by cell cycle phase? 
-            v. Compute summary metrics for SS2 data such as:
+            vi. Save Seurat Objects 
+      
+    3. **Exploratory Data Analysis**
+        a. The code to this part of our analysis can be found in the **02.0_Izar2020_SS2_Exploratory Analysis** file in the **analysis** folder. During this part of our analysis we: 
+            i. Load in SS2 Seurat Object from Part 2. Analyze separately for patients 8 and 9
+            ii. Compute summary metrics for SS2 data such as: 
                 - Number of cells per patient per treatment 
                 - Number of cells per treatment per cell cycle phase 
-            vi. Save Seurat Objects 
+            iii. Visualize how cells separate based on metadata identities via UMAP and PCA
+                - Intermodel heterogeneity: How do cells separate by sample? 
+                - Intramodel heterogeneity: 
+                    * How do cells separate by treament status / sample? 
+                    * How do cells separate by cell cycle phase?
             
-    3. **DE Analysis**
+    4. **DE Analysis**
         a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
             i. Violin Plots and UMAP 
             ii. Gene Set Enrichment Analysis (GSEA)
         b. **TYPE #2 DE ANALYSIS**: Finding DE Genes from scratch
             i. Volcano Plots 
-        c. **CELL CYCLE ANALYSIS**
-            i. Evaluate the idea that cell cycle might influence expression of signatures 
+          
+    5. **CELL CYCLE ANALYSIS**
+        a. **TYPE #1 CELL CYCLE ANALYSIS**: Examine correlation between treatment condition and cell cycle phase
+        b. Evaluate the idea that cell cycle might influence expression of signatures 
 
-This is the second part of our 3-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
+This is the second part of our 5-part analysis of the Izar 2020 SS2 (Cohort 2) data. 
 
 ### STEP 1 LOAD SEURAT OBJECT
 
@@ -80,8 +86,8 @@ g2m.genes <- ccgenes[44:97]
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 3)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
@@ -90,6 +96,7 @@ for(hm in hallmark_names){
 hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
 hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
 hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
 
 ```
 
