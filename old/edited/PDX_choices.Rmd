@@ -878,6 +878,7 @@ FC + diff
     - Ranking by logFC descending, then by padj values ascending 
     - Rank by AUC 
     - Ranking by first filtering out genes with padj > 0.05, then rank by logFC descending
+    - Multiplying -log10padj by logFC and using this metric to rank genes
 
 ```{r FindMarkers rank by padj, message=FALSE, warning = FALSE, fig.align='center', fig.width=20, fig.height =15}
 all.volcano
@@ -1007,6 +1008,7 @@ wilcox.fpFC.plot <- EnhancedVolcano(wilcox.fpFC, lab= wilcox.fpFC$wilcox.rank, s
       legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8)) 
 
 p <- wilcox.volcano + wilcox.FCrank.plot + wilcoxauc.plot + wilcox.fpFC.plot
+p
 ggsave(plot = p, filename = "ranktest.png", path = "jesslyn_plots/PDX_test", width = 15, height = 15)
 ```
 
@@ -1015,6 +1017,46 @@ It seems like filtering our padj first, then ranking by logFC might be the best 
     - The most depleted genes are all at the bottom 
     - They are all statistically significant 
     - False positives are at the middle of the ranked list which doesn't matter
+* However, it might not be a great idea to filter out genes because GSEA needs to work on all genes. 
+* We therefore test to rank genes by 
+    - multiplying -log10padj by logFC and using this metric to rank 
+    - filtering out padj> 0.05 genes first then rank by that metric
+
+```{r rankMult, message = FALSE, warning = FALSE, fig.align='center', fig.width = 30, fig.height = 15}
+
+# -log10padj * logFC ----------------------
+wilcox.Mult <- wilcox %>% select(-wilcox.rank) 
+wilcox.Mult <- wilcox.Mult %>% 
+  mutate("rank.metric" = wilcox.Mult$"wilcox.-log10padj" * wilcox.Mult$wilcox.logFC)
+wilcox.Mult <- wilcox.Mult %>% arrange(-rank.metric)
+wilcox.Mult <- wilcox.Mult %>% mutate("wilcox.rank" = seq(from = 1, length = nrow(wilcox.Mult)))
+
+wilcox.Mult.plot <- EnhancedVolcano(wilcox.Mult, lab= wilcox.Mult$wilcox.rank, selectLab = wilcox.Mult$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (-log10padj * logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (-log10padj * logFC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+
+# -log10padj * logFC (filter genes out)
+wilcox.Mult.filt <- wilcox %>% select(-wilcox.rank) %>% filter(wilcox.padj < 0.05)
+wilcox.Mult.filt <- wilcox.Mult.filt %>% 
+  mutate("rank.metric" = wilcox.Mult.filt$"wilcox.-log10padj" * wilcox.Mult.filt$wilcox.logFC)
+wilcox.Mult.filt <- wilcox.Mult.filt %>% arrange(-rank.metric)
+wilcox.Mult.filt <- wilcox.Mult.filt %>% mutate("wilcox.rank" = seq(from = 1, length = nrow(wilcox.Mult.filt)))
+
+wilcox.Mult.filt.plot <- EnhancedVolcano(wilcox.Mult.filt, lab= wilcox.Mult.filt$wilcox.rank, selectLab = wilcox.Mult.filt$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (filtered, -log10padj * logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (filtered, -log10padj * logFC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+
+
+p <- p + wilcox.Mult.plot + wilcox.Mult.filt.plot
+p 
+ggsave(plot = p, filename = "ranktest2.png", path = "jesslyn_plots/PDX_test", width = 30, height = 15)
+```
+
+* In terms of comparing ranking methods using the **wilcox** test, it seems like ranking it by the **-log10padj x logFC** metric is the best because it has a nice separation of upregulated and downregulated genes at separate poles, and genes that are false positives are relatively in the middle of the rank. 
+* Although we are not considering so much about ranking after filtering genes out, it is important to note that ranking genes with logFC after filtering genes out allows us to rank genes that are highly DE on top, whereas using the **-log10padj x logFC** puts the priority more to statistical significance (genes that are more statistically significant are at the top of the list despite the clearly separate poles). 
+* We are still unsure how to compare **wilcoxauc** vs **wilcox**, since the AUC metric is also great for ranking but the logFC and padj values we get are completely different. 
 
 **We now test which statistical test might be the best one based on this method of ranking** 
 ```{r statTestRank, message=TRUE, warning = TRUE, fig.align='center', fig.width = 15, fig.height = 15}
@@ -1054,6 +1096,7 @@ LR.fpFC.plot <- EnhancedVolcano(LR.fpFC, lab= LR.fpFC$LR.rank, selectLab =LR.fpF
 
 
 p2 <- wilcox.fpFC.plot + t.fpFC.plot + MAST.fpFC.plot + LR.fpFC.plot 
+p2
 ggsave(plot = p2, filename = "statisticaltest.rank.png", path = "jesslyn_plots/PDX_test", width = 15, height = 15)
 ```
 

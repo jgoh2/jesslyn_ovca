@@ -104,11 +104,13 @@ hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =
 ```{r subset and scale Malignant, message=FALSE, warning = FALSE}
 #subset
 SS2Malignant <- subset(SS2, subset = (cell.type == "Malignant"))
+SS2Malignant8.9 <- subset(SS2Malignant, subset = (Patient == c(8,9)))
 SS2Malignant.8 <- subset(SS2Malignant, subset = (Patient == 8))
 SS2Malignant.9 <- subset(SS2Malignant, subset = (Patient == 9))
 
 #scale
 SS2Malignant <- ScaleData(SS2Malignant, do.scale = TRUE, do.center = TRUE)
+SS2Malignant8.9 <- ScaleData(SS2Malignant8.9, do.scale = TRUE, do.center = TRUE)
 SS2Malignant.8 <- ScaleData(SS2Malignant.8, do.scale = TRUE, do.center = TRUE)
 SS2Malignant.9 <- ScaleData(SS2Malignant.9, do.scale = TRUE, do.center = TRUE)
 ```
@@ -118,6 +120,7 @@ SS2Malignant.9 <- ScaleData(SS2Malignant.9, do.scale = TRUE, do.center = TRUE)
 #set levels
 SS2Malignant$sample = factor(SS2Malignant$sample, levels = trimws(sort(formatC(unique(SS2$sample)))))
 SS2Malignant$treatment.status = factor(SS2Malignant$treatment.status, levels = c("Treatment-naïve","On-treatment"))
+SS2Malignant8.9$treatment.status = factor(SS2Malignant$treatment.status, levels = c("Treatment-naïve","On-treatment"))
 SS2Malignant.8$treatment.status = factor(SS2Malignant.8$treatment.status, levels = c("Treatment-naïve","On-treatment"))
 SS2Malignant.9$treatment.status = factor(SS2Malignant.9$treatment.status, levels = c("Treatment-naïve","On-treatment"))
 
@@ -162,10 +165,12 @@ ggsave(plot = p, filename = "SS2Malignant_P8P9_metrics.png", path = "jesslyn_plo
 ```{r Dimensionality Reduction, message=FALSE, warning=FALSE}
 #PCA data has already been scaled and centered above
 SS2Malignant <- FindVariableFeatures(SS2Malignant, selection.method = "vst")
+SS2Malignant8.9 <- FindVariableFeatures(SS2Malignant8.9, selection.method = "vst")
 SS2Malignant.8 <- FindVariableFeatures(SS2Malignant.8, selection.method = "vst")
 SS2Malignant.9 <- FindVariableFeatures(SS2Malignant.9, selection.method = "vst")
 
 SS2Malignant <- RunPCA(SS2Malignant, features = VariableFeatures(SS2Malignant))
+SS2Malignant8.9 <- RunPCA(SS2Malignant8.9, features = VariableFeatures(SS2Malignant8.9))
 SS2Malignant.8 <- RunPCA(SS2Malignant.8, features = VariableFeatures(SS2Malignant.8))
 SS2Malignant.9 <- RunPCA(SS2Malignant.9, features = VariableFeatures(SS2Malignant.9))
 
@@ -175,6 +180,7 @@ ElbowPlot(SS2Malignant.9)
 
 #UMAP
 SS2Malignant<- RunUMAP(SS2Malignant, dims=1:15)
+SS2Malignant8.9 <- RunUMAP(SS2Malignant8.9, dims = 1:15)
 SS2Malignant.8<- RunUMAP(SS2Malignant.8, dims=1:15)
 SS2Malignant.9<- RunUMAP(SS2Malignant.9, dims=1:15)
 ```
@@ -212,4 +218,6 @@ ggsave(plot = p9, "SS2Malignant.9_UMAP.png", path = "jesslyn_plots/SS2", width =
 saveRDS(SS2Malignant, file="data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
 saveRDS(SS2Malignant.8, file="data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
 saveRDS(SS2Malignant.9, file="data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
+saveRDS(SS2Malignant8.9, file="data/Izar_2020/jesslyn_SS2Malignant89_processed.RDS")
+
 ```
