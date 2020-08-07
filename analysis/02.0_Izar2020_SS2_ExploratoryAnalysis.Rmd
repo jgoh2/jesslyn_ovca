@@ -78,6 +78,7 @@ source(here::here('packages.R'))
 
 #Read in SS2 RDS object
 SS2Malignant = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant_processed.RDS")
+SS2Malignant8.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant89_processed.RDS")
 SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
 SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
 
@@ -133,6 +134,18 @@ ggplot(numMalignantCellsPerPatientPerTreatment, aes(x = Patient, y=numCells, fil
   theme_bw() + 
   labs(title = "SS2 Number of Malignant Cells Per Patient Per Treatment") + 
   geom_text(aes(label = paste(numCells.NA, "Cells")), size =6, position = "fill", hjust = 0.5, vjust = 4, color = "white", na.rm = TRUE)
+
+numMalignantCellsPerPatientPerSample <- table(SS2Malignant$Patient, SS2Malignant$sample) %>%
+  as.data.frame() %>% 
+  dplyr::rename(Patient = Var1, sample = Var2, numCells = Freq) %>% 
+  filter(numCells != 0)
+ggplot(numMalignantCellsPerPatientPerSample, aes(x = Patient, y=numCells, fill = sample)) + 
+  geom_bar(position = "fill", stat = "identity") + 
+  theme_bw() + 
+  labs(title = "SS2 Number of Malignant Cells Per Patient Per Sample") + 
+  geom_text(aes(label = paste(numCells, "Cells")), size =6, position = "fill", hjust = 0.5, vjust = 1.5, color = "white", na.rm = TRUE) +
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "orange", "chocolate1", "chocolate2", "#00AFBB", "#E7B800", "orange", "#00AFBB", "#E7B800", "orange", "#00AFBB", "#00AFBB", "#00AFBB"))
+
 
 #metrics for patient 8 and 9
 numMalignantCellsPerSample.8 <- table(SS2Malignant.8$Patient, SS2Malignant.8$sample) %>%
@@ -195,6 +208,29 @@ p4 <- UMAPPlot(SS2Malignant, group.by = "Phase", pt.size = 0.5) +
   theme(plot.title = element_text(size = 14))
 
 p1 + p3 + p4
+
+#only patient 8 and 9 
+p5 <- UMAPPlot(SS2Malignant8.9, group.by = "Patient", pt.size= 0.5) + 
+  labs(title = "SS2 Malignant Cells UMAP by Patients 8 and 9", subtitle = paste(nrow(SS2Malignant8.9@meta.data),"Malignant Cells")) + 
+  coord_fixed()  + 
+  theme(plot.title = element_text(size = 14))
+p6 <- UMAPPlot(SS2Malignant8.9, group.by = "sample", pt.size = 0.5) + 
+  labs(title = "SS2 Malignant Cells UMAP by Sample", subtitle = paste(nrow(SS2Malignant8.9@meta.data),"Malignant Cells")) + 
+  coord_fixed()  + 
+  theme(plot.title = element_text(size = 14))
+
+p7 <- UMAPPlot(SS2Malignant8.9, group.by = "treatment.status", pt.size = 0.5) + 
+  labs(title = "SS2 Malignant Cells UMAP by Treatment", subtitle = paste(nrow(SS2Malignant8.9@meta.data),"Malignant Cells")) + 
+  coord_fixed()  + 
+  theme(plot.title = element_text(size = 14))
+
+p8 <- UMAPPlot(SS2Malignant8.9, group.by = "Phase", pt.size = 0.5) + 
+  labs(title = "SS2 Malignant Cells UMAP by CC Phase", subtitle = paste(nrow(SS2Malignant8.9@meta.data),"Malignant Cells")) + 
+  coord_fixed() +
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+  theme(plot.title = element_text(size = 14))
+
+p5 + p7 + p8
 ```
 * SS2 data separates by patient very well. However, it doesn't seem like it separates by sample within each patient. We will investigate this further by looking into patient 8 and 9 specifically. 
 
@@ -370,8 +406,23 @@ P8.oxphosVsnCount + P8.oxphosVsnFeature + P9.oxphosVsnCount + P9.oxphosVsnFeatur
 
 #GO.OXPHOS --------------
 P8.PCA.cells <- SS2Malignant.8@reductions$pca@cell.embeddings %>% as.data.frame()
+Oxphos.ctg <- rep("NA", length = nrow(SS2Malignant.8@meta.data))
+Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered > 0.25] <- "Highly Upregulated"
+Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered < 0.25 & SS2Malignant.8$GO.OXPHOS35.centered > 0] <- "Slightly Upregulated"
+Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered == 0] <- "Not Expressed"
+Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered > -0.25 & SS2Malignant.8$GO.OXPHOS35.centered < 0] <- "Slightly Downregulated"
+Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered < -0.25] <- "Highly Downregulated"
 
+p1 <- ggpairs(P8.PCA.cells, columns = c("PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", mapping = aes(alpha = 0.3, colour = Oxphos.ctg)) + 
+  labs(title = "Investigating the PC that captures OXPHOS scores variation across cells")
 
+p1
+
+# ----
+P8.PCA.genes <- SS2Malignant.8@reductions$pca@feature.loadings %>% as.data.frame()
+OXPHOS <- rownames(P8.PCA.genes) %in% hallmark.list[["GO.OXPHOS"]]
+p2 <- ggpairs(P8.PCA.genes, columns = c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", mapping = aes(alpha = 0.3, colour = OXPHOS)) + labs(title = "Investigating the PC that captures OXPHOS genes")
+p2
 
 P9.PCA <- SS2Malignant.9@reductions$pca@feature.loadings
 

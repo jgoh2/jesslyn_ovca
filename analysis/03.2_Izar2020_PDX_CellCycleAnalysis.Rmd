@@ -177,7 +177,7 @@ bar.plots[["DF20"]] + bar.plots[["DF101"]] + bar.plots[["DF68"]] + plot_layout(g
 
 To investigate this further, we build violin plots of cell cycle scores separated by treatment status. 
 
-```{r cellcycleVln, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=8}
+```{r cellcycleVln, message=FALSE, warning=FALSE, fig.align='center', fig.width=10, fig.height=8}
 #VlnPlot -------------------------
 cc.Vln.plots <- vector("list", length = 3)
 names(cc.Vln.plots) <- PDX.names

@@ -487,7 +487,7 @@ After deciding the geneset to use for our data, we can now analyze the different
             - Violin Plot (center module scores at 0)
         * Statistical test (**wilcoxon rank sum test**): is the difference in hallmark score across treatment conditions statistically significant? 
 
-```{r DEAnalysis1VlnPlot, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height = 10}
+```{r DEAnalysis1VlnPlot, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 17, fig.height = 10}
 hms.centered = c("GO.OXPHOS35.centered", "UNUPDATED.UPR38.centered")
 
 #VlnPlot

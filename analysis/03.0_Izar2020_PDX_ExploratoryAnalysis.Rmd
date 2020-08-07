@@ -123,7 +123,8 @@ numCellsPerTreatmentPerModel %>%
   dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %>% 
   ggplot(aes(x=model, fill=treatmentStatus, y=numCells)) +
   geom_bar(stat="identity", position="fill") + labs(fill = "treatmentStatus", x = "model") +
-  geom_text(aes(label = numCells), position = "fill", hjust = 0.5, vjust = 2, size = 3, color = "white") + 
+  theme_bw() + 
+  geom_text(aes(label = glue("{numCells} Cells")), position = "fill", hjust = 0.5, vjust = 2, size = 3, color = "white") + 
   labs(title = "Number of Malignant Cells Per Treatment Per Model") + 
   scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 ```
