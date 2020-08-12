@@ -432,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-07
+<strong>Last updated:</strong> 2020-08-12
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3e3db6777f7551d3cbc73b897e704026510ea30ctargetblank3e3db67a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3e3db6777f7551d3cbc73b897e704026510ea30c" target="_blank">3e3db67</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed504c5953721665b13749ae0ef898a9b46ab6f03targetblankd504c59a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d504c5953721665b13749ae0ef898a9b46ab6f03" target="_blank">d504c59</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3e3db6777f7551d3cbc73b897e704026510ea30ctargetblank3e3db67a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed504c5953721665b13749ae0ef898a9b46ab6f03targetblankd504c59a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3e3db6777f7551d3cbc73b897e704026510ea30c" target="_blank">3e3db67</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d504c5953721665b13749ae0ef898a9b46ab6f03" target="_blank">d504c59</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -559,8 +559,16 @@ Ignored files:
     Ignored:    renv/staging/
     Ignored:    vignettes/
 
+Untracked files:
+    Untracked:  data/gene_lists/cellcycle/
+
 Unstaged changes:
+    Modified:   code/DEAnalysis_code.R
+    Modified:   code/FindMarkers_code.R
+    Modified:   code/GSEA_code.R
+    Modified:   code/read_Izar_2020.R
     Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
+    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
     Modified:   old/edited/PDX_choices.Rmd
     Modified:   old/edited/PDX_choices.html
 
@@ -601,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d504c5953721665b13749ae0ef898a9b46ab6f03/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">d504c59</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -826,9 +868,18 @@ SS2Malignant.8 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant8_proce
 SS2Malignant.9 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS&quot;)
 
 #Read in hallmarks of interest
+g0g1.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G0G1.txt&quot;, skip = 2)
+g1S.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1SDNAdamage.txt&quot;, skip = 2)
+g1S.transcription.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1Stranscription.txt&quot;, skip = 2)
+g2m.checkpoint.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2Mcheckpoint.txt&quot;, skip = 2)
+g2m.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MDNAdamage.txt&quot;, skip = 2)
+g2m.replicationCP.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt&quot;, skip = 2)
+
 hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
-hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 4)
-names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, &quot;UNUPDATED.UPR&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 9)
+names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, 
+                          &quot;UNUPDATED.UPR&quot;, &quot;G0G1&quot;, &quot;G1S.DNAdamage&quot;, &quot;G1S.transcription&quot;, &quot;G2M.checkpoint&quot;, 
+                          &quot;G2M.DNAdamage&quot;)
 for(hm in hallmark_names){
   file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
   hallmark.list[[hm]] &lt;- file
@@ -838,9 +889,14 @@ hallmark.list[[&quot;GO.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/ex
 hallmark.list[[&quot;KEGG.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/KEGG.OXPHOS.txt&quot;, skip = 2)
 hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/oxphos.txt&quot;, skip =1)
 hallmark.list[[&quot;UNUPDATED.UPR&quot;]] &lt;- read_lines(&quot;data/gene_lists/upr.txt&quot;, skip =1)
+hallmark.list[[&quot;G0G1&quot;]] &lt;- g0g1.genes
+hallmark.list[[&quot;G1S.DNAdamage&quot;]] &lt;- g1S.DNAdamage.genes
+hallmark.list[[&quot;G1S.transcription&quot;]] &lt;- g1S.transcription.genes
+hallmark.list[[&quot;G2M.checkpoint&quot;]] &lt;- g2m.checkpoint.genes
+hallmark.list[[&quot;G2M.DNAdamage&quot;]] &lt;- g2m.DNAdamage.genes
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(SS2Malignant@meta.data)[14:53]
+hm.names &lt;- names(SS2Malignant@meta.data)[14:58]
 
 for(i in hm.names){
     SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -871,8 +927,7 @@ for(i in hm.names){
 </ul></li>
 </ul></li>
 </ul>
-<pre class="r"><code>hms.centered &lt;- c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
-#Stacked Bar Plot --------------------------
+<pre class="r"><code>#Stacked Bar Plot --------------------------
 SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
 SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
 bar.plots &lt;- vector(&quot;list&quot;, length = 3)
@@ -978,49 +1033,135 @@ jgoh2
 <li>Important to note that we have very little cells in each condition, so we have really little power and the results from our sample may not be representative of the true population.</li>
 </ul></li>
 </ul>
-<p>To investigate this further, we build violin plots of cell cycle scores separated by treatment status.</p>
-<pre class="r"><code>#VlnPlot -------------------------
-cc.Vln.plots &lt;- vector(&quot;list&quot;, length = 3)
-names(cc.Vln.plots) &lt;- SS2.names
-patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+<p>To investigate this further, we build violin plots of cell cycle scores separated by treatment status: - Noncycling Scores - G0 / early G1 - G1/S DNA Damage Checkpoint - G2M Checkpoint - G2M DNA Damage Checkpoint - Cycling Scores - G1/S Specific Transcription - S Score - G2M Score</p>
+<p><strong>1) NONCYCLING SCORES</strong></p>
+<pre class="r"><code>nc &lt;- c(&quot;G0G139.centered&quot;, &quot;G1S.DNAdamage40.centered&quot;, &quot;G2M.checkpoint42.centered&quot;, &quot;G2M.DNAdamage43.centered&quot;)
+nc.names &lt;- c(&quot;G0/G1&quot;, &quot;G1/S DNA Damage CP&quot;, &quot;G2M CP&quot;, &quot;G2M DNA Damage CP&quot;)
+nc.Vln.plots &lt;- vector(&quot;list&quot;, length = length(nc))
+names(nc.Vln.plots) &lt;- nc
 
-for (i in 1:length(SS2s)){
-  obj &lt;- SS2s[[i]]
-  name &lt;- SS2.names[[i]]
-  numCells = nrow(obj@meta.data)
+for(i in 1:4){
+  feature &lt;- nc[[i]]
+  nc.name &lt;- nc.names[[i]]
   
-  my_comparisons &lt;- list(
-    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
-    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
-    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  my_comparisons.8 &lt;- list(
+    c(&quot;8.0&quot;, &quot;8.1&quot;), 
+    c(&quot;8.1&quot;, &quot;8.2&quot;), 
+    c(&quot;8.0&quot;, &quot;8.2&quot;)
   )
   
-  if(patient[[i]] == &quot;8&quot;){
-    p &lt;- VlnPlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), group.by = &quot;sample&quot;, pt.size = 0, combine = F, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = 3.8)
-  }
-  else{
-  p &lt;- VlnPlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), group.by = &quot;sample&quot;, pt.size = 0, combine = F, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = 3.5)
-  }
-  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{name} S.Score across treatment&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$S.Score.centered) -0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(obj$S.Score.centered) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(obj$S.Score.centered) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+  my_comparisons.9 &lt;- list(
+    c(&quot;9.0&quot;, &quot;9.1&quot;), 
+    c(&quot;9.1&quot;, &quot;9.2&quot;), 
+    c(&quot;9.0&quot;, &quot;9.2&quot;)
+  )
   
-  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{name} G2M.Score across treatment&quot;), x = name, subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) +
+   p8 &lt;- VlnPlot(SS2Malignant.8, features = feature, group.by = &quot;sample&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = (max(SS2Malignant.8[[feature]]) + 0.4)) + 
+     labs(title = glue(&quot;Patient 8 {nc.name} across samples&quot;), subtitle = paste(nrow(SS2Malignant.8@meta.data), &quot;Malignant Cells&quot;)) + 
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(obj$G2M.Score.centered) -0.05) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(obj$G2M.Score.centered) - 0.05) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(obj$G2M.Score.centered) - 0.05) +
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-
-  cc.Vln.plots[[name]] &lt;- p[[1]] + p[[2]] + plot_layout(guides= &#39;collect&#39;)
+    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = &quot;8.0&quot;, y = min(SS2Malignant.8[[feature]]) -0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;8.1&quot;), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;8.2&quot;), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons.8, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons.8, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+   
+   p9 &lt;- VlnPlot(SS2Malignant.9, features = feature, group.by = &quot;sample&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = (max(SS2Malignant.8[[feature]]) + 0.4)) + 
+     labs(title = glue(&quot;Patient 9 {nc.name} across samples&quot;), subtitle = paste(nrow(SS2Malignant.9@meta.data), &quot;Malignant Cells&quot;)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = &quot;9.0&quot;, y = min(SS2Malignant.9[[feature]]) -0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;9.1&quot;), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;9.2&quot;), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons.9, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons.9, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+   
+   nc.Vln.plots[[feature]] &lt;- p8 + p9 + plot_layout(ncol = 2, nrow =1)
 }
 
-cc.Vln.plots[[&quot;SS2 Patient 8&quot;]]</code></pre>
+nc.Vln.plots[[&quot;G0G139.centered&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nc.Vln.plots[[&quot;G1S.DNAdamage40.centered&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nc.Vln.plots[[&quot;G2M.checkpoint42.centered&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>nc.Vln.plots[[&quot;G2M.DNAdamage43.centered&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>We hypothesized that samples p.1 will have enriched levels of non/low-cycling genes.</p>
+<ul>
+<li>Statistically significant results
+<ul>
+<li>G0/G1
+<ul>
+<li>8.2 &gt; 8.0</li>
+</ul></li>
+<li>G1/S DNA Damage Checkpoint
+<ul>
+<li>9.0 &gt; 9.2</li>
+<li>9.1 &gt; 9.2 (supports our hypothesis)</li>
+</ul></li>
+<li>G2M Checkpoint
+<ul>
+<li>9.0 &gt; 9.2</li>
+<li>9.1 &gt; 9.2 (supports our hypothesis)</li>
+</ul></li>
+<li>G2M DNA Damage Checkpoint
+<ul>
+<li>9.0 &gt; 9.2</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>2) CYCLING SCORES</strong></p>
+<ul>
+<li>Cycling Scores
+<ul>
+<li>G1/S Specific Transcription</li>
+<li>S Score</li>
+<li>G2M Score</li>
+</ul></li>
+</ul>
+<pre class="r"><code>#VlnPlot -------------------------
+cc &lt;- c(&quot;G1S.transcription41.centered&quot;, &quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;)
+cc.names &lt;- c(&quot;G1/S Specific Transcription&quot;, &quot;S Score&quot;, &quot;G2M Score&quot;)
+cc.Vln.plots &lt;- vector(&quot;list&quot;, length = length(cc))
+names(cc.Vln.plots) &lt;- cc
+
+for(i in 1:3){
+  feature &lt;- cc[[i]]
+  cc.name &lt;- cc.names[[i]]
+  
+  my_comparisons.8 &lt;- list(
+    c(&quot;8.0&quot;, &quot;8.1&quot;), 
+    c(&quot;8.1&quot;, &quot;8.2&quot;), 
+    c(&quot;8.0&quot;, &quot;8.2&quot;)
+  )
+  
+  my_comparisons.9 &lt;- list(
+    c(&quot;9.0&quot;, &quot;9.1&quot;), 
+    c(&quot;9.1&quot;, &quot;9.2&quot;), 
+    c(&quot;9.0&quot;, &quot;9.2&quot;)
+  )
+  
+   p8 &lt;- VlnPlot(SS2Malignant.8, features = feature, group.by = &quot;sample&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = (max(SS2Malignant.8[[feature]]) + 0.8)) + 
+     labs(title = glue(&quot;Patient 8 {cc.name} across samples&quot;), subtitle = paste(nrow(SS2Malignant.8@meta.data), &quot;Malignant Cells&quot;)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = &quot;8.0&quot;, y = min(SS2Malignant.8[[feature]]) -0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;8.1&quot;), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;8.2&quot;), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons.8, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons.8, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+   
+   p9 &lt;- VlnPlot(SS2Malignant.9, features = feature, group.by = &quot;sample&quot;, pt.size = 0, c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = (max(SS2Malignant.8[[feature]]) + 0.8)) + 
+     labs(title = glue(&quot;Patient 9 {cc.name} across samples&quot;), subtitle = paste(nrow(SS2Malignant.9@meta.data), &quot;Malignant Cells&quot;)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = &quot;9.0&quot;, y = min(SS2Malignant.9[[feature]]) -0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;9.1&quot;), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
+    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;9.2&quot;), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
+    stat_compare_means(comparisons = my_comparisons.9, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.05) + 
+    stat_compare_means(comparisons = my_comparisons.9, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.05, bracket.size = 0, vjust = 1.8)
+   
+   cc.Vln.plots[[feature]] &lt;- p8 + p9 + plot_layout(ncol = 2, nrow =1)
+}
+
+cc.Vln.plots[[&quot;G1S.transcription41.centered&quot;]]</code></pre>
 <p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-1">
@@ -1070,7 +1211,7 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code>cc.Vln.plots[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<pre class="r"><code>cc.Vln.plots[[&quot;S.Score.centered&quot;]]</code></pre>
 <p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-2">
@@ -1120,20 +1261,32 @@ jgoh2
 </table>
 </div>
 </div>
+<pre class="r"><code>cc.Vln.plots[[&quot;G2M.Score.centered&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" width="1152" style="display: block; margin: auto;" /></p>
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
 <li>Statistically significant results:
 <ul>
-<li><strong>Patient 8</strong>: S.SCORE - 8.1 &gt; 8.0 ; 8.1 &gt; 8.2 (does not support our hypothesis)</li>
-<li><strong>Patient 9</strong>: G2M.SCORE - 9.1 &gt; 9.2 ; 9.0 &gt; 9.2
+<li>G1/S Specific Transcription Score
 <ul>
-<li>The part where 9.0 &gt; 9.2 supports our hypothesis</li>
-<li>However, 9.1 . 9.2 does not support our hypothesis</li>
+<li>9.1 &gt; 9.2 (rejects our hypothesis)</li>
 </ul></li>
-<li>Cell cycle does not seem to correlate with treatment condition based on these results</li>
+<li>S Score
+<ul>
+<li>8.1 &gt; 8.0 (rejects our hypothesis)</li>
+<li>8.2 &gt; 8.0</li>
+</ul></li>
+<li>G2M Score
+<ul>
+<li>9.1 &gt; 9.2 (rejects our hypothesis)</li>
+<li>9.0 &gt; 9.2</li>
 </ul></li>
 </ul></li>
+</ul></li>
+</ul>
+<p>Statistically significant results from both NONCYCLING and CYCLYING gene score comparisons show us that 9.1 &gt; 9.2, which is very contradictory.</p>
+<ul>
 <li><strong>STATISTICAL SUMMARY</strong></li>
 </ul>
 <pre class="r"><code>#Patient 8 ---------------------------------
@@ -1193,8 +1346,10 @@ DT::datatable(both.DF) %&gt;%
 </ul></li>
 </ul></li>
 </ul>
-<pre class="r"><code>cc.exp.plot &lt;- vector(&quot;list&quot;, length = 3)
+<pre class="r"><code>hms.centered &lt;- c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
+cc.exp.plot &lt;- vector(&quot;list&quot;, length = 3)
 names(cc.exp.plot) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
 
 for(i in 1:length(SS2s)){
   obj = SS2s[[i]]
@@ -1383,33 +1538,37 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
- [1] ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4        tidyselect_1.1.0     
- [6] presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5            glue_1.4.1            patchwork_1.0.1      
-[11] EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1              readxl_1.3.1          forcats_0.5.0        
-[16] stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4           readr_1.3.1           tidyr_1.1.0          
-[21] tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0       cowplot_1.0.0         Seurat_3.1.5         
-[26] BiocManager_1.30.10   renv_0.11.0-4        
+ [1] ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4       
+ [6] tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5           
+[11] glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1             
+[16] readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4          
+[21] readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0      
+[26] cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
 
 loaded via a namespace (and not attached):
-  [1] Rtsne_0.15         colorspace_1.4-1   ggsignif_0.6.0     rio_0.5.16         ellipsis_0.3.1     ggridges_0.5.2    
-  [7] rprojroot_1.3-2    fs_1.4.2           rstudioapi_0.11    farver_2.0.3       leiden_0.3.3       listenv_0.8.0     
- [13] DT_0.14            fansi_0.4.1        lubridate_1.7.9    xml2_1.3.2         codetools_0.2-16   splines_4.0.2     
- [19] knitr_1.29         jsonlite_1.7.0     workflowr_1.6.2    broom_0.7.0        ica_1.0-2          cluster_2.1.0     
- [25] dbplyr_1.4.4       png_0.1-7          uwot_0.1.8         sctransform_0.2.1  compiler_4.0.2     httr_1.4.1        
- [31] backports_1.1.8    assertthat_0.2.1   Matrix_1.2-18      lazyeval_0.2.2     cli_2.0.2          later_1.1.0.1     
- [37] htmltools_0.5.0    tools_4.0.2        rsvd_1.0.3         igraph_1.2.5       gtable_0.3.0       RANN_2.6.1        
- [43] carData_3.0-4      cellranger_1.1.0   vctrs_0.3.2        ape_5.4            nlme_3.1-148       crosstalk_1.1.0.1 
- [49] lmtest_0.9-37      xfun_0.15          globals_0.12.5     openxlsx_4.1.5     rvest_0.3.5        lifecycle_0.2.0   
- [55] irlba_2.3.3        rstatix_0.6.0      future_1.18.0      MASS_7.3-51.6      zoo_1.8-8          scales_1.1.1      
- [61] hms_0.5.3          promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 curl_4.3           yaml_2.2.1        
- [67] reticulate_1.16    pbapply_1.4-2      gridExtra_2.3      reshape_0.8.8      stringi_1.4.6      zip_2.0.4         
- [73] rlang_0.4.7        pkgconfig_2.0.3    evaluate_0.14      lattice_0.20-41    ROCR_1.0-11        labeling_0.3      
- [79] htmlwidgets_1.5.1  RcppAnnoy_0.0.16   plyr_1.8.6         magrittr_1.5       R6_2.4.1           generics_0.0.2    
- [85] DBI_1.1.0          foreign_0.8-80     pillar_1.4.6       haven_2.3.1        whisker_0.4        withr_2.2.0       
- [91] fitdistrplus_1.1-1 abind_1.4-5        survival_3.2-3     future.apply_1.6.0 tsne_0.1-3         car_3.0-8         
- [97] modelr_0.1.8       crayon_1.3.4       KernSmooth_2.23-17 plotly_4.9.2.1     rmarkdown_2.3      grid_4.0.2        
-[103] blob_1.2.1         git2r_0.27.1       reprex_0.3.0       digest_0.6.25      httpuv_1.5.4       munsell_0.5.0     
-[109] viridisLite_0.3.0 </code></pre>
+  [1] backports_1.1.8     fastmatch_1.1-0     workflowr_1.6.2     plyr_1.8.6          igraph_1.2.5       
+  [6] lazyeval_0.2.2      splines_4.0.2       crosstalk_1.1.0.1   BiocParallel_1.22.0 listenv_0.8.0      
+ [11] digest_0.6.25       htmltools_0.5.0     fansi_0.4.1         magrittr_1.5        cluster_2.1.0      
+ [16] ROCR_1.0-11         openxlsx_4.1.5      globals_0.12.5      modelr_0.1.8        colorspace_1.4-1   
+ [21] blob_1.2.1          rvest_0.3.5         haven_2.3.1         xfun_0.15           crayon_1.3.4       
+ [26] jsonlite_1.7.0      survival_3.2-3      zoo_1.8-8           ape_5.4             gtable_0.3.0       
+ [31] leiden_0.3.3        car_3.0-8           future.apply_1.6.0  abind_1.4-5         scales_1.1.1       
+ [36] DBI_1.1.0           rstatix_0.6.0       viridisLite_0.3.0   reticulate_1.16     foreign_0.8-80     
+ [41] rsvd_1.0.3          DT_0.14             tsne_0.1-3          htmlwidgets_1.5.1   httr_1.4.1         
+ [46] RColorBrewer_1.1-2  ellipsis_0.3.1      ica_1.0-2           farver_2.0.3        pkgconfig_2.0.3    
+ [51] reshape_0.8.8       uwot_0.1.8          dbplyr_1.4.4        labeling_0.3        rlang_0.4.7        
+ [56] later_1.1.0.1       munsell_0.5.0       cellranger_1.1.0    tools_4.0.2         cli_2.0.2          
+ [61] generics_0.0.2      broom_0.7.0         ggridges_0.5.2      evaluate_0.14       yaml_2.2.1         
+ [66] knitr_1.29          fs_1.4.2            fitdistrplus_1.1-1  zip_2.0.4           RANN_2.6.1         
+ [71] pbapply_1.4-2       future_1.18.0       nlme_3.1-148        whisker_0.4         xml2_1.3.2         
+ [76] compiler_4.0.2      rstudioapi_0.11     beeswarm_0.2.3      plotly_4.9.2.1      curl_4.3           
+ [81] png_0.1-7           ggsignif_0.6.0      reprex_0.3.0        stringi_1.4.6       lattice_0.20-41    
+ [86] Matrix_1.2-18       vctrs_0.3.2         pillar_1.4.6        lifecycle_0.2.0     lmtest_0.9-37      
+ [91] RcppAnnoy_0.0.16    irlba_2.3.3         httpuv_1.5.4        R6_2.4.1            promises_1.1.1     
+ [96] KernSmooth_2.23-17  gridExtra_2.3       rio_0.5.16          vipor_0.4.5         codetools_0.2-16   
+[101] MASS_7.3-51.6       assertthat_0.2.1    rprojroot_1.3-2     withr_2.2.0         sctransform_0.2.1  
+[106] parallel_4.0.2      hms_0.5.3           grid_4.0.2          rmarkdown_2.3       carData_3.0-4      
+[111] Rtsne_0.15          git2r_0.27.1        lubridate_1.7.9    </code></pre>
 </div>
 </div>
 </div>

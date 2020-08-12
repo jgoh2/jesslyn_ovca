@@ -432,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-07
+<strong>Last updated:</strong> 2020-08-12
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3e3db6777f7551d3cbc73b897e704026510ea30ctargetblank3e3db67a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3e3db6777f7551d3cbc73b897e704026510ea30c" target="_blank">3e3db67</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed504c5953721665b13749ae0ef898a9b46ab6f03targetblankd504c59a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d504c5953721665b13749ae0ef898a9b46ab6f03" target="_blank">d504c59</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree3e3db6777f7551d3cbc73b897e704026510ea30ctargetblank3e3db67a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed504c5953721665b13749ae0ef898a9b46ab6f03targetblankd504c59a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/3e3db6777f7551d3cbc73b897e704026510ea30c" target="_blank">3e3db67</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d504c5953721665b13749ae0ef898a9b46ab6f03" target="_blank">d504c59</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -559,8 +559,16 @@ Ignored files:
     Ignored:    renv/staging/
     Ignored:    vignettes/
 
+Untracked files:
+    Untracked:  data/gene_lists/cellcycle/
+
 Unstaged changes:
+    Modified:   code/DEAnalysis_code.R
+    Modified:   code/FindMarkers_code.R
+    Modified:   code/GSEA_code.R
+    Modified:   code/read_Izar_2020.R
     Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
+    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
     Modified:   old/edited/PDX_choices.Rmd
     Modified:   old/edited/PDX_choices.html
 
@@ -601,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d504c5953721665b13749ae0ef898a9b46ab6f03/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">d504c59</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/02.1_Izar2020_SS2_DEAnalysis.html" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -918,9 +960,18 @@ SS2Malignant.8 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant8_proce
 SS2Malignant.9 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS&quot;)
 
 #Read in hallmarks of interest
+g0g1.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G0G1.txt&quot;, skip = 2)
+g1S.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1SDNAdamage.txt&quot;, skip = 2)
+g1S.transcription.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1Stranscription.txt&quot;, skip = 2)
+g2m.checkpoint.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2Mcheckpoint.txt&quot;, skip = 2)
+g2m.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MDNAdamage.txt&quot;, skip = 2)
+g2m.replicationCP.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt&quot;, skip = 2)
+
 hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
-hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 4)
-names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, &quot;UNUPDATED.UPR&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 9)
+names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, 
+                          &quot;UNUPDATED.UPR&quot;, &quot;G0G1&quot;, &quot;G1S.DNAdamage&quot;, &quot;G1S.transcription&quot;, &quot;G2M.checkpoint&quot;, 
+                          &quot;G2M.DNAdamage&quot;)
 for(hm in hallmark_names){
   file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
   hallmark.list[[hm]] &lt;- file
@@ -930,9 +981,14 @@ hallmark.list[[&quot;GO.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/ex
 hallmark.list[[&quot;KEGG.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/KEGG.OXPHOS.txt&quot;, skip = 2)
 hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/oxphos.txt&quot;, skip =1)
 hallmark.list[[&quot;UNUPDATED.UPR&quot;]] &lt;- read_lines(&quot;data/gene_lists/upr.txt&quot;, skip =1)
+hallmark.list[[&quot;G0G1&quot;]] &lt;- g0g1.genes
+hallmark.list[[&quot;G1S.DNAdamage&quot;]] &lt;- g1S.DNAdamage.genes
+hallmark.list[[&quot;G1S.transcription&quot;]] &lt;- g1S.transcription.genes
+hallmark.list[[&quot;G2M.checkpoint&quot;]] &lt;- g2m.checkpoint.genes
+hallmark.list[[&quot;G2M.DNAdamage&quot;]] &lt;- g2m.DNAdamage.genes
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(SS2Malignant@meta.data)[14:53]
+hm.names &lt;- names(SS2Malignant@meta.data)[14:58]
 
 for(i in hm.names){
     SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -1640,6 +1696,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">26f64a3</a>
 </td>
 <td>
@@ -1699,6 +1766,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">26f64a3</a>
@@ -1805,7 +1883,123 @@ DT::datatable(SS2.all.DF) %&gt;%
 </div>
 <div id="step-3-de-analysis-2.-identifying-individual-de-genes" class="section level3">
 <h3>STEP 3 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES</h3>
-<p><strong>have not finalized the statistical test to use for volcano plot (need to match what we use for GSEA)</strong></p>
+<p>We are interesting in detecting individual OXPHOS and UPR genes that might be differentially expressed.</p>
+<ul>
+<li>We will focus our analysis on Patient 8 UPR and Patient 9 OXPHOS genes because those are the s<strong>tatistically significant</strong> gene-set scores that <strong>support our hypothesis</strong> based on the results we got from our VlnPlots.</li>
+</ul>
+<pre class="r"><code># PATIENT 8 -----------------------
+p8.1p8.0 &lt;- FindMarkers(SS2Malignant.8, group.by = &quot;sample&quot;, ident.1 = &quot;8.1&quot;, ident.2 = &quot;8.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+p8.2p8.0 &lt;- FindMarkers(SS2Malignant.8, group.by = &quot;sample&quot;, ident.1 = &quot;8.2&quot;, ident.2 = &quot;8.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+p8.1p8.2 &lt;- FindMarkers(SS2Malignant.8, group.by = &quot;sample&quot;, ident.1 = &quot;8.1&quot;, ident.2 = &quot;8.2&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+
+p8.all.plots &lt;- vector(&quot;list&quot;, length = 3)
+samples &lt;- c(&quot;8.1 8.0&quot;, &quot;8.2 8.0&quot;, &quot;8.1 8.2&quot;)
+names(p8.all.plots) &lt;- samples
+
+p8.UPR.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(p8.UPR.plots) &lt;- samples
+markers &lt;- list(p8.1p8.0, p8.2p8.0, p8.1p8.2)
+
+for(i in 1:3){
+  marker &lt;- markers[[i]]
+  name = samples[[i]]
+  name.split &lt;- stringr::str_split(samples[[i]], pattern = &quot; &quot;)
+  group.1 &lt;- name.split[[1]][1]
+  group.2 &lt;- name.split[[1]][2]
+  
+  p8.all.plots[[name]] &lt;- DEAnalysis_code(SS2Malignant.8, markers = marker, group.by = &quot;sample&quot;, group.1 = group.1, group.2 = group.2, graph = TRUE)
+  
+  p8.UPR.plots[[name]] &lt;- DEAnalysis_code(SS2Malignant.8, markers = marker, group.by = &quot;sample&quot;, group.1 = group.1, group.2 = group.2, geneset = hallmark.list[[&quot;UNUPDATED.UPR&quot;]]) + labs(title = paste(group.1, &quot;vs&quot;, group.2, &quot;DE UPR Genes&quot;))
+}
+
+p &lt;- p8.all.plots[[&quot;8.1 8.0&quot;]] + p8.all.plots[[&quot;8.2 8.0&quot;]] + p8.all.plots[[&quot;8.1 8.2&quot;]] + p8.UPR.plots[[&quot;8.1 8.0&quot;]] + p8.UPR.plots[[&quot;8.2 8.0&quot;]] + p8.UPR.plots[[&quot;8.1 8.2&quot;]]
+p</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-1.png" width="2400" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p, filename = &quot;SS2Malignant8.Volcano.png&quot;, path = &quot;jesslyn_plots/SS2/DE&quot;, width = 25, height = 15)
+
+# PATIENT 9 -----------------------
+p9.1p9.0 &lt;- FindMarkers(SS2Malignant.9, group.by = &quot;sample&quot;, ident.1 = &quot;9.1&quot;, ident.2 = &quot;9.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+p9.2p9.0 &lt;- FindMarkers(SS2Malignant.9, group.by = &quot;sample&quot;, ident.1 = &quot;9.2&quot;, ident.2 = &quot;9.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+p9.1p9.2 &lt;- FindMarkers(SS2Malignant.9, group.by = &quot;sample&quot;, ident.1 = &quot;9.1&quot;, ident.2 = &quot;9.2&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+
+p9.all.plots &lt;- vector(&quot;list&quot;, length = 3)
+samples &lt;- c(&quot;9.1 9.0&quot;, &quot;9.2 9.0&quot;, &quot;9.1 9.2&quot;)
+names(p9.all.plots) &lt;- samples
+
+p9.OXPHOS.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(p9.OXPHOS.plots) &lt;- samples
+markers &lt;- list(p9.1p9.0, p9.2p9.0, p9.1p9.2)
+
+for(i in 1:3){
+  marker &lt;- markers[[i]]
+  name = samples[[i]]
+  name.split &lt;- stringr::str_split(samples[[i]], pattern = &quot; &quot;)
+  group.1 &lt;- name.split[[1]][1]
+  group.2 &lt;- name.split[[1]][2]
+  
+  p9.all.plots[[name]] &lt;- DEAnalysis_code(SS2Malignant.9, markers = marker, group.by = &quot;sample&quot;, group.1 = group.1, group.2 = group.2, graph = TRUE)
+  
+  p9.OXPHOS.plots[[name]] &lt;- DEAnalysis_code(SS2Malignant.9, markers = marker, group.by = &quot;sample&quot;, group.1 = group.1, group.2 = group.2, geneset = hallmark.list[[&quot;GO.OXPHOS&quot;]]) + labs(title = paste(group.1, &quot;vs&quot;, group.2, &quot;DE OXPHOS Genes&quot;))
+}
+
+p2 &lt;- p9.all.plots[[&quot;9.1 9.0&quot;]] + p9.all.plots[[&quot;9.2 9.0&quot;]] + p9.all.plots[[&quot;9.1 9.2&quot;]] + p9.OXPHOS.plots[[&quot;9.1 9.0&quot;]] + p9.OXPHOS.plots[[&quot;9.2 9.0&quot;]] + p9.OXPHOS.plots[[&quot;9.1 9.2&quot;]]
+p2</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-2.png" width="2400" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p2, filename = &quot;SS2Malignant9.Volcano.png&quot;, path = &quot;jesslyn_plots/SS2/DE&quot;, width = 25, height = 15)</code></pre>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>No statistically significant individual DE UPR genes in Patient 8 across all three conditions</li>
+<li>9.2 vs. 9.0: <strong>9.2 depletes the expression of NDUFB11 relative to 9.0</strong></li>
+<li>9.1 vs. 9.2: <strong>9.1 enriches NDUFB1 relative to 9.2</strong></li>
+</ul></li>
+<li>We will also look at Patient 8 OXPHOS and Patient 9 UPR genes just in case a few genes are differentially expressed but not collectively, which may justify why the gene-sets are not differentially expressed as a whole, but specific OXPHOS or UPR genes may be differentially expressed in drug resistant persisters.</li>
+</ul>
+<pre class="r"><code># PATIENT 8 -----------------------
+p8.OXPHOS.plots &lt;- vector(&quot;list&quot;, length = 3)
+samples &lt;- c(&quot;8.1 8.0&quot;, &quot;8.2 8.0&quot;, &quot;8.1 8.2&quot;)
+names(p8.OXPHOS.plots) &lt;- samples
+markers &lt;- list(p8.1p8.0, p8.2p8.0, p8.1p8.2)
+
+for(i in 1:3){
+  marker &lt;- markers[[i]]
+  name = samples[[i]]
+  name.split &lt;- stringr::str_split(samples[[i]], pattern = &quot; &quot;)
+  group.1 &lt;- name.split[[1]][1]
+  group.2 &lt;- name.split[[1]][2]
+  
+  p8.OXPHOS.plots[[name]] &lt;- DEAnalysis_code(SS2Malignant.8, markers = marker, group.by = &quot;sample&quot;, group.1 = group.1, group.2 = group.2, geneset = hallmark.list[[&quot;GO.OXPHOS&quot;]]) + labs(title = paste(group.1, &quot;vs&quot;, group.2, &quot;DE OXPHOS Genes&quot;))
+}
+
+p3 &lt;- p8.OXPHOS.plots[[&quot;8.1 8.0&quot;]] + p8.OXPHOS.plots[[&quot;8.2 8.0&quot;]] + p8.OXPHOS.plots[[&quot;8.1 8.2&quot;]]
+p3</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-1.png" width="2400" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p3, filename = &quot;SS2Malignant8.VolcanoOXPHOS.png&quot;, path = &quot;jesslyn_plots/SS2/DE&quot;, width = 25, height = 10)
+
+# PATIENT 9 -----------------------
+p9.UPR.plots &lt;- vector(&quot;list&quot;, length = 3)
+samples &lt;- c(&quot;9.1 9.0&quot;, &quot;9.2 9.0&quot;, &quot;9.1 9.2&quot;)
+names(p9.UPR.plots) &lt;- samples
+markers &lt;- list(p9.1p9.0, p9.2p9.0, p9.1p9.2)
+
+for(i in 1:3){
+  marker &lt;- markers[[i]]
+  name = samples[[i]]
+  name.split &lt;- stringr::str_split(samples[[i]], pattern = &quot; &quot;)
+  group.1 &lt;- name.split[[1]][1]
+  group.2 &lt;- name.split[[1]][2]
+  
+  p9.UPR.plots[[name]] &lt;- DEAnalysis_code(SS2Malignant.9, markers = marker, group.by = &quot;sample&quot;, group.1 = group.1, group.2 = group.2, geneset = hallmark.list[[&quot;UNUPDATED.UPR&quot;]]) + labs(title = paste(group.1, &quot;vs&quot;, group.2, &quot;DE UPR Genes&quot;))
+}
+
+p4 &lt;- p9.UPR.plots[[&quot;9.1 9.0&quot;]] + p9.UPR.plots[[&quot;9.2 9.0&quot;]] + p9.UPR.plots[[&quot;9.1 9.2&quot;]]
+p4</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-2.png" width="2400" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p4, filename = &quot;SS2Malignant9.VolcanoUPR.png&quot;, path = &quot;jesslyn_plots/SS2/DE&quot;, width = 25, height = 10)</code></pre>
+<ul>
+<li>Interestingly, there turned out to be more DE OXPHOS genes in Patient 8 comparisons than in Patient 9. However, the DE OXPHOS genes detected are not the same between patients.</li>
+<li>Similar to Patient 8, there are no DE UPR genes in Patient 9 as well.</li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1829,33 +2023,37 @@ attached base packages:
 [1] stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
- [1] ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4        tidyselect_1.1.0     
- [6] presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5            glue_1.4.1            patchwork_1.0.1      
-[11] EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1              readxl_1.3.1          forcats_0.5.0        
-[16] stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4           readr_1.3.1           tidyr_1.1.0          
-[21] tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0       cowplot_1.0.0         Seurat_3.1.5         
-[26] BiocManager_1.30.10   renv_0.11.0-4        
+ [1] ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4       
+ [6] tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5           
+[11] glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1             
+[16] readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4          
+[21] readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0      
+[26] cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
 
 loaded via a namespace (and not attached):
-  [1] Rtsne_0.15         colorspace_1.4-1   ggsignif_0.6.0     rio_0.5.16         ellipsis_0.3.1     ggridges_0.5.2    
-  [7] rprojroot_1.3-2    fs_1.4.2           rstudioapi_0.11    farver_2.0.3       leiden_0.3.3       listenv_0.8.0     
- [13] DT_0.14            fansi_0.4.1        lubridate_1.7.9    xml2_1.3.2         codetools_0.2-16   splines_4.0.2     
- [19] knitr_1.29         jsonlite_1.7.0     workflowr_1.6.2    broom_0.7.0        ica_1.0-2          cluster_2.1.0     
- [25] dbplyr_1.4.4       png_0.1-7          uwot_0.1.8         sctransform_0.2.1  compiler_4.0.2     httr_1.4.1        
- [31] backports_1.1.8    assertthat_0.2.1   Matrix_1.2-18      lazyeval_0.2.2     limma_3.44.3       cli_2.0.2         
- [37] later_1.1.0.1      htmltools_0.5.0    tools_4.0.2        rsvd_1.0.3         igraph_1.2.5       gtable_0.3.0      
- [43] RANN_2.6.1         carData_3.0-4      cellranger_1.1.0   vctrs_0.3.2        ape_5.4            nlme_3.1-148      
- [49] crosstalk_1.1.0.1  lmtest_0.9-37      xfun_0.15          globals_0.12.5     openxlsx_4.1.5     rvest_0.3.5       
- [55] lifecycle_0.2.0    irlba_2.3.3        rstatix_0.6.0      future_1.18.0      MASS_7.3-51.6      zoo_1.8-8         
- [61] scales_1.1.1       hms_0.5.3          promises_1.1.1     parallel_4.0.2     RColorBrewer_1.1-2 curl_4.3          
- [67] yaml_2.2.1         reticulate_1.16    pbapply_1.4-2      gridExtra_2.3      reshape_0.8.8      stringi_1.4.6     
- [73] zip_2.0.4          rlang_0.4.7        pkgconfig_2.0.3    evaluate_0.14      lattice_0.20-41    ROCR_1.0-11       
- [79] labeling_0.3       htmlwidgets_1.5.1  RcppAnnoy_0.0.16   plyr_1.8.6         magrittr_1.5       R6_2.4.1          
- [85] generics_0.0.2     DBI_1.1.0          foreign_0.8-80     pillar_1.4.6       haven_2.3.1        whisker_0.4       
- [91] withr_2.2.0        fitdistrplus_1.1-1 abind_1.4-5        survival_3.2-3     future.apply_1.6.0 tsne_0.1-3        
- [97] car_3.0-8          modelr_0.1.8       crayon_1.3.4       KernSmooth_2.23-17 plotly_4.9.2.1     rmarkdown_2.3     
-[103] grid_4.0.2         blob_1.2.1         git2r_0.27.1       reprex_0.3.0       digest_0.6.25      httpuv_1.5.4      
-[109] munsell_0.5.0      viridisLite_0.3.0 </code></pre>
+  [1] backports_1.1.8     fastmatch_1.1-0     workflowr_1.6.2     plyr_1.8.6          igraph_1.2.5       
+  [6] lazyeval_0.2.2      splines_4.0.2       crosstalk_1.1.0.1   BiocParallel_1.22.0 listenv_0.8.0      
+ [11] digest_0.6.25       htmltools_0.5.0     fansi_0.4.1         magrittr_1.5        cluster_2.1.0      
+ [16] ROCR_1.0-11         openxlsx_4.1.5      limma_3.44.3        globals_0.12.5      modelr_0.1.8       
+ [21] colorspace_1.4-1    blob_1.2.1          rvest_0.3.5         haven_2.3.1         xfun_0.15          
+ [26] crayon_1.3.4        jsonlite_1.7.0      survival_3.2-3      zoo_1.8-8           ape_5.4            
+ [31] gtable_0.3.0        leiden_0.3.3        car_3.0-8           future.apply_1.6.0  abind_1.4-5        
+ [36] scales_1.1.1        DBI_1.1.0           rstatix_0.6.0       viridisLite_0.3.0   reticulate_1.16    
+ [41] foreign_0.8-80      rsvd_1.0.3          DT_0.14             tsne_0.1-3          htmlwidgets_1.5.1  
+ [46] httr_1.4.1          RColorBrewer_1.1-2  ellipsis_0.3.1      ica_1.0-2           farver_2.0.3       
+ [51] pkgconfig_2.0.3     reshape_0.8.8       uwot_0.1.8          dbplyr_1.4.4        labeling_0.3       
+ [56] rlang_0.4.7         later_1.1.0.1       munsell_0.5.0       cellranger_1.1.0    tools_4.0.2        
+ [61] cli_2.0.2           generics_0.0.2      broom_0.7.0         ggridges_0.5.2      evaluate_0.14      
+ [66] yaml_2.2.1          knitr_1.29          fs_1.4.2            fitdistrplus_1.1-1  zip_2.0.4          
+ [71] RANN_2.6.1          pbapply_1.4-2       future_1.18.0       nlme_3.1-148        whisker_0.4        
+ [76] xml2_1.3.2          compiler_4.0.2      rstudioapi_0.11     beeswarm_0.2.3      plotly_4.9.2.1     
+ [81] curl_4.3            png_0.1-7           ggsignif_0.6.0      reprex_0.3.0        stringi_1.4.6      
+ [86] lattice_0.20-41     Matrix_1.2-18       vctrs_0.3.2         pillar_1.4.6        lifecycle_0.2.0    
+ [91] lmtest_0.9-37       RcppAnnoy_0.0.16    irlba_2.3.3         httpuv_1.5.4        R6_2.4.1           
+ [96] promises_1.1.1      KernSmooth_2.23-17  gridExtra_2.3       rio_0.5.16          vipor_0.4.5        
+[101] codetools_0.2-16    MASS_7.3-51.6       assertthat_0.2.1    rprojroot_1.3-2     withr_2.2.0        
+[106] sctransform_0.2.1   parallel_4.0.2      hms_0.5.3           grid_4.0.2          rmarkdown_2.3      
+[111] carData_3.0-4       Rtsne_0.15          git2r_0.27.1        lubridate_1.7.9    </code></pre>
 </div>
 </div>
 </div>
