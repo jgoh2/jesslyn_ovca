@@ -8,6 +8,7 @@ library(here)
 library(dplyr)
 library(GGally)
 library(ggpubr)
+library(ggbeeswarm)
 
 # 1) Finds DE genes betwen two conditions 
 # 2) Arrange them by padj ascending, then by logFC (or avg_diff) descending. Also computes negative log10 padj 

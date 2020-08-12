@@ -3,6 +3,7 @@
 # Author: Jesslyn Goh
 
 library(presto)
+library(fgsea)
 
 GSEA_code <- function(seurat_object, group.by, fgseaGS, ranks = NULL, group.1 = NULL, group.2 = NULL, stattest = "wilcox", slot = "data"){
 
@@ -13,14 +14,9 @@ GSEA_code <- function(seurat_object, group.by, fgseaGS, ranks = NULL, group.1 = 
     seurat.genes <- FindMarkers(seurat_object, test.use = stattest, slot = slot, ident.1 = group.1 , ident.2 = group.2, logfc.threshold = 0)
     #returns a single result that encompasses both conditions (group1 vs. group2), so the 
     #enrichment plot will be for group.1 vs. group2 instead of only for group1 relative to the other groups
-    if (slot == "data"){
-      condition.genes <- seurat.genes %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC) 
-    }
-    
-    else{ #if we use scale.data, the column is called avg_diff instead of avg_logFC
-      condition.genes <- seurat.genes %>% rownames_to_column %>% arrange(p_val_adj, -avg_diff) %>% select(rowname, avg_diff) 
-    }
 
+    condition.genes <- seurat.genes %>% rownames_to_column %>% arrange(p_val_adj, -avg_logFC) %>% select(rowname, avg_logFC) 
+    
     #step 3. create a ranked vector for specified condition using logFC
     condition.ranks <- deframe(condition.genes) #deframe converts two-column data frames to a named vector or list, using the first column as name and the second column as value
     

@@ -12,7 +12,7 @@ library(EnhancedVolcano)
 library(patchwork)
 library(glue)
 
-DEAnalysis_code <- function(seurat_object, markers = NULL, group.by, group.1, group.2, graph = FALSE, geneset = NULL, stattest = "wilcox", slot = "data"){
+DEAnalysis_code <- function(seurat_object, markers = NULL, group.by, group.1, group.2, graph = FALSE, geneset = NULL, stattest = "wilcox"){
   if(is.null(markers)){
   Idents(seurat_object) <- group.by
   #compute differential gene expression of all genes for ident.1 vs. ident.2 (wilcox)
@@ -23,16 +23,9 @@ DEAnalysis_code <- function(seurat_object, markers = NULL, group.by, group.1, gr
     DEgenes = markers 
   if (graph == TRUE){
   #volcano plot for p values of ALL genes and label ALL GENES
-    if(slot == "data"){
       all = EnhancedVolcano(DEgenes, lab=rownames(DEgenes), x='avg_logFC', y='p_val_adj', 
       pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "black", "red2"), 
-      title= paste(group.1, "vs", group.2, "DE Genes (label all Genes)"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05")
-    }
-    else{
-      all = EnhancedVolcano(DEgenes, lab=rownames(DEgenes), x='avg_diff', y='p_val_adj', 
-      pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "black", "red2"), 
-      title= paste(group.1, "vs", group.2, "DE Genes (label all Genes)"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05")
-    }
+      title= paste(group.1, "vs", group.2, "DE Genes"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05")
   
   return (all)
     }
@@ -41,16 +34,10 @@ DEAnalysis_code <- function(seurat_object, markers = NULL, group.by, group.1, gr
     #only graph genes in specified geneset
     DEgenes.gs = DEgenes %>% rownames_to_column("Gene") %>% filter(Gene %in% geneset) #filter out genes in geneset
     DEgenes.gs = column_to_rownames(DEgenes.gs, "Gene")
-    if(slot == "data"){
+    
       just_gs = EnhancedVolcano(DEgenes.gs,lab= rownames(DEgenes.gs), x='avg_logFC', y='p_val_adj', 
       pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "black", "red2"), 
-      title=paste(group.1, "vs", group.2, "Geneset DE Genes"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05")
-    }
-    else{
-      just_gs = EnhancedVolcano(DEgenes.gs,lab= rownames(DEgenes.gs), x='avg_diff', y='p_val_adj', 
-      pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "black", "red2"), 
-      title=paste(group.1, "vs", group.2, "Geneset DE Genes"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05")
-    }
+      title=paste(group.1, "vs", group.2, "DE Genes"), subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05")
     
     return (just_gs)
     }

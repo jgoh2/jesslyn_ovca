@@ -879,6 +879,7 @@ FC + diff
     - Rank by AUC 
     - Ranking by first filtering out genes with padj > 0.05, then rank by logFC descending
     - Multiplying -log10padj by logFC and using this metric to rank genes
+    - Multiplying -log10padj by FC and using this metric to rank genes 
 
 ```{r FindMarkers rank by padj, message=FALSE, warning = FALSE, fig.align='center', fig.width=20, fig.height =15}
 all.volcano
@@ -974,11 +975,11 @@ Meanwhile, we rank each gene by their **auc** value, and a create VolcanoPlot to
 wilcoxauc.plot <- EnhancedVolcano(wilcoxauc.test, lab= wilcoxauc.test$rank, selectLab = wilcoxauc.test$rank, x='logFC', y='padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
       title= "DF20 MRD vs. vehicle DE Genes - WilcoxAUC (ranked by AUC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled by gene ranks (ranked by AUC)", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
 
-wilcox.volcano <- wilcox.volcano + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+wilcox.volcano <- wilcox.volcano + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
 
-wilcox.FCrank.plot <- wilcox.FCrank.plot + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+wilcox.FCrank.plot <- wilcox.FCrank.plot + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
 
 ranks.plot <- wilcoxauc.plot + wilcox.volcano + wilcox.FCrank.plot
 ranks.plot
@@ -1005,7 +1006,7 @@ wilcox.fpFC <- wilcox.fpFC %>% mutate("wilcox.rank" = seq(from = 1, length = nro
 wilcox.fpFC.plot <- EnhancedVolcano(wilcox.fpFC, lab= wilcox.fpFC$wilcox.rank, selectLab = wilcox.fpFC$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
       title= "DF20 MRD vs. vehicle DE Genes - Wilcox (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (logFC descending)", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8)) 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10)) 
 
 p <- wilcox.volcano + wilcox.FCrank.plot + wilcoxauc.plot + wilcox.fpFC.plot
 p
@@ -1021,6 +1022,8 @@ It seems like filtering our padj first, then ranking by logFC might be the best 
 * We therefore test to rank genes by 
     - multiplying -log10padj by logFC and using this metric to rank 
     - filtering out padj> 0.05 genes first then rank by that metric
+    
+**TESTING -LOG10PADJ X LOGFC METRIC**
 
 ```{r rankMult, message = FALSE, warning = FALSE, fig.align='center', fig.width = 30, fig.height = 15}
 
@@ -1034,7 +1037,7 @@ wilcox.Mult <- wilcox.Mult %>% mutate("wilcox.rank" = seq(from = 1, length = nro
 wilcox.Mult.plot <- EnhancedVolcano(wilcox.Mult, lab= wilcox.Mult$wilcox.rank, selectLab = wilcox.Mult$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
       title= "DF20 MRD vs. vehicle DE Genes - Wilcox (-log10padj * logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (-log10padj * logFC descending)", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
 
 # -log10padj * logFC (filter genes out)
 wilcox.Mult.filt <- wilcox %>% select(-wilcox.rank) %>% filter(wilcox.padj < 0.05)
@@ -1046,61 +1049,215 @@ wilcox.Mult.filt <- wilcox.Mult.filt %>% mutate("wilcox.rank" = seq(from = 1, le
 wilcox.Mult.filt.plot <- EnhancedVolcano(wilcox.Mult.filt, lab= wilcox.Mult.filt$wilcox.rank, selectLab = wilcox.Mult.filt$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
       title= "DF20 MRD vs. vehicle DE Genes - Wilcox (filtered, -log10padj * logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
       caption = "Labeled with gene ranks (filtered, -log10padj * logFC descending)", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 8))
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
 
 
-p <- p + wilcox.Mult.plot + wilcox.Mult.filt.plot
-p 
-ggsave(plot = p, filename = "ranktest2.png", path = "jesslyn_plots/PDX_test", width = 30, height = 15)
+p1 <- p + wilcox.Mult.plot + wilcox.Mult.filt.plot
+p1 
+ggsave(plot = p1, filename = "ranktest2.png", path = "jesslyn_plots/PDX_test", width = 30, height = 15)
 ```
 
 * In terms of comparing ranking methods using the **wilcox** test, it seems like ranking it by the **-log10padj x logFC** metric is the best because it has a nice separation of upregulated and downregulated genes at separate poles, and genes that are false positives are relatively in the middle of the rank. 
 * Although we are not considering so much about ranking after filtering genes out, it is important to note that ranking genes with logFC after filtering genes out allows us to rank genes that are highly DE on top, whereas using the **-log10padj x logFC** puts the priority more to statistical significance (genes that are more statistically significant are at the top of the list despite the clearly separate poles). 
 * We are still unsure how to compare **wilcoxauc** vs **wilcox**, since the AUC metric is also great for ranking but the logFC and padj values we get are completely different. 
 
-**We now test which statistical test might be the best one based on this method of ranking** 
-```{r statTestRank, message=TRUE, warning = TRUE, fig.align='center', fig.width = 15, fig.height = 15}
+We now try the following to try to give more weight to FC than padj by Multiplying -log10padj by FC and using this metric to rank genes 
 
-wilcox.fpFC.plot <- EnhancedVolcano(wilcox.fpFC, lab= wilcox.fpFC$wilcox.rank, selectLab = wilcox.fpFC$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) 
+**TESTING -LOG10PADJ X FC METRIC**
 
-# ---
+```{r rankMult2, message= FALSE, warning = FALSE, fig.align='center', fig.width = 30, fig.height = 15}
+# -log10padj x FC 
+wilcox.MultxFC <- wilcox %>% select(-wilcox.rank)
+wilcox.MultxFC <- wilcox.MultxFC %>% mutate("wilcox.FC" = exp(wilcox.logFC))
+wilcox.MultxFC <- wilcox.MultxFC %>% mutate("rank.metric" = wilcox.MultxFC$"wilcox.-log10padj" * wilcox.FC)
+wilcox.MultxFC <- wilcox.MultxFC %>% 
+  arrange(-rank.metric) %>% mutate("wilcox.rank" = seq(from =1, length = nrow(wilcox.MultxFC)))
 
-t.fpFC <- t.test %>% select(-t.rank) %>% filter(t.padj < 0.05)
-t.fpFC <- t.fpFC %>% arrange(-t.logFC)
-t.fpFC <- t.fpFC %>% mutate("t.rank" = seq(from = 1, length = nrow(t.fpFC)))
+wilcox.MultxFC.plot <- EnhancedVolcano(wilcox.MultxFC, lab= wilcox.MultxFC$wilcox.rank, selectLab = wilcox.MultxFC$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox (-log10padj * FC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (-log10padj * FC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
 
-t.fpFC.plot <- EnhancedVolcano(t.fpFC, lab= t.fpFC$t.rank, selectLab = t.fpFC$t.rank, x='t.logFC', y='t.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - t (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) 
-
-# ----
-  
-MAST.fpFC <- MAST %>% select(-MAST.rank) %>% filter(MAST.padj < 0.05)
-MAST.fpFC <- MAST.fpFC %>% arrange(-MAST.logFC)
-MAST.fpFC <- MAST.fpFC %>% mutate("MAST.rank" = seq(from = 1, length = nrow(MAST.fpFC)))
-
-MAST.fpFC.plot <- EnhancedVolcano(MAST.fpFC, lab= MAST.fpFC$MAST.rank, selectLab = MAST.fpFC$MAST.rank, x='MAST.logFC', y='MAST.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - MAST (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
-
-# ---
-LR.fpFC <- LR %>% select(-LR.rank) %>% filter(LR.padj < 0.05)
-LR.fpFC <- LR.fpFC %>% arrange(-LR.logFC)
-LR.fpFC <- LR.fpFC %>% mutate("LR.rank" = seq(from = 1, length = nrow(LR.fpFC)))
-
-LR.fpFC.plot <- EnhancedVolcano(LR.fpFC, lab= LR.fpFC$LR.rank, selectLab =LR.fpFC$LR.rank, x='LR.logFC', y='LR.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
-      title= "DF20 MRD vs. vehicle DE Genes - LR (filtered out p>0.05 genes, ranked by logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
-      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
-
-
-p2 <- wilcox.fpFC.plot + t.fpFC.plot + MAST.fpFC.plot + LR.fpFC.plot 
+p2 <- p + wilcox.Mult.plot + wilcox.MultxFC.plot
 p2
-ggsave(plot = p2, filename = "statisticaltest.rank.png", path = "jesslyn_plots/PDX_test", width = 15, height = 15)
+ggsave(plot = p2, filename = "ranktest3.png", path = "jesslyn_plots/PDX_test", width = 30, height = 15)
+
+p3 <- wilcox.Mult.plot + wilcox.MultxFC.plot
+ggsave(plot = p3, filename = "ranktest4.png", path = "jesslyn_plots/PDX_test", width = 30, height = 15)
+
 ```
 
-* It seems like **wilcox** is the best statistical test to use considering how it identified the most DE genes, and the false positives are more towards the middle of the rank in comparison to the t.test and LR, which have false positives towards the top of the rank. 
+* It seems like using the -log10adj * logFC metric is still the best because differentially downregulated genes are more towards the end of the list, and less false positive genes are nearer to the top of the list. 
+* However, we try to confirm our decisions by running GSEA using both ranking methods. 
 
+## TESTING GSEA 
+We try to run GSEA with the following ranking methods: 
+
+1) -log10padj * logFC 
+2) -log10padj * FC 
+
+```{r GSEA, message = FALSE, warning = FALSE, fig.align = 'center', fig.width=20, fig.height =10}
+# DF20 MRD vs. Vehicle OXPHOS ------------------------------
+# -log10padj x logFC 
+wilcox.Mult.ranks <- wilcox.Mult %>% select(feature, rank.metric) %>% deframe()
+wilcox.Mult.GSEA <- fgsea(hallmark.list, stats = wilcox.Mult.ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+
+padj = wilcox.Mult.GSEA %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = wilcox.Mult.GSEA %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+p5 <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.OXPHOS"]], stats = wilcox.Mult.ranks) + labs(title = glue("DF20 OXPHOS GSEA results for MRD vs. Vehicle"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x logFC")
+
+# -log10padj x FC 
+wilcox.MultxFC.ranks <- wilcox.MultxFC %>% select(feature, rank.metric) %>% deframe()
+wilcox.MultxFC.GSEA <- fgsea(hallmark.list, stats = wilcox.MultxFC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+
+padj = wilcox.MultxFC.GSEA %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = wilcox.MultxFC.GSEA %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+p6 <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.OXPHOS"]], stats = wilcox.MultxFC.ranks) + labs(title = glue("DF20 OXPHOS GSEA results for MRD vs. Vehicle"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x FC")
+
+p3 <- p5 + p6
+ggsave(plot = p3, filename = "GSEAtest.png", path = "jesslyn_plots/PDX_test", width = 15)
+```
+* It is interesting that using different ranking methods give us such different results. 
+    - Multiplying by logFC tells us that MRD deplete OXPHOS genes, while multiplying by FC tells us that MRD enriches OXPHOS genes. 
+    - Although both enrichment scores are insignificant, the FC padj is closer to 1 
+    - However, our VlnPlot of DF20 OXPHOS scores show us that MRD upregulates OXPHOS genes relative to Vehicle (although it is insignificant), so we are not sure whether we should go with ranking by multiplying FC or logFC. 
+
+We try to run GSEA using both ranking methods on other comparisons (SS2 9.1 vs. 9.2 OXPHOS)
+
+* According to our Violin plot, 9.1 > 9.2 for OXPHOS expression (and this difference is statistically significant)
+```{r GSEAP9, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=20, fig.height=10}
+#SS2 9.1 vs. 9.2 OXPHOS -----------------
+SS2Malignant.9 <- readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
+SS2.1v2.markers <- FindMarkers(SS2Malignant.9, group.by = "sample", ident.1 = "9.1", ident.2 = "9.2", test.use = "wilcox", logfc.threshold = 0)
+SS2.1v2.markers <- SS2.1v2.markers %>% rownames_to_column() %>% mutate("neglog10padj"= -log10(p_val_adj))
+
+#-log10padj x logFC -----------------------
+SS2.Mult.logFC <- SS2.1v2.markers %>% mutate("rank.metric" = (neglog10padj * avg_logFC))
+SS2.Mult.logFC <- SS2.Mult.logFC %>% arrange(-rank.metric) %>% mutate("rank" = seq(from = 1, length = nrow(SS2.Mult.logFC))) %>% mutate("DE" = (abs(avg_logFC) > 0.5 & p_val_adj < 0.05))
+
+SS2.Mult.logFC.plot <- EnhancedVolcano(SS2.Mult.logFC, lab= SS2.Mult.logFC$rank, selectLab = SS2.Mult.logFC$rank, x='avg_logFC', y='p_val_adj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "SS2 9.1 vs. 9.2 DE Genes - Wilcox (-log10padj x logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (-log10padj x logFC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+#GSEA 
+SS2.Mult.logFC.ranks <- SS2.Mult.logFC %>% select(rowname, rank.metric) %>% deframe()
+SS2.Mult.logFC.GSEA <- fgsea(hallmark.list, stats = SS2.Mult.logFC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+
+padj = SS2.Mult.logFC.GSEA %>% filter(pathway == "GO.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = SS2.Mult.logFC.GSEA %>% filter(pathway == "GO.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+p7 <- plotEnrichment(pathway = hallmark.list[["GO.OXPHOS"]], stats = SS2.Mult.logFC.ranks) + labs(title = glue("SS2 OXPHOS GSEA results for 9.1 vs. 9.2"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x logFC")
+
+#-log10padj x FC -----------------------
+SS2.MultxFC <- SS2.1v2.markers %>% mutate("FC" = exp(avg_logFC))
+SS2.MultxFC <- SS2.MultxFC %>% mutate("rank.metric" = neglog10padj * FC)
+SS2.MultxFC <- SS2.MultxFC %>% 
+  arrange(-rank.metric) %>% 
+  mutate("rank" = seq(from =1, length = nrow(SS2.MultxFC)))
+
+SS2.Mult.FC.plot <- EnhancedVolcano(SS2.MultxFC, lab= SS2.MultxFC$rank, selectLab = SS2.MultxFC$rank, x='avg_logFC', y='p_val_adj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "SS2 9.1 vs. 9.2 DE Genes - Wilcox (-log10padj x FC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (-log10padj x FC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+#GSEA 
+SS2.Mult.FC.ranks <- SS2.MultxFC %>% select(rowname, rank.metric) %>% deframe()
+SS2.Mult.FC.GSEA <- fgsea(hallmark.list, stats = SS2.Mult.FC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+
+padj = SS2.Mult.FC.GSEA %>% filter(pathway == "GO.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = SS2.Mult.FC.GSEA %>% filter(pathway == "GO.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+p8 <- plotEnrichment(pathway = hallmark.list[["GO.OXPHOS"]], stats = SS2.Mult.FC.ranks) + labs(title = glue("SS2 OXPHOS GSEA results for 9.1 vs. 9.2"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x FC")
+
+
+volcano <- SS2.Mult.logFC.plot + SS2.Mult.FC.plot
+volcano 
+ggsave(plot = volcano, filename = "SS2.volcano.test.png", path= "jesslyn_plots/PDX_test", width = 20, height = 10)
+
+GSEA.plots <- p7 + p8 
+GSEA.plots 
+ggsave(plot = GSEA.plots, filename = "SS2.GSEA.test.png", path= "jesslyn_plots/PDX_test", width = 20, height = 10)
+
+```
+
+* For our SS2 9.1 vs. 9.2 comparisons, we get very similar GSEA results and it also agrees with our VlnPlot that 9.1 > 9.2 for OXPHOS. However, although the our results are statistically significant when looking at our VlnPlot, the padj value for GSEA is statistically insignificant. 
+* In terms of gene ranking, it still seems like using -log10padj x logFC is a better metric because genes that are differentially downregulated are more towards the end of the list. However, important to note that more false positives are towards the top of the ranked list than DF20. 
+
+Since we've been getting inconsistent results, we try another comparison to see whether it agrees more with our PDX DF20 comparison results or our SS2 Patient 9 results about GSEA and ranking method. 
+
+We will be testing Patient 8.1 vs 8.0 for UPR genes. According to our VlnPlot, 8.1 > 8.0 for UPR expression (padj < 0.05)
+
+```{r GSEAP8, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=20, fig.height=10}
+#SS2 8.1 vs. 8.2 OXPHOS -----------------
+SS2Malignant.8 <- readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
+SS28.1v0.markers <- FindMarkers(SS2Malignant.8, group.by = "sample", ident.1 = "8.1", ident.2 = "8.0", test.use = "wilcox", logfc.threshold = 0)
+SS28.1v0.markers <- SS28.1v0.markers %>% rownames_to_column() %>% mutate("neglog10padj"= -log10(p_val_adj))
+
+#-log10padj x logFC -----------------------
+SS28.Mult.logFC <- SS28.1v0.markers %>% mutate("rank.metric" = (neglog10padj * avg_logFC))
+SS28.Mult.logFC <- SS28.Mult.logFC %>% arrange(-rank.metric) %>% mutate("rank" = seq(from = 1, length = nrow(SS28.Mult.logFC))) %>% mutate("DE" = (abs(avg_logFC) > 0.5 & p_val_adj < 0.05))
+
+SS28.Mult.logFC.plot <- EnhancedVolcano(SS28.Mult.logFC, lab= SS28.Mult.logFC$rank, selectLab = SS28.Mult.logFC$rank, x='avg_logFC', y='p_val_adj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "SS2 8.1 vs. 8.0 DE Genes - Wilcox (-log10padj x logFC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (-log10padj x logFC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+#GSEA 
+SS28.Mult.logFC.ranks <- SS28.Mult.logFC %>% select(rowname, rank.metric) %>% deframe()
+SS28.Mult.logFC.GSEA <- fgsea(hallmark.list, stats = SS28.Mult.logFC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+
+padj = SS28.Mult.logFC.GSEA %>% filter(pathway == "UNUPDATED.UPR") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = SS28.Mult.logFC.GSEA %>% filter(pathway == "UNUPDATED.UPR") %>% select(NES) %>% deframe() %>% round(digits = 3)
+p9 <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.UPR"]], stats = SS28.Mult.logFC.ranks) + labs(title = glue("SS2 UPR GSEA results for 8.1 vs. 8.0"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x logFC")
+
+#-log10padj x FC -----------------------
+SS28.MultxFC <- SS28.1v0.markers %>% mutate("FC" = exp(avg_logFC))
+SS28.MultxFC <- SS28.MultxFC %>% mutate("rank.metric" = neglog10padj * FC)
+SS28.MultxFC <- SS28.MultxFC %>% 
+  arrange(-rank.metric) %>% 
+  mutate("rank" = seq(from =1, length = nrow(SS28.MultxFC)))
+
+SS28.Mult.FC.plot <- EnhancedVolcano(SS28.MultxFC, lab= SS28.MultxFC$rank, selectLab = SS28.MultxFC$rank, x='avg_logFC', y='p_val_adj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "SS2 8.1 vs. 8.0 DE Genes - Wilcox (-log10padj x FC)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      caption = "Labeled with gene ranks (-log10padj x FC descending)", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"))
+
+#GSEA 
+SS28.Mult.FC.ranks <- SS28.MultxFC %>% select(rowname, rank.metric) %>% deframe()
+SS28.Mult.FC.GSEA <- fgsea(hallmark.list, stats = SS28.Mult.FC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+
+padj = SS28.Mult.FC.GSEA %>% filter(pathway == "UNUPDATED.UPR") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = SS28.Mult.FC.GSEA %>% filter(pathway == "UNUPDATED.UPR") %>% select(NES) %>% deframe() %>% round(digits = 3)
+p10 <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.UPR"]], stats = SS28.Mult.FC.ranks) + labs(title = glue("SS2 UPR GSEA results for 8.1 vs. 8.0"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x FC")
+
+
+volcano.8 <- SS28.Mult.logFC.plot + SS28.Mult.FC.plot
+volcano.8 
+ggsave(plot = volcano.8, filename = "SS28.volcano.test.png", path= "jesslyn_plots/PDX_test", width = 20, height = 10)
+
+GSEA.8.plots <- p9 + p10
+GSEA.8.plots 
+ggsave(plot = GSEA.8.plots, filename = "SS28.GSEA.test.png", path= "jesslyn_plots/PDX_test", width = 20, height = 10)
+
+```
+
+* We get the same results as our DF20 comparison where the GSEA results for the different rank metrics are very different. Although the VolcanoPlot suggest that -log10padj x logFC is a better metric, the GSEA result for -log10padj x FC agree with our VlnPlot where 8.1 > 8.0 for UPR genes. 
 
 
