@@ -703,3 +703,74 @@ DT::datatable(all.DF) %>%
 
 **have not finalized the statistical test to use for volcano plot (need to match what we use for GSEA)**
 
+```{r VolcanoPlotSig, message = FALSE, warning = FALSE, fig.align='center', fig.width = 25, fig.height = 10}
+PDX.markers <- vector("list", length = 3)
+names(PDX.markers) <- PDX.names
+
+for(i in 1:3){
+  PDX.markers[[i]] <- list(
+  FindMarkers(PDXs[[i]], group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0), 
+  FindMarkers(PDXs[[i]], group.by = "treatment.status", ident.1 = "MRD", ident.2 = "relapse", logfc.threshold = 0),
+  FindMarkers(PDXs[[i]], group.by = "treatment.status", ident.1 = "vehicle", ident.2 = "relapse", logfc.threshold = 0)
+  )
+}
+
+PDX.all.plots <- vector("list", length = 3)
+names(PDX.all.plots) <- PDX.names
+
+PDX.UPR.plots <- vector("list", length = 3)
+names(PDX.UPR.plots) <- PDX.names
+
+PDX.OXPHOS.plots <- vector("list", length = 3)
+names(PDX.OXPHOS.plots) <- PDX.names
+
+comparisons <- c("MRD vehicle", "MRD relapse", "vehicle relapse")
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  obj.all.plots <- vector("list", length = 3)
+  obj.UPR.plots <- vector("list", length = 3)
+  obj.OXPHOS.plots <- vector("list", length = 3)
+  
+  for(i in 1:3){
+  marker <- PDX.markers[[PDX.name]][[i]]
+  comp = comparisons[[i]]
+  comp.split <- stringr::str_split(comp, pattern = " ")
+  group.1 <- comp.split[[1]][1]
+  group.2 <- comp.split[[1]][2]
+  
+  obj.all.plots[[i]] <- DEAnalysis_code(PDX, markers = marker, group.by = "treatment.status", group.1 = group.1, group.2 = group.2, graph = TRUE) + labs(title = paste(PDX.name, group.1, "vs", group.2, "DE  Genes"))
+  
+  obj.UPR.plots[[i]] <- DEAnalysis_code(PDX, markers = marker, group.by = "treatment.status", group.1 = group.1, group.2 = group.2, geneset = hallmark.list[["UNUPDATED.UPR"]]) + labs(title = paste(PDX.name, group.1, "vs", group.2, "DE UPR Genes"))
+  
+  obj.OXPHOS.plots[[i]] <- DEAnalysis_code(PDX, markers = marker, group.by = "treatment.status", group.1 = group.1, group.2 = group.2, geneset = hallmark.list[["UNUPDATED.OXPHOS"]]) + labs(title = paste(PDX.name, group.1, "vs", group.2, "DE OXPHOS Genes"))
+  }
+  
+  PDX.all.plots[[PDX.name]] <- obj.all.plots[[1]] + obj.all.plots[[2]] + obj.all.plots[[3]] + plot_layout(ncol = 3, nrow =1)
+  PDX.UPR.plots[[PDX.name]] <- obj.UPR.plots[[1]] + obj.UPR.plots[[2]] + obj.UPR.plots[[3]] + plot_layout(ncol = 3, nrow =1)
+  PDX.OXPHOS.plots[[PDX.name]] <- obj.OXPHOS.plots[[1]] + obj.OXPHOS.plots[[2]] + obj.OXPHOS.plots[[3]] + plot_layout(ncol = 3, nrow =1)
+}
+
+PDX.all.plots[["DF20"]]
+PDX.OXPHOS.plots[["DF20"]]
+PDX.UPR.plots[["DF20"]]
+
+PDX.all.plots[["DF101"]]
+PDX.OXPHOS.plots[["DF101"]]
+PDX.UPR.plots[["DF101"]]
+
+PDX.all.plots[["DF68"]]
+PDX.OXPHOS.plots[["DF68"]]
+PDX.UPR.plots[["DF68"]]
+```
+
+* **OBSERVATIONS** 
+    - UPR: no DE UPR genes at all across treatment condition within all three models
+    - OXPHOS: 
+        * DF20: ACADVL consistently depleted in MRD ; NDUFB2 enriched in relapse relative to vehicle
+        * DF101: CASP7 enriched in MRD relative to relapse ; COX5B, COX7B, UOCR11, NDUFA4 enriched in relapse relative to vehicle 
+        * DF68: NDUFA1 enriched in MRD relative to relapse 
+    - Results are not consistent across models 
+
