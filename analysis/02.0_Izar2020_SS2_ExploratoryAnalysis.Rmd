@@ -83,9 +83,18 @@ SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.
 SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
 
 #Read in hallmarks of interest
+g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
+g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
+g1S.transcription.genes <- read_lines("data/gene_lists/cellcycle/G1Stranscription.txt", skip = 2)
+g2m.checkpoint.genes <- read_lines("data/gene_lists/cellcycle/G2Mcheckpoint.txt", skip = 2)
+g2m.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G2MDNAdamage.txt", skip = 2)
+g2m.replicationCP.genes <- read_lines("data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt", skip = 2)
+
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 9)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", 
+                          "UNUPDATED.UPR", "G0G1", "G1S.DNAdamage", "G1S.transcription", "G2M.checkpoint", 
+                          "G2M.DNAdamage")
 for(hm in hallmark_names){
   file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
   hallmark.list[[hm]] <- file
@@ -95,9 +104,14 @@ hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt"
 hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
 hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
 hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
+hallmark.list[["G0G1"]] <- g0g1.genes
+hallmark.list[["G1S.DNAdamage"]] <- g1S.DNAdamage.genes
+hallmark.list[["G1S.transcription"]] <- g1S.transcription.genes
+hallmark.list[["G2M.checkpoint"]] <- g2m.checkpoint.genes
+hallmark.list[["G2M.DNAdamage"]] <- g2m.DNAdamage.genes
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(SS2Malignant@meta.data)[14:53]
+hm.names <- names(SS2Malignant@meta.data)[14:58]
 
 for(i in hm.names){
     SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -113,7 +127,7 @@ for(i in hm.names){
 
 ### STEP 2 EXAMINE SUMMARY METRICS
 
-```{r malignant cells metrics, message=FALSE, warning=FALSE, fig.align='center', fig.width = 12, fig.height = 8}
+```{r malignant cells metrics, message=FALSE, warning=FALSE, fig.align='center', fig.width = 11, fig.height = 10}
 #numMalignantCellsPerSample
 numMalignantCellsPerSample <- table(SS2Malignant$sample, SS2Malignant$cell.type, SS2Malignant$treatment.status) %>%
   as.data.frame() %>% 
@@ -132,8 +146,9 @@ numCells.NA[2] <- 252
 ggplot(numMalignantCellsPerPatientPerTreatment, aes(x = Patient, y=numCells, fill = treatment)) + 
   geom_bar(position = "fill", stat = "identity") + 
   theme_bw() + 
-  labs(title = "SS2 Number of Malignant Cells Per Patient Per Treatment") + 
-  geom_text(aes(label = paste(numCells.NA, "Cells")), size =6, position = "fill", hjust = 0.5, vjust = 4, color = "white", na.rm = TRUE)
+  labs(title = "SS2 Percent of Malignant Cells Per Patient Per Treatment") + 
+  geom_text(aes(label = paste(numCells.NA, "Cells")), size =4, position = "fill", hjust = 0.5, vjust = 4, color = "white", na.rm = TRUE) + 
+  scale_y_continuous(labels = scales::percent)
 
 numMalignantCellsPerPatientPerSample <- table(SS2Malignant$Patient, SS2Malignant$sample) %>%
   as.data.frame() %>% 
@@ -142,9 +157,10 @@ numMalignantCellsPerPatientPerSample <- table(SS2Malignant$Patient, SS2Malignant
 ggplot(numMalignantCellsPerPatientPerSample, aes(x = Patient, y=numCells, fill = sample)) + 
   geom_bar(position = "fill", stat = "identity") + 
   theme_bw() + 
-  labs(title = "SS2 Number of Malignant Cells Per Patient Per Sample") + 
-  geom_text(aes(label = paste(numCells, "Cells")), size =6, position = "fill", hjust = 0.5, vjust = 1.5, color = "white", na.rm = TRUE) +
-  scale_fill_manual(values = c("#00AFBB", "#E7B800", "orange", "chocolate1", "chocolate2", "#00AFBB", "#E7B800", "orange", "#00AFBB", "#E7B800", "orange", "#00AFBB", "#00AFBB", "#00AFBB"))
+  labs(title = "SS2 Percent of Malignant Cells Per Patient Per Sample", x = "Percent of Cells") + 
+  geom_text(aes(label = paste(numCells, "Cells")), size =4, position = "fill", hjust = 0.5, vjust = 1.5, color = "white", na.rm = TRUE) +
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "orange", "chocolate1", "chocolate2", "#00AFBB", "#E7B800", "orange", "#00AFBB", "#E7B800", "orange", "#00AFBB", "#00AFBB", "#00AFBB")) + 
+    scale_y_continuous(labels = scales::percent)
 
 
 #metrics for patient 8 and 9
@@ -154,10 +170,11 @@ numMalignantCellsPerSample.8 <- table(SS2Malignant.8$Patient, SS2Malignant.8$sam
 p8 <- ggplot(numMalignantCellsPerSample.8, aes(x = Patient, y = numCells, fill = sample)) + 
     geom_bar(position = "fill", stat = "identity") + 
   theme_bw() + 
-    labs(title = "Number of Malignant Cells Per Sample in Patient 8") + 
-    geom_text(aes(label = c("Treatment-naïve", "On-treatment Timepoint #1", "On-treatment Timepoint #2")), position = "fill", hjust = 0.5, vjust = 2, color = "white", size = 7) + 
-    geom_text(aes(label = paste(numCells, "cells")), size =7, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
-      scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+    labs(title = "Percent of Malignant Cells Per Sample in Patient 8") + 
+    geom_text(aes(label = c("Treatment-naïve", "On-treatment Timepoint #1", "On-treatment Timepoint #2")), position = "fill", hjust = 0.5, vjust = 2, color = "white", size = 4) + 
+    geom_text(aes(label = paste(numCells, "cells")), size =4, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
+      scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    scale_y_continuous(labels = scales::percent)
 
 numMalignantCellsPerSample.9 <- table(SS2Malignant.9$Patient, SS2Malignant.9$sample) %>%
   as.data.frame() %>% 
@@ -165,10 +182,11 @@ numMalignantCellsPerSample.9 <- table(SS2Malignant.9$Patient, SS2Malignant.9$sam
 p9 <- ggplot(numMalignantCellsPerSample.9, aes(x = Patient, y = numCells, fill = sample)) + 
     geom_bar(position = "fill", stat = "identity") + 
   theme_bw() + 
-    labs(title = "Number of Malignant Cells Per Sample in Patient 9") + 
-    geom_text(aes(label = c("Treatment-naïve", "On-treatment Timepoint #1", "On-treatment Timepoint #2")), position = "fill", hjust = 0.5, vjust = 2, color = "white", size = 7) + 
-    geom_text(aes(label = paste(numCells, "cells")), size =7, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
-  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
+    labs(title = "Percent of Malignant Cells Per Sample in Patient 9") + 
+    geom_text(aes(label = c("Treatment-naïve", "On-treatment Timepoint #1", "On-treatment Timepoint #2")), position = "fill", hjust = 0.5, vjust = 2, color = "white", size = 4) + 
+    geom_text(aes(label = paste(numCells, "cells")), size =4, position = "fill", hjust = 0.5, vjust = 4, color = "white") + 
+  scale_fill_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    scale_y_continuous(labels = scales::percent)
 
 p <- p8 + p9
 p
