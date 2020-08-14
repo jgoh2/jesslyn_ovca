@@ -557,6 +557,83 @@ for (i in 1:length(SS2s)){
 
 SS2.Vln.plots[["SS2 Patient 8"]]
 SS2.Vln.plots[["SS2 Patient 9"]]
+
+# swarm plots -------------
+
+#OXPHOS ----------
+oxphos.swarm.plots <- vector("list", length = 2)
+names(oxphos.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["UNUPDATED.OXPHOS"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["UNUPDATED.OXPHOS"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = UNUPDATED.OXPHOS37.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells OXPHOS expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} OXPHOS genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$UNUPDATED.OXPHOS37.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$UNUPDATED.OXPHOS37.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$UNUPDATED.OXPHOS37.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  oxphos.swarm.plots[[SS2.name]] <- p 
+}
+
+oxphos.swarm.plots[["SS2 Patient 8"]] + oxphos.swarm.plots[["SS2 Patient 9"]]
+
+
+#UPR ----------
+upr.swarm.plots <- vector("list", length = 2)
+names(upr.swarm.plots) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["UNUPDATED.UPR"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["UNUPDATED.UPR"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = UNUPDATED.UPR38.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells UPR expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} UPR genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$UNUPDATED.UPR38.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$UNUPDATED.UPR38.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$UNUPDATED.UPR38.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  upr.swarm.plots[[SS2.name]] <- p 
+}
+
+upr.swarm.plots[["SS2 Patient 8"]] + upr.swarm.plots[["SS2 Patient 9"]]
+
 ```
 
 * **CONCLUSIONS**
