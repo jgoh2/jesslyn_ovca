@@ -432,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-12
+<strong>Last updated:</strong> 2020-08-14
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb5bbe6d946c69ab4b0cb080702673ded3a920237targetblankb5bbe6da"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b5bbe6d946c69ab4b0cb080702673ded3a920237" target="_blank">b5bbe6d</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree2880f598988b33c92aa54cf6e632da2fe7e631f9targetblank2880f59a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/2880f598988b33c92aa54cf6e632da2fe7e631f9" target="_blank">2880f59</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb5bbe6d946c69ab4b0cb080702673ded3a920237targetblankb5bbe6da" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree2880f598988b33c92aa54cf6e632da2fe7e631f9targetblank2880f59a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b5bbe6d946c69ab4b0cb080702673ded3a920237" target="_blank">b5bbe6d</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/2880f598988b33c92aa54cf6e632da2fe7e631f9" target="_blank">2880f59</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -597,6 +597,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2880f598988b33c92aa54cf6e632da2fe7e631f9/analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd" target="_blank">2880f59</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-14
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/e05c3281876449d3de1475d4b6c0c687986bd466/docs/03.1_Izar2020_PDX_DEAnalysis.html" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -2244,11 +2278,170 @@ jgoh2
 </div>
 <pre class="r"><code># -------- swarm plots
 
-p &lt;- ggplot(PDX_DF20@meta.data, aes(x= treatment.status , y = UNUPDATED.UPR38.centered, color = treatment.status)) +
+#OXPHOS ----------
+oxphos.swarm.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(oxphos.swarm.plots) &lt;- PDX.names
+
+for(i in 1:3){
+  PDX &lt;- PDXs[[i]]
+  PDX.name &lt;- PDX.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] %in% rownames(PDX))
+  feature.length &lt;- length(hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(PDX@meta.data)
+  
+  p &lt;- ggplot(PDX@meta.data, aes(x= treatment.status , y = UNUPDATED.OXPHOS37.centered, color = treatment.status)) +
   geom_quasirandom(groupOnX =TRUE) + 
   theme_bw() + 
   scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
-  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F)</code></pre>
+    labs(title = glue(&quot;{PDX.name} OXPHOS expression across treatment&quot;), x = PDX.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} OXPHOS genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDX[[&quot;UNUPDATED.OXPHOS37.centered&quot;]]) -0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDX[[&quot;UNUPDATED.OXPHOS37.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDX[[&quot;UNUPDATED.OXPHOS37.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  oxphos.swarm.plots[[PDX.name]] &lt;- p 
+}
+
+oxphos.swarm.plots[[&quot;DF20&quot;]] + oxphos.swarm.plots[[&quot;DF101&quot;]] + oxphos.swarm.plots[[&quot;DF68&quot;]] + plot_layout(guides = &quot;collect&quot;, ncol = 3)</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1%20VlnPlot-3.png" width="1728" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEAnalysis1-VlnPlot-3">
+Past versions of “DEAnalysis1 VlnPlot-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-DEAnalysis1-VlnPlot-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/8ca1e011ab3510091358c41f362229573a9741f9/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">8ca1e01</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-27
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/bc21d3a4bbfeaaab3c3701621e489ba430369973/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-3.png" target="_blank">bc21d3a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#UPR --------------
+upr.swarm.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(upr.swarm.plots) &lt;- PDX.names
+
+for(i in 1:3){
+  PDX &lt;- PDXs[[i]]
+  PDX.name &lt;- PDX.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;UNUPDATED.UPR&quot;]] %in% rownames(PDX))
+  feature.length &lt;- length(hallmark.list[[&quot;UNUPDATED.UPR&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(PDX@meta.data)
+  
+  p &lt;- ggplot(PDX@meta.data, aes(x= treatment.status , y = UNUPDATED.UPR38.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{PDX.name} UPR expression across treatment&quot;), x = PDX.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} UPR genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDX[[&quot;UNUPDATED.UPR38.centered&quot;]]) -0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDX[[&quot;UNUPDATED.UPR38.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDX[[&quot;UNUPDATED.UPR38.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  upr.swarm.plots[[PDX.name]] &lt;- p 
+}
+
+upr.swarm.plots[[&quot;DF20&quot;]] + upr.swarm.plots[[&quot;DF101&quot;]] + upr.swarm.plots[[&quot;DF68&quot;]] + plot_layout(guides = &quot;collect&quot;, ncol = 3)</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1%20VlnPlot-4.png" width="1728" style="display: block; margin: auto;" /></p>
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
@@ -2370,22 +2563,355 @@ for(i in 1:3){
 
 PDX.all.plots[[&quot;DF20&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-1.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-1">
+Past versions of VolcanoPlotSig-1.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-1.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.OXPHOS.plots[[&quot;DF20&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-2.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-2">
+Past versions of VolcanoPlotSig-2.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-2.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.UPR.plots[[&quot;DF20&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-3.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-3">
+Past versions of VolcanoPlotSig-3.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-3.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.all.plots[[&quot;DF101&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-4.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-4">
+Past versions of VolcanoPlotSig-4.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-4.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.OXPHOS.plots[[&quot;DF101&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-5.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-5">
+Past versions of VolcanoPlotSig-5.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-5.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.UPR.plots[[&quot;DF101&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-6.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-6">
+Past versions of VolcanoPlotSig-6.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-6" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-6.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.all.plots[[&quot;DF68&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-7.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-7">
+Past versions of VolcanoPlotSig-7.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-7" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-7.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.OXPHOS.plots[[&quot;DF68&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-8.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-8">
+Past versions of VolcanoPlotSig-8.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-8" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-8.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>PDX.UPR.plots[[&quot;DF68&quot;]]</code></pre>
 <p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-9.png" width="2400" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-VolcanoPlotSig-9">
+Past versions of VolcanoPlotSig-9.png
+</button>
+</p>
+<div id="fig-VolcanoPlotSig-9" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e05c3281876449d3de1475d4b6c0c687986bd466/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/VolcanoPlotSig-9.png" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
