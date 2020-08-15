@@ -503,63 +503,7 @@ After deciding the geneset to use for our data, we can now analyze the different
 
 ```{r DEAnalysis1VlnPlot, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 17, fig.height = 10}
 hms.centered = c("GO.OXPHOS35.centered", "UNUPDATED.UPR38.centered")
-
-#VlnPlot
-SS2.names <- c("SS2 Patient 8", "SS2 Patient 9")
-SS2s <- c(SS2Malignant.8, SS2Malignant.9)
-SS2.Vln.plots <- vector("list", length(SS2s))
-names(SS2.Vln.plots) <- SS2.names
-
-for (i in 1:length(SS2s)){
-  obj <- SS2s[[i]]
-  name <- SS2.names[[i]]
-  numCells <- nrow(obj@meta.data)
-  
-  my_comparisons <- list(
-    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
-    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
-    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
-  )
-  
-  if(patient[[i]] == "8"){
-    p <- VlnPlot(obj, features = hms.centered, group.by = "sample", pt.size = 0, combine = F, cols = c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 0.9)
-  }
-  else{
-    p <- VlnPlot(obj, features = hms.centered, group.by = "sample", pt.size = 0, combine = F, cols = c("#00AFBB", "#E7B800", "#FC4E07"), y.max = 1.0)
-  }
-  
-  GO.found <- sum(hallmark.list[["GO.OXPHOS"]] %in% rownames(obj))
-  GO.length <- length(hallmark.list[["GO.OXPHOS"]])
-  GO.pFound <- round((GO.found / GO.length) * 100,2)
-    
-  p[[1]] <- p[[1]] + labs(title = glue("{name} OXPHOS scores across treatment"), x = name, subtitle = glue("{numCells} Malignant Cells, {GO.found} out of {GO.length} OXPHOS genes found ({GO.pFound}%)"), caption = "GO_OXIDATIVE_PHOSPHORYLATION") +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$UNUPDATED.OXPHOS37.centered) -0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$UNUPDATED.OXPHOS37.centered) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-  
-  UPR.found <- sum(hallmark.list[["UNUPDATED.UPR"]] %in% rownames(obj))
-  UPR.length <- length(hallmark.list[["UNUPDATED.UPR"]])
-  UPR.pFound <- round((UPR.found / UPR.length) * 100,2)
-  p[[2]] <- p[[2]] + labs(title = glue("{name} UPR scores across treatment"), x = name, subtitle = glue("{numCells} Malignant Cells, {UPR.found} out of {UPR.length} UPR genes found ({UPR.pFound}%)"), caption = "HALLMARK_UNFOLDED_PROTEIN_RESPONSE") +
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(obj$UNUPDATED.UPR38.centered) -0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(obj$UNUPDATED.UPR38.centered) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(obj$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(obj$UNUPDATED.UPR38.centered) - 0.03)
-  p <- p[[1]] + p[[2]] + plot_layout(guides= 'collect') + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-  
-  SS2.Vln.plots[[name]] <- p
-}
-
-SS2.Vln.plots[["SS2 Patient 8"]]
-SS2.Vln.plots[["SS2 Patient 9"]]
-
-# swarm plots -------------
-
+#SWARM PLOTS 
 #OXPHOS ----------
 oxphos.swarm.plots <- vector("list", length = 2)
 names(oxphos.swarm.plots) <- SS2.names
@@ -585,7 +529,7 @@ for(i in 1:2){
   theme_bw() + 
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
     labs(title = glue("{SS2.name} Malignant Cells OXPHOS expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} OXPHOS genes found ({feature.pFound}%)")) + 
-  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
     geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$UNUPDATED.OXPHOS37.centered) -0.03, color = "black", show.legend = FALSE) + 
     geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$UNUPDATED.OXPHOS37.centered) - 0.03, color = "black", show.legend = FALSE) + 
     geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$UNUPDATED.OXPHOS37.centered) - 0.03, color = "black", show.legend = FALSE) + 
@@ -622,7 +566,7 @@ for(i in 1:2){
   theme_bw() + 
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
     labs(title = glue("{SS2.name} Malignant Cells UPR expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} UPR genes found ({feature.pFound}%)")) + 
-  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
     geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$UNUPDATED.UPR38.centered) -0.03, color = "black", show.legend = FALSE) + 
     geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$UNUPDATED.UPR38.centered) - 0.03, color = "black", show.legend = FALSE) + 
     geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$UNUPDATED.UPR38.centered) - 0.03, color = "black", show.legend = FALSE) + 
@@ -824,4 +768,7 @@ ggsave(plot = p4, filename = "SS2Malignant9.VolcanoUPR.png", path = "jesslyn_plo
 
 * Interestingly, there turned out to be more DE OXPHOS genes in Patient 8 comparisons than in Patient 9. However, the DE OXPHOS genes detected are not the same between patients. 
 * Similar to Patient 8, there are no DE UPR genes in Patient 9 as well. 
+
+Since DE genes detected are not consistent across patients, we cannot conclude that there is an enrichment of OXPHOS or UPR genes in p.1. 
+
 

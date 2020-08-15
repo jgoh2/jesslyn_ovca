@@ -97,6 +97,11 @@ SS2Malignant = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant_processed.RDS
 SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
 SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
 
+# Read in ccgenes
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
 #Read in hallmarks of interest
 g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
 g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
@@ -214,51 +219,155 @@ To investigate this further, we build violin plots of cell cycle scores separate
 ```{r noncycling, message=FALSE, warning=FALSE, fig.align='center', fig.width=12, fig.height=8}
 nc <- c("G0G139.centered", "G1S.DNAdamage40.centered", "G2M.checkpoint42.centered", "G2M.DNAdamage43.centered")
 nc.names <- c("G0/G1", "G1/S DNA Damage CP", "G2M CP", "G2M DNA Damage CP")
-nc.Vln.plots <- vector("list", length = length(nc))
-names(nc.Vln.plots) <- nc
+patient <- c("8", "9")
 
-for(i in 1:4){
-  feature <- nc[[i]]
-  nc.name <- nc.names[[i]]
+# G0G1 -------------
+g0g1.swarm <- vector("list", length = 2)
+names(g0g1.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
   
-  my_comparisons.8 <- list(
-    c("8.0", "8.1"), 
-    c("8.1", "8.2"), 
-    c("8.0", "8.2")
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
   )
   
-  my_comparisons.9 <- list(
-    c("9.0", "9.1"), 
-    c("9.1", "9.2"), 
-    c("9.0", "9.2")
-  )
+  feature.found <- sum(hallmark.list[["G0G1"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["G0G1"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
   
-   p8 <- VlnPlot(SS2Malignant.8, features = feature, group.by = "sample", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(SS2Malignant.8[[feature]]) + 0.4)) + 
-     labs(title = glue("Patient 8 {nc.name} across samples"), subtitle = paste(nrow(SS2Malignant.8@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, "[:digit:].0")), "cells"), x = "8.0", y = min(SS2Malignant.8[[feature]]) -0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, "[:digit:].1")), "cells"), x = glue("8.1"), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, "[:digit:].2")), "cells"), x = glue("8.2"), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons.8, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons.8, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-   p9 <- VlnPlot(SS2Malignant.9, features = feature, group.by = "sample", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(SS2Malignant.8[[feature]]) + 0.4)) + 
-     labs(title = glue("Patient 9 {nc.name} across samples"), subtitle = paste(nrow(SS2Malignant.9@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, "[:digit:].0")), "cells"), x = "9.0", y = min(SS2Malignant.9[[feature]]) -0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, "[:digit:].1")), "cells"), x = glue("9.1"), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, "[:digit:].2")), "cells"), x = glue("9.2"), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons.9, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons.9, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-   nc.Vln.plots[[feature]] <- p8 + p9 + plot_layout(ncol = 2, nrow =1)
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = G0G139.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells G0/G1 expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G0/G1 genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$G0G139.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$G0G139.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$G0G139.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g0g1.swarm[[SS2.name]] <- p 
 }
 
-nc.Vln.plots[["G0G139.centered"]]
-nc.Vln.plots[["G1S.DNAdamage40.centered"]]
-nc.Vln.plots[["G2M.checkpoint42.centered"]]
-nc.Vln.plots[["G2M.DNAdamage43.centered"]]
+g0g1.swarm[["SS2 Patient 8"]] + g0g1.swarm[["SS2 Patient 9"]]
 
+# G1/S DNA Damage -------------
+g1s.swarm <- vector("list", length = 2)
+names(g1s.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["G1S.DNAdamage"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["G1S.DNAdamage"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = G1S.DNAdamage40.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells G1/S DNA Damage CP expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S DNA Damage CP genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$G1S.DNAdamage40.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$G1S.DNAdamage40.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$G1S.DNAdamage40.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.swarm[[SS2.name]] <- p 
+}
+
+g1s.swarm[["SS2 Patient 8"]] + g1s.swarm[["SS2 Patient 9"]]
+
+# G2M CP -------------
+g2m.swarm <- vector("list", length = 2)
+names(g2m.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["G2M.checkpoint"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["G2M.checkpoint"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = G2M.checkpoint42.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells G2M CP expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M CP genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) +
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$G2M.checkpoint42.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$G2M.checkpoint42.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$G2M.checkpoint42.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[SS2.name]] <- p 
+}
+
+g2m.swarm[["SS2 Patient 8"]] + g2m.swarm[["SS2 Patient 9"]]
+
+# G2M DNA Damage CP -------------
+g2m.dna.swarm <- vector("list", length = 2)
+names(g2m.dna.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["G2M.DNAdamage"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["G2M.DNAdamage"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = G2M.DNAdamage43.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells G2M DNA Damage CP expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M DNA Damage CP genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$G2M.DNAdamage43.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$G2M.DNAdamage43.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$G2M.DNAdamage43.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.dna.swarm[[SS2.name]] <- p 
+}
+
+g2m.dna.swarm[["SS2 Patient 8"]] + g2m.dna.swarm[["SS2 Patient 9"]]
 
 ```
 
@@ -287,49 +396,118 @@ We hypothesized that samples p.1 will have enriched levels of non/low-cycling ge
 #VlnPlot -------------------------
 cc <- c("G1S.transcription41.centered", "S.Score.centered", "G2M.Score.centered")
 cc.names <- c("G1/S Specific Transcription", "S Score", "G2M Score")
-cc.Vln.plots <- vector("list", length = length(cc))
-names(cc.Vln.plots) <- cc
 
-for(i in 1:3){
-  feature <- cc[[i]]
-  cc.name <- cc.names[[i]]
+# G1/S --------
+g1s.transcription.swarm <- vector("list", length = 2)
+names(g1s.transcription.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
   
-  my_comparisons.8 <- list(
-    c("8.0", "8.1"), 
-    c("8.1", "8.2"), 
-    c("8.0", "8.2")
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
   )
   
-  my_comparisons.9 <- list(
-    c("9.0", "9.1"), 
-    c("9.1", "9.2"), 
-    c("9.0", "9.2")
-  )
+  feature.found <- sum(hallmark.list[["G1S.transcription"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["G1S.transcription"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
   
-   p8 <- VlnPlot(SS2Malignant.8, features = feature, group.by = "sample", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(SS2Malignant.8[[feature]]) + 0.8)) + 
-     labs(title = glue("Patient 8 {cc.name} across samples"), subtitle = paste(nrow(SS2Malignant.8@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, "[:digit:].0")), "cells"), x = "8.0", y = min(SS2Malignant.8[[feature]]) -0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, "[:digit:].1")), "cells"), x = glue("8.1"), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.8$sample, "[:digit:].2")), "cells"), x = glue("8.2"), y = min(SS2Malignant.8[[feature]]) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons.8, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons.8, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-   p9 <- VlnPlot(SS2Malignant.9, features = feature, group.by = "sample", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(SS2Malignant.8[[feature]]) + 0.8)) + 
-     labs(title = glue("Patient 9 {cc.name} across samples"), subtitle = paste(nrow(SS2Malignant.9@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, "[:digit:].0")), "cells"), x = "9.0", y = min(SS2Malignant.9[[feature]]) -0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, "[:digit:].1")), "cells"), x = glue("9.1"), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
-    geom_text(label = paste(sum(str_detect(SS2Malignant.9$sample, "[:digit:].2")), "cells"), x = glue("9.2"), y = min(SS2Malignant.9[[feature]]) - 0.03) + 
-    stat_compare_means(comparisons = my_comparisons.9, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons.9, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-   cc.Vln.plots[[feature]] <- p8 + p9 + plot_layout(ncol = 2, nrow =1)
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = G1S.transcription41.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells G1/S Specific Transcription expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$G1S.transcription41.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$G1S.transcription41.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$G1S.transcription41.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.transcription.swarm[[SS2.name]] <- p 
 }
 
-cc.Vln.plots[["G1S.transcription41.centered"]]
-cc.Vln.plots[["S.Score.centered"]]
-cc.Vln.plots[["G2M.Score.centered"]]
+g1s.transcription.swarm[["SS2 Patient 8"]] + g1s.transcription.swarm[["SS2 Patient 9"]]
+
+# S --------
+s.swarm <- vector("list", length = 2)
+names(s.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(s.genes %in% rownames(SS2))
+  feature.length <- length(s.genes)
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = S.Score.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells S Phase expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} S genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$S.Score.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$S.Score.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$S.Score.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  s.swarm[[SS2.name]] <- p 
+}
+
+s.swarm[["SS2 Patient 8"]] + s.swarm[["SS2 Patient 9"]]
+
+# G2M --------
+g2m.swarm <- vector("list", length = 2)
+names(g2m.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(g2m.genes %in% rownames(SS2))
+  feature.length <- length(g2m.genes)
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = G2M.Score.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells G2M Phase expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$G2M.Score.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$G2M.Score.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$G2M.Score.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[SS2.name]] <- p 
+}
+
+g2m.swarm[["SS2 Patient 8"]] + g2m.swarm[["SS2 Patient 9"]]
+
 ```
 
 * **CONCLUSIONS** 
@@ -343,7 +521,83 @@ cc.Vln.plots[["G2M.Score.centered"]]
             - 9.1 > 9.2 (rejects our hypothesis)
             - 9.0 > 9.2 
 
-Statistically significant results from both NONCYCLING and CYCLYING gene score comparisons show us that 9.1 > 9.2, which is very contradictory. 
+- Statistically significant results from both NONCYCLING and CYCLYING gene score comparisons show us that 9.1 > 9.2, which is very contradictory. 
+- It is possible that there is a correlation between nFeature/nCount and gene scores, so that 9.1 expresses higher levels of both types of gene-sets simply because it has more genes in general. We use swarm plots to compare the nFeature and nCount levels across treatment condition within each patient. 
+
+```{r nFnCSwarm, message = FALSE, warning = FALSE, fig.align = 'center', fig.width= 12, fig.height=8}
+#nFeature ----
+nF.swarm <- vector("list", length = 2)
+names(nF.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = nFeature_RNA, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells nFeature across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$nFeature_RNA) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$nFeature_RNA) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$nFeature_RNA) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nF.swarm[[SS2.name]] <- p 
+}
+
+nF.swarm[["SS2 Patient 8"]] + nF.swarm[["SS2 Patient 9"]]
+
+#nCount ----
+nC.swarm <- vector("list", length = 2)
+names(nC.swarm) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample, y = nCount_RNA, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells nCount across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells")) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$nCount_RNA) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$nCount_RNA) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$nCount_RNA) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nC.swarm[[SS2.name]] <- p 
+}
+
+nC.swarm[["SS2 Patient 8"]] + nC.swarm[["SS2 Patient 9"]]
+
+
+```
+
+* **OBSERVATIONS** 
+    - 9.1 does not have statistically significantly higher nFeature of nCount. This rejects our hypothesis and it seems like there is no correlation between nFeature/nCount and cell cycle gene expression. 
 
 * **STATISTICAL SUMMARY**
 ```{r cellcycleStat, message=FALSE, warning=FALSE}

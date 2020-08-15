@@ -101,6 +101,11 @@ PDX_DF20 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
 PDX_DF101 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
 PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
 
+# Read in ccgenes
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
 #read hallmarks of interest
 g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
 g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
@@ -220,12 +225,14 @@ To investigate this further, we build violin plots of cell cycle scores separate
 ```{r noncycling, message=FALSE, warning=FALSE, fig.align='center', fig.width=17, fig.height=8}
 nc <- c("G0G139.centered", "G1S.DNAdamage40.centered", "G2M.checkpoint42.centered", "G2M.DNAdamage43.centered")
 nc.names <- c("G0/G1", "G1/S DNA Damage CP", "G2M CP", "G2M DNA Damage CP")
-nc.Vln.plots <- vector("list", length = length(nc))
-names(nc.Vln.plots) <- nc
 
-for(i in 1:4){
-  feature <- nc[[i]]
-  nc.name <- nc.names[[i]]
+#G0 / G1 ------------
+g0g1.swarm <- vector("list", length = 3)
+names(g0g1.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
   
   my_comparisons <- list(
     c("MRD", "vehicle"),
@@ -233,40 +240,137 @@ for(i in 1:4){
     c("vehicle", "relapse")
   )
   
-   DF20 <- VlnPlot(PDX_DF20, features = feature, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(PDX_DF20[[feature]]) + 0.4)) + 
-     labs(title = glue("DF20 {nc.name} across samples"), subtitle = paste(nrow(PDX_DF20@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDX_DF20$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX_DF20[[feature]]) -0.05) + 
-    geom_text(label = paste(sum(PDX_DF20$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX_DF20[[feature]]) - 0.05) + 
-    geom_text(label = paste(sum(PDX_DF20$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX_DF20[[feature]]) - 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-    DF101 <- VlnPlot(PDX_DF101, features = feature, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(PDX_DF101[[feature]]) + 0.4)) + 
-     labs(title = glue("DF101 {nc.name} across samples"), subtitle = paste(nrow(PDX_DF101@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDX_DF101$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX_DF101[[feature]]) -0.05) + 
-    geom_text(label = paste(sum(PDX_DF101$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX_DF101[[feature]]) - 0.05) + 
-    geom_text(label = paste(sum(PDX_DF101$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX_DF101[[feature]]) - 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-    
-    DF68 <- VlnPlot(PDX_DF68, features = feature, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(PDX_DF68[[feature]]) + 0.4)) + 
-     labs(title = glue("DF68 {nc.name} across samples"), subtitle = paste(nrow(PDX_DF68@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDX_DF68$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX_DF68[[feature]]) -0.05) + 
-    geom_text(label = paste(sum(PDX_DF68$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX_DF68[[feature]]) - 0.05) + 
-    geom_text(label = paste(sum(PDX_DF68$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX_DF68[[feature]]) - 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-   nc.Vln.plots[[feature]] <- DF20 + DF101 + DF68 + plot_layout(ncol = 3, nrow =1)
+  feature.found <- sum(hallmark.list[["G0G1"]] %in% rownames(PDX))
+  feature.length <- length(hallmark.list[["G0G1"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = G0G139.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} G0/G1 expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G0/G1 genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["G0G139.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["G0G139.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["G0G139.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g0g1.swarm[[PDX.name]] <- p 
 }
 
-nc.Vln.plots[["G0G139.centered"]]
-nc.Vln.plots[["G1S.DNAdamage40.centered"]]
-nc.Vln.plots[["G2M.checkpoint42.centered"]]
-nc.Vln.plots[["G2M.DNAdamage43.centered"]]
+g0g1.swarm[["DF20"]] + g0g1.swarm[["DF101"]] + g0g1.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+
+#G1 / S ------------
+g1s.swarm <- vector("list", length = 3)
+names(g1s.swarm) <- PDX.names 
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(hallmark.list[["G1S.DNAdamage"]] %in% rownames(PDX))
+  feature.length <- length(hallmark.list[["G1S.DNAdamage"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = G1S.DNAdamage40.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} G1/S DNA Damage CP expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S DNA Damage CP genes found ({feature.pFound}%)")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["G1S.DNAdamage40.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["G1S.DNAdamage40.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["G1S.DNAdamage40.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.swarm[[PDX.name]] <- p 
+}
+
+g1s.swarm[["DF20"]] + g1s.swarm[["DF101"]] + g1s.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+#G2M checkpoint ----
+g2m.swarm <- vector("list", length =3)
+names(g2m.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(hallmark.list[["G2M.checkpoint"]] %in% rownames(PDX))
+  feature.length <- length(hallmark.list[["G2M.checkpoint"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = G2M.checkpoint42.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} G2M CP expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M CP genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["G2M.checkpoint42.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["G2M.checkpoint42.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["G2M.checkpoint42.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[PDX.name]] <- p 
+}
+
+g2m.swarm[["DF20"]] + g2m.swarm[["DF101"]] + g2m.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+#G2M DNA Damage ----
+g2m.dna.swarm <- vector("list", length = 3)
+names(g2m.dna.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(hallmark.list[["G2M.DNAdamage"]] %in% rownames(PDX))
+  feature.length <- length(hallmark.list[["G2M.DNAdamage"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = G2M.DNAdamage43.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} G2M DNA Damage CP expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M DNA Damage CP genes found ({feature.pFound}%)")) + theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["G2M.DNAdamage43.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["G2M.DNAdamage43.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["G2M.DNAdamage43.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.dna.swarm[[PDX.name]] <- p 
+}
+
+g2m.dna.swarm[["DF20"]] + g2m.dna.swarm[["DF101"]] + g2m.dna.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
 
 ```
 
@@ -297,12 +401,14 @@ We get the same results for each non/low/cell cycle arrest geneset for DF20, whe
 #VlnPlot -------------------------
 cc <- c("G1S.transcription41.centered", "S.Score.centered", "G2M.Score.centered")
 cc.names <- c("G1/S Specific Transcription", "S Score", "G2M Score")
-cc.Vln.plots <- vector("list", length = length(cc))
-names(cc.Vln.plots) <- cc
+
+# G1/S Transcription ------
+g1s.transcription.swarm <- vector("list", length = 3)
+names(g1s.transcription.swarm) <- PDX.names 
 
 for(i in 1:3){
-  feature <- cc[[i]]
-  cc.name <- cc.names[[i]]
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
   
   my_comparisons <- list(
     c("MRD", "vehicle"),
@@ -310,39 +416,102 @@ for(i in 1:3){
     c("vehicle", "relapse")
   )
   
-   DF20 <- VlnPlot(PDX_DF20, features = feature, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(PDX_DF20[[feature]]) + 0.8)) + 
-     labs(title = glue("DF20 {cc.name} across samples"), subtitle = paste(nrow(PDX_DF20@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDX_DF20$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX_DF20[[feature]]) -0.05) + 
-    geom_text(label = paste(sum(PDX_DF20$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX_DF20[[feature]]) - 0.05) + 
-    geom_text(label = paste(sum(PDX_DF20$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX_DF20[[feature]]) - 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-    DF101 <- VlnPlot(PDX_DF101, features = feature, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(PDX_DF101[[feature]]) + 0.8)) + 
-     labs(title = glue("DF101 {cc.name} across samples"), subtitle = paste(nrow(PDX_DF101@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDX_DF101$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX_DF101[[feature]]) -0.05) + 
-    geom_text(label = paste(sum(PDX_DF101$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX_DF101[[feature]]) - 0.05) + 
-    geom_text(label = paste(sum(PDX_DF101$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX_DF101[[feature]]) - 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-    
-    DF68 <- VlnPlot(PDX_DF68, features = feature, group.by = "treatment.status", pt.size = 0, c("#00AFBB", "#E7B800", "#FC4E07"), y.max = (max(PDX_DF68[[feature]]) + 0.8)) + 
-     labs(title = glue("DF68 {cc.name} across samples"), subtitle = paste(nrow(PDX_DF68@meta.data), "Malignant Cells")) + 
-    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
-    geom_text(label = paste(sum(PDX_DF68$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX_DF68[[feature]]) -0.05) + 
-    geom_text(label = paste(sum(PDX_DF68$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX_DF68[[feature]]) - 0.05) + 
-    geom_text(label = paste(sum(PDX_DF68$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX_DF68[[feature]]) - 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.05) + 
-    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.05, bracket.size = 0, vjust = 1.8)
-   
-   cc.Vln.plots[[feature]] <- DF20 + DF101 + DF68 + plot_layout(ncol = 3, nrow =1)
+  feature.found <- sum(hallmark.list[["G1S.transcription"]] %in% rownames(PDX))
+  feature.length <- length(hallmark.list[["G1S.transcription"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = G1S.transcription41.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} G1/S Specific Transcription expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S genes found ({feature.pFound}%)")) + 
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8)) +
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["G1S.transcription41.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["G1S.transcription41.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["G1S.transcription41.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.transcription.swarm[[PDX.name]] <- p 
 }
 
-cc.Vln.plots[["G1S.transcription41.centered"]]
-cc.Vln.plots[["S.Score.centered"]]
-cc.Vln.plots[["G2M.Score.centered"]]
+g1s.transcription.swarm[["DF20"]] + g1s.transcription.swarm[["DF101"]] + g1s.transcription.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+# S ---------
+s.swarm <- vector("list", length = 3)
+names(s.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(s.genes %in% rownames(PDX))
+  feature.length <- length(s.genes)
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = S.Score.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} S Phase expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} S genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["S.Score.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["S.Score.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["S.Score.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  s.swarm[[PDX.name]] <- p 
+}
+
+s.swarm[["DF20"]] + s.swarm[["DF101"]] + s.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+# G2M ------------------
+g2m.warm <- vector("list", length = 3)
+names(g2m.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(g2m.genes %in% rownames(PDX))
+  feature.length <- length(g2m.genes)
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = G2M.Score.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} G2M Phase expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["G2M.Score.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["G2M.Score.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["G2M.Score.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[PDX.name]] <- p 
+}
+
+g2m.swarm[["DF20"]] + g2m.swarm[["DF101"]] + g2m.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+
 ```
 
 * **CONCLUSIONS** 
@@ -361,6 +530,78 @@ cc.Vln.plots[["G2M.Score.centered"]]
                 * Relapse >> Vehicle
 
 - Although we have consistent results for DF20 for cycling genes, where MRD > Vehicle, this observation does not support our hypothesis, and it also contradicts our findings for noncycling gene scores, where MRD also has the higher scores across all treatment statuses. 
+- It is possible that MRD in DF20 has higher noncycling and cycling gene expression simply because it has more nFeature/nCount in general. We plot nFeature/nCount across treatment status within each model to observe if our hypothesis is tre. 
+
+```{r nFnCSwarm, message=FALSE, warning=FALSE, fig.align='center', fig.width=18, fig.height=8}
+#nFeature -----
+nF.swarm <- vector("list", length = 3)
+names(nF.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = nFeature_RNA, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} nFeature across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["nFeature_RNA"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["nFeature_RNA"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["nFeature_RNA"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nF.swarm[[PDX.name]] <- p 
+}
+
+nF.swarm[["DF20"]] + nF.swarm[["DF101"]] + nF.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+#nCount -----
+nC.swarm <- vector("list", length = 3)
+names(nC.swarm) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = nCount_RNA, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} nCount across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["nCount_RNA"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["nCount_RNA"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["nCount_RNA"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nC.swarm[[PDX.name]] <- p 
+}
+
+nC.swarm[["DF20"]] + nC.swarm[["DF101"]] + nC.swarm[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+
+```
+
+* Interestingly, the MRD treatment status in DF20 actually has the lowest nFeature and nCount, which rejects our hypothesis. Furthermore, although the MRD treatment status in DF101 and DF68 are significantly higher than the other two treatment conditions, they do not express significantly higher noncycling or cycling scores. Cell cycle expression therefore does not seem to be significantly correlated with nFeature or nCount. 
 
 * **STATISTICAL SUMMARY**
 ```{r cellcycleStat, message=FALSE, warning=FALSE}
