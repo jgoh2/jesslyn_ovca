@@ -1,0 +1,394 @@
+---
+title: "GSEA Choices"
+author: "Jesslyn Goh and Mike Cuoco"
+date: "7/20/2020"
+editor_options: 
+  chunk_output_type: console
+output:
+ html_document:
+  code_folding: hide
+  toc_float: TRUE 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(echo = TRUE)
+options(width=120)
+```
+
+# GSEA CHOICES 
+* This is a continuation of our GSEA choices exploration within the PDX_choices.Rmd file. 
+* We have previously decided to use the **wilcoxon rank sum test**, and attempted to determine the best ranking method for GSEA by plotting genes on Volcano Plots and labeling them with their gene ranks. We compared the following ranking methods: 
+    - logFC descending, then padj ascending 
+    - padj ascending, then logFC descending 
+    - -log10padj x logFC descending 
+    - -log10padj x FC descending 
+* Here is the comparison between each ranking method: 
+[![Comparison of Ranking Methods](jesslyn_plots/PDX_test/ranktest3.png)]
+
+* While the volcano plots show us that -log10padj x logFC is the best ranking metric because there is a great separation between highly upregulated and downregulated genes, and the false positives are in the middle of the list, the GSEA plot says otherwise. 
+    - We graphed the GSEA plot for DF20, Patient 8. However, while the -log10padj x logFC metric gave us a negative enrichment score, the -log10padj x FC metric gave us a positive enrichment score (which agrees with results from our VlnPlot). 
+* Here, we would like to have a more in-depth analysis of how GSEA results change depending on our ranking methods, and hopefully be able to detect any problems in our code that might have resulted in the discrepancy in GSEA results based on our ranks. 
+
+### STEP 1 LOAD SEURAT OBJECT
+
+```{r init, message = FALSE, warning = FALSE}
+# Load packages
+source(here::here('packages.R'))
+
+#Read in PDX RDS object
+PDX_DF20 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS")
+PDX_DF101 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS")
+PDX_DF68 = readRDS("data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS")
+
+#Read in SS2 RDS object
+SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS")
+SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
+
+# Read in ccgenes
+ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
+s.genes <- ccgenes[1:43]
+g2m.genes <- ccgenes[44:97]
+
+#Read in hallmarks of interest
+g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
+g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
+g1S.transcription.genes <- read_lines("data/gene_lists/cellcycle/G1Stranscription.txt", skip = 2)
+g2m.checkpoint.genes <- read_lines("data/gene_lists/cellcycle/G2Mcheckpoint.txt", skip = 2)
+g2m.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G2MDNAdamage.txt", skip = 2)
+g2m.replicationCP.genes <- read_lines("data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt", skip = 2)
+
+hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 9)
+names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", 
+                          "UNUPDATED.UPR", "G0G1", "G1S.DNAdamage", "G1S.transcription", "G2M.checkpoint", 
+                          "G2M.DNAdamage")
+for(hm in hallmark_names){
+  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+  hallmark.list[[hm]] <- file
+}
+
+hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
+hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
+hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
+hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
+hallmark.list[["G0G1"]] <- g0g1.genes
+hallmark.list[["G1S.DNAdamage"]] <- g1S.DNAdamage.genes
+hallmark.list[["G1S.transcription"]] <- g1S.transcription.genes
+hallmark.list[["G2M.checkpoint"]] <- g2m.checkpoint.genes
+hallmark.list[["G2M.DNAdamage"]] <- g2m.DNAdamage.genes
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names <- names(SS2Malignant.8@meta.data)[14:58]
+
+for(i in hm.names){
+    SS2Malignant8.hm.centered <- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 <- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant9.hm.centered <- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 <- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue("{i}.centered"))
+
+    DF20.hm.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
+    PDX_DF20 <- AddMetaData(PDX_DF20, DF20.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF101.hm.centered <- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
+    PDX_DF101 <- AddMetaData(PDX_DF101, DF101.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF68.hm.centered <- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
+    PDX_DF68 <- AddMetaData(PDX_DF68, DF68.hm.centered, col.name = glue("{i}.centered"))
+    
+}
+```
+
+### STEP 2 CALL FINDMARKERS 
+```{r FindMarkers, message=FALSE, warning = FALSE}
+markers <- vector("list", length = 5)
+obj.names <- c("DF20", "DF101", "DF68", "SS2.8", "SS2.9")
+names(markers) <- obj.names
+objs <- c(PDX_DF20, PDX_DF101, PDX_DF68, SS2Malignant.8, SS2Malignant.9)
+
+for(i in 1:5){
+  obj.name <- obj.names[[i]]
+  obj <- objs[[i]]
+  
+  comparisons <- c("MV", "MR", "VR")
+  obj.markers <- vector("list", length = 3)
+  names(obj.markers) <- comparisons
+  
+  if(str_detect(obj.name, "[DF]")){
+    obj.markers[["MV"]] <- FindMarkers(obj, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "vehicle", logfc.threshold = 0)
+    obj.markers[["MR"]] <- FindMarkers(obj, group.by = "treatment.status", ident.1 = "MRD", ident.2 = "relapse", logfc.threshold = 0)
+    obj.markers[["VR"]] <- FindMarkers(obj, group.by = "treatment.status", ident.1 = "vehicle", ident.2 = "relapse", logfc.threshold = 0)
+  }
+  
+  else{
+    p <- str_split(obj.name, "SS2.")[[1]][2]
+    obj.markers[["MV"]] <- FindMarkers(obj, group.by = "sample", ident.1 = glue("{p}.1"), ident.2 = glue("{p}.0"), logfc.threshold = 0)
+    obj.markers[["MR"]] <- FindMarkers(obj, group.by = "sample", ident.1 = glue("{p}.1"), ident.2 = glue("{p}.2"), logfc.threshold = 0)
+    obj.markers[["VR"]] <- FindMarkers(obj, group.by = "sample", ident.1 = glue("{p}.0"), ident.2 = glue("{p}.2"), logfc.threshold = 0)
+  }
+  
+  markers[[obj.name]] <- obj.markers
+}
+```
+
+### STEP 3. RANK GENES 
+```{r rank, message = FALSE, warning = FALSE}
+# logFC descending, padj ascending ------------
+logFC.padj.rank <- vector("list", length = 5)
+names(logFC.padj.rank) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.markers <- vector("list", length = 3)
+  names(obj.markers) <- comparisons
+  
+  for(comparison in comparisons){
+    obj.markers[[comparison]] <- markers[[name]][[comparison]] %>% 
+      rownames_to_column() %>% 
+      select(rowname, avg_logFC, p_val_adj) %>%
+      arrange(-avg_logFC, p_val_adj) %>% 
+      select(rowname, avg_logFC)
+  }
+  
+  logFC.padj.rank[[name]] <- obj.markers
+}
+
+
+# padj ascending, logFC descending -------------
+padj.logFC.rank <- vector("list", length = 5)
+names(padj.logFC.rank) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.markers <- vector("list", length = 3)
+  names(obj.markers) <- comparisons
+  
+  for(comparison in comparisons){
+    obj.markers[[comparison]] <- markers[[name]][[comparison]] %>% 
+      rownames_to_column() %>% 
+      select(rowname, avg_logFC, p_val_adj) %>%
+      arrange(p_val_adj, -avg_logFC) %>% 
+      select(rowname, p_val_adj)
+  }
+  
+  padj.logFC.rank[[name]] <- obj.markers
+}
+
+# -log10padj x logFC descending -------------
+neglog10padj.logFC.rank <- vector("list", length = 5)
+names(neglog10padj.logFC.rank) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.markers <- vector("list", length = 3)
+  names(obj.markers) <- comparisons
+  
+  for(comparison in comparisons){
+    p <- markers[[name]][[comparison]] %>% 
+      rownames_to_column() %>% 
+      select(rowname, avg_logFC, p_val_adj) %>%
+      mutate("neglog10padj" = -(log10(p_val_adj)))
+    p <- p %>% mutate("rank.metric" = neglog10padj * avg_logFC)
+    obj.markers[[comparison]] <- p %>% 
+      arrange(-rank.metric) %>% 
+      select(rowname, rank.metric)
+  }
+  
+  neglog10padj.logFC.rank[[name]] <- obj.markers
+}
+
+# -log10padj x FC descending -------------
+neglog10padj.FC.rank <- vector("list", length = 5)
+names(neglog10padj.FC.rank) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.markers <- vector("list", length = 3)
+  names(obj.markers) <- comparisons
+  
+  for(comparison in comparisons){
+    p <- markers[[name]][[comparison]] %>% 
+      rownames_to_column() %>% 
+      select(rowname, avg_logFC, p_val_adj) %>%
+      mutate("neglog10padj" = -(log10(p_val_adj))) %>% 
+      mutate("FC" = exp(avg_logFC))
+    p <- p %>% mutate("rank.metric" = neglog10padj * FC)
+    obj.markers[[comparison]] <- p %>% arrange(-rank.metric) %>% 
+      select(rowname, rank.metric)
+  }
+  
+  neglog10padj.FC.rank[[name]] <- obj.markers
+}
+
+```
+
+### STEP 4. RUN GSEA 
+* We will run GSEA with each ranking method and compare results
+
+```{r GSEA, message = FALSE, warning = FALSE, fig.align= 'center', fig.width=10, fig.height=10}
+# logFC descending, padj ascending -----------
+logFC.padj.GSEA.results <- vector("list", length = 5)
+logFC.padj.GSEA.plots <- vector("list", length = 5)
+names(logFC.padj.GSEA.plots) <- obj.names
+names(logFC.padj.GSEA.results) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.results <- vector("list", length = 3)
+  names(obj.results) <- comparisons
+  obj.plots <- vector("list", length = 3)
+  names(obj.plots) <- comparisons 
+  
+  for(comparison in comparisons){
+    ranks <- logFC.padj.rank[[name]][[comparison]] %>% deframe()
+    obj.results[[comparison]] <- fgsea(hallmark.list, stats = ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+    
+    padj <- obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+    
+    obj.plots[[comparison]] <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.OXPHOS"]], stats = ranks) + labs(title = glue("{name} {comparison} OXPHOS GSEA results"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "logFC descending, padj ascending")
+  }
+  
+  logFC.padj.GSEA.results[[name]] <- obj.results 
+  logFC.padj.GSEA.plots[[name]] <- obj.plots
+}
+
+# padj ascending, logFC descending -----------
+padj.logFC.GSEA.results <- vector("list", length = 5)
+padj.logFC.GSEA.plots <- vector("list", length = 5)
+names(padj.logFC.GSEA.plots) <- obj.names
+names(padj.logFC.GSEA.results) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.results <- vector("list", length = 3)
+  names(obj.results) <- comparisons
+  obj.plots <- vector("list", length = 3)
+  names(obj.plots) <- comparisons 
+  
+  for(comparison in comparisons){
+    ranks <- padj.logFC.rank[[name]][[comparison]] %>% deframe()
+    obj.results[[comparison]] <- fgsea(hallmark.list, stats = ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+    
+    padj <- obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+    
+    obj.plots[[comparison]] <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.OXPHOS"]], stats = ranks) + labs(title = glue("{name} {comparison} OXPHOS GSEA results"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "padj asecdning, logFC descending")
+  }
+  
+  padj.logFC.GSEA.results[[name]] <- obj.results 
+  padj.logFC.GSEA.plots[[name]] <- obj.plots
+}
+
+# neglog10padj x logFC -----------
+neglogpadj.logFC.GSEA.results <- vector("list", length = 5)
+neglogpadj.logFC.GSEA.plots <- vector("list", length = 5)
+names(neglogpadj.logFC.GSEA.plots) <- obj.names
+names(neglogpadj.logFC.GSEA.results) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.results <- vector("list", length = 3)
+  names(obj.results) <- comparisons
+  obj.plots <- vector("list", length = 3)
+  names(obj.plots) <- comparisons 
+  
+  for(comparison in comparisons){
+    ranks <- neglog10padj.logFC.rank[[name]][[comparison]] %>% deframe()
+    obj.results[[comparison]] <- fgsea(hallmark.list, stats = ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+    
+    padj <- obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+    
+    obj.plots[[comparison]] <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.OXPHOS"]], stats = ranks) + labs(title = glue("{name} {comparison} OXPHOS GSEA results"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x logFC descending")
+  }
+  
+  neglogpadj.logFC.GSEA.results[[name]] <- obj.results 
+  neglogpadj.logFC.GSEA.plots[[name]] <- obj.plots
+}
+
+# neglog10padj x FC -----------
+neglogpadj.FC.GSEA.results <- vector("list", length = 5)
+neglogpadj.FC.GSEA.plots <- vector("list", length = 5)
+names(neglogpadj.FC.GSEA.plots) <- obj.names
+names(neglogpadj.FC.GSEA.results) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.results <- vector("list", length = 3)
+  names(obj.results) <- comparisons
+  obj.plots <- vector("list", length = 3)
+  names(obj.plots) <- comparisons 
+  
+  for(comparison in comparisons){
+    ranks <- neglog10padj.FC.rank[[name]][[comparison]] %>% deframe()
+    obj.results[[comparison]] <- fgsea(hallmark.list, stats = ranks, minSize = 15, maxSize = 500, nperm = 1000) %>% 
+  as_tibble() %>% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %>% 
+  arrange(desc(NES), padj)
+    
+    padj <- obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(padj) %>% deframe() %>% round(digits = 3)
+NES = obj.results[[comparison]] %>% filter(pathway == "UNUPDATED.OXPHOS") %>% select(NES) %>% deframe() %>% round(digits = 3)
+    
+    obj.plots[[comparison]] <- plotEnrichment(pathway = hallmark.list[["UNUPDATED.OXPHOS"]], stats = ranks) + labs(title = glue("{name} {comparison} OXPHOS GSEA results"), subtitle = glue("(NES = {NES}, padj = {padj})"), caption = "-log10padj x FC descending")
+  }
+  
+  neglogpadj.FC.GSEA.results[[name]] <- obj.results 
+  neglogpadj.FC.GSEA.plots[[name]] <- obj.plots
+}
+
+# show plots ----------
+GSEA.plots <- vector("list", length = 5)
+names(GSEA.plots) <- obj.names
+
+for(name in obj.names){
+  comparisons <- c("MV", "MR", "VR")
+  obj.plots <- vector("list", length =3)
+  names(obj.plots) <- comparisons
+  
+  for(comparison in comparisons){
+    p <- logFC.padj.GSEA.plots[[name]][[comparison]] + padj.logFC.GSEA.plots[[name]][[comparison]] + neglogpadj.logFC.GSEA.plots[[name]][[comparison]] + neglogpadj.FC.GSEA.plots[[name]][[comparison]] + plot_layout(ncol = 2, nrow = 2)
+    obj.plots[[comparison]] <- p
+    ggsave(plot = p, filename = glue("GSEA.{name}{comparison}.png"), path = "jesslyn_plots/PDX_test/GSEA_paired/test", width = 10, height = 10)
+  }
+  GSEA.plots[[name]] <- obj.plots
+}
+
+GSEA.plots[["DF20"]][["MV"]]
+GSEA.plots[["DF20"]][["MR"]]
+GSEA.plots[["DF20"]][["VR"]]
+
+GSEA.plots[["DF101"]][["MV"]]
+GSEA.plots[["DF101"]][["MR"]]
+GSEA.plots[["DF101"]][["VR"]]
+
+GSEA.plots[["DF68"]][["MV"]]
+GSEA.plots[["DF68"]][["MR"]]
+GSEA.plots[["DF68"]][["VR"]]
+
+GSEA.plots[["SS2.8"]][["MV"]]
+GSEA.plots[["SS2.8"]][["MR"]]
+GSEA.plots[["SS2.8"]][["VR"]]
+
+GSEA.plots[["SS2.9"]][["MV"]]
+GSEA.plots[["SS2.9"]][["MR"]]
+GSEA.plots[["SS2.9"]][["VR"]]
+
+```
+
+* We get very different results depending on the ranking method we use. -log10padj x logFC and -log10padj x FC seem to give us opposite NES values most of the time. Which of the two metrics is better is not consistent, with x FC sometimes giving us GSEA results that agree more with our other analyses, and x logFC at other times. 
+* Interesting to note that GSEA plots using -log10padj x logFC or FC metrics give us plots with straight lines, while the plots using only logFC or padj give us curvier plots that look more like what GSEA plots usually look like. 
+
+
+
+
