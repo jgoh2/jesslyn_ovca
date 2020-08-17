@@ -432,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-15
+<strong>Last updated:</strong> 2020-08-17
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb1ab47b83b06d4c1ba12270f293f49d1e774e18ftargetblankb1ab47ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b1ab47b83b06d4c1ba12270f293f49d1e774e18f" target="_blank">b1ab47b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed60aeff9be61fbef75b246307d4c93f2b192aa7ftargetblankd60aeffa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d60aeff9be61fbef75b246307d4c93f2b192aa7f" target="_blank">d60aeff</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb1ab47b83b06d4c1ba12270f293f49d1e774e18ftargetblankb1ab47ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed60aeff9be61fbef75b246307d4c93f2b192aa7ftargetblankd60aeffa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b1ab47b83b06d4c1ba12270f293f49d1e774e18f" target="_blank">b1ab47b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d60aeff9be61fbef75b246307d4c93f2b192aa7f" target="_blank">d60aeff</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -548,7 +548,6 @@ Ignored files:
     Ignored:    data/HTAPP/
     Ignored:    data/Izar_2020/
     Ignored:    data/gene_lists/.DS_Store
-    Ignored:    data/gene_lists/cellcycle/.DS_Store
     Ignored:    data/gene_lists/extra/.DS_Store
     Ignored:    jesslyn_plots/
     Ignored:    mike_plots/
@@ -559,6 +558,36 @@ Ignored files:
     Ignored:    renv/python/
     Ignored:    renv/staging/
     Ignored:    vignettes/
+
+Untracked files:
+    Untracked:  data/gene_lists/extra/CANCER_PROGENITORS_UP.txt
+    Untracked:  data/gene_lists/extra/G0G1.txt
+    Untracked:  data/gene_lists/extra/G1S.DNAdamage.txt
+    Untracked:  data/gene_lists/extra/G1S.transcription.txt
+    Untracked:  data/gene_lists/extra/G2M.DNAdamage.txt
+    Untracked:  data/gene_lists/extra/G2M.checkpoint.txt
+    Untracked:  data/gene_lists/extra/RAMALHO_STEMNESS_UP.txt
+    Untracked:  data/gene_lists/extra/UNUPDATED.OXPHOS.txt
+    Untracked:  data/gene_lists/extra/UNUPDATED.UPR.txt
+    Untracked:  data/gene_lists/extra/stemness_genes.txt
+
+Unstaged changes:
+    Modified:   code/read_Izar_2020.R
+    Deleted:    data/gene_lists/cellcycle/G0G1.txt
+    Deleted:    data/gene_lists/cellcycle/G1SDNAdamage.txt
+    Deleted:    data/gene_lists/cellcycle/G1Stranscription.txt
+    Deleted:    data/gene_lists/cellcycle/G2.txt
+    Deleted:    data/gene_lists/cellcycle/G2MDNAdamage.txt
+    Deleted:    data/gene_lists/cellcycle/G2Mcheckpoint.txt
+    Deleted:    data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt
+    Modified:   data/gene_lists/extra/GO.OXPHOS.txt
+    Deleted:    data/gene_lists/extra/GO.PERK_MEDIATED_UPR.txt
+    Modified:   data/gene_lists/hallmarks.txt
+    Deleted:    data/gene_lists/oxphos.txt
+    Deleted:    data/gene_lists/stemness_genes.txt
+    Deleted:    data/gene_lists/upr.txt
+    Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
+    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
 
 </code></pre>
 <p>
@@ -597,6 +626,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d60aeff9be61fbef75b246307d4c93f2b192aa7f/analysis/03.1_Izar2020_PDX_DEAnalysis.Rmd" target="_blank">d60aeff</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-17
+</td>
+<td>
+More DE Analysis of other hallmarks
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/03.1_Izar2020_PDX_DEAnalysis.html" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1170,35 +1233,23 @@ PDX_DF101 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS&qu
 PDX_DF68 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS&quot;)
 
 #Read in hallmarks of interest
-g0g1.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G0G1.txt&quot;, skip = 2)
-g1S.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1SDNAdamage.txt&quot;, skip = 2)
-g1S.transcription.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1Stranscription.txt&quot;, skip = 2)
-g2m.checkpoint.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2Mcheckpoint.txt&quot;, skip = 2)
-g2m.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MDNAdamage.txt&quot;, skip = 2)
-g2m.replicationCP.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt&quot;, skip = 2)
-
 hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
-hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 9)
-names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, 
-                          &quot;UNUPDATED.UPR&quot;, &quot;G0G1&quot;, &quot;G1S.DNAdamage&quot;, &quot;G1S.transcription&quot;, &quot;G2M.checkpoint&quot;, 
-                          &quot;G2M.DNAdamage&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names))
+names(hallmark.list) &lt;- hallmark_names
+
 for(hm in hallmark_names){
-  file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
-  hallmark.list[[hm]] &lt;- file
+  if(file.exists(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;))){
+    file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
+    hallmark.list[[hm]] &lt;- file
+  }
+  else{
+    file &lt;- read_lines(glue(&quot;data/gene_lists/extra/{hm}.txt&quot;), skip =2)
+    hallmark.list[[hm]] &lt;- file
+  }
 }
 
-hallmark.list[[&quot;GO.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/GO.OXPHOS.txt&quot;, skip = 1)
-hallmark.list[[&quot;KEGG.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/KEGG.OXPHOS.txt&quot;, skip = 2)
-hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/oxphos.txt&quot;, skip =1)
-hallmark.list[[&quot;UNUPDATED.UPR&quot;]] &lt;- read_lines(&quot;data/gene_lists/upr.txt&quot;, skip =1)
-hallmark.list[[&quot;G0G1&quot;]] &lt;- g0g1.genes
-hallmark.list[[&quot;G1S.DNAdamage&quot;]] &lt;- g1S.DNAdamage.genes
-hallmark.list[[&quot;G1S.transcription&quot;]] &lt;- g1S.transcription.genes
-hallmark.list[[&quot;G2M.checkpoint&quot;]] &lt;- g2m.checkpoint.genes
-hallmark.list[[&quot;G2M.DNAdamage&quot;]] &lt;- g2m.DNAdamage.genes
-
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(PDX_All@meta.data)[9:53]
+hm.names &lt;- names(PDX_All@meta.data)[9:56]
 
 for(i in hm.names){
     DF20.hm.centered &lt;- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
@@ -2149,6 +2200,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-1.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -2275,6 +2337,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/DEAnalysis1 VlnPlot-2.png" target="_blank">84edf85</a>
@@ -2828,6 +2901,279 @@ jgoh2
 <li>Results are not consistent across models. We cannot conclude that OXPHOS or UPR genes are enriched in MRD.</li>
 </ul></li>
 </ul>
+</div>
+<div id="step-4.-analyzing-other-gene-sets" class="section level2">
+<h2>STEP 4. ANALYZING OTHER GENE SETS</h2>
+<ul>
+<li>Since we did not obtain any conclusive results from analyzing OXPHOS and UPR expression across treatment samples within each SS2 Patient, we now examine the expression of other gene sets to find potential trends. We are specifically interested in these gene sets:
+<ul>
+<li>Stemness (stemness_genes44, RAMALHO_STEMNESS_UP45, CANCER_PROGENITORS_UP46)</li>
+<li>Apoptosis (HALLMARK_APOPTOSIS2)</li>
+<li>Angiogenesis (HALLMARK_ANGIOGENESIS1)</li>
+<li>Epithelial Mesenchymal Transition (HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION6)</li>
+<li>Fatty Acid Metabolism (HALLMARK_FATTY_ACID_METABOLISM9)</li>
+<li>Hypoxia (HALLMARK_HYPOXIA13)</li>
+<li>ROS Pathway (HALLMARK_REACTIVE_OXYGEN_SPECIES_PATHWAY30)</li>
+</ul></li>
+</ul>
+<pre class="r"><code>#difference in mean 
+hallmarks &lt;- names(PDX_DF20@meta.data)[58:103][-(39:43)]
+
+mean.diff &lt;- data.frame()
+for(i in 1:length(hallmarks)){
+  hm &lt;- hallmarks[[i]]
+  df &lt;- data.frame(
+    &quot;DF20.MV&quot; = (mean(deframe(DF20.MRD[[hm]])) - mean(deframe(DF20.vehicle[[hm]]))), 
+    &quot;DF20.MR&quot; = (mean(deframe(DF20.MRD[[hm]])) - mean(deframe(DF20.relapse[[hm]]))), 
+    &quot;DF20.VR&quot; = (mean(deframe(DF20.vehicle[[hm]])) - mean(deframe(DF20.relapse[[hm]]))), 
+    &quot;DF101.MV&quot; = (mean(deframe(DF101.MRD[[hm]])) - mean(deframe(DF101.vehicle[[hm]]))), 
+    &quot;DF101.MR&quot; = (mean(deframe(DF101.MRD[[hm]])) - mean(deframe(DF101.relapse[[hm]]))), 
+    &quot;DF101.VR&quot; = (mean(deframe(DF101.vehicle[[hm]])) - mean(deframe(DF101.relapse[[hm]]))),  
+    &quot;DF68.MV&quot; = (mean(deframe(DF68.MRD[[hm]])) - mean(deframe(DF68.vehicle[[hm]]))), 
+    &quot;DF68.MR&quot; = (mean(deframe(DF68.MRD[[hm]])) - mean(deframe(DF68.relapse[[hm]]))), 
+    &quot;DF68.VR&quot; = (mean(deframe(DF68.vehicle[[hm]])) - mean(deframe(DF68.relapse[[hm]]))) 
+    
+  )
+  mean.diff &lt;- rbind(mean.diff, df)
+}
+rownames(mean.diff) &lt;- hallmarks
+
+#significance ----------
+sig.diff &lt;- data.frame()
+for(i in 1:length(hallmarks)){
+  hm &lt;- hallmarks[[i]]
+  df &lt;- data.frame(
+    &quot;DF20.MV.sig&quot; = wilcox.test(deframe(DF20.MRD[[hm]]), deframe(DF20.vehicle[[hm]]))$p.value, 
+    &quot;DF20.MR.sig&quot; = wilcox.test(deframe(DF20.MRD[[hm]]), deframe(DF20.relapse[[hm]]))$p.value,  
+    &quot;DF20.VR.sig&quot; = wilcox.test(deframe(DF20.vehicle[[hm]]), deframe(DF20.relapse[[hm]]))$p.value, 
+    &quot;DF101.MV.sig&quot; = wilcox.test(deframe(DF101.MRD[[hm]]), deframe(DF101.vehicle[[hm]]))$p.value, 
+    &quot;DF101.MR.sig&quot; = wilcox.test(deframe(DF101.MRD[[hm]]), deframe(DF101.relapse[[hm]]))$p.value,  
+    &quot;DF101.VR.sig&quot; = wilcox.test(deframe(DF101.vehicle[[hm]]), deframe(DF101.relapse[[hm]]))$p.value,
+    &quot;DF68.MV.sig&quot; = wilcox.test(deframe(DF68.MRD[[hm]]), deframe(DF68.vehicle[[hm]]))$p.value, 
+    &quot;DF68.MR.sig&quot; = wilcox.test(deframe(DF68.MRD[[hm]]), deframe(DF68.relapse[[hm]]))$p.value,  
+    &quot;DF68.VR.sig&quot; = wilcox.test(deframe(DF68.vehicle[[hm]]), deframe(DF68.relapse[[hm]]))$p.value
+  )
+  sig.diff &lt;- rbind(sig.diff, df)
+}
+rownames(sig.diff) &lt;- hallmarks
+
+#combine diff with significance ------------
+sig.diff &lt;- rownames_to_column(sig.diff)
+mean.diff &lt;- rownames_to_column(mean.diff)
+both &lt;- merge(mean.diff, sig.diff, by = &quot;rowname&quot;)
+both &lt;- column_to_rownames(both)
+
+DT::datatable(both, options = list(
+    columnDefs = list(list(targets = c(10,11,12,13,14,15,16,17,18), visible = FALSE))
+)) %&gt;% 
+  DT::formatSignif(names(both), digits = 3) %&gt;% 
+  DT::formatStyle(&#39;DF20.MV&#39;, &#39;DF20.MV.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF20.MR&#39;, &#39;DF20.MR.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF20.VR&#39;, &#39;DF20.VR.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF101.MV&#39;, &#39;DF101.MV.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF101.MR&#39;, &#39;DF101.MR.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF101.VR&#39;, &#39;DF101.VR.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF68.MV&#39;, &#39;DF68.MV.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF68.MR&#39;, &#39;DF68.MR.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;))) %&gt;% 
+  DT::formatStyle(&#39;DF68.VR&#39;, &#39;DF68.VR.sig&#39;,
+  color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
+<div id="htmlwidget-fe39aca42ace54a19865" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-fe39aca42ace54a19865">{"x":{"filter":"none","data":[["CANCER_PROGENITORS_UP46.centered","GO.OXPHOS35.centered","HALLMARK_ANGIOGENESIS1.centered","HALLMARK_APOPTOSIS2.centered","HALLMARK_CHOLESTEROL_HOMEOSTASIS3.centered","HALLMARK_DNA_REPAIR4.centered","HALLMARK_E2F_TARGETS5.centered","HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION6.centered","HALLMARK_ESTROGEN_RESPONSE_EARLY7.centered","HALLMARK_ESTROGEN_RESPONSE_LATE8.centered","HALLMARK_FATTY_ACID_METABOLISM9.centered","HALLMARK_G2M_CHECKPOINT10.centered","HALLMARK_GLYCOLYSIS11.centered","HALLMARK_HEDGEHOG_SIGNALING12.centered","HALLMARK_HYPOXIA13.centered","HALLMARK_IL2_STAT5_SIGNALING14.centered","HALLMARK_IL6_JAK_STAT3_SIGNALING15.centered","HALLMARK_INFLAMMATORY_RESPONSE16.centered","HALLMARK_INTERFERON_ALPHA_RESPONSE17.centered","HALLMARK_INTERFERON_GAMMA_RESPONSE18.centered","HALLMARK_KRAS_SIGNALING_DN19.centered","HALLMARK_KRAS_SIGNALING_UP20.centered","HALLMARK_MITOTIC_SPINDLE21.centered","HALLMARK_MTORC1_SIGNALING22.centered","HALLMARK_MYC_TARGETS_V123.centered","HALLMARK_MYC_TARGETS_V224.centered","HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered","HALLMARK_P53_PATHWAY26.centered","HALLMARK_PEROXISOME27.centered","HALLMARK_PI3K_AKT_MTOR_SIGNALING28.centered","HALLMARK_PROTEIN_SECRETION29.centered","HALLMARK_REACTIVE_OXYGEN_SPECIES_PATHWAY30.centered","HALLMARK_TGF_BETA_SIGNALING31.centered","HALLMARK_TNFA_SIGNALING_VIA_NFKB32.centered","HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered","HALLMARK_WNT_BETA_CATENIN_SIGNALING34.centered","KEGG.OXPHOS36.centered","RAMALHO_STEMNESS_UP45.centered","stemness_genes44.centered","UNUPDATED.OXPHOS37.centered","UNUPDATED.UPR38.centered"],[-0.00825268444351897,-0.0204584733427108,-0.0465714765273929,0.00443190488864267,0.0120766774956234,0.0369075115880907,0.114692970059057,-0.0451520623321476,-0.0306554257388188,-0.0195643919297389,-0.0277306341063093,0.0978009237560654,-0.0769660248244737,-0.0227901528938007,-0.0487390056819806,9.49443469615998e-05,-0.023629723847159,0.0143460091059849,0.090331562558865,0.0474634639292839,0.002047008837686,-0.0132214138224355,0.0592017124665553,-0.00494907991777182,0.0836427959630006,0.00368241106426958,-0.0108000098501263,-0.00900429709938427,0.00303433389238463,0.0256191075446536,-0.0233805517776136,0.00795556730232338,0.0249622874468996,0.0124406106116126,0.00821117259986009,-0.0216502797774027,-0.00887227317412751,-0.000388973711937649,0.0231780596298952,-0.00797474466307328,0.00758276766017571],[-0.0211928694638618,0.0390132227192518,-0.0345458518917017,-0.0125238080309433,0.005006938459505,0.0291135977672005,0.014063213563432,-0.00528430204893879,-0.0189347636132779,-0.00057686673066687,0.0438969530248288,0.0193775232180785,-0.0385193815485829,-0.0135739992095364,-0.0564143354900576,0.000270556814241629,-0.00216567893038626,-0.00519149701147915,0.0307900072406436,0.0240360134167757,-0.00705946075025713,0.00059024721483616,0.0131517188178038,0.0397676360773728,0.0971011537112013,-0.0180999367835301,0.0477684612892896,-0.00369405327091152,0.0533393376947751,0.0279425520869088,0.0128156424898763,0.0492233905056278,0.0232876722910874,-0.0196043664161115,0.0107676330594252,-0.0368904983107826,0.0593585498296771,0.0368360388043946,0.0573664895467171,0.0483409055921886,0.0159309656900513],[-0.0129401850203429,0.0594716960619626,0.0120256246356912,-0.016955712919586,-0.00706973903611836,-0.00779391382089023,-0.100629756495625,0.0398677602832088,0.0117206621255409,0.0189875251990721,0.0716275871311381,-0.0784234005379869,0.0384466432758908,0.00921615368426429,-0.00767532980807699,0.00017561246728003,0.0214640449167727,-0.0195375061174641,-0.0595415553182214,-0.0234274505125082,-0.00910646958794313,0.0138116610372716,-0.0460499936487515,0.0447167159951446,0.0134583577482007,-0.0217823478477997,0.0585684711394159,0.00531024382847275,0.0503050038023905,0.00232344454225521,0.0361961942674899,0.0412678232033044,-0.00167461515581223,-0.0320449770277241,0.00255646045956511,-0.0152402185333798,0.0682308230038046,0.0372250125163323,0.0341884299168219,0.0563156502552618,0.00834819802987559],[0.0243725768886622,-0.367928696826585,0.0956962153549602,0.0788252862602734,-0.026168917559717,0.0233165603432792,0.0455772156952059,0.085869143486082,0.0427764214391404,0.0444895204851819,0.00625399131734902,0.0613109743340303,0.0123539842309799,-0.0120217787471167,0.0614939892342487,0.0562995659115207,0.0262764694227947,0.0361833182338655,0.251294702494773,0.13293963724153,0.017046583097712,0.0246719796356411,0.0291860978982426,-0.0140739375844872,0.00202314364407866,0.0341794950988346,-0.260124600773973,0.05108786059563,-0.0283942345277535,0.0128425544786571,0.0252902195711127,-0.0138331799835713,0.0669825517591854,0.0329986711500935,0.0649275253365611,0.0222282442083037,-0.306974186590267,-0.0161316177864546,0.0239136534137378,-0.261212887062146,0.0491024849516804],[0.037813092549435,0.237049221714185,0.0394097248952788,0.104185083811068,0.0269677286772096,0.130851592631361,0.0498479893775409,0.0239285783159025,0.0459600376921536,0.0608780224580295,0.136471214401358,0.00933265364492462,0.118659051976098,0.00966119085826867,0.135294365246368,0.0277627787466652,-0.00541941208309264,0.0190394661242923,0.336204829523769,0.198027250917577,0.0223278413509239,0.0223181315337644,-0.043089842361508,0.081763533581098,0.0389708996187827,-0.0328974642082425,0.179862409772351,0.106682489095097,0.0804973238022393,-0.00468200603169159,-0.0120518850979728,0.177465134063381,-0.00208304474081143,0.0279190088196974,0.0244379674693539,-0.0376285997548976,0.251521108937309,-0.0106245222605944,0.0391498686779941,0.180324548359198,0.0204292224233103],[0.0134405156607728,0.60497791854077,-0.0562864904596814,0.0253597975507945,0.0531366462369266,0.107535032288082,0.00427077368233494,-0.0619405651701796,0.00318361625301321,0.0163885019728475,0.130217223084009,-0.0519783206891056,0.106305067745118,0.0216829696053853,0.0738003760121197,-0.0285367871648554,-0.0316958815058873,-0.0171438521095732,0.0849101270289968,0.0650876136760471,0.00528125825321188,-0.00235384810187671,-0.0722759402597506,0.0958374711655852,0.036947755974704,-0.0670769593070771,0.439987010546324,0.055594628499467,0.108891558329993,-0.0175245605103486,-0.0373421046690854,0.191298314046952,-0.0690655964999968,-0.00507966233039615,-0.0404895578672071,-0.0598568439632014,0.558495295527577,0.00550709552586019,0.0152362152642563,0.441537435421344,-0.02867326252837],[0.0051676044921638,0.179339225640863,0.0549986947049518,-0.0285555038179346,0.0383588934800771,0.0480649302478696,0.028301787007472,0.0113636098507176,-0.0104234108577078,0.0480665208548759,0.0834653722155116,-0.0304661970277499,0.0222515478073695,-0.0447094217171153,-0.0382709263351837,-0.0311719213631373,-0.0398746098617975,-0.00229746140926641,0.222503550021295,0.0900576395598082,-0.00161659941988626,0.0328325493782932,-0.0905786690780968,0.00378859025653097,-0.142480520799216,-0.0735342643914016,0.116903481261113,0.025284726975464,0.0940210204632189,-0.0725754654663911,0.0519350984498922,0.0733156489762048,-0.141492590805975,-0.0809951142175628,-0.0715161629541511,-0.125633035877699,0.183123595834659,-0.0301271471623357,-0.0653555995144047,0.125061408260101,-0.0579236113205673],[-0.0312944074896923,0.114560442957591,0.0180168010505207,-0.00484904874582008,0.0283915760963419,0.0631547267433062,0.0671200728592907,-0.0295197601336764,-0.0183532721178109,0.00651380017241226,0.00149533433012906,0.0440901877586614,0.0139698850974157,-0.0285657819786982,-6.36319056819485e-05,-0.0164779665049816,-0.00609579182270515,-0.0144704821045217,0.024373740411329,0.0125652231409446,-0.0067914052264484,-0.00531177096670961,-0.0135133703550318,0.0208855986087588,-0.0338490949359392,-0.0406433514876544,0.0511825224027456,0.0432807947594824,-0.00169077882498532,-0.0036097296378265,-0.00119861560434947,0.089951118659591,-0.0713528343927888,-0.0355802381734321,-0.0496041770063748,-0.00718997489793926,0.120078019564746,-0.00870360585595936,0.0259120946565782,0.0503269687881365,-0.0494894669446552],[-0.0364620119818561,-0.0647787826832721,-0.036981893654431,0.0237064550721145,-0.00996731738373513,0.0150897964954365,0.0388182858518187,-0.040883369984394,-0.00792986126010312,-0.0415527206824636,-0.0819700378853826,0.0745563847864114,-0.00828166270995378,0.0161436397384172,0.0382072944295017,0.0146939548581557,0.0337788180390924,-0.0121730206952553,-0.198129809609966,-0.0774924164188636,-0.00517480580656214,-0.0381443203450028,0.077065298723065,0.0170970083522278,0.108631425863277,0.0328909129037472,-0.0657209588583674,0.0179960677840183,-0.0957117992882043,0.0689657358285646,-0.0531337140542417,0.0166354696833862,0.0701397564131862,0.0454148760441307,0.0219119859477763,0.11844306097976,-0.0630455762699123,0.0214235413063763,0.0912676941709829,-0.0747344394719649,0.00843414437591207],[0.372160727337775,0.539910629357917,0.0554143884957992,0.780793088060246,0.539910629357917,0.098591375424358,0.0306558230201919,0.0164392746724979,0.012554088601955,0.18422621458999,0.21442483536249,0.0140731388939982,6.66393572061949e-06,0.245591923308958,0.267195533864067,0.696654999145699,0.0993274758057559,0.653708930834544,0.000918931896347589,0.00548869835672688,0.519487683642058,0.244617812320899,0.0176049109524945,0.707328999677095,0.0258349213605041,0.829992040875946,0.813197633536318,0.645077906881667,0.877974883526672,0.151398113736894,0.162646360218308,0.851564107499902,0.637350617037012,0.591005712596174,0.259515632745525,0.228471654451978,0.460698666301977,0.893129930362677,0.176041561337267,0.713582333120361,0.262058430419473],[0.0910918432248886,0.167136317291695,0.019068599834639,0.352062574777338,0.841604719662841,0.110001661351018,0.85440142260397,0.53942580428257,0.139595034435745,0.935335014089181,0.095338541644609,0.583459619168475,0.0635673513354009,0.548823627450619,0.188865464359853,0.98305696713997,0.709147889683243,0.332688462901897,0.38036041655779,0.206676426851587,0.159572055590656,0.706717737520955,0.85867569079836,0.239741560974234,0.0336535568285537,0.530823020601822,0.253960112012267,0.772471456943421,0.0191243534638088,0.174966894011739,0.813603362905098,0.212609704302594,0.422502210480578,0.185587997445022,0.406926714374119,0.0299290791380404,0.177053988013909,0.0158306113663382,0.00894177211549745,0.239306460964626,0.375647254681424],[0.42816801969052,0.567722174320975,0.754831594125445,0.199445312102177,0.701919347924975,0.925313958080954,0.0405017179070682,0.0473768214711477,0.324238301698022,0.190397135526988,0.00556683889759244,0.0532656627296753,0.013193772515848,0.54845997932762,0.945256550079077,0.624833352374704,0.170218544981185,0.11731320032176,0.015218112954999,0.135669554052683,0.0501089730710948,0.395519417924334,0.0202941060600583,0.165798227852469,0.854558880563863,0.488924554059247,0.404209798305834,0.852685423622908,0.0125881191043991,0.900689366085163,0.113179196353057,0.361273352603595,0.820972117923081,0.0690456799969549,0.790468434253961,0.354405827575923,0.546075091342282,0.0137790886532085,0.161464826399961,0.447916118434429,0.964281631269759],[0.838281028280358,1.05912304507862e-06,0.00701413326662125,0.0106814974133781,0.526236375598153,0.70694640385417,0.569144882712009,0.00016776389974032,0.0903390976606756,0.0461105507745525,0.96287390201612,0.281144050396932,0.545101213884797,0.545101213884797,0.224818487221879,0.00190692452944126,0.328323259700751,0.172504994751657,0.043070619655006,0.0889856538665434,0.420456664513011,0.208832729154998,0.139199867447822,0.90027013778593,0.974292484375611,0.793797991331585,6.15827040589908e-05,0.0824615849312663,0.170262765307715,0.623752759693838,0.623752759693838,0.712277430735448,0.0694699545337106,0.206250575240281,0.0611180591791374,0.271664995278447,1.81961942711733e-05,0.489533583815376,0.480578048122321,2.93398926074337e-05,0.201155986562501],[0.127082827423536,0.000190204318100418,0.214915513116842,0.000227009477065426,0.298990523004578,0.000512506871437406,0.86881152277448,0.362914633725154,0.026803001386947,0.00930335784162534,0.000142108355479712,0.278634461213824,0.000398130204876699,0.984365464992289,0.000821764991736673,0.162434076325399,0.747499517783909,0.543530172761469,0.000501915673589491,0.000442534976120465,0.20077228832392,0.256885862790163,0.0322265814062116,0.0471646182220308,0.676590694767749,0.351222308970165,0.0087134610839046,3.46692989876458e-05,0.00802322117765269,0.785969688974633,0.569837458011671,2.06280050178521e-05,0.773082937276745,0.210803250818105,0.475311928516495,0.183602397224577,2.11507138839815e-05,0.588992728200468,0.23634472203813,0.00582504483054365,0.632146304836974],[0.361141531653746,1.03732209313145e-10,0.176822509844412,0.365190927055081,0.110451366053807,0.0106064909099124,0.612522339697409,0.0108426617482543,0.932728300053484,0.494622270366602,0.00237477029567253,0.0590561342463442,0.00276417828626929,0.499484102841364,0.0611474908411552,0.091362432405661,0.20271141522166,0.407229268743478,0.146957073270276,0.0701352200127349,0.645205467821919,0.806019562216331,0.00573433668831204,0.0512755709140446,0.75304320436794,0.26914262602586,1.34976260864282e-07,0.0689556447500411,0.00165354817479027,0.77646121285388,0.210991790495228,0.000164642087453804,0.032896888800086,0.926629238263441,0.349163158910089,0.0468630648091842,1.47738702776111e-10,0.896205655102806,0.764725317693052,1.04913548727899e-07,0.524168950789418],[0.94413407671587,0.262203696434015,0.406980398960521,0.648759215239784,0.52825387562029,0.400404903053719,0.648759215239784,0.691300451982694,0.879321917252025,0.175487463911933,0.11758169111374,0.282607075809008,0.64038131023275,0.15419898210392,0.726057813018549,0.194842911474621,0.315182805244964,0.761388668946016,0.203008597930934,0.338219228682974,0.770303000465612,0.131910786234258,0.00470813971943448,0.981364478470831,0.0497513008935571,0.490779562848334,0.282607075809008,0.682708447677417,0.0616697259194241,0.109589127680882,0.368496066337369,0.168160406237545,0.020751776694028,0.0511264464722898,0.090364942900191,0.00148947191440309,0.220082024126051,0.498158345740274,0.228994990807373,0.23354658226192,0.194842911474621],[0.242834871311489,0.0143820901123957,0.874916456152168,0.951410580917794,0.29319553902752,0.0329458693927662,0.549040165806043,0.374195168544183,0.190157561978004,0.654975931526343,0.483453931878988,0.874916456152168,0.815306347231238,0.193615628510589,0.995948393180295,0.55243113419863,0.718447078073156,0.396427403841923,0.522287873621101,0.50916750106842,0.446242842638896,0.72986799034658,0.396427403841923,0.615162668591761,0.493013119141979,0.502672655955186,0.102027572013648,0.12143529586823,0.710867747500257,0.673411542307703,0.9595011632465,0.00767761538920748,0.0333649208687946,0.0706449481812608,0.0797917809805292,0.911049326480531,0.0111176507629096,0.9595011632465,0.505914593760328,0.0824469174562721,0.0957990505421039],[0.460388979607216,0.82339642391274,0.481512923220634,0.503153548393332,0.98630291558276,0.503153548393332,0.311113672874958,0.264467710953382,0.565213957708498,0.194922690224847,0.287151720947554,0.137544677991023,0.87044589497868,0.66155039851495,0.630734992546085,0.481512923220634,0.222882495767568,0.810061805195598,0.0770171038458276,0.108456413911899,0.93159522695843,0.0601283315444086,0.0204697088274937,0.783560957275107,0.0814191263134011,0.776973489459814,0.904345987163538,0.460388979607216,0.0714514902909357,0.0784623736999379,0.362884523024156,0.744284947106965,0.271887624948033,0.264467710953382,0.680323131768455,0.000524632737475364,0.897549974026351,0.470885583158584,0.0637248516278798,0.843493154318674,0.850215460872883]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>DF20.MV<\/th>\n      <th>DF20.MR<\/th>\n      <th>DF20.VR<\/th>\n      <th>DF101.MV<\/th>\n      <th>DF101.MR<\/th>\n      <th>DF101.VR<\/th>\n      <th>DF68.MV<\/th>\n      <th>DF68.MR<\/th>\n      <th>DF68.VR<\/th>\n      <th>DF20.MV.sig<\/th>\n      <th>DF20.MR.sig<\/th>\n      <th>DF20.VR.sig<\/th>\n      <th>DF101.MV.sig<\/th>\n      <th>DF101.MR.sig<\/th>\n      <th>DF101.VR.sig<\/th>\n      <th>DF68.MV.sig<\/th>\n      <th>DF68.MR.sig<\/th>\n      <th>DF68.VR.sig<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":4,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":5,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":6,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":7,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":8,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":9,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":10,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":11,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":12,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":13,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":14,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":15,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":16,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":17,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":18,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 3, 3, \",\", \".\"); }"},{"targets":[10,11,12,13,14,15,16,17,18],"visible":false},{"className":"dt-right","targets":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[10]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[11]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[12]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[13]; $(this.api().cell(row, 4).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[14]; $(this.api().cell(row, 5).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[15]; $(this.api().cell(row, 6).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[16]; $(this.api().cell(row, 7).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[17]; $(this.api().cell(row, 8).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[18]; $(this.api().cell(row, 9).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.columnDefs.3.render","options.columnDefs.4.render","options.columnDefs.5.render","options.columnDefs.6.render","options.columnDefs.7.render","options.columnDefs.8.render","options.columnDefs.9.render","options.columnDefs.10.render","options.columnDefs.11.render","options.columnDefs.12.render","options.columnDefs.13.render","options.columnDefs.14.render","options.columnDefs.15.render","options.columnDefs.16.render","options.columnDefs.17.render","options.rowCallback"],"jsHooks":[]}</script>
+<ul>
+<li>**OBSERVATIONS
+<ul>
+<li>Consistent statistically significant trends:
+<ul>
+<li>HALLMARK_APOPTOSIS2
+<ul>
+<li>DF101: MRD &gt; vehicle and relapse</li>
+</ul></li>
+<li><strong>HALLMARK_DNA_REPAIR4</strong>
+<ul>
+<li>DF101 and DF68: MRD &gt; relapse</li>
+</ul></li>
+<li>HALLMARK_ESTROGEN_RESPONSE_LATE8
+<ul>
+<li>DF101: MRD &gt; vehicle and relapse</li>
+</ul></li>
+<li><strong>HALLMARK_FATTY_ACID_METABOLISM9</strong>
+<ul>
+<li>DF20 and DF101: vehicle &gt; relapse</li>
+<li>DF101: MRD &gt; relapse</li>
+</ul></li>
+<li>HALLMARK_INTERFERON_ALPHA_RESPONSE17
+<ul>
+<li>DF20 and DF101: MRD &gt; vehicle and relapse</li>
+<li>DF20: vehicle &gt; relapse</li>
+</ul></li>
+<li><strong>HALLMARK_PEROXISOME27</strong>
+<ul>
+<li>DF20 and DF101: MRD &gt; relapse; vehicle &gt; relapse</li>
+</ul></li>
+<li><strong>RAMALHO_STEMNESS_UP45</strong>
+<ul>
+<li>DF20: MRD &gt; relapse; vehicle &gt; relapse</li>
+</ul></li>
+<li>stemness_genes44
+<ul>
+<li>DF20: MRD &gt; relapse</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>VIOLIN PLOTS OF THE HALLMARKS MENTIONED ABOVE</strong> * Plot swarm plots of the hallmarks above that are also significant and agree with our hypothesis in our PDX analysis:</p>
+<pre class="r"><code>#HALLMARK_DNA_REPAIR4 ----------
+dna.swarm.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(dna.swarm.plots) &lt;- PDX.names
+
+for(i in 1:3){
+  PDX &lt;- PDXs[[i]]
+  PDX.name &lt;- PDX.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;HALLMARK_DNA_REPAIR&quot;]] %in% rownames(PDX))
+  feature.length &lt;- length(hallmark.list[[&quot;HALLMARK_DNA_REPAIR&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(PDX@meta.data)
+  
+  p &lt;- ggplot(PDX@meta.data, aes(x= treatment.status , y = HALLMARK_DNA_REPAIR4.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{PDX.name} DNA Repair expression across treatment&quot;), x = PDX.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} DNA Repair genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDX[[&quot;HALLMARK_DNA_REPAIR4.centered&quot;]]) -0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDX[[&quot;HALLMARK_DNA_REPAIR4.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDX[[&quot;HALLMARK_DNA_REPAIR4.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  dna.swarm.plots[[PDX.name]] &lt;- p 
+}
+
+dna.swarm.plots[[&quot;DF20&quot;]] + dna.swarm.plots[[&quot;DF101&quot;]] + dna.swarm.plots[[&quot;DF68&quot;]] + plot_layout(guides = &quot;collect&quot;, ncol = 3)</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/otherVln-1.png" width="1728" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#HALLMARK_FATTY_ACID_METABOLISM9 ----------
+fa.swarm.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(fa.swarm.plots) &lt;- PDX.names
+
+for(i in 1:3){
+  PDX &lt;- PDXs[[i]]
+  PDX.name &lt;- PDX.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;HALLMARK_FATTY_ACID_METABOLISM&quot;]] %in% rownames(PDX))
+  feature.length &lt;- length(hallmark.list[[&quot;HALLMARK_FATTY_ACID_METABOLISM&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(PDX@meta.data)
+  
+  p &lt;- ggplot(PDX@meta.data, aes(x= treatment.status , y = HALLMARK_FATTY_ACID_METABOLISM9.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{PDX.name} FA Metabolism expression across treatment&quot;), x = PDX.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} FA Metabolism genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDX[[&quot;HALLMARK_FATTY_ACID_METABOLISM9.centered&quot;]]) -0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDX[[&quot;HALLMARK_FATTY_ACID_METABOLISM9.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDX[[&quot;HALLMARK_FATTY_ACID_METABOLISM9.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  fa.swarm.plots[[PDX.name]] &lt;- p 
+}
+
+fa.swarm.plots[[&quot;DF20&quot;]] + fa.swarm.plots[[&quot;DF101&quot;]] + fa.swarm.plots[[&quot;DF68&quot;]] + plot_layout(guides = &quot;collect&quot;, ncol = 3)</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/otherVln-2.png" width="1728" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#HALLMARK_PEROXISOME27 ----------
+perox.swarm.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(perox.swarm.plots) &lt;- PDX.names
+
+for(i in 1:3){
+  PDX &lt;- PDXs[[i]]
+  PDX.name &lt;- PDX.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;HALLMARK_PEROXISOME&quot;]] %in% rownames(PDX))
+  feature.length &lt;- length(hallmark.list[[&quot;HALLMARK_PEROXISOME&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(PDX@meta.data)
+  
+  p &lt;- ggplot(PDX@meta.data, aes(x= treatment.status , y = HALLMARK_PEROXISOME27.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{PDX.name} Peroxisome expression across treatment&quot;), x = PDX.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} Peroxisome genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDX[[&quot;HALLMARK_PEROXISOME27.centered&quot;]]) -0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDX[[&quot;HALLMARK_PEROXISOME27.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDX[[&quot;HALLMARK_PEROXISOME27.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  perox.swarm.plots[[PDX.name]] &lt;- p 
+}
+
+perox.swarm.plots[[&quot;DF20&quot;]] + perox.swarm.plots[[&quot;DF101&quot;]] + perox.swarm.plots[[&quot;DF68&quot;]] + plot_layout(guides = &quot;collect&quot;, ncol = 3)</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/otherVln-3.png" width="1728" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#RAMALHO_STEMNESS_UP45 ----------
+stem.swarm.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(stem.swarm.plots) &lt;- PDX.names
+
+for(i in 1:3){
+  PDX &lt;- PDXs[[i]]
+  PDX.name &lt;- PDX.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(&quot;MRD&quot;, &quot;vehicle&quot;),
+    c(&quot;MRD&quot;, &quot;relapse&quot;), 
+    c(&quot;vehicle&quot;, &quot;relapse&quot;)
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;RAMALHO_STEMNESS_UP&quot;]] %in% rownames(PDX))
+  feature.length &lt;- length(hallmark.list[[&quot;RAMALHO_STEMNESS_UP&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(PDX@meta.data)
+  
+  p &lt;- ggplot(PDX@meta.data, aes(x= treatment.status , y = RAMALHO_STEMNESS_UP45.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{PDX.name} Stemness gene expression across treatment&quot;), x = PDX.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} Stemness genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;vehicle&quot;), &quot;cells&quot;), x = &quot;vehicle&quot;, y = min(PDX[[&quot;RAMALHO_STEMNESS_UP45.centered&quot;]]) -0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;MRD&quot;), &quot;cells&quot;), x = &quot;MRD&quot;, y = min(PDX[[&quot;RAMALHO_STEMNESS_UP45.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    geom_text(label = paste(sum(PDX$treatment.status == &quot;relapse&quot;), &quot;cells&quot;), x = &quot;relapse&quot;, y = min(PDX[[&quot;RAMALHO_STEMNESS_UP45.centered&quot;]]) - 0.03, show.legend = FALSE, color = &quot;black&quot;) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  stem.swarm.plots[[PDX.name]] &lt;- p 
+}
+
+stem.swarm.plots[[&quot;DF20&quot;]] + stem.swarm.plots[[&quot;DF101&quot;]] + stem.swarm.plots[[&quot;DF68&quot;]] + plot_layout(guides = &quot;collect&quot;, ncol = 3)</code></pre>
+<p><img src="figure/03.1_Izar2020_PDX_DEAnalysis.Rmd/otherVln-4.png" width="1728" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

@@ -432,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-15
+<strong>Last updated:</strong> 2020-08-17
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb1ab47b83b06d4c1ba12270f293f49d1e774e18ftargetblankb1ab47ba"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b1ab47b83b06d4c1ba12270f293f49d1e774e18f" target="_blank">b1ab47b</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed60aeff9be61fbef75b246307d4c93f2b192aa7ftargetblankd60aeffa"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d60aeff9be61fbef75b246307d4c93f2b192aa7f" target="_blank">d60aeff</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreeb1ab47b83b06d4c1ba12270f293f49d1e774e18ftargetblankb1ab47ba" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreed60aeff9be61fbef75b246307d4c93f2b192aa7ftargetblankd60aeffa" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/b1ab47b83b06d4c1ba12270f293f49d1e774e18f" target="_blank">b1ab47b</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/d60aeff9be61fbef75b246307d4c93f2b192aa7f" target="_blank">d60aeff</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -548,7 +548,6 @@ Ignored files:
     Ignored:    data/HTAPP/
     Ignored:    data/Izar_2020/
     Ignored:    data/gene_lists/.DS_Store
-    Ignored:    data/gene_lists/cellcycle/.DS_Store
     Ignored:    data/gene_lists/extra/.DS_Store
     Ignored:    jesslyn_plots/
     Ignored:    mike_plots/
@@ -559,6 +558,36 @@ Ignored files:
     Ignored:    renv/python/
     Ignored:    renv/staging/
     Ignored:    vignettes/
+
+Untracked files:
+    Untracked:  data/gene_lists/extra/CANCER_PROGENITORS_UP.txt
+    Untracked:  data/gene_lists/extra/G0G1.txt
+    Untracked:  data/gene_lists/extra/G1S.DNAdamage.txt
+    Untracked:  data/gene_lists/extra/G1S.transcription.txt
+    Untracked:  data/gene_lists/extra/G2M.DNAdamage.txt
+    Untracked:  data/gene_lists/extra/G2M.checkpoint.txt
+    Untracked:  data/gene_lists/extra/RAMALHO_STEMNESS_UP.txt
+    Untracked:  data/gene_lists/extra/UNUPDATED.OXPHOS.txt
+    Untracked:  data/gene_lists/extra/UNUPDATED.UPR.txt
+    Untracked:  data/gene_lists/extra/stemness_genes.txt
+
+Unstaged changes:
+    Modified:   code/read_Izar_2020.R
+    Deleted:    data/gene_lists/cellcycle/G0G1.txt
+    Deleted:    data/gene_lists/cellcycle/G1SDNAdamage.txt
+    Deleted:    data/gene_lists/cellcycle/G1Stranscription.txt
+    Deleted:    data/gene_lists/cellcycle/G2.txt
+    Deleted:    data/gene_lists/cellcycle/G2MDNAdamage.txt
+    Deleted:    data/gene_lists/cellcycle/G2Mcheckpoint.txt
+    Deleted:    data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt
+    Modified:   data/gene_lists/extra/GO.OXPHOS.txt
+    Deleted:    data/gene_lists/extra/GO.PERK_MEDIATED_UPR.txt
+    Modified:   data/gene_lists/hallmarks.txt
+    Deleted:    data/gene_lists/oxphos.txt
+    Deleted:    data/gene_lists/stemness_genes.txt
+    Deleted:    data/gene_lists/upr.txt
+    Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
+    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
 
 </code></pre>
 <p>
@@ -597,6 +626,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d60aeff9be61fbef75b246307d4c93f2b192aa7f/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">d60aeff</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-17
+</td>
+<td>
+More DE Analysis of other hallmarks
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -929,35 +992,23 @@ s.genes &lt;- ccgenes[1:43]
 g2m.genes &lt;- ccgenes[44:97]
 
 #Read in hallmarks of interest
-g0g1.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G0G1.txt&quot;, skip = 2)
-g1S.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1SDNAdamage.txt&quot;, skip = 2)
-g1S.transcription.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G1Stranscription.txt&quot;, skip = 2)
-g2m.checkpoint.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2Mcheckpoint.txt&quot;, skip = 2)
-g2m.DNAdamage.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MDNAdamage.txt&quot;, skip = 2)
-g2m.replicationCP.genes &lt;- read_lines(&quot;data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt&quot;, skip = 2)
-
 hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
-hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names) + 9)
-names(hallmark.list) &lt;- c(hallmark_names, &quot;GO.OXPHOS&quot;, &quot;KEGG.OXPHOS&quot;, &quot;UNUPDATED.OXPHOS&quot;, 
-                          &quot;UNUPDATED.UPR&quot;, &quot;G0G1&quot;, &quot;G1S.DNAdamage&quot;, &quot;G1S.transcription&quot;, &quot;G2M.checkpoint&quot;, 
-                          &quot;G2M.DNAdamage&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names))
+names(hallmark.list) &lt;- hallmark_names
+
 for(hm in hallmark_names){
-  file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
-  hallmark.list[[hm]] &lt;- file
+  if(file.exists(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;))){
+    file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
+    hallmark.list[[hm]] &lt;- file
+  }
+  else{
+    file &lt;- read_lines(glue(&quot;data/gene_lists/extra/{hm}.txt&quot;), skip =2)
+    hallmark.list[[hm]] &lt;- file
+  }
 }
 
-hallmark.list[[&quot;GO.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/GO.OXPHOS.txt&quot;, skip = 1)
-hallmark.list[[&quot;KEGG.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/extra/KEGG.OXPHOS.txt&quot;, skip = 2)
-hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]] &lt;- read_lines(&quot;data/gene_lists/oxphos.txt&quot;, skip =1)
-hallmark.list[[&quot;UNUPDATED.UPR&quot;]] &lt;- read_lines(&quot;data/gene_lists/upr.txt&quot;, skip =1)
-hallmark.list[[&quot;G0G1&quot;]] &lt;- g0g1.genes
-hallmark.list[[&quot;G1S.DNAdamage&quot;]] &lt;- g1S.DNAdamage.genes
-hallmark.list[[&quot;G1S.transcription&quot;]] &lt;- g1S.transcription.genes
-hallmark.list[[&quot;G2M.checkpoint&quot;]] &lt;- g2m.checkpoint.genes
-hallmark.list[[&quot;G2M.DNAdamage&quot;]] &lt;- g2m.DNAdamage.genes
-
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(SS2Malignant@meta.data)[14:58]
+hm.names &lt;- names(SS2Malignant@meta.data)[14:61]
 
 for(i in hm.names){
     SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -1161,6 +1212,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-1.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -1233,6 +1295,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-2.png" target="_blank">84edf85</a>
@@ -1309,6 +1382,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -1381,6 +1465,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" target="_blank">84edf85</a>
@@ -1494,6 +1589,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -1588,6 +1694,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">84edf85</a>
@@ -1686,6 +1803,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -1757,6 +1885,43 @@ for(i in 1:2){
 
 nF.swarm[[&quot;SS2 Patient 8&quot;]] + nF.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
 <p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nFnCSwarm-1">
+Past versions of nFnCSwarm-1.png
+</button>
+</p>
+<div id="fig-nFnCSwarm-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>#nCount ----
 nC.swarm &lt;- vector(&quot;list&quot;, length = 2)
 names(nC.swarm) &lt;- SS2.names
@@ -1791,6 +1956,43 @@ for(i in 1:2){
 
 nC.swarm[[&quot;SS2 Patient 8&quot;]] + nC.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
 <p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nFnCSwarm-2">
+Past versions of nFnCSwarm-2.png
+</button>
+</p>
+<div id="fig-nFnCSwarm-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <ul>
 <li><strong>OBSERVATIONS</strong>
 <ul>
