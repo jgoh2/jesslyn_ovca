@@ -84,33 +84,21 @@ ccgenes = read_lines("data/gene_lists/regev_lab_cell_cycle_genes.txt")
 s.genes <- ccgenes[1:43]
 g2m.genes <- ccgenes[44:97]
 
-g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
-g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
-g1S.transcription.genes <- read_lines("data/gene_lists/cellcycle/G1Stranscription.txt", skip = 2)
-g2m.checkpoint.genes <- read_lines("data/gene_lists/cellcycle/G2Mcheckpoint.txt", skip = 2)
-g2m.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G2MDNAdamage.txt", skip = 2)
-g2m.replicationCP.genes <- read_lines("data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt", skip = 2)
-
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 9)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", 
-                          "UNUPDATED.UPR", "G0G1", "G1S.DNAdamage", "G1S.transcription", "G2M.checkpoint", 
-                          "G2M.DNAdamage")
-for(hm in hallmark_names){
-  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
-  hallmark.list[[hm]] <- file
-}
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
 
-hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
-hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
-hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
-hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
-hallmark.list[["G0G1"]] <- g0g1.genes
-hallmark.list[["G1S.DNAdamage"]] <- g1S.DNAdamage.genes
-hallmark.list[["G1S.transcription"]] <- g1S.transcription.genes
-hallmark.list[["G2M.checkpoint"]] <- g2m.checkpoint.genes
-hallmark.list[["G2M.DNAdamage"]] <- g2m.DNAdamage.genes
+for(hm in hallmark_names){
+  if(file.exists(glue("data/gene_lists/hallmarks/{hm}_updated.txt"))){
+    file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+    hallmark.list[[hm]] <- file
+  }
+  else{
+    file <- read_lines(glue("data/gene_lists/extra/{hm}.txt"), skip =2)
+    hallmark.list[[hm]] <- file
+  }
+}
 ```
 
 ### STEP 2 SUBSET AND SCALE SEURAT OBJECT FOR MALIGNANT CELLS AND FOR PATIENTS 8 & 9 ONLY 
