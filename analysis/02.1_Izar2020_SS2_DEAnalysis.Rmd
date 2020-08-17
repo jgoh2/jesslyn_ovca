@@ -82,35 +82,23 @@ SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.
 SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
 
 #Read in hallmarks of interest
-g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
-g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
-g1S.transcription.genes <- read_lines("data/gene_lists/cellcycle/G1Stranscription.txt", skip = 2)
-g2m.checkpoint.genes <- read_lines("data/gene_lists/cellcycle/G2Mcheckpoint.txt", skip = 2)
-g2m.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G2MDNAdamage.txt", skip = 2)
-g2m.replicationCP.genes <- read_lines("data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt", skip = 2)
-
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 9)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", 
-                          "UNUPDATED.UPR", "G0G1", "G1S.DNAdamage", "G1S.transcription", "G2M.checkpoint", 
-                          "G2M.DNAdamage")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+
 for(hm in hallmark_names){
-  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
-  hallmark.list[[hm]] <- file
+  if(file.exists(glue("data/gene_lists/hallmarks/{hm}_updated.txt"))){
+    file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+    hallmark.list[[hm]] <- file
+  }
+  else{
+    file <- read_lines(glue("data/gene_lists/extra/{hm}.txt"), skip =2)
+    hallmark.list[[hm]] <- file
+  }
 }
 
-hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
-hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
-hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
-hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
-hallmark.list[["G0G1"]] <- g0g1.genes
-hallmark.list[["G1S.DNAdamage"]] <- g1S.DNAdamage.genes
-hallmark.list[["G1S.transcription"]] <- g1S.transcription.genes
-hallmark.list[["G2M.checkpoint"]] <- g2m.checkpoint.genes
-hallmark.list[["G2M.DNAdamage"]] <- g2m.DNAdamage.genes
-
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(SS2Malignant@meta.data)[14:58]
+hm.names <- names(SS2Malignant@meta.data)[14:61]
 
 for(i in hm.names){
     SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -770,5 +758,258 @@ ggsave(plot = p4, filename = "SS2Malignant9.VolcanoUPR.png", path = "jesslyn_plo
 * Similar to Patient 8, there are no DE UPR genes in Patient 9 as well. 
 
 Since DE genes detected are not consistent across patients, we cannot conclude that there is an enrichment of OXPHOS or UPR genes in p.1. 
+
+## STEP 4. ANALYZING OTHER GENE SETS 
+* Since we did not obtain any conclusive results from analyzing OXPHOS and UPR expression across treatment samples within each SS2 Patient, we now examine the expression of other gene sets to find potential trends. We are specifically interested in these gene sets: 
+    - Stemness (stemness_genes44, RAMALHO_STEMNESS_UP45, CANCER_PROGENITORS_UP46)
+    - Apoptosis (HALLMARK_APOPTOSIS2)
+    - Angiogenesis (HALLMARK_ANGIOGENESIS1)
+    - Epithelial Mesenchymal Transition (HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION6)
+    - Fatty Acid Metabolism (HALLMARK_FATTY_ACID_METABOLISM9)
+    - Hypoxia (HALLMARK_HYPOXIA13)
+    - ROS Pathway (HALLMARK_REACTIVE_OXYGEN_SPECIES_PATHWAY30)
+
+```{r DEother, message=FALSE, warning = FALSE}
+#difference in mean 
+hallmarks <- names(SS2Malignant.8@meta.data)[63:108][-(39:43)]
+
+mean.diff <- data.frame()
+for(i in 1:length(hallmarks)){
+  hm <- hallmarks[[i]]
+  df <- data.frame(
+    "8.1v8.0" = (mean(deframe(SS2Malignant8.1[[hm]])) - mean(deframe(SS2Malignant8.0[[hm]]))), 
+    "8.1v8.2" = (mean(deframe(SS2Malignant8.1[[hm]])) - mean(deframe(SS2Malignant8.2[[hm]]))), 
+    "8.0v8.2" = (mean(deframe(SS2Malignant8.0[[hm]])) - mean(deframe(SS2Malignant8.2[[hm]]))), 
+    "9.1v9.0" = (mean(deframe(SS2Malignant9.1[[hm]])) - mean(deframe(SS2Malignant9.0[[hm]]))), 
+    "9.1v9.2" = (mean(deframe(SS2Malignant9.1[[hm]])) - mean(deframe(SS2Malignant9.2[[hm]]))), 
+    "9.0v9.2" = (mean(deframe(SS2Malignant9.0[[hm]])) - mean(deframe(SS2Malignant9.2[[hm]])))
+  )
+  mean.diff <- rbind(mean.diff, df)
+}
+rownames(mean.diff) <- hallmarks
+
+#significance ----------
+sig.diff <- data.frame()
+for(i in 1:length(hallmarks)){
+  hm <- hallmarks[[i]]
+  df <- data.frame(
+    "8.1v8.0sig" = wilcox.test(deframe(SS2Malignant8.1[[hm]]), deframe(SS2Malignant8.0[[hm]]))$p.value, 
+    "8.1v8.2sig" = wilcox.test(deframe(SS2Malignant8.1[[hm]]), deframe(SS2Malignant8.2[[hm]]))$p.value,  
+    "8.0v8.2sig" = wilcox.test(deframe(SS2Malignant8.0[[hm]]), deframe(SS2Malignant8.2[[hm]]))$p.value, 
+    "9.1v9.0sig" = wilcox.test(deframe(SS2Malignant9.1[[hm]]), deframe(SS2Malignant9.0[[hm]]))$p.value, 
+    "9.1v9.2sig" = wilcox.test(deframe(SS2Malignant9.1[[hm]]), deframe(SS2Malignant9.2[[hm]]))$p.value, 
+    "9.0v9.2sig" = wilcox.test(deframe(SS2Malignant9.0[[hm]]), deframe(SS2Malignant9.2[[hm]]))$p.value
+  )
+  sig.diff <- rbind(sig.diff, df)
+}
+rownames(sig.diff) <- hallmarks
+
+#combine diff with significance ------------
+sig.diff <- rownames_to_column(sig.diff)
+mean.diff <- rownames_to_column(mean.diff)
+both <- merge(mean.diff, sig.diff, by = "rowname")
+both <- column_to_rownames(both)
+
+DT::datatable(both, options = list(
+    columnDefs = list(list(targets = c(7,8,9,10,11,12), visible = FALSE))
+)) %>% 
+  DT::formatSignif(names(both), digits = 3) %>% 
+  DT::formatStyle('X8.1v8.0', 'X8.1v8.0sig',
+  color = DT::styleInterval(0.05, c('red', 'black'))) %>% 
+  DT::formatStyle('X8.1v8.2', 'X8.1v8.2sig',
+  color = DT::styleInterval(0.05, c('red', 'black'))) %>% 
+  DT::formatStyle('X8.0v8.2', 'X8.0v8.2sig',
+  color = DT::styleInterval(0.05, c('red', 'black'))) %>% 
+  DT::formatStyle('X9.1v9.0', 'X9.1v9.0sig',
+  color = DT::styleInterval(0.05, c('red', 'black'))) %>% 
+  DT::formatStyle('X9.1v9.2', 'X9.1v9.2sig',
+  color = DT::styleInterval(0.05, c('red', 'black'))) %>% 
+  DT::formatStyle('X9.0v9.2', 'X9.0v9.2sig',
+  color = DT::styleInterval(0.05, c('red', 'black')))
+
+```
+
+* **OBSERVATIONS 
+    - Consistent statistically significant trends that agree with our hypothesis: 
+        * **HALLMARK_DNA_REPAIR4**
+            - 8.1 > 8.0 
+            - 9.1 > 9.2
+        * HALLMARK_E2F_TARGETS5
+            - 8.1 > 8.0 
+            - 9.1 > 9.2
+        * **HALLMARK_FATTY_ACID_METABOLISM9**
+            - 8.1 > 8.0
+        * HALLMARK_GLYCOLYSIS_11
+            - 8.1 > 8.0 and 8.2 
+            - 9.0 < 9.2 
+        * **HALLMARK_PEROXISOME27**
+            - 8.1 > 8.0 and 8.2
+        * **RAMALHO_STEMNESS_UP45**
+            - 8.1 > 8.0; 8.0 > 8.2 
+
+**VIOLIN PLOTS OF THE HALLMARKS MENTIONED ABOVE** 
+* Plot swarm plots of the hallmarks above that are also significant and agree with our hypothesis in our PDX analysis:
+
+```{r otherVln, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=17, fig.height=10}
+#SWARM PLOTS 
+#HALLMARK_DNA_REPAIR4 ----------
+dna.swarm.plots <- vector("list", length = 2)
+names(dna.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["HALLMARK_DNA_REPAIR"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["HALLMARK_DNA_REPAIR"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = HALLMARK_DNA_REPAIR4.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells DNA Repair expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} DNA Repair genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$HALLMARK_DNA_REPAIR4.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$HALLMARK_DNA_REPAIR4.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$HALLMARK_DNA_REPAIR4.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  dna.swarm.plots[[SS2.name]] <- p 
+}
+
+dna.swarm.plots[["SS2 Patient 8"]] + dna.swarm.plots[["SS2 Patient 9"]]
+
+
+#HALLMARK_FATTY_ACID_METABOLISM9 ----------
+fa.swarm.plots <- vector("list", length = 2)
+names(fa.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["HALLMARK_FATTY_ACID_METABOLISM"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["HALLMARK_FATTY_ACID_METABOLISM"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = HALLMARK_FATTY_ACID_METABOLISM9.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells FA Metabolism expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} FA Metabolism genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$HALLMARK_FATTY_ACID_METABOLISM9.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$HALLMARK_FATTY_ACID_METABOLISM9.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$HALLMARK_FATTY_ACID_METABOLISM9.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  fa.swarm.plots[[SS2.name]] <- p 
+}
+
+fa.swarm.plots[["SS2 Patient 8"]] + fa.swarm.plots[["SS2 Patient 9"]]
+
+#HALLMARK_PEROXISOME27 ----------
+perox.swarm.plots <- vector("list", length = 2)
+names(perox.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["HALLMARK_PEROXISOME"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["HALLMARK_PEROXISOME"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = HALLMARK_PEROXISOME27.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells Peroxisome expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} Peroxisome genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$HALLMARK_PEROXISOME27.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$HALLMARK_PEROXISOME27.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$HALLMARK_PEROXISOME27.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  perox.swarm.plots[[SS2.name]] <- p 
+}
+
+perox.swarm.plots[["SS2 Patient 8"]] + perox.swarm.plots[["SS2 Patient 9"]]
+
+
+#RAMALHO_STEMNESS_UP45 ----------
+stem.swarm.plots <- vector("list", length = 2)
+names(stem.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(hallmark.list[["RAMALHO_STEMNESS_UP"]] %in% rownames(SS2))
+  feature.length <- length(hallmark.list[["RAMALHO_STEMNESS_UP"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = RAMALHO_STEMNESS_UP45.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells Stemness gene expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} Stemness genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$RAMALHO_STEMNESS_UP45.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$RAMALHO_STEMNESS_UP45.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$RAMALHO_STEMNESS_UP45.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  stem.swarm.plots[[SS2.name]] <- p 
+}
+
+stem.swarm.plots[["SS2 Patient 8"]] + stem.swarm.plots[["SS2 Patient 9"]]
+
+```
+
+
+
+
+
+        
+        
+        
 
 

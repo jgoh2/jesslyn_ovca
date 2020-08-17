@@ -83,35 +83,23 @@ SS2Malignant.8 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant8_processed.
 SS2Malignant.9 = readRDS(file = "data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS")
 
 #Read in hallmarks of interest
-g0g1.genes <- read_lines("data/gene_lists/cellcycle/G0G1.txt", skip = 2)
-g1S.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G1SDNAdamage.txt", skip = 2)
-g1S.transcription.genes <- read_lines("data/gene_lists/cellcycle/G1Stranscription.txt", skip = 2)
-g2m.checkpoint.genes <- read_lines("data/gene_lists/cellcycle/G2Mcheckpoint.txt", skip = 2)
-g2m.DNAdamage.genes <- read_lines("data/gene_lists/cellcycle/G2MDNAdamage.txt", skip = 2)
-g2m.replicationCP.genes <- read_lines("data/gene_lists/cellcycle/G2MreplicationCheckpoint.txt", skip = 2)
-
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 9)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", 
-                          "UNUPDATED.UPR", "G0G1", "G1S.DNAdamage", "G1S.transcription", "G2M.checkpoint", 
-                          "G2M.DNAdamage")
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
+
 for(hm in hallmark_names){
-  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
-  hallmark.list[[hm]] <- file
+  if(file.exists(glue("data/gene_lists/hallmarks/{hm}_updated.txt"))){
+    file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+    hallmark.list[[hm]] <- file
+  }
+  else{
+    file <- read_lines(glue("data/gene_lists/extra/{hm}.txt"), skip =2)
+    hallmark.list[[hm]] <- file
+  }
 }
 
-hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
-hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
-hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
-hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
-hallmark.list[["G0G1"]] <- g0g1.genes
-hallmark.list[["G1S.DNAdamage"]] <- g1S.DNAdamage.genes
-hallmark.list[["G1S.transcription"]] <- g1S.transcription.genes
-hallmark.list[["G2M.checkpoint"]] <- g2m.checkpoint.genes
-hallmark.list[["G2M.DNAdamage"]] <- g2m.DNAdamage.genes
-
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(SS2Malignant@meta.data)[14:58]
+hm.names <- names(SS2Malignant@meta.data)[14:61]
 
 for(i in hm.names){
     SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -255,7 +243,7 @@ p5 + p7 + p8
 **2) BY TREATMENT STATUS WITHIN EACH MODEL**
 
 ```{r PbyTreatment, message=FALSE, warning=FALSE, fig.align = 'center', fig.width=17, fig.height=5}
-
+#Patient 8 ---------
 p4 <- UMAPPlot(SS2Malignant.8, group.by = "treatment.status") + 
   labs(title = "SS2 UMAP Patient 8 by Treatment", subtitle = paste(nrow(SS2Malignant.8@meta.data),"Malignant Cells")) + 
   theme(plot.title = element_text(size = 12))
@@ -271,6 +259,7 @@ p6 <- PCAPlot(SS2Malignant.8, group.by = "sample") +
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07"))
 p4 + p5 + p6 + plot_layout(guides = "collect")
 
+#Patient 9 -----------
 p7 <- UMAPPlot(SS2Malignant.9, group.by = "treatment.status") + 
   labs(title = "SS2 UMAP Patient 9 by Treatment", subtitle = paste(nrow(SS2Malignant.9@meta.data),"Malignant Cells")) + 
   theme(plot.title = element_text(size = 12))

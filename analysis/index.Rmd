@@ -22,6 +22,9 @@ The purpose of this project is to identify gene expression signatures from ovari
     b. [SS2 DE analysis](02.1_Izar2020_SS2_DEAnalysis.html)
     c. [SS2 Cell Cycle analysis](02.2_Izar2020_SS2_CellCycleAnalysis.html)
 
+**Decision Making Process** 
+1. [GSEA Choices](GSEA_choices.html)
+
 ## Credits
 
 Developed by [Jesslyn Goh](https://github.com/jgoh2) and [Mike Cuoco](https://github.com/mikecuoco)
