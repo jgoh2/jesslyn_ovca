@@ -23,6 +23,7 @@ The purpose of this project is to identify gene expression signatures from ovari
     c. [SS2 Cell Cycle analysis](02.2_Izar2020_SS2_CellCycleAnalysis.html)
 
 **Decision Making Process** 
+
 1. [GSEA Choices](GSEA_choices.html)
 
 ## Credits

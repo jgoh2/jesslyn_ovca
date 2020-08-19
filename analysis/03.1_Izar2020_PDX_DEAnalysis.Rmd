@@ -790,7 +790,7 @@ PDX.UPR.plots[["DF68"]]
         * DF68: NDUFA1 enriched in MRD relative to relapse 
     - Results are not consistent across models. We cannot conclude that OXPHOS or UPR genes are enriched in MRD. 
 
-## STEP 4. ANALYZING OTHER GENE SETS 
+## STEP 5. ANALYZING OTHER GENE SETS 
 * Since we did not obtain any conclusive results from analyzing OXPHOS and UPR expression across treatment samples within each SS2 Patient, we now examine the expression of other gene sets to find potential trends. We are specifically interested in these gene sets: 
     - Stemness (stemness_genes44, RAMALHO_STEMNESS_UP45, CANCER_PROGENITORS_UP46)
     - Apoptosis (HALLMARK_APOPTOSIS2)

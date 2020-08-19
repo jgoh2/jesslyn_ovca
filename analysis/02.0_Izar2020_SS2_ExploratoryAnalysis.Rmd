@@ -420,19 +420,15 @@ Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered == 0] <- "Not Expressed"
 Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered > -0.25 & SS2Malignant.8$GO.OXPHOS35.centered < 0] <- "Slightly Downregulated"
 Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered < -0.25] <- "Highly Downregulated"
 
-p1 <- ggpairs(P8.PCA.cells, columns = c("PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", mapping = aes(alpha = 0.3, colour = Oxphos.ctg)) + 
-  labs(title = "Investigating the PC that captures OXPHOS scores variation across cells")
+p1 <- ggpairs(P8.PCA.cells, columns = c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5"), diag = "blank", mapping = aes(alpha = 0.3, colour = Oxphos.ctg)) + 
+  labs(title = "Investigating the PC that captures OXPHOS scores variation across cells (PC1-PC5)")
 
 p1
 
-# ----
-P8.PCA.genes <- SS2Malignant.8@reductions$pca@feature.loadings %>% as.data.frame()
-OXPHOS <- rownames(P8.PCA.genes) %in% hallmark.list[["GO.OXPHOS"]]
-p2 <- ggpairs(P8.PCA.genes, columns = c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", mapping = aes(alpha = 0.3, colour = OXPHOS)) + labs(title = "Investigating the PC that captures OXPHOS genes")
+p2 <- ggpairs(P8.PCA.cells, columns = c("PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", mapping = aes(alpha = 0.3, colour = Oxphos.ctg)) + 
+  labs(title = "Investigating the PC that captures OXPHOS scores variation across cells (PC6-PC10)")
+
 p2
-
-P9.PCA <- SS2Malignant.9@reductions$pca@feature.loadings
-
 ```
 
 

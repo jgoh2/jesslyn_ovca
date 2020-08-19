@@ -635,7 +635,7 @@ We try to confirm our results again with our second appraoch: **GSEA**
 
 ```
 
-### STEP 3 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES
+### STEP 4 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES
 We are interesting in detecting individual OXPHOS and UPR genes that might be differentially expressed. 
 
 * We will focus our analysis on Patient 8 UPR and Patient 9 OXPHOS genes because those are the s**tatistically significant** gene-set scores that **support our hypothesis** based on the results we got from our VlnPlots.
@@ -759,7 +759,7 @@ ggsave(plot = p4, filename = "SS2Malignant9.VolcanoUPR.png", path = "jesslyn_plo
 
 Since DE genes detected are not consistent across patients, we cannot conclude that there is an enrichment of OXPHOS or UPR genes in p.1. 
 
-## STEP 4. ANALYZING OTHER GENE SETS 
+## STEP 5. ANALYZING OTHER GENE SETS 
 * Since we did not obtain any conclusive results from analyzing OXPHOS and UPR expression across treatment samples within each SS2 Patient, we now examine the expression of other gene sets to find potential trends. We are specifically interested in these gene sets: 
     - Stemness (stemness_genes44, RAMALHO_STEMNESS_UP45, CANCER_PROGENITORS_UP46)
     - Apoptosis (HALLMARK_APOPTOSIS2)
