@@ -409,7 +409,7 @@ P8.oxphosVsnCount + P8.oxphosVsnFeature + P9.oxphosVsnCount + P9.oxphosVsnFeatur
 * We are interested in discovering which PC captures OXPHOS and UPR scores
 
 **6) Investigating PC that captures OXPHOS and/or UPR scores** 
-```{r PC, message = FALSE, warning = FALSE, fig.align='center', fig.width = 10, fig.height = 5}
+```{r PC, message = FALSE, warning = FALSE, fig.align='center', fig.width = 8, fig.height = 5}
 
 #GO.OXPHOS --------------
 P8.PCA.cells <- SS2Malignant.8@reductions$pca@cell.embeddings %>% as.data.frame()
@@ -420,12 +420,14 @@ Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered == 0] <- "Not Expressed"
 Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered > -0.25 & SS2Malignant.8$GO.OXPHOS35.centered < 0] <- "Slightly Downregulated"
 Oxphos.ctg[SS2Malignant.8$GO.OXPHOS35.centered < -0.25] <- "Highly Downregulated"
 
-p1 <- ggpairs(P8.PCA.cells, columns = c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5"), diag = "blank", mapping = aes(alpha = 0.3, colour = Oxphos.ctg)) + 
+p1 <- ggpairs(P8.PCA.cells, columns = c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5"), diag = "blank", lower = list(continuous = wrap("points", size = 1)), mapping = aes(alpha = 0.7, colour = Oxphos.ctg)) +
+  scale_color_brewer(palette="Purples", guide = "legend") +
   labs(title = "Investigating the PC that captures OXPHOS scores variation across cells (PC1-PC5)")
 
 p1
 
-p2 <- ggpairs(P8.PCA.cells, columns = c("PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", mapping = aes(alpha = 0.3, colour = Oxphos.ctg)) + 
+p2 <- ggpairs(P8.PCA.cells, columns = c("PC_6", "PC_7", "PC_8", "PC_9", "PC_10"), diag = "blank", lower = list(continuous = wrap("points", size = 1)), mapping = aes(alpha = 0.7, colour = Oxphos.ctg)) +
+  scale_color_brewer(palette="Purples", guide = "legend") +
   labs(title = "Investigating the PC that captures OXPHOS scores variation across cells (PC6-PC10)")
 
 p2
