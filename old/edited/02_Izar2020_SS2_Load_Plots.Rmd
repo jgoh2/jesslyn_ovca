@@ -179,6 +179,12 @@ ElbowPlot(SS2Malignant)
 ElbowPlot(SS2Malignant.8)
 ElbowPlot(SS2Malignant.9)
 
+#JackStraw 
+SS2Malignant <- JackStraw(SS2Malignant)
+SS2Malignant8.9 <- JackStraw(SS2Malignant8.9)
+SS2Malignant.8 <- JackStraw(SS2Malignant.8)
+SS2Malignant.9 <- JackStraw(SS2Malignant.9)
+
 #UMAP
 SS2Malignant<- RunUMAP(SS2Malignant, dims=1:15)
 SS2Malignant8.9 <- RunUMAP(SS2Malignant8.9, dims = 1:15)

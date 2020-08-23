@@ -38,6 +38,7 @@ UNUPDATED.OXPHOS
 UNUPDATED.UPR
 G0G1
 G1S.DNAdamage
+G1S
 G1S.transcription
 G2M.checkpoint
 G2M.DNAdamage

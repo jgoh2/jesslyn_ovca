@@ -155,6 +155,12 @@ PDX_DF20 <- RunPCA(PDX_DF20, features = VariableFeatures(PDX_DF20))
 PDX_DF101 <- RunPCA(PDX_DF101, features = VariableFeatures(PDX_DF101))
 PDX_DF68 <- RunPCA(PDX_DF68, features = VariableFeatures(PDX_DF68))
 
+#JackStraw 
+PDX_All <- JackStraw(PDX_All)
+PDX_DF20 <- JackStraw(PDX_DF20)
+PDX_DF101 <- JackStraw(PDX_DF101)
+PDX_DF68 <- JackStraw(PDX_DF68)
+
 #UMAP 
 PDX_All<- RunUMAP(PDX_All, dims=1:15)
 PDX_DF20<- RunUMAP(PDX_DF20, dims=1:15)

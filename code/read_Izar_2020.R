@@ -1,4 +1,4 @@
-# read_Izar_2020.R - read Izar_2020 data and save as Seurat objects in RDS files
+ # read_Izar_2020.R - read Izar_2020 data and save as Seurat objects in RDS files
 
 # Load packages
 source(here::here('packages.R'))
