@@ -432,7 +432,7 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-19
+<strong>Last updated:</strong> 2020-08-23
 </p>
 <p>
 <strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree729ebf46e71604f91406a12b0a6c92ad2a832af9targetblank729ebf4a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/729ebf46e71604f91406a12b0a6c92ad2a832af9" target="_blank">729ebf4</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee35baf5f626ae1377da812241ce09b24ad449b6etargetblanke35baf5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e35baf5f626ae1377da812241ce09b24ad449b6e" target="_blank">e35baf5</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree729ebf46e71604f91406a12b0a6c92ad2a832af9targetblank729ebf4a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee35baf5f626ae1377da812241ce09b24ad449b6etargetblanke35baf5a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/729ebf46e71604f91406a12b0a6c92ad2a832af9" target="_blank">729ebf4</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e35baf5f626ae1377da812241ce09b24ad449b6e" target="_blank">e35baf5</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -558,6 +558,16 @@ Ignored files:
     Ignored:    renv/python/
     Ignored:    renv/staging/
     Ignored:    vignettes/
+
+Untracked files:
+    Untracked:  SS2.8JS.PC1.txt
+    Untracked:  data/gene_lists/extra/G1S.txt
+
+Unstaged changes:
+    Modified:   code/read_Izar_2020.R
+    Modified:   data/gene_lists/hallmarks.txt
+    Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
+    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
 
 </code></pre>
 <p>
@@ -596,6 +606,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e35baf5f626ae1377da812241ce09b24ad449b6e/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">e35baf5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+<td>
+Cell cycle ggplot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2c1accf8a5c21b85e3658190c11441d341d0d635/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">2c1accf</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -995,7 +1039,7 @@ for(hm in hallmark_names){
 }
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names &lt;- names(SS2Malignant@meta.data)[14:61]
+hm.names &lt;- names(SS2Malignant@meta.data)[14:62]
 
 for(i in hm.names){
     SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
@@ -1134,7 +1178,7 @@ jgoh2
 </ul>
 <p>To investigate this further, we build violin plots of cell cycle scores separated by treatment status: - Noncycling Scores - G0 / early G1 - G1/S DNA Damage Checkpoint - G2M Checkpoint - G2M DNA Damage Checkpoint - Cycling Scores - G1/S Specific Transcription - S Score - G2M Score</p>
 <p><strong>1) NONCYCLING SCORES</strong></p>
-<pre class="r"><code>nc &lt;- c(&quot;G0G139.centered&quot;, &quot;G1S.DNAdamage40.centered&quot;, &quot;G2M.checkpoint42.centered&quot;, &quot;G2M.DNAdamage43.centered&quot;)
+<pre class="r"><code>nc &lt;- c(&quot;G0G139.centered&quot;, &quot;G1S.DNAdamage40.centered&quot;, &quot;G2M.checkpoint43.centered&quot;, &quot;G2M.DNAdamage44.centered&quot;)
 nc.names &lt;- c(&quot;G0/G1&quot;, &quot;G1/S DNA Damage CP&quot;, &quot;G2M CP&quot;, &quot;G2M DNA Damage CP&quot;)
 patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
 
@@ -1327,16 +1371,16 @@ for(i in 1:2){
   feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
   numCells &lt;- nrow(SS2@meta.data)
   
-  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.checkpoint42.centered, color = sample)) +
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.checkpoint43.centered, color = sample)) +
   geom_quasirandom(groupOnX =TRUE) + 
   theme_bw() + 
   scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
     labs(title = glue(&quot;{SS2.name} Malignant Cells G2M CP expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M CP genes found ({feature.pFound}%)&quot;)) + 
     theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) +
   geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.checkpoint42.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.checkpoint42.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.checkpoint42.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.checkpoint43.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.checkpoint43.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.checkpoint43.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
@@ -1412,16 +1456,16 @@ for(i in 1:2){
   feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
   numCells &lt;- nrow(SS2@meta.data)
   
-  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.DNAdamage43.centered, color = sample)) +
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.DNAdamage44.centered, color = sample)) +
   geom_quasirandom(groupOnX =TRUE) + 
   theme_bw() + 
   scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
     labs(title = glue(&quot;{SS2.name} Malignant Cells G2M DNA Damage CP expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M DNA Damage CP genes found ({feature.pFound}%)&quot;)) + 
     theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
   geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.DNAdamage43.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.DNAdamage43.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.DNAdamage43.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.DNAdamage44.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.DNAdamage44.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.DNAdamage44.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
@@ -1512,10 +1556,10 @@ jgoh2
 </ul></li>
 </ul>
 <pre class="r"><code>#VlnPlot -------------------------
-cc &lt;- c(&quot;G1S.transcription41.centered&quot;, &quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;)
-cc.names &lt;- c(&quot;G1/S Specific Transcription&quot;, &quot;S Score&quot;, &quot;G2M Score&quot;)
+cc &lt;- c(&quot;G1S.transcription42.centered&quot;, &quot;G1S41.centered&quot;, &quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;)
+cc.names &lt;- c(&quot;G1/S Specific Transcription&quot;, &quot;G1/S&quot;, &quot;S Score&quot;, &quot;G2M Score&quot;)
 
-# G1/S --------
+# G1/S Specific Transcription --------
 g1s.transcription.swarm &lt;- vector(&quot;list&quot;, length = 2)
 names(g1s.transcription.swarm) &lt;- SS2.names
 
@@ -1534,16 +1578,16 @@ for(i in 1:2){
   feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
   numCells &lt;- nrow(SS2@meta.data)
   
-  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G1S.transcription41.centered, color = sample)) +
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G1S.transcription42.centered, color = sample)) +
   geom_quasirandom(groupOnX =TRUE) + 
   theme_bw() + 
   scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
     labs(title = glue(&quot;{SS2.name} Malignant Cells G1/S Specific Transcription expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S genes found ({feature.pFound}%)&quot;)) + 
     theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
   geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G1S.transcription41.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G1S.transcription41.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G1S.transcription41.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G1S.transcription42.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G1S.transcription42.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G1S.transcription42.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
@@ -1622,9 +1666,9 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code># S --------
-s.swarm &lt;- vector(&quot;list&quot;, length = 2)
-names(s.swarm) &lt;- SS2.names
+<pre class="r"><code># G1/S --------
+g1s.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g1s.swarm) &lt;- SS2.names
 
 for(i in 1:2){
   SS2 &lt;- SS2s[[i]]
@@ -1636,28 +1680,28 @@ for(i in 1:2){
     c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
   )
   
-  feature.found &lt;- sum(s.genes %in% rownames(SS2))
-  feature.length &lt;- length(s.genes)
+  feature.found &lt;- sum(hallmark.list[[&quot;G1S&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G1S&quot;]])
   feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
   numCells &lt;- nrow(SS2@meta.data)
   
-  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = S.Score.centered, color = sample)) +
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G1S41.centered, color = sample)) +
   geom_quasirandom(groupOnX =TRUE) + 
   theme_bw() + 
   scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
-    labs(title = glue(&quot;{SS2.name} Malignant Cells S Phase expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} S genes found ({feature.pFound}%)&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G1/S expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S genes found ({feature.pFound}%)&quot;)) + 
     theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
   geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$S.Score.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$S.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$S.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G1S41.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G1S41.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G1S41.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
-  s.swarm[[SS2.name]] &lt;- p 
+  g1s.swarm[[SS2.name]] &lt;- p 
 }
 
-s.swarm[[&quot;SS2 Patient 8&quot;]] + s.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+g1s.swarm[[&quot;SS2 Patient 8&quot;]] + g1s.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
 <p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-2">
@@ -1729,9 +1773,9 @@ jgoh2
 </table>
 </div>
 </div>
-<pre class="r"><code># G2M --------
-g2m.swarm &lt;- vector(&quot;list&quot;, length = 2)
-names(g2m.swarm) &lt;- SS2.names
+<pre class="r"><code># S --------
+s.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(s.swarm) &lt;- SS2.names
 
 for(i in 1:2){
   SS2 &lt;- SS2s[[i]]
@@ -1743,28 +1787,28 @@ for(i in 1:2){
     c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
   )
   
-  feature.found &lt;- sum(g2m.genes %in% rownames(SS2))
-  feature.length &lt;- length(g2m.genes)
+  feature.found &lt;- sum(s.genes %in% rownames(SS2))
+  feature.length &lt;- length(s.genes)
   feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
   numCells &lt;- nrow(SS2@meta.data)
   
-  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.Score.centered, color = sample)) +
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = S.Score.centered, color = sample)) +
   geom_quasirandom(groupOnX =TRUE) + 
   theme_bw() + 
   scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
-    labs(title = glue(&quot;{SS2.name} Malignant Cells G2M Phase expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M genes found ({feature.pFound}%)&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells S Phase expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} S genes found ({feature.pFound}%)&quot;)) + 
     theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
   geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.Score.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
-    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$S.Score.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$S.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$S.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
     stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
   
-  g2m.swarm[[SS2.name]] &lt;- p 
+  s.swarm[[SS2.name]] &lt;- p 
 }
 
-g2m.swarm[[&quot;SS2 Patient 8&quot;]] + g2m.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+s.swarm[[&quot;SS2 Patient 8&quot;]] + s.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
 <p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" width="1152" style="display: block; margin: auto;" /></p>
 <p>
 <button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-3">
@@ -1814,6 +1858,43 @@ jgoh2
 </table>
 </div>
 </div>
+<pre class="r"><code># G2M --------
+g2m.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g2m.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(g2m.genes %in% rownames(SS2))
+  feature.length &lt;- length(g2m.genes)
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.Score.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G2M Phase expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.Score.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[SS2.name]] &lt;- p 
+}
+
+g2m.swarm[[&quot;SS2 Patient 8&quot;]] + g2m.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-4.png" width="1152" style="display: block; margin: auto;" /></p>
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
@@ -2033,6 +2114,141 @@ DT::datatable(both.DF) %&gt;%
 <div id="htmlwidget-2c6c6d1180881687b937" style="width:100%;height:auto;" class="datatables html-widget"></div>
 <script type="application/json" data-for="htmlwidget-2c6c6d1180881687b937">{"x":{"filter":"none","data":[["S.P8","S.P9","g2m.P8","g2m.P9"],[0.00225590608862168,0.837091771747834,0.351779534846257,0.796662179510937],[0.532969243646715,0.115891139228093,0.224243909673312,0.028337669177522],[0.0187333727977988,0.0622817906649204,0.0624075560526233,0.0201105875116194]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>p.0vsp.1<\/th>\n      <th>p.1vsp.2<\/th>\n      <th>p.0vsp.2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
 <p>Our results from DE Analysis and Cell Cycle Analysis collectively suggest that <strong>OXPHOS and UPR</strong> expression weakly correlate with treatment condition, while cell cycle phase does not significantly correlate with treatment. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of <strong>OXPHOS and UPR</strong> and <strong>cell cycle phase</strong>.</p>
+<p><strong>3) G2M vs. G1/S Scores Per Treatment</strong> We reconfirm our results by plotting G2M scores against G1/S Scores for each treatment condition</p>
+<pre class="r"><code>SS2s &lt;- c(SS2Malignant8.0, SS2Malignant8.1, SS2Malignant8.2, SS2Malignant9.0, SS2Malignant9.1, SS2Malignant9.2)
+SS2.names &lt;- c(&quot;8.0&quot;, &quot;8.1&quot;, &quot;8.2&quot;, &quot;9.0&quot;, &quot;9.1&quot;, &quot;9.2&quot;)
+plots &lt;- vector(&quot;list&quot;, length = length(SS2.names))
+names(plots) &lt;- SS2.names
+
+for(i in 1:length(SS2s)){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  scores &lt;- SS2@meta.data %&gt;% 
+    select(G1S41.centered, G2M.Score.centered)
+  cycling &lt;- vector(mode = &quot;character&quot;, length = nrow(scores))
+  cycling[(scores$G1S41.centered &lt; 1 | scores$G2M.Score.centered &lt; 1)] &lt;- &quot;Non-Cycling&quot;
+  cycling[(scores$G1S41.centered &gt; 1 | scores$G2M.Score.centered &gt; 1)] &lt;- &quot;Intermediate&quot;
+  cycling[(scores$G1S41.centered &gt; 2 | scores$G2M.Score.centered &gt; 2)] &lt;- &quot;Cycling&quot;
+  scores &lt;- scores %&gt;% mutate(&quot;Cycling&quot; = cycling)
+  
+  numCells &lt;- nrow(scores)
+  cycling &lt;- round(sum(scores$Cycling == &quot;Cycling&quot;) / numCells, 2)
+  levels(scores$Cycling) &lt;- c(&quot;Cycling&quot;, &quot;Intermediate&quot;, &quot;Non-Cycling&quot;)
+  myColors &lt;- c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)
+  names(myColors) &lt;- levels(scores$Cycling)
+  
+  p &lt;- ggplot(scores, aes(x = G1S41.centered, y = G2M.Score.centered, colour = Cycling)) + 
+    geom_point() + 
+    theme_bw() +
+    labs(title = glue(&quot;SS2 Sample {SS2.name} Cell Cycle State&quot;), subtitle = glue(&quot;N = {numCells}, {cycling}% cycling&quot;), x = &quot;G1/S Score&quot;, y = &quot;G2/M Score&quot;) + 
+  scale_color_manual(name =  &quot;Cycling&quot;, values = myColors) + 
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+  
+  plots[[SS2.name]] &lt;- p
+}
+
+plots[[&quot;8.0&quot;]] + plots[[&quot;8.1&quot;]] + plots[[&quot;8.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-1">
+Past versions of cellcycle2-1.png
+</button>
+</p>
+<div id="fig-cellcycle2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plots[[&quot;9.0&quot;]] + plots[[&quot;9.1&quot;]] + plots[[&quot;9.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-2">
+Past versions of cellcycle2-2.png
+</button>
+</p>
+<div id="fig-cellcycle2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We confirm that there does not seem to have a significant correlation between cell cycle phase and treatment condition.</p>
 <ul>
 <li><strong>QUESTION #2</strong> Is there a correlation between cell cycle phase and the expression of signatures?</li>
 <li><strong>HYPOTHESIS</strong> We hypothesize that low cycling cells (G1) should express higher levels of <strong>OXPHOS and UPR</strong> genes. (G1 &gt; S &gt; G2M)
@@ -2044,7 +2260,9 @@ DT::datatable(both.DF) %&gt;%
 </ul></li>
 </ul></li>
 </ul>
-<pre class="r"><code>hms.centered &lt;- c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
+<pre class="r"><code>SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
+SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
+hms.centered &lt;- c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
 cc.exp.plot &lt;- vector(&quot;list&quot;, length = 3)
 names(cc.exp.plot) &lt;- SS2.names
 patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
@@ -2098,105 +2316,9 @@ for(i in 1:length(SS2s)){
 }
 
 cc.exp.plot[[&quot;SS2 Patient 8&quot;]]</code></pre>
-<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-1">
-Past versions of cellcycle2-1.png
-</button>
-</p>
-<div id="fig-cellcycle2-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">26f64a3</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-08-03
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">2dc1bee</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-31
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle3-1.png" width="960" style="display: block; margin: auto;" /></p>
 <pre class="r"><code>cc.exp.plot[[&quot;SS2 Patient 9&quot;]]</code></pre>
-<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" width="960" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-2">
-Past versions of cellcycle2-2.png
-</button>
-</p>
-<div id="fig-cellcycle2-2" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">26f64a3</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-08-03
-</td>
-</tr>
-<tr>
-<td>
-<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">2dc1bee</a>
-</td>
-<td>
-jgoh2
-</td>
-<td>
-2020-07-31
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle3-2.png" width="960" style="display: block; margin: auto;" /></p>
 <ul>
 <li><strong>CONCLUSIONS</strong>
 <ul>
@@ -2213,6 +2335,47 @@ jgoh2
 <li>No specific statistically significant trend identified. However, cells in the non / low cycling G1 phase do not seem to express higher levels of OXPHOS and UPR genes, which does not support our hypothesis.</li>
 </ul></li>
 </ul>
+<p>We reconfirm our results by plotting G2M vs. G1/S Scores, with points colored by high OXPHOS scores (&gt; 2).</p>
+<pre class="r"><code>SS2s &lt;- c(SS2Malignant8.0, SS2Malignant8.1, SS2Malignant8.2, SS2Malignant9.0, SS2Malignant9.1, SS2Malignant9.2)
+SS2.names &lt;- c(&quot;8.0&quot;, &quot;8.1&quot;, &quot;8.2&quot;, &quot;9.0&quot;, &quot;9.1&quot;, &quot;9.2&quot;)
+plots &lt;- vector(&quot;list&quot;, length = length(SS2.names))
+names(plots) &lt;- SS2.names
+
+for(i in 1:length(SS2s)){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  scores &lt;- SS2@meta.data %&gt;% 
+    select(G1S41.centered, G2M.Score.centered, GO.OXPHOS35.centered)
+  cycling &lt;- vector(mode = &quot;character&quot;, length = nrow(scores))
+  cycling[(scores$G1S41.centered &lt; 1 | scores$G2M.Score.centered &lt; 1)] &lt;- &quot;Non-Cycling&quot;
+  cycling[(scores$G1S41.centered &gt; 1 | scores$G2M.Score.centered &gt; 1)] &lt;- &quot;Intermediate&quot;
+  cycling[(scores$G1S41.centered &gt; 2 | scores$G2M.Score.centered &gt; 2)] &lt;- &quot;Cycling&quot;
+  
+  scores &lt;- scores %&gt;% mutate(&quot;Cycling&quot; = cycling)
+  scores &lt;- scores %&gt;% mutate(&quot;highOXPHOS&quot; = scores$GO.OXPHOS35.centered &gt; 0.2)
+  
+  numCells &lt;- nrow(scores)
+  cycling &lt;- round(sum(scores$Cycling == &quot;Cycling&quot;) / numCells, 2)
+  levels(scores$Cycling) &lt;- c(&quot;Cycling&quot;, &quot;Intermediate&quot;, &quot;Non-Cycling&quot;)
+  myColors &lt;- c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)
+  names(myColors) &lt;- levels(scores$Cycling)
+  
+  p &lt;- ggplot(scores, aes(x = G1S41.centered, y = G2M.Score.centered, colour = highOXPHOS)) + 
+    geom_point() + 
+    theme_bw() +
+    labs(title = glue(&quot;SS2 Sample {SS2.name} Cell Cycle State and OXPHOS score&quot;), subtitle = glue(&quot;N = {numCells}, {cycling}% cycling&quot;), x = &quot;G1/S Score&quot;, y = &quot;G2/M Score&quot;, colour = &quot;high OXPHOS ( &gt; 0.2)&quot;) + 
+    geom_hline(yintercept = 2, linetype = &quot;dashed&quot;) + 
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+  
+  plots[[SS2.name]] &lt;- p
+}
+
+plots[[&quot;8.0&quot;]] + plots[[&quot;8.1&quot;]] + plots[[&quot;8.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>plots[[&quot;9.0&quot;]] + plots[[&quot;9.1&quot;]] + plots[[&quot;9.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle4-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>Does not seem to have any correlation between OXPHOS expression and cell cycle phase since some cycling cells also have high OXPHOS scores. Again,it is very difficult to conclude anything because we have very little cells.</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
