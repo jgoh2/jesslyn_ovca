@@ -101,7 +101,7 @@ for(hm in hallmark_names){
 }
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(PDX_All@meta.data)[9:56]
+hm.names <- names(PDX_All@meta.data)[9:57]
 
 for(i in hm.names){
     DF20.hm.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)

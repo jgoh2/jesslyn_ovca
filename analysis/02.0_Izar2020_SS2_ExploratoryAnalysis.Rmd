@@ -99,7 +99,7 @@ for(hm in hallmark_names){
 }
 
 #center module and cell cycle scores and reassign to the metadata of each Seurat object
-hm.names <- names(SS2Malignant@meta.data)[14:61]
+hm.names <- names(SS2Malignant@meta.data)[14:62]
 
 for(i in hm.names){
     SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
