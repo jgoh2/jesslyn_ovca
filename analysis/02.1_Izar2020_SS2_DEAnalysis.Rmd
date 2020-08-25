@@ -635,7 +635,7 @@ We try to confirm our results again with our second appraoch: **GSEA**
 
 ```
 
-### STEP 4 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES
+### STEP 4 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE OXPHOS AND UPR GENES
 We are interesting in detecting individual OXPHOS and UPR genes that might be differentially expressed. 
 
 * We will focus our analysis on Patient 8 UPR and Patient 9 OXPHOS genes because those are the s**tatistically significant** gene-set scores that **support our hypothesis** based on the results we got from our VlnPlots.
@@ -759,7 +759,7 @@ ggsave(plot = p4, filename = "SS2Malignant9.VolcanoUPR.png", path = "jesslyn_plo
 
 Since DE genes detected are not consistent across patients, we cannot conclude that there is an enrichment of OXPHOS or UPR genes in p.1. 
 
-## STEP 5. ANALYZING OTHER GENE SETS 
+### STEP 5. ANALYZING OTHER GENE SETS 
 * Since we did not obtain any conclusive results from analyzing OXPHOS and UPR expression across treatment samples within each SS2 Patient, we now examine the expression of other gene sets to find potential trends. We are specifically interested in these gene sets: 
     - Stemness (stemness_genes44, RAMALHO_STEMNESS_UP45, CANCER_PROGENITORS_UP46)
     - Apoptosis (HALLMARK_APOPTOSIS2)
@@ -1005,11 +1005,149 @@ stem.swarm.plots[["SS2 Patient 8"]] + stem.swarm.plots[["SS2 Patient 9"]]
 ```
 
 
+### STEP 6. GENE ONTOLOGY FUNCTIONAL ANALYSIS 
+Our gene-set enrichement analyses above show us that the gene-sets we hypothesized to be differentially expressed in p.1 are not DE based on our results. Here, instead of testing for a specific gene-set, we use gene ontology functional analysis to verify if genes of interest are more often associated with certain biological functions than what would be expected in a random set of genes. We conduct GO analysis on a number of gene lists: 
 
+1. PC loadings from PC1-PC5 
+    i. Loadings are sorted in both directions, and the top 500 loadings are extracted (in both directions).
+    ii. Insignificantly associated laodings are first filtered based on the JackStraw output (padj > 0.05) before being sorted as described above. 
+2. Output from FindMarkes 
+    i. Filter out insignificant genes (padj > 0.05) and sort by logFC both ways 
 
+**PART 1: PC LOADINGS FROM PC1-PC10 OPTION i** 
 
-        
-        
+```{r GO1, message=FALSE, warning = FALSE}
+library(pcaExplorer)
+library(org.Hs.eg.db)
+library(topGO)
+
+PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
+background <- rownames(SS2Malignant@assays$RNA@counts)
+
+#PATIENT 8 -----------------------------------
+p8.pc.go1 <- vector("list", length = 10)
+names(p8.pc.go1) <- PCs
+loadings <- as.data.frame(SS2Malignant.8@reductions$pca@feature.loadings) %>% rownames_to_column()
+
+for(i in 1:10){
+  PC <- PCs[[i]]
+  pc.go.both <- vector("list", length = 2)
+  names(pc.go.both) <- c("positive", "negative")
+  
+  pc.positive <- loadings %>% 
+    dplyr::select("rowname", PC) %>% dplyr::arrange(-loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  pc.negative <- loadings %>% 
+    dplyr::select("rowname", PC) %>% dplyr::arrange(loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  
+  pc.go.both[["positive"]] <- topGOtable(DEgenes = pc.positive, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  pc.go.both[["negative"]] <- topGOtable(DEgenes = pc.negative, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  
+  p8.pc.go1[[PC]] <- pc.go.both
+}
+
+#PATIENT 9 -----------------------------------
+p9.pc.go1 <- vector("list", length = 10)
+names(p9.pc.go1) <- PCs
+loadings <- as.data.frame(SS2Malignant.9@reductions$pca@feature.loadings) %>% rownames_to_column()
+
+for(i in 1:10){
+  PC <- PCs[[i]]
+  pc.go.both <- vector("list", length = 2)
+  names(pc.go.both) <- c("positive", "negative")
+  
+  pc.positive <- loadings %>% 
+    dplyr::select("rowname", PC) %>% dplyr::arrange(-loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  pc.negative <- loadings %>% 
+    dplyr::select("rowname", PC) %>% dplyr::arrange(loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  
+  pc.go.both[["positive"]] <- topGOtable(DEgenes = pc.positive, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  pc.go.both[["negative"]] <- topGOtable(DEgenes = pc.negative, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  
+  p9.pc.go1[[PC]] <- pc.go.both
+}
+
+# save output 
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    type <- z
+    write_csv(p8.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/UF/GOuf_P8_{PC}_{type}.csv"))
+    write_csv(p9.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/UF/GOuf_P9_{PC}_{type}.csv"))
+  }
+}
+
+```
+
+**PART 2: PC LOADINGS FROM PC1-PC10 OPTION ii (filter out insignificant loadings first)** 
+
+```{r GO2, message=FALSE, warning = FALSE}
+PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
+j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
+background <- rownames(SS2Malignant@assays$RNA@counts)
+
+#PATIENT 8 -----------------------------------
+p8.pc.go2 <- vector("list", length = 10)
+names(p8.pc.go2) <- PCs
+loadings <- as.data.frame(SS2Malignant.8@reductions$pca@feature.loadings) %>% rownames_to_column()
+jackstraw <- JS(object = SS2Malignant.8[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
+
+for(i in 1:10){
+  PC <- PCs[[i]]
+  pc.go.both <- vector("list", length = 2)
+  names(pc.go.both) <- c("positive", "negative")
+  
+  this.jackstraw <- jackstraw %>% 
+    dplyr::select("rowname", j.PCs[[i]]) %>% dplyr::filter(jackstraw[[j.PCs[[i]]]] < 0.05) %>% dplyr::select("rowname") %>% deframe()
+  this.loadings <- loadings %>% dplyr::select("rowname", PC) %>% dplyr::filter(rowname %in% this.jackstraw)
+    
+  pc.positive <- this.loadings %>% 
+    dplyr::arrange(-this.loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  pc.negative <- this.loadings %>% 
+    dplyr::arrange(this.loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  
+  pc.go.both[["positive"]] <- topGOtable(DEgenes = pc.positive, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  pc.go.both[["negative"]] <- topGOtable(DEgenes = pc.negative, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  
+  p8.pc.go2[[PC]] <- pc.go.both
+}
+
+#PATIENT 9 -----------------------------------
+p9.pc.go2 <- vector("list", length = 10)
+names(p9.pc.go2) <- PCs
+loadings <- as.data.frame(SS2Malignant.9@reductions$pca@feature.loadings) %>% rownames_to_column()
+jackstraw <- JS(object = SS2Malignant.9[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
+
+for(i in 1:10){
+  PC <- PCs[[i]]
+  pc.go.both <- vector("list", length = 2)
+  names(pc.go.both) <- c("positive", "negative")
+  
+  this.jackstraw <- jackstraw %>% 
+    dplyr::select("rowname", j.PCs[[i]]) %>% dplyr::filter(jackstraw[[j.PCs[[i]]]] < 0.05) %>% dplyr::select("rowname") %>% deframe()
+  this.loadings <- loadings %>% dplyr::select("rowname", PC) %>% dplyr::filter(rowname %in% this.jackstraw)
+    
+  pc.positive <- this.loadings %>% 
+    dplyr::arrange(-this.loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  pc.negative <- this.loadings %>% 
+    dplyr::arrange(this.loadings[[PC]]) %>% dplyr::select("rowname") %>% deframe() %>% head(500)
+  
+  pc.go.both[["positive"]] <- topGOtable(DEgenes = pc.positive, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  pc.go.both[["negative"]] <- topGOtable(DEgenes = pc.negative, BGgenes = background, ontology = "BP", mapping = "org.Hs.eg.db", do_padj = TRUE)
+  
+  p9.pc.go2[[PC]] <- pc.go.both
+}
+
+#save output
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    type <- z
+    write_csv(p8.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/F/GOf_P8_{PC}_{type}.csv"))
+    write_csv(p9.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/F/GOf_P9_{PC}_{type}.csv"))
+  }
+}
+
+```
         
 
 

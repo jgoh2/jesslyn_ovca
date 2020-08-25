@@ -57,17 +57,19 @@ g2m.genes <- ccgenes[44:97]
 
 #Read in hallmarks of interest
 hallmark_names = read_lines("data/gene_lists/hallmarks.txt")
-hallmark.list <- vector(mode = "list", length = length(hallmark_names) + 4)
-names(hallmark.list) <- c(hallmark_names, "GO.OXPHOS", "KEGG.OXPHOS", "UNUPDATED.OXPHOS", "UNUPDATED.UPR")
-for(hm in hallmark_names){
-  file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
-  hallmark.list[[hm]] <- file
-}
+hallmark.list <- vector(mode = "list", length = length(hallmark_names))
+names(hallmark.list) <- hallmark_names
 
-hallmark.list[["GO.OXPHOS"]] <- read_lines("data/gene_lists/extra/GO.OXPHOS.txt", skip = 1)
-hallmark.list[["KEGG.OXPHOS"]] <- read_lines("data/gene_lists/extra/KEGG.OXPHOS.txt", skip = 2)
-hallmark.list[["UNUPDATED.OXPHOS"]] <- read_lines("data/gene_lists/oxphos.txt", skip =1)
-hallmark.list[["UNUPDATED.UPR"]] <- read_lines("data/gene_lists/upr.txt", skip =1)
+for(hm in hallmark_names){
+  if(file.exists(glue("data/gene_lists/hallmarks/{hm}_updated.txt"))){
+    file <- read_lines(glue("data/gene_lists/hallmarks/{hm}_updated.txt"), skip = 1)
+    hallmark.list[[hm]] <- file
+  }
+  else{
+    file <- read_lines(glue("data/gene_lists/extra/{hm}.txt"), skip =2)
+    hallmark.list[[hm]] <- file
+  }
+}
 
 if(!dir.exists("jesslyn_plots/PDX_test")){dir.create("jesslyn_plots/PDX_test")}
 ```
@@ -359,7 +361,7 @@ p2[[3]] <- p2[[3]] + labs(title = "p53 ('scale.data')",  x = "DF20") +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #Scenario 3: Using the "data" slot, center the scores afterward, reassign to metadata
-hm.names <- names(DF20_score@meta.data)[9:46]
+hm.names <- names(DF20_score@meta.data)[18:57]
 hms.centered <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered", "HALLMARK_P53_PATHWAY26.centered")
 
 for(i in hm.names){
@@ -399,9 +401,9 @@ DF20_data.df <- DF20_score@meta.data %>% as.data.frame()
 DF20_scale.data.df <- DF20_scale.dataSlot@meta.data %>% as.data.frame()
 
 sd.df = data.frame(
-    "DF20_data" = apply(DF20_data.df[9:42], 2, sd),
-    "DF20_data.centered" = apply(DF20_data.df[50:83], 2, sd),
-    "DF20_scale.data" = apply(DF20_scale.data.df[9:42],2,sd)
+    "DF20_data" = apply(DF20_data.df[18:57], 2, sd),
+    "DF20_data.centered" = apply(DF20_data.df[67:106], 2, sd),
+    "DF20_scale.data" = apply(DF20_scale.data.df[18:57],2,sd)
 ) 
 
 plot.df = reshape2::melt(sd.df)
@@ -778,9 +780,36 @@ wilcox.FC + t.FC + MAST.FC + LR.FC + plot_layout(guides= 'collect')
 
 * **OBSERVATIONS**
   - It seems like all of the statistical tests share similar DE genes, although there are a variety of genes that are DE in only a few of the tests. 
-  - However, this plot is not informative enough about which statistical test is the best. We therefore plot volcano plots for each statistical test and determine which test gives us the most false positives (genes with very small padj but also small logFC: this would be a problem because we rank by padj first). 
-  
+  - However, this plot is not informative enough about which statistical test is the best. We therefore plot volcano plots for each statistical test and determine which test gives us the most false positives (genes with very small padj but also small logFC). 
+
 ```{r FindMarkers statistical test Volcano Plots, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height= 15}
+
+wilcox.volcano <- EnhancedVolcano(all, lab = all$feature, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - Wilcox", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"), caption = paste(sum(all$wilcox.DE), "DE genes"))
+
+t.volcano <- EnhancedVolcano(all, lab = all$feature, x='t.logFC', y='t.padj', 
+      pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes -T.test", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"), caption = paste(sum(all$t.DE), "DE genes"))
+
+MAST.volcano <- EnhancedVolcano(all, lab = all$feature, x='MAST.logFC', y='MAST.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - MAST", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"), caption = paste(sum(all$MAST.DE), "DE genes"))
+
+LR.volcano <- EnhancedVolcano(all, lab = all$feature, x='LR.logFC', y='LR.padj', 
+      pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
+      title= "DF20 MRD vs. vehicle DE Genes - LR", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
+      legendLabels = c("NS", expression(Log[2]~FC), "False Positives", "DE"), caption = paste(sum(all$LR.DE), "DE genes"))
+
+all.volcano <- wilcox.volcano + t.volcano + MAST.volcano + LR.volcano
+all.volcano
+ggsave(plot = all.volcano, filename = "DF20_stattest_volcano.png", path = "jesslyn_plots/PDX_test", height = 15, width = 20)
+```
+
+We investigate how ranking by padj for each statistical test would affect our results. Which statistical test gives us the most false positives at the top of the rank? 
+
+```{r FindMarkers statistical test Volcano Plots2, message = FALSE, warning = FALSE, fig.align = 'center', fig.width = 20, fig.height= 15}
 
 wilcox.volcano <- EnhancedVolcano(all, lab= all$wilcox.rank, selectLab = all$wilcox.rank, x='wilcox.logFC', y='wilcox.padj', pCutoff = 0.05, FCcutoff = 0.5, col = c("black", "black", "purple2", "red2"), 
       title= "DF20 MRD vs. vehicle DE Genes - Wilcox (ranked with padj)", subtitle= "LogFC cutoff: 0.5, p cutoff: 0.05", 
@@ -806,7 +835,7 @@ LR.volcano <- EnhancedVolcano(all, lab= all$LR.rank, selectLab = all$LR.rank, x=
 
 all.volcano <- wilcox.volcano + t.volcano + MAST.volcano + LR.volcano
 all.volcano
-ggsave(plot = all.volcano, filename = "DF20_stattest_volcano.png", path = "jesslyn_plots/PDX_test", height = 15, width = 20)
+ggsave(plot = all.volcano, filename = "DF20_stattest_volcano2.png", path = "jesslyn_plots/PDX_test", height = 15, width = 20)
 ```
 
 * **CONCLUSIONS**
