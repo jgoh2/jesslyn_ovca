@@ -1016,7 +1016,7 @@ Our gene-set enrichement analyses above show us that the gene-sets we hypothesiz
 
 **PART 1: PC LOADINGS FROM PC1-PC10 OPTION i** 
 
-```{r GO1, message=FALSE, warning = FALSE}
+```{r GO1, message=FALSE, warning = FALSE, fig.align="center", fig.width = 30, fig.height=11}
 library(pcaExplorer)
 library(org.Hs.eg.db)
 library(topGO)
@@ -1071,16 +1071,55 @@ for(i in 1:10){
   for(z in c("positive", "negative")){
     PC <- PCs[[i]]
     type <- z
-    write_csv(p8.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/UF/GOuf_P8_{PC}_{type}.csv"))
-    write_csv(p9.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/UF/GOuf_P9_{PC}_{type}.csv"))
+    write_csv(p8.pc.go1[[PC]][[z]], path = glue("GO_results/Tables/SS2/UF/GOuf_P8_{PC}_{type}.csv"))
+    write_csv(p9.pc.go1[[PC]][[z]], path = glue("GO_results/Tables/SS2/UF/GOuf_P9_{PC}_{type}.csv"))
   }
+}
+
+#visualization 
+plots.8 <- vector("list", length = 10)
+plots.9 <- vector("list", length = 10)
+names(plots.8) <- PCs
+names(plots.9) <- PCs
+
+for(i in 1:10){
+  
+  pc8.plots <- vector("list", length = 2)
+  pc9.plots <- vector("list", length = 2)
+  names(pc8.plots) <- c("positive", "negative")
+  names(pc9.plots) <- c("posititve", "negative")
+  
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.8 <- p8.pc.go1[[PC]][[z]]
+    data.8 <- data.8 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pc8.plots[[z]] <- ggplot(data.8, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated) *100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("Patient 8 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+
+    data.9 <- p9.pc.go1[[PC]][[z]]
+    data.9 <- data.9 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pc9.plots[[z]] <- ggplot(data.9, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("Patient 9 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") + 
+              coord_flip()
+  }
+  
+  plots.8[[PC]] <- pc8.plots
+  plots.9[[PC]] <- pc9.plots
+  
+  p <- plots.8[[PC]][["positive"]] + plots.8[[PC]][["negative"]] + plots.9[[PC]][["positive"]] + plots.9[[PC]][["negative"]]
+  ggsave(plot = p, filename = glue("SS2uf_{PC}.png"), path = "GO_results/GO_plots/SS2/UF", width = 30, height = 11)
+
 }
 
 ```
 
 **PART 2: PC LOADINGS FROM PC1-PC10 OPTION ii (filter out insignificant loadings first)** 
 
-```{r GO2, message=FALSE, warning = FALSE}
+```{r GO2, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
 j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
 background <- rownames(SS2Malignant@assays$RNA@counts)
@@ -1142,12 +1181,471 @@ for(i in 1:10){
   for(z in c("positive", "negative")){
     PC <- PCs[[i]]
     type <- z
-    write_csv(p8.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/F/GOf_P8_{PC}_{type}.csv"))
-    write_csv(p9.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/SS2/F/GOf_P9_{PC}_{type}.csv"))
+    write_csv(p8.pc.go2[[PC]][[z]], path = glue("GO_results/Tables/SS2/F/GOf_P8_{PC}_{type}.csv"))
+    write_csv(p9.pc.go2[[PC]][[z]], path = glue("GO_results/Tables/SS2/F/GOf_P9_{PC}_{type}.csv"))
+  }
+}
+
+#visualization 
+
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.8 <- p8.pc.go2[[PC]][[z]]
+    data.8 <- data.8 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.8 <- ggplot(data.8, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("Patient 8 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.8, filename = glue("p8f_{PC}_{z}.png"), path = "GO_results/GO_plots/SS2/F", width = 15)
+    
+    data.9 <- p9.pc.go2[[PC]][[z]]
+    data.9 <- data.9 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.9 <- ggplot(data.9, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("Patient 9 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") + 
+              coord_flip()
+    ggsave(plot = plot.9, filename = glue("p9f_{PC}_{z}.png"), path = "GO_results/GO_plots/SS2/F", width = 15)
   }
 }
 
 ```
         
+The positive and negative results from the Filtered method are identical, which suggest that filtering out PC loadings may not have been the right approach. We move forward with our results from the first method. 
+
+* **OBSERVATIONS** 
+The most consistent results between Patients 8 and 9 are for PC_3, 4, and 6: 
+
+    * **PC_3**: 
+        - Mitochondrial electron transport (synonym OXPHOS), NADH to ubiquinone
+        - Mitochondrial respiratory chain complex I assembly 
+    * **PC_4**: 
+        - Proteasomal Ubiquitin-independent protein catabolic process 
+    * **PC_6**: 
+        - Mitochondrial electron transport NADH to ubiquinone
+        - Mitochondrial respiratory chain complex I assembly
+        - Mitochondrial translational elongation
+        - Mitochondrial translational termination 
+        
+* After we've narrowed down our serach to the 5 most consistently significant GO terms across our SS2 data, we repeat our DE Analysis of these 5 gene-sets similar to what we've done above with the OXPHOS and UPR gene-sets
+    - Score and center the scores of each geneset 
+    - DE Analysis: 
+        * VlnPlots plotting the distribution of gene-set score for each treatment status
+        * PCA plots using the associated PCs as the axis colored by **sample** and by **gene-set score**
+            - Even if VlnPlots show us that the overall gene-set score is not significantly different across treatment, it is possible that a few cells within a specific treatment condition does not follow the trend. We therefore visualize this with PCA plots to try to identify possible subpopulations of cells within a treatment condition that behaves differently from the rest. 
+
+### STEP 7. DE ANALYSIS OF THE IDENTIFIED ENRICHED GO TERMS 
+
+**SCORE CELLS FOR EACH OF THE 5 IDENTIFIED GO TERMS** 
+```{r AddModuleScoreGO, message=FALSE, warning = FALSE}
+#read in GOs of interest
+GO_names = read_lines("data/gene_lists/GO_SS2/SS2.GO.txt")
+GO.list <- vector(mode = "list", length = length(GO_names))
+names(GO.list) <- GO_names
+
+for(go in GO_names){
+    file <- read_lines(glue("data/gene_lists/GO_SS2/{go}.txt"), skip =1)
+    GO.list[[go]] <- file
+  }
+
+#score cells with AddModuleScore
+SS2Malignant <- AddModuleScore(SS2Malignant, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+SS2Malignant.8 <- AddModuleScore(SS2Malignant.8, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+SS2Malignant.9 <- AddModuleScore(SS2Malignant.9, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+
+#center scores 
+GO.centered <- c("MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1", "MITO_RESPIRATORY_CHAIN2", "MITO_TRANSLATION3", "MITO_TRANSLATIONAL_TERMINATION4", "PROTEOSOMAL_PROTEIN_CATABOLISM5")
+for(i in GO.centered){
+    SS2Malignant.hm.centered <- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant <- AddMetaData(SS2Malignant, SS2Malignant.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant8.hm.centered <- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 <- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue("{i}.centered"))
+    
+    SS2Malignant9.hm.centered <- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 <- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue("{i}.centered"))
+}
+```
+
+**VIOLIN PLOTS OF THE HALLMARKS MENTIONED ABOVE** 
+* Plot swarm plots of each GO term we're interested in
+
+```{r otherVln2, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=17, fig.height=10}
+#SWARM PLOTS 
+SS2s <- c(SS2Malignant.8, SS2Malignant.9)
+
+#MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1 ----------
+nadh.swarm.plots <- vector("list", length = 2)
+names(nadh.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(GO.list[["MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE"]] %in% rownames(SS2))
+  feature.length <- length(GO.list[["MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells OXPHOS NADH to UBIQUINONE expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} OXPHOS NADH to UBIQUINONE genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nadh.swarm.plots[[SS2.name]] <- p 
+}
+
+p1 <- nadh.swarm.plots[["SS2 Patient 8"]] + nadh.swarm.plots[["SS2 Patient 9"]]
+p1
+ggsave(plot = p1, filename = glue("SS2_NADH.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
+
+#MITO_RESPIRATORY_CHAIN2 ----------
+resp.swarm.plots <- vector("list", length = 2)
+names(resp.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(GO.list[["MITO_RESPIRATORY_CHAIN"]] %in% rownames(SS2))
+  feature.length <- length(GO.list[["MITO_RESPIRATORY_CHAIN"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = MITO_RESPIRATORY_CHAIN2.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells MITO RESPIRATORY CHAIN expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} MITO RESPIRATORY CHAIN genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$MITO_RESPIRATORY_CHAIN2.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$MITO_RESPIRATORY_CHAIN2.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$MITO_RESPIRATORY_CHAIN2.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  resp.swarm.plots[[SS2.name]] <- p 
+}
+
+p2 <- resp.swarm.plots[["SS2 Patient 8"]] + resp.swarm.plots[["SS2 Patient 9"]]
+p2
+ggsave(plot = p2, filename = glue("SS2_MITO_RESP.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
+
+#MITO_TRANSLATION3 ----------
+translation.swarm.plots <- vector("list", length = 2)
+names(translation.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(GO.list[["MITO_TRANSLATION"]] %in% rownames(SS2))
+  feature.length <- length(GO.list[["MITO_TRANSLATION"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = MITO_TRANSLATION3.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells MITO TRANSLATION expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} MITO TRANSLATION genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$MITO_TRANSLATION3.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$MITO_TRANSLATION3.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$MITO_TRANSLATION3.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  translation.swarm.plots[[SS2.name]] <- p 
+}
+
+p3 <- translation.swarm.plots[["SS2 Patient 8"]] + translation.swarm.plots[["SS2 Patient 9"]]
+p3
+ggsave(plot = p3, filename = glue("SS2_MT_TRANSLATION.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
+
+#MITO_TRANSLATIONAL_TERMINATION4 ----------
+term.swarm.plots <- vector("list", length = 2)
+names(term.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(GO.list[["MITO_TRANSLATIONAL_TERMINATION"]] %in% rownames(SS2))
+  feature.length <- length(GO.list[["MITO_TRANSLATIONAL_TERMINATION"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = MITO_TRANSLATIONAL_TERMINATION4.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells MITO TRANSLATION TERMINATION expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} MITO TRANSLATION TERMINATION genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$MITO_TRANSLATIONAL_TERMINATION4.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$MITO_TRANSLATIONAL_TERMINATION4.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$MITO_TRANSLATIONAL_TERMINATION4.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  term.swarm.plots[[SS2.name]] <- p 
+}
+
+p4 <- term.swarm.plots[["SS2 Patient 8"]] + term.swarm.plots[["SS2 Patient 9"]]
+p4
+ggsave(plot = p4, filename = glue("SS2_MT_TRANSLATIONAL_TERMINATION.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
+
+#PROTEOSOMAL_PROTEIN_CATABOLISM5 ----------
+pro.swarm.plots <- vector("list", length = 2)
+names(pro.swarm.plots) <- SS2.names
+patient <- c("8", "9")
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  my_comparisons <- list(
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.1")), 
+    c(glue("{patient[[i]]}.1"), glue("{patient[[i]]}.2")), 
+    c(glue("{patient[[i]]}.0"), glue("{patient[[i]]}.2"))
+  )
+  
+  feature.found <- sum(GO.list[["PROTEOSOMAL_PROTEIN_CATABOLISM"]] %in% rownames(SS2))
+  feature.length <- length(GO.list[["PROTEOSOMAL_PROTEIN_CATABOLISM"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(SS2@meta.data)
+  
+  p <- ggplot(SS2@meta.data, aes(x= sample , y = PROTEOSOMAL_PROTEIN_CATABOLISM5.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{SS2.name} Malignant Cells PROTEIN CATABOLISM expression across sample"), x = SS2.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} PROTEIN CATABOLISM genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].0")), "cells"), x = glue("{patient[[i]]}.0"), y = min(SS2$PROTEOSOMAL_PROTEIN_CATABOLISM5.centered) -0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].1")), "cells"), x = glue("{patient[[i]]}.1"), y = min(SS2$PROTEOSOMAL_PROTEIN_CATABOLISM5.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, "[:digit:].2")), "cells"), x = glue("{patient[[i]]}.2"), y = min(SS2$PROTEOSOMAL_PROTEIN_CATABOLISM5.centered) - 0.03, color = "black", show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  pro.swarm.plots[[SS2.name]] <- p 
+}
+
+p5 <- pro.swarm.plots[["SS2 Patient 8"]] + pro.swarm.plots[["SS2 Patient 9"]]
+p5
+ggsave(plot = p5, filename = glue("SS2_PROTEIN_CATABOLISM.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
+
+```
+
+* **CONCLUSIONS**
+    - The statistically significant results are (p < 0.05): 
+        * **MITOCHONDRIAL ELECTRON TRANSPORT, NADH TO UBIQUINONE** 
+            - Patient 8: Vehicle > MRD and relapse (rejects our hypothesis)
+            - Patient 9: MRD > vehicle and relapse (supports our hypothesis)
+        * **MITOCHONDRIAL RESPIRATORY CHAIN COMPLEX**
+            - Patient 8: Vehicle > MRD and relapse (rejects our hypothesis)
+            - Patient 9: MRD and Vehicle > relapse (supports our hypothesis)
+        * **MITOCHONDRIAL TRANSLATION** 
+            - Patient 9: MRD and Vehicle > relapse (supports our hypothesis)
+        * **MITOCHONDRIAL TRANSLATIONAL TERMINATION** 
+            - Patient 9: MRD and Vehicle > relapse (supports our hypothesis)
+        * **PROTEOSOMAL UBIQUITIN INDEPENDENT PROTEIN CATABOLIC PROCESS** 
+            - Patient 9: MRD and Vehicle > relapse (supports our hypothesis)
+
+It is interesting that all results we obtain from Patient 9 support our hypothesis but not Patient 8. We now use PCA plots to detect possible subpopulations of cells within a specific treatment condition that enrich these GO terms. The axis for the PCA plot depends on the PC that the GO term is associated with: 
+    * **PC_3**: 
+        - Mitochondrial electron transport (synonym OXPHOS), NADH to ubiquinone
+        - Mitochondrial respiratory chain complex I assembly 
+    * **PC_4**: 
+        - Proteasomal Ubiquitin-independent protein catabolic process 
+    * **PC_6**: 
+        - Mitochondrial electron transport NADH to ubiquinone
+        - Mitochondrial respiratory chain complex I assembly
+        - Mitochondrial translational elongation
+        - Mitochondrial translational termination 
+
+```{r PCAGO, message = FALSE, warning = FALSE, fig.align = "center",  fig.width = 15, fig.height=10}
+PCs <- vector("list", length=2)
+names(PCs) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  
+  PCs[[SS2.name]] <- as.data.frame(SS2@reductions$pca@cell.embeddings)
+  PCs[[SS2.name]] <- PCs[[SS2.name]] %>% 
+    dplyr::mutate("MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered" = deframe(SS2[["MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered"]])) %>%
+    dplyr::mutate("MITO_RESPIRATORY_CHAIN2.centered" = deframe(SS2[["MITO_RESPIRATORY_CHAIN2.centered"]])) %>% 
+    dplyr::mutate("MITO_TRANSLATION3.centered" = deframe(SS2[["MITO_TRANSLATION3.centered"]])) %>% 
+    dplyr::mutate("MITO_TRANSLATIONAL_TERMINATION4.centered" = deframe(SS2[["MITO_TRANSLATIONAL_TERMINATION4.centered"]])) %>% 
+    dplyr::mutate("PROTEOSOMAL_PROTEIN_CATABOLISM5.centered" = deframe(SS2[["PROTEOSOMAL_PROTEIN_CATABOLISM5.centered"]])) %>% 
+    dplyr::mutate("sample" = deframe(SS2[["sample"]]))
+  
+}
+
+# MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered -------------------
+GO.terms <- c("MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered", "MITO_RESPIRATORY_CHAIN2.centered", "MITO_TRANSLATION3.centered", "MITO_TRANSLATIONAL_TERMINATION4.centered")
+GO.names <- c("OXPHOS NADH TO UBIQUINONE", "MT RESPIRATORY CHAIN", "MT TRANSLATION", "MT TRANSLATIONAL TERMINATION")
+
+nadh.pca.plots <- vector("list", length = 2)
+names(nadh.pca.plots) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered)) + geom_point() + labs(title = glue("{SS2.name} OXPHOS NADH TO UBIQUINONE score"), colour = "OXPHOS NADH TO UBIQUINONE") + 
+    theme(plot.title = element_text(size = 10))
+  
+  nadh.pca.plots[[SS2.name]] <- plots
+}
+  
+p1 <- nadh.pca.plots[["SS2 Patient 8"]][[1]] + nadh.pca.plots[["SS2 Patient 8"]][[2]] + nadh.pca.plots[["SS2 Patient 9"]][[1]] + nadh.pca.plots[["SS2 Patient 9"]][[2]]
+p1
+ggsave(plot = p1, filename = glue("SS2_NADH.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
+
+# MITO_RESPIRATORY_CHAIN2.centered -------------------
+resp.pca.plots <- vector("list", length = 2)
+names(resp.pca.plots) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_RESPIRATORY_CHAIN2.centered)) + geom_point() + labs(title = glue("{SS2.name} MT RESPIRATORY CHAIN score"), colour = "MT RESPIRATORY CHAIN") + 
+    theme(plot.title = element_text(size = 10))
+  
+  resp.pca.plots[[SS2.name]] <- plots
+}
+  
+p2 <- resp.pca.plots[["SS2 Patient 8"]][[1]] + resp.pca.plots[["SS2 Patient 8"]][[2]] + resp.pca.plots[["SS2 Patient 9"]][[1]] + resp.pca.plots[["SS2 Patient 9"]][[2]]
+p2
+ggsave(plot = p2, filename = glue("SS2_MT_RESP.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
+
+# MITO_TRANSLATION3.centered -------------------
+trans.pca.plots <- vector("list", length = 2)
+names(trans.pca.plots) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_TRANSLATION3.centered)) + geom_point() + labs(title = glue("{SS2.name} MT TRANSLATION score"), colour = "MT TRANSLATION") + 
+    theme(plot.title = element_text(size = 10))
+  
+  trans.pca.plots[[SS2.name]] <- plots
+}
+  
+p3 <- trans.pca.plots[["SS2 Patient 8"]][[1]] + trans.pca.plots[["SS2 Patient 8"]][[2]] + trans.pca.plots[["SS2 Patient 9"]][[1]] + trans.pca.plots[["SS2 Patient 9"]][[2]]
+p3 
+ggsave(plot = p3, filename = glue("SS2_MT_TRANSLATION.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
+
+# MITO_TRANSLATIONAL_TERMINATION4.centered -------------------
+term.pca.plots <- vector("list", length = 2)
+names(term.pca.plots) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_TRANSLATIONAL_TERMINATION4.centered)) + geom_point() + labs(title = glue("{SS2.name} MT TRANSLATION TERMINATION score"), colour = "MT TRANSLATION TERMINATION") + 
+    theme(plot.title = element_text(size = 10))
+  
+  term.pca.plots[[SS2.name]] <- plots
+}
+  
+p4 <- term.pca.plots[["SS2 Patient 8"]][[1]] + term.pca.plots[["SS2 Patient 8"]][[2]] + term.pca.plots[["SS2 Patient 9"]][[1]] + term.pca.plots[["SS2 Patient 9"]][[2]]
+p4 
+ggsave(plot = p4, filename = glue("SS2_MT_TRANSLATIONAL_TERMINATION.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
+
+# PROTEOSOMAL_PROTEIN_CATABOLISM5.centered -------------------
+pro.pca.plots <- vector("list", length = 2)
+names(pro.pca.plots) <- SS2.names
+
+for(i in 1:2){
+  SS2 <- SS2s[[i]]
+  SS2.name <- SS2.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_4, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC4)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_4, colour = PROTEOSOMAL_PROTEIN_CATABOLISM5.centered)) + geom_point() + labs(title = glue("{SS2.name} PROTEIN CATABOLISM score"), colour = "PROTEIN CATABOLISM") + 
+    theme(plot.title = element_text(size = 10))
+  
+  pro.pca.plots[[SS2.name]] <- plots
+}
+  
+p5 <- pro.pca.plots[["SS2 Patient 8"]][[1]] + pro.pca.plots[["SS2 Patient 8"]][[2]] + pro.pca.plots[["SS2 Patient 9"]][[1]] + pro.pca.plots[["SS2 Patient 9"]][[2]]
+p5
+ggsave(plot = p5, filename = glue("SS2_PROTEIN_CATABOLISM.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
+
+
+```
+
+In these PCA plots for each GO term, there does not seem to have very clear separation of cells. It therefore doesn't seem like certain subpopulations of cells within a treatment condition enriches our GO terms of interest. 
+
+* **CONCLUSION** 
+    - Considering all of the results we obtain from our DE Analysis of gene-sets of interest, while we've obtained some statistically significant results that support our hypothesis (MRD enriches OXPHOS, UPR, and other gene-sets of interest), these results are not consistent across all comparisons, including our PDX data. We therefore cannot conclude that our hypothesis is supported by our results, and this is most likely because our data is very low power since we have very little cells to analyze. 
+
+
+
+
 
 

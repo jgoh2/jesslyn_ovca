@@ -1049,28 +1049,28 @@ stem.swarm.plots[["DF20"]] + stem.swarm.plots[["DF101"]] + stem.swarm.plots[["DF
 ### STEP 6. GENE ONTOLOGY FUNCTIONAL ANALYSIS 
 Our gene-set enrichement analyses above show us that the gene-sets we hypothesized to be differentially expressed in p.1 are not DE based on our results. Here, instead of testing for a specific gene-set, we use gene ontology functional analysis to verify if genes of interest are more often associated with certain biological functions than what would be expected in a random set of genes. We conduct GO analysis on a number of gene lists: 
 
-1. PC loadings from PC1-PC5 
+1. PC loadings from PC1-PC10 
     i. Loadings are sorted in both directions, and the top 500 loadings are extracted (in both directions).
     ii. Insignificantly associated laodings are first filtered based on the JackStraw output (padj > 0.05) before being sorted as described above. 
 2. Output from FindMarkes 
     i. Filter out insignificant genes (padj > 0.05) and sort by logFC both ways 
 
-**PART 1: PC LOADINGS FROM PC1-PC5 OPTION i** 
+**PART 1: PC LOADINGS FROM PC1-PC10 OPTION i** 
 
 ```{r GO1, message=FALSE, warning = FALSE}
 library(pcaExplorer)
 library(org.Hs.eg.db)
 library(topGO)
 
-PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5")
+PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
 background <- rownames(PDX_All@assays$RNA@counts)
 
 #DF20 -----------------------------------
-DF20.pc.go1 <- vector("list", length = 5)
+DF20.pc.go1 <- vector("list", length = 10)
 names(DF20.pc.go1) <- PCs
 loadings <- as.data.frame(PDX_DF20@reductions$pca@feature.loadings) %>% rownames_to_column()
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1087,11 +1087,11 @@ for(i in 1:5){
 }
 
 #DF101 -----------------------------------
-DF101.pc.go1 <- vector("list", length = 5)
+DF101.pc.go1 <- vector("list", length = 10)
 names(DF101.pc.go1) <- PCs
 loadings <- as.data.frame(PDX_DF101@reductions$pca@feature.loadings) %>% rownames_to_column()
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1108,11 +1108,11 @@ for(i in 1:5){
 }
 
 #DF68 -----------------------------------
-DF68.pc.go1 <- vector("list", length = 5)
+DF68.pc.go1 <- vector("list", length = 10)
 names(DF68.pc.go1) <- PCs
 loadings <- as.data.frame(PDX_DF68@reductions$pca@feature.loadings) %>% rownames_to_column()
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1129,32 +1129,85 @@ for(i in 1:5){
 }
 
 #save output
-for(i in 1:5){
+for(i in 1:10){
   for(z in c("positive", "negative")){
     PC <- PCs[[i]]
     type <- z
-    write_csv(DF20.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/PDX/UF/GOuf_DF20_{PC}_{type}.csv"))
-    write_csv(DF101.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/PDX/UF/GOuf_DF101_{PC}_{type}.csv"))
-    write_csv(DF68.pc.go1[[PC]][[z]], path = glue("jesslyn_plots/GO/PDX/UF/GOuf_DF68_{PC}_{type}.csv"))
+    write_csv(DF20.pc.go1[[PC]][[z]], path = glue("GO_results/Tables/PDX/UF/GOuf_DF20_{PC}_{type}.csv"))
+    write_csv(DF101.pc.go1[[PC]][[z]], path = glue("GO_results/Tables/PDX/UF/GOuf_DF101_{PC}_{type}.csv"))
+    write_csv(DF68.pc.go1[[PC]][[z]], path = glue("GO_results/Tables/PDX/UF/GOuf_DF68_{PC}_{type}.csv"))
   }
+}
+
+
+#visualization 
+
+plots.DF20 <- vector("list", length = 10)
+plots.DF101 <- vector("list", length = 10)
+plots.DF68 <- vector("list", length = 10)
+names(plots.DF20) <- PCs
+names(plots.DF101) <- PCs
+names(plots.DF68) <- PCs
+
+for(i in 1:10){
+  
+  pcDF20.plots <- vector("list", length = 2)
+  pcDF101.plots <- vector("list", length = 2)
+  pcDF68.plots <- vector("list", length = 2)
+  names(pcDF20.plots) <- c("positive", "negative")
+  names(pcDF101.plots) <- c("posititve", "negative")
+  names(pcDF68.plots) <- c("posititve", "negative")
+  
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.DF20 <- DF20.pc.go1[[PC]][[z]]
+    data.DF20 <- data.DF20 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pcDF20.plots[[z]] <- ggplot(data.DF20, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF20 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+
+    data.DF101 <- DF101.pc.go1[[PC]][[z]]
+    data.DF101 <- data.DF101 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pcDF101.plots[[z]] <- ggplot(data.DF101, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF101 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+
+    data.DF68 <- DF68.pc.go1[[PC]][[z]]
+    data.DF68 <- data.DF68 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pcDF68.plots[[z]] <- ggplot(data.DF68, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF68 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+  }
+  
+  plots.DF20[[PC]] <- pcDF20.plots
+  plots.DF101[[PC]] <- pcDF101.plots
+  plots.DF68[[PC]] <- pcDF68.plots
+  
+  p <- plots.DF20[[PC]][["positive"]] + plots.DF20[[PC]][["negative"]] + plots.DF101[[PC]][["positive"]] + plots.DF101[[PC]][["negative"]] + plots.DF68[[PC]][["positive"]] + plots.DF68[[PC]][["negative"]] + plot_layout(nrow = 3, ncol = 2)
+  ggsave(plot = p, filename = glue("PDXuf_{PC}.png"), path = "GO_results/GO_plots/PDX/UF", width = 30, height = 20)
+  
 }
 
 ```
 
-**PART 2: PC LOADINGS FROM PC1-PC5 OPTION ii (filter out insignificant loadings first)** 
+**PART 2: PC LOADINGS FROM PC1-PC10 OPTION ii (filter out insignificant loadings first)** 
 
-```{r GO2, message=FALSE, warning = FALSE}
-PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5")
-j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5")
+```{r GO2, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
+j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
 background <- rownames(PDX_All@assays$RNA@counts)
 
 #DF20 -----------------------------------
-DF20.pc.go2 <- vector("list", length = 5)
+DF20.pc.go2 <- vector("list", length = 10)
 names(DF20.pc.go2) <- PCs
 loadings <- as.data.frame(PDX_DF20@reductions$pca@feature.loadings) %>% rownames_to_column()
 jackstraw <- JS(object = PDX_DF20[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1175,12 +1228,12 @@ for(i in 1:5){
 }
 
 #DF101 -----------------------------------
-DF101.pc.go2 <- vector("list", length = 5)
+DF101.pc.go2 <- vector("list", length = 10)
 names(DF101.pc.go2) <- PCs
 loadings <- as.data.frame(PDX_DF101@reductions$pca@feature.loadings) %>% rownames_to_column()
 jackstraw <- JS(object = PDX_DF101[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1201,12 +1254,12 @@ for(i in 1:5){
 }
 
 #DF68 -----------------------------------
-DF68.pc.go2 <- vector("list", length = 5)
+DF68.pc.go2 <- vector("list", length = 10)
 names(DF68.pc.go2) <- PCs
 loadings <- as.data.frame(PDX_DF68@reductions$pca@feature.loadings) %>% rownames_to_column()
 jackstraw <- JS(object = PDX_DF68[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1227,15 +1280,365 @@ for(i in 1:5){
 }
 
 #save output
-for(i in 1:5){
+for(i in 1:10){
   for(z in c("positive", "negative")){
     PC <- PCs[[i]]
     type <- z
-    write_csv(DF20.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/PDX/F/GOf_DF20_{PC}_{type}.csv"))
-    write_csv(DF101.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/PDX/F/GOf_DF101_{PC}_{type}.csv"))
-    write_csv(DF68.pc.go2[[PC]][[z]], path = glue("jesslyn_plots/GO/PDX/F/GOf_DF68_{PC}_{type}.csv"))
+    write_csv(DF20.pc.go2[[PC]][[z]], path = glue("GO_results/Tables/PDX/F/GOf_DF20_{PC}_{type}.csv"))
+    write_csv(DF101.pc.go2[[PC]][[z]], path = glue("GO_results/Tables/PDX/F/GOf_DF101_{PC}_{type}.csv"))
+    write_csv(DF68.pc.go2[[PC]][[z]], path = glue("GO_results/Tables/PDX/F/GOf_DF68_{PC}_{type}.csv"))
+  }
+}
+
+#visualization 
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.DF20 <- DF20.pc.go2[[PC]][[z]]
+    data.DF20 <- data.DF20 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF20 <- ggplot(data.DF20, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF20 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF20, filename = glue("DF20f_{PC}_{z}.png"), path = "GO_results/GO_plots/PDX/F", width = 15)
+    
+    data.DF101 <- DF101.pc.go2[[PC]][[z]]
+    data.DF101 <- data.DF101 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF101 <- ggplot(data.DF101, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF101 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF101, filename = glue("DF101f_{PC}_{z}.png"), path = "GO_results/GO_plots/PDX/F", width = 15)
+    
+    data.DF68 <- DF68.pc.go2[[PC]][[z]]
+    data.DF68 <- data.DF68 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF68 <- ggplot(data.DF68, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF68 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF20, filename = glue("DF68f_{PC}_{z}.png"), path = "GO_results/GO_plots/PDX/F", width = 15)
   }
 }
 
 ```
+
+* We focus on the results from the first approach (unfiltered PC loadings) similar to our SS2 data analysis. 
+* Unlike our results from SS2, which shows a consistent enrichment of mitochondrial genes, results from PDX show us that the following GO terms are the most frequently associated with PCs: 
+    - **PC_7** 
+        * Type I interferon signaling pathway (most associated with PC_7)
+        * Defense to virus
+    - **PC_6**
+        * Defense to virus
+    - Negative Regulation of Viral Genome Replication
+        * Never associated with the same PC for all three PDX models at once, but appears frequently and associated with 2 of the 3 PDX models such as: **PC_3, PC_7, PC_9, PC_10** 
+
+* After we've narrowed down our serach to the 3 most consistently significant GO terms across our PDX data, we repeat our DE Analysis of these 3 gene-sets similar to what we've done above with the OXPHOS and UPR gene-sets
+    - Score and center the scores of each geneset 
+    - DE Analysis: 
+        * VlnPlots plotting the distribution of gene-set score for each treatment status
+        * PCA plots using the associated PCs as the axis colored by **sample** and by **gene-set score**
+            - Even if VlnPlots show us that the overall gene-set score is not significantly different across treatment, it is possible that a few cells within a specific treatment condition does not follow the trend. We therefore visualize this with PCA plots to try to identify possible subpopulations of cells within a treatment condition that behaves differently from the rest. 
+
+### STEP 7. DE ANALYSIS OF THE IDENTIFIED ENRICHED GO TERMS 
+
+**SCORE CELLS FOR EACH OF THE 3 IDENTIFIED GO TERMS** 
+```{r AddModuleScoreGO, message=FALSE, warning = FALSE}
+#read in GOs of interest
+GO_names <- c("DEFENSE_TO_VIRUS", "NEG_REG_OF_VIRAL_GENOME_REPLICATION", "TYPE_I_INTERFERON")
+GO.list <- vector(mode = "list", length = length(GO_names))
+names(GO.list) <- GO_names
+
+GO.list[["DEFENSE_TO_VIRUS"]] <- read_lines("data/gene_lists/GO_PDX/DEFENSE_RESPONSE_TO_VIRUS.txt", skip =1)
+GO.list[["NEG_REG_OF_VIRAL_GENOME_REPLICATION"]] <- read_lines("data/gene_lists/GO_PDX/NEGREG_VIRAL.txt", skip =1)
+GO.list[["TYPE_I_INTERFERON"]] <- read_xlsx("data/gene_lists/GO_PDX/INTERFERON.xlsx")
+GO.list[["TYPE_I_INTERFERON"]] <- GO.list[["TYPE_I_INTERFERON"]] %>% dplyr::select(Symbol) %>% deframe() %>% toupper()
+
+#score cells with AddModuleScore
+PDX_DF20 <- AddModuleScore(PDX_DF20, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+PDX_DF101 <- AddModuleScore(PDX_DF101, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+PDX_DF68 <- AddModuleScore(PDX_DF68, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+
+#center scores 
+GO.centered <- c("DEFENSE_TO_VIRUS1", "NEG_REG_OF_VIRAL_GENOME_REPLICATION2", "TYPE_I_INTERFERON3")
+for(i in GO.centered){
+    DF20.hm.centered <- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
+    PDX_DF20 <- AddMetaData(PDX_DF20, DF20.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF101.hm.centered <- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
+    PDX_DF101 <- AddMetaData(PDX_DF101, DF101.hm.centered, col.name = glue("{i}.centered"))
+    
+    DF68.hm.centered <- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
+    PDX_DF68 <- AddMetaData(PDX_DF68, DF68.hm.centered, col.name = glue("{i}.centered"))
+}
+```
+
+**VIOLIN PLOTS OF THE HALLMARKS MENTIONED ABOVE** 
+* Plot swarm plots of each GO term we're interested in
+
+```{r otherVln2, message =FALSE, warning = FALSE, fig.width = 18, fig.height= 8}
+PDXs <- c(PDX_DF20, PDX_DF101, PDX_DF68)
+
+#DEFENSE_TO_VIRUS1 ----------
+def.swarm.plots <- vector("list", length = 3)
+names(def.swarm.plots) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(GO.list[["DEFENSE_TO_VIRUS"]] %in% rownames(PDX))
+  feature.length <- length(GO.list[["DEFENSE_TO_VIRUS"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = DEFENSE_TO_VIRUS1.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} DEFENSE TO VIRUS expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} DEFENSE TO VIRUS genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["DEFENSE_TO_VIRUS1.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["DEFENSE_TO_VIRUS1.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["DEFENSE_TO_VIRUS1.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  def.swarm.plots[[PDX.name]] <- p 
+}
+
+p1 <- def.swarm.plots[["DF20"]] + def.swarm.plots[["DF101"]] + def.swarm.plots[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+p1
+ggsave(plot = p1, filename = glue("PDX_VIRUS_DEFENSE.png"), path = "GO_results/GO_Vln/PDX", width = 18, height = 8)
+
+
+#NEG_REG_OF_VIRAL_GENOME_REPLICATION2 ----------
+neg.swarm.plots <- vector("list", length = 3)
+names(neg.swarm.plots) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(GO.list[["NEG_REG_OF_VIRAL_GENOME_REPLICATION"]] %in% rownames(PDX))
+  feature.length <- length(GO.list[["NEG_REG_OF_VIRAL_GENOME_REPLICATION"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} NEG REG TO VIRAL GENOME REPLICATION expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  neg.swarm.plots[[PDX.name]] <- p 
+}
+
+p2 <- neg.swarm.plots[["DF20"]] + neg.swarm.plots[["DF101"]] + neg.swarm.plots[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+p2
+ggsave(plot = p2, filename = glue("PDX_NEG_REG.png"), path = "GO_results/GO_Vln/PDX", width = 18, height = 8)
+
+
+#TYPE_I_INTERFERON3 ----------
+int.swarm.plots <- vector("list", length = 3)
+names(int.swarm.plots) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  my_comparisons <- list(
+    c("MRD", "vehicle"),
+    c("MRD", "relapse"), 
+    c("vehicle", "relapse")
+  )
+  
+  feature.found <- sum(GO.list[["TYPE_I_INTERFERON"]] %in% rownames(PDX))
+  feature.length <- length(GO.list[["TYPE_I_INTERFERON"]])
+  feature.pFound <- round((feature.found / feature.length)*100, 2)
+  numCells <- nrow(PDX@meta.data)
+  
+  p <- ggplot(PDX@meta.data, aes(x= treatment.status , y = TYPE_I_INTERFERON3.centered, color = treatment.status)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    labs(title = glue("{PDX.name} TYPE I INTERFERON SIGNALING expression across treatment"), x = PDX.name, subtitle = glue("{numCells} Malignant Cells, {feature.found} out of {feature.length} genes found ({feature.pFound}%)")) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = "black", outlier.alpha = 0) + 
+    geom_text(label = paste(sum(PDX$treatment.status == "vehicle"), "cells"), x = "vehicle", y = min(PDX[["TYPE_I_INTERFERON3.centered"]]) -0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "MRD"), "cells"), x = "MRD", y = min(PDX[["TYPE_I_INTERFERON3.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    geom_text(label = paste(sum(PDX$treatment.status == "relapse"), "cells"), x = "relapse", y = min(PDX[["TYPE_I_INTERFERON3.centered"]]) - 0.03, show.legend = FALSE, color = "black") + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.format", step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = "wilcox.test", label = "p.signif", step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  int.swarm.plots[[PDX.name]] <- p 
+}
+
+p3 <- int.swarm.plots[["DF20"]] + int.swarm.plots[["DF101"]] + int.swarm.plots[["DF68"]] + plot_layout(guides = "collect", ncol = 3)
+p3
+ggsave(plot = p3, filename = glue("PDX_INTERFERON.png"), path = "GO_results/GO_Vln/PDX", width = 18, height = 8)
+
+```
+
+* **CONCLUSIONS**
+    - The statistically significant results are (p < 0.05): 
+        * **DEFENSE RESPONSE TO VIRUS**
+            - DF101: MRD > Vehicle (supports our hypothesis)
+        * **NEGATIVE REGULATION OF VIRAL GENOME REPLICATION**
+            - DF20: MRD and Relapse > Vehicle (supports our hypothesis)
+            - DF101: MRD > Vehicle (supports our hypothesis)
+        * **TYPE I INTERFERON SIGNALING PATHWAY** 
+            - DF20: MRD > Vehicle (supports our hypothesis)
+ 
+While all of our statistically significant results support our hypothesis, they are not consistent across all of our PDX data. We investigate this further by plotting PCA plots to detect possible subpopulations of cells within a specific treatment condition that enrich these GO terms. The axis for the PCA plot depends on the PC that the GO term is associated with: 
+
+  - **PC_7** 
+      * Type I interferon signaling pathway (most associated with PC_7)
+      * Defense to virus
+  - **PC_6**
+      * Defense to virus
+  - Negative Regulation of Viral Genome Replication
+      * Never associated with the same PC for all three PDX models at once, but appears frequently and associated with 2 of the 3 PDX models such as: **PC_3, PC_7, PC_9, PC_10** 
+
+```{r PCAGO, message = FALSE, warning = FALSE, fig.align = "center", fig.width=10, fig.height=12}
+PCs <- vector("list", length=3)
+names(PCs) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  
+  PCs[[PDX.name]] <- as.data.frame(PDX@reductions$pca@cell.embeddings)
+  PCs[[PDX.name]] <- PCs[[PDX.name]] %>% 
+    dplyr::mutate("DEFENSE_TO_VIRUS1.centered" = deframe(PDX[["DEFENSE_TO_VIRUS1.centered"]])) %>%
+    dplyr::mutate("NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered" = deframe(PDX[["NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered"]])) %>% 
+    dplyr::mutate("TYPE_I_INTERFERON3.centered" = deframe(PDX[["TYPE_I_INTERFERON3.centered"]])) %>% 
+    dplyr::mutate("treatment.status" = deframe(PDX[["treatment.status"]]))
+  
+}
+
+# DEFENSE_TO_VIRUS1.centered -------------------
+GO.terms <- c("DEFENSE_TO_VIRUS1.centered", "NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered", "TYPE_I_INTERFERON3.centered")
+GO.names <- c("DEFENSE TO VIRUS", "NEG REG VIRAL GENOME REPLICATION", "TYPE I INTERFERON SIGNALING")
+
+def.pca.plots <- vector("list", length = 3)
+names(def.pca.plots) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[PDX.name]], aes(x = PC_6, y = PC_7, colour = treatment.status)) + geom_point(alpha = 0.7) + labs(title = glue("{PDX.name} by Treatment (PC6 vs PC7)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[PDX.name]], aes(x = PC_6, y = PC_7, colour = DEFENSE_TO_VIRUS1.centered)) + geom_point() + labs(title = glue("{PDX.name} DEFENSE AGAINT VIRUS score"), colour = "DEFENSE AGAINST VIRUS") + 
+    theme(plot.title = element_text(size = 10))
+  
+  def.pca.plots[[PDX.name]] <- plots
+}
+  
+p1 <- def.pca.plots[["DF20"]][[1]] + def.pca.plots[["DF20"]][[2]] + def.pca.plots[["DF101"]][[1]] + def.pca.plots[["DF101"]][[2]] + def.pca.plots[["DF68"]][[1]] + def.pca.plots[["DF68"]][[2]] + plot_layout(ncol = 2, nrow = 3)
+p1 
+ggsave(plot = p1, filename = glue("PDX_VIRUS_DEFENSE.png"), path = "GO_results/GO_PCA/PDX", width = 10, height = 12)
+
+# TYPE_I_INTERFERON3.centered -------------------
+int.pca.plots <- vector("list", length = 3)
+names(int.pca.plots) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[PDX.name]], aes(x = PC_6, y = PC_7, colour = treatment.status)) + geom_point(alpha = 0.7) + labs(title = glue("{PDX.name} by Treatment (PC6 vs PC7)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[PDX.name]], aes(x = PC_6, y = PC_7, colour = TYPE_I_INTERFERON3.centered)) + geom_point() + labs(title = glue("{PDX.name} TYPE I INTERFERON SIGNALING score"), colour = "TYPE I INTERFERON SIGNALING") + 
+    theme(plot.title = element_text(size = 10))
+  
+  int.pca.plots[[PDX.name]] <- plots
+}
+  
+p2 <- int.pca.plots[["DF20"]][[1]] + int.pca.plots[["DF20"]][[2]] + int.pca.plots[["DF101"]][[1]] + int.pca.plots[["DF101"]][[2]] + int.pca.plots[["DF68"]][[1]] + int.pca.plots[["DF68"]][[2]] + plot_layout(ncol = 2, nrow = 3)
+p2
+ggsave(plot = p2, filename = glue("PDX_INTERFERON.png"), path = "GO_results/GO_PCA/PDX", width = 10, height = 12)
+
+# NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered (PC3 v PC7)-------------------
+neg.pca.plots <- vector("list", length = 3)
+names(neg.pca.plots) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[PDX.name]], aes(x = PC_3, y = PC_7, colour = treatment.status)) + geom_point(alpha = 0.7) + labs(title = glue("{PDX.name} by Treatment (PC3 vs PC7)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[PDX.name]], aes(x = PC_3, y = PC_7, colour = NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered)) + geom_point() + labs(title = glue("{PDX.name} NEG REG VIRAL GENOME REPLICATION score"), colour = "NEG REG VIRAL GENOME REP.") + 
+    theme(plot.title = element_text(size = 10))
+  
+  neg.pca.plots[[PDX.name]] <- plots
+}
+  
+p3 <- neg.pca.plots[["DF20"]][[1]] + neg.pca.plots[["DF20"]][[2]] + neg.pca.plots[["DF101"]][[1]] + neg.pca.plots[["DF101"]][[2]] + neg.pca.plots[["DF68"]][[1]] + neg.pca.plots[["DF68"]][[2]] + plot_layout(ncol = 2, nrow = 3)
+p3 
+ggsave(plot = p2, filename = glue("PDX_NEG_REG1.png"), path = "GO_results/GO_PCA/PDX", width = 10, height = 12)
+
+
+# NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered (PC9 v PC10) -------------------
+neg.pca.plots2 <- vector("list", length = 3)
+names(neg.pca.plots2) <- PDX.names
+
+for(i in 1:3){
+  PDX <- PDXs[[i]]
+  PDX.name <- PDX.names[[i]]
+  plots <- vector("list", length =2)
+  
+  plots[[1]] <- ggplot(PCs[[PDX.name]], aes(x = PC_9, y = PC_10, colour = treatment.status)) + geom_point(alpha = 0.7) + labs(title = glue("{PDX.name} by Treatment (PC9 vs PC10)")) + 
+  scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] <- ggplot(PCs[[PDX.name]], aes(x = PC_9, y = PC_10, colour = NEG_REG_OF_VIRAL_GENOME_REPLICATION2.centered)) + geom_point() + labs(title = glue("{PDX.name} NEG REG VIRAL GENOME REPLICATION score"), colour = "NEG REG VIRAL GENOME REP.") + 
+    theme(plot.title = element_text(size = 10))
+  
+  neg.pca.plots2[[PDX.name]] <- plots
+}
+  
+p4 <- neg.pca.plots2[["DF20"]][[1]] + neg.pca.plots2[["DF20"]][[2]] + neg.pca.plots2[["DF101"]][[1]] + neg.pca.plots2[["DF101"]][[2]] + neg.pca.plots2[["DF68"]][[1]] + neg.pca.plots2[["DF68"]][[2]] + plot_layout(ncol = 2, nrow = 3)
+p4
+ggsave(plot = p4, filename = glue("PDX_NEG_REG2.png"), path = "GO_results/GO_PCA/PDX", width = 10, height = 12)
+
+
+```
+
+In these PCA plots for each GO term, there does not seem to have very clear separation of cells. It therefore doesn't seem like certain subpopulations of cells within a treatment condition enriches our GO terms of interest. 
+
+* **CONCLUSION** 
+    - Considering all of the results we obtain from our DE Analysis of gene-sets of interest, while we've obtained some statistically significant results that support our hypothesis (MRD enriches OXPHOS, UPR, and other gene-sets of interest), these results are not consistent across all comparisons, including our SS2 data. We therefore cannot conclude that our hypothesis is supported by our results, and this is most likely because our data is very low power since we have very little cells to analyze. 
+
+
+
+
 
