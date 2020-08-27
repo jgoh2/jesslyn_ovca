@@ -1049,28 +1049,28 @@ stem.swarm.plots[["DF20"]] + stem.swarm.plots[["DF101"]] + stem.swarm.plots[["DF
 ### STEP 6. GENE ONTOLOGY FUNCTIONAL ANALYSIS 
 Our gene-set enrichement analyses above show us that the gene-sets we hypothesized to be differentially expressed in p.1 are not DE based on our results. Here, instead of testing for a specific gene-set, we use gene ontology functional analysis to verify if genes of interest are more often associated with certain biological functions than what would be expected in a random set of genes. We conduct GO analysis on a number of gene lists: 
 
-1. PC loadings from PC1-PC5 
+1. PC loadings from PC1-PC10 
     i. Loadings are sorted in both directions, and the top 500 loadings are extracted (in both directions).
     ii. Insignificantly associated laodings are first filtered based on the JackStraw output (padj > 0.05) before being sorted as described above. 
 2. Output from FindMarkes 
     i. Filter out insignificant genes (padj > 0.05) and sort by logFC both ways 
 
-**PART 1: PC LOADINGS FROM PC1-PC5 OPTION i** 
+**PART 1: PC LOADINGS FROM PC1-PC10 OPTION i** 
 
 ```{r GO1, message=FALSE, warning = FALSE}
 library(pcaExplorer)
 library(org.Hs.eg.db)
 library(topGO)
 
-PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5")
+PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
 background <- rownames(PDX_All@assays$RNA@counts)
 
 #DF20 -----------------------------------
-DF20.pc.go1 <- vector("list", length = 5)
+DF20.pc.go1 <- vector("list", length = 10)
 names(DF20.pc.go1) <- PCs
 loadings <- as.data.frame(PDX_DF20@reductions$pca@feature.loadings) %>% rownames_to_column()
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1087,11 +1087,11 @@ for(i in 1:5){
 }
 
 #DF101 -----------------------------------
-DF101.pc.go1 <- vector("list", length = 5)
+DF101.pc.go1 <- vector("list", length = 10)
 names(DF101.pc.go1) <- PCs
 loadings <- as.data.frame(PDX_DF101@reductions$pca@feature.loadings) %>% rownames_to_column()
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1108,11 +1108,11 @@ for(i in 1:5){
 }
 
 #DF68 -----------------------------------
-DF68.pc.go1 <- vector("list", length = 5)
+DF68.pc.go1 <- vector("list", length = 10)
 names(DF68.pc.go1) <- PCs
 loadings <- as.data.frame(PDX_DF68@reductions$pca@feature.loadings) %>% rownames_to_column()
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1129,7 +1129,7 @@ for(i in 1:5){
 }
 
 #save output
-for(i in 1:5){
+for(i in 1:10){
   for(z in c("positive", "negative")){
     PC <- PCs[[i]]
     type <- z
@@ -1139,22 +1139,75 @@ for(i in 1:5){
   }
 }
 
+
+#visualization 
+
+plots.DF20 <- vector("list", length = 10)
+plots.DF101 <- vector("list", length = 10)
+plots.DF68 <- vector("list", length = 10)
+names(plots.DF20) <- PCs
+names(plots.DF101) <- PCs
+names(plots.DF68) <- PCs
+
+for(i in 1:10){
+  
+  pcDF20.plots <- vector("list", length = 2)
+  pcDF101.plots <- vector("list", length = 2)
+  pcDF68.plots <- vector("list", length = 2)
+  names(pcDF20.plots) <- c("positive", "negative")
+  names(pcDF101.plots) <- c("posititve", "negative")
+  names(pcDF68.plots) <- c("posititve", "negative")
+  
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.DF20 <- DF20.pc.go1[[PC]][[z]]
+    data.DF20 <- data.DF20 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pcDF20.plots[[z]] <- ggplot(data.DF20, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF20 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+
+    data.DF101 <- DF101.pc.go1[[PC]][[z]]
+    data.DF101 <- data.DF101 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pcDF101.plots[[z]] <- ggplot(data.DF101, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF101 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+
+    data.DF68 <- DF68.pc.go1[[PC]][[z]]
+    data.DF68 <- data.DF68 %>% dplyr::filter(padj_BY_elim < 0.05)
+    pcDF68.plots[[z]] <- ggplot(data.DF68, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF68 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+  }
+  
+  plots.DF20[[PC]] <- pcDF20.plots
+  plots.DF101[[PC]] <- pcDF101.plots
+  plots.DF68[[PC]] <- pcDF68.plots
+  
+  p <- plots.DF20[[PC]][["positive"]] + plots.DF20[[PC]][["negative"]] + plots.DF101[[PC]][["positive"]] + plots.DF101[[PC]][["negative"]] + plots.DF68[[PC]][["positive"]] + plots.DF68[[PC]][["negative"]] + plot_layout(nrow = 3, ncol = 2)
+  ggsave(plot = p, filename = glue("PDXuf_{PC}.png"), path = "GO_plots/PDX/UF", width = 30, height = 20)
+  
+}
+
 ```
 
 **PART 2: PC LOADINGS FROM PC1-PC5 OPTION ii (filter out insignificant loadings first)** 
 
 ```{r GO2, message=FALSE, warning = FALSE}
-PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5")
-j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5")
+PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
+j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
 background <- rownames(PDX_All@assays$RNA@counts)
 
 #DF20 -----------------------------------
-DF20.pc.go2 <- vector("list", length = 5)
+DF20.pc.go2 <- vector("list", length = 10)
 names(DF20.pc.go2) <- PCs
 loadings <- as.data.frame(PDX_DF20@reductions$pca@feature.loadings) %>% rownames_to_column()
 jackstraw <- JS(object = PDX_DF20[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1175,12 +1228,12 @@ for(i in 1:5){
 }
 
 #DF101 -----------------------------------
-DF101.pc.go2 <- vector("list", length = 5)
+DF101.pc.go2 <- vector("list", length = 10)
 names(DF101.pc.go2) <- PCs
 loadings <- as.data.frame(PDX_DF101@reductions$pca@feature.loadings) %>% rownames_to_column()
 jackstraw <- JS(object = PDX_DF101[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1201,12 +1254,12 @@ for(i in 1:5){
 }
 
 #DF68 -----------------------------------
-DF68.pc.go2 <- vector("list", length = 5)
+DF68.pc.go2 <- vector("list", length = 10)
 names(DF68.pc.go2) <- PCs
 loadings <- as.data.frame(PDX_DF68@reductions$pca@feature.loadings) %>% rownames_to_column()
 jackstraw <- JS(object = PDX_DF68[['pca']], slot = 'empirical') %>% as.data.frame() %>% rownames_to_column
 
-for(i in 1:5){
+for(i in 1:10){
   PC <- PCs[[i]]
   pc.go.both <- vector("list", length = 2)
   names(pc.go.both) <- c("positive", "negative")
@@ -1227,7 +1280,7 @@ for(i in 1:5){
 }
 
 #save output
-for(i in 1:5){
+for(i in 1:10){
   for(z in c("positive", "negative")){
     PC <- PCs[[i]]
     type <- z
@@ -1237,5 +1290,48 @@ for(i in 1:5){
   }
 }
 
+#visualization 
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.DF20 <- DF20.pc.go2[[PC]][[z]]
+    data.DF20 <- data.DF20 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF20 <- ggplot(data.DF20, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF20 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF20, filename = glue("DF20f_{PC}_{z}.png"), path = "jesslyn_plots/GO/PDX/F", width = 15)
+    
+    data.DF101 <- DF101.pc.go2[[PC]][[z]]
+    data.DF101 <- data.DF101 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF101 <- ggplot(data.DF101, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF101 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF101, filename = glue("DF101f_{PC}_{z}.png"), path = "jesslyn_plots/GO/PDX/F", width = 15)
+    
+    data.DF68 <- DF68.pc.go2[[PC]][[z]]
+    data.DF68 <- data.DF68 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF68 <- ggplot(data.DF68, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF68 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF20, filename = glue("DF68f_{PC}_{z}.png"), path = "jesslyn_plots/GO/PDX/F", width = 15)
+  }
+}
+
 ```
+
+* We focus on the results from the first approach (unfiltered PC loadings) similar to our SS2 data analysis. 
+* Unlike our results from SS2, which shows a consistent enrichment of mitochondrial genes, results from PDX show us that the following GO terms are the most frequently associated with PCs: 
+    - **PC_7** 
+        * Type I interferon signaling pathway (most associated with PC_7)
+        * Defense to virus
+    - **PC_6**
+        * Defense to virus
+    - Negative Regulation of Viral Genome Replication
+        * Never associated with the same PC for all three PDX models at once, but appears frequently and associated with 2 of the 3 PDX models such as: **PC_3, PC_7, PC_9, PC_10** 
+
+
 
