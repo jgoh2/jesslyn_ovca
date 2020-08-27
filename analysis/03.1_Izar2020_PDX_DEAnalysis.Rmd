@@ -1189,6 +1189,7 @@ for(i in 1:10){
   
   p <- plots.DF20[[PC]][["positive"]] + plots.DF20[[PC]][["negative"]] + plots.DF101[[PC]][["positive"]] + plots.DF101[[PC]][["negative"]] + plots.DF68[[PC]][["positive"]] + plots.DF68[[PC]][["negative"]] + plot_layout(nrow = 3, ncol = 2)
   ggsave(plot = p, filename = glue("PDXuf_{PC}.png"), path = "GO_results/GO_plots/PDX/UF", width = 30, height = 20)
+
   
 }
 
@@ -1197,6 +1198,7 @@ for(i in 1:10){
 **PART 2: PC LOADINGS FROM PC1-PC10 OPTION ii (filter out insignificant loadings first)** 
 
 ```{r GO2, eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+
 PCs <- c("PC_1", "PC_2", "PC_3", "PC_4", "PC_5", "PC_6", "PC_7", "PC_8", "PC_9", "PC_10")
 j.PCs <- c("PC1", "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "PC8", "PC9", "PC10")
 background <- rownames(PDX_All@assays$RNA@counts)
@@ -1318,6 +1320,37 @@ for(i in 1:10){
               labs(title = glue("DF68 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
               coord_flip()
     ggsave(plot = plot.DF20, filename = glue("DF68f_{PC}_{z}.png"), path = "GO_results/GO_plots/PDX/F", width = 15)
+  }
+}
+
+#visualization 
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.DF20 <- DF20.pc.go2[[PC]][[z]]
+    data.DF20 <- data.DF20 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF20 <- ggplot(data.DF20, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF20 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF20, filename = glue("DF20f_{PC}_{z}.png"), path = "jesslyn_plots/GO/PDX/F", width = 15)
+    
+    data.DF101 <- DF101.pc.go2[[PC]][[z]]
+    data.DF101 <- data.DF101 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF101 <- ggplot(data.DF101, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF101 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF101, filename = glue("DF101f_{PC}_{z}.png"), path = "jesslyn_plots/GO/PDX/F", width = 15)
+    
+    data.DF68 <- DF68.pc.go2[[PC]][[z]]
+    data.DF68 <- data.DF68 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.DF68 <- ggplot(data.DF68, aes(x= reorder(Term, -padj_BY_elim), y= (Significant/Annotated), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("DF68 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.DF20, filename = glue("DF68f_{PC}_{z}.png"), path = "jesslyn_plots/GO/PDX/F", width = 15)
   }
 }
 
@@ -1637,7 +1670,6 @@ In these PCA plots for each GO term, there does not seem to have very clear sepa
 
 * **CONCLUSION** 
     - Considering all of the results we obtain from our DE Analysis of gene-sets of interest, while we've obtained some statistically significant results that support our hypothesis (MRD enriches OXPHOS, UPR, and other gene-sets of interest), these results are not consistent across all comparisons, including our SS2 data. We therefore cannot conclude that our hypothesis is supported by our results, and this is most likely because our data is very low power since we have very little cells to analyze. 
-
 
 
 

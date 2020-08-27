@@ -1113,6 +1113,7 @@ for(i in 1:10){
   p <- plots.8[[PC]][["positive"]] + plots.8[[PC]][["negative"]] + plots.9[[PC]][["positive"]] + plots.9[[PC]][["negative"]]
   ggsave(plot = p, filename = glue("SS2uf_{PC}.png"), path = "GO_results/GO_plots/SS2/UF", width = 30, height = 11)
 
+
 }
 
 ```
@@ -1210,6 +1211,30 @@ for(i in 1:10){
   }
 }
 
+#visualization 
+
+for(i in 1:10){
+  for(z in c("positive", "negative")){
+    PC <- PCs[[i]]
+    
+    data.8 <- p8.pc.go2[[PC]][[z]]
+    data.8 <- data.8 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.8 <- ggplot(data.8, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("Patient 8 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") +
+              coord_flip()
+    ggsave(plot = plot.8, filename = glue("p8f_{PC}_{z}.png"), path = "jesslyn_plots/GO/SS2/F", width = 15)
+    
+    data.9 <- p9.pc.go2[[PC]][[z]]
+    data.9 <- data.9 %>% dplyr::filter(padj_BY_elim < 0.05)
+    plot.9 <- ggplot(data.9, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = "identity") +
+              labs(title = glue("Patient 9 {PC} {z} significant GO terms"), x = "Biological Process", y = "% Significant/Annotated") + 
+              coord_flip()
+    ggsave(plot = plot.9, filename = glue("p9f_{PC}_{z}.png"), path = "jesslyn_plots/GO/SS2/F", width = 15)
+  }
+}
+
 ```
         
 The positive and negative results from the Filtered method are identical, which suggest that filtering out PC loadings may not have been the right approach. We move forward with our results from the first method. 
@@ -1273,7 +1298,9 @@ for(i in GO.centered){
 
 ```{r otherVln2, message=FALSE, warning = FALSE, fig.align = 'center', fig.width=17, fig.height=10}
 #SWARM PLOTS 
+
 SS2s <- c(SS2Malignant.8, SS2Malignant.9)
+
 
 #MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1 ----------
 nadh.swarm.plots <- vector("list", length = 2)
@@ -1314,6 +1341,7 @@ p1 <- nadh.swarm.plots[["SS2 Patient 8"]] + nadh.swarm.plots[["SS2 Patient 9"]]
 p1
 ggsave(plot = p1, filename = glue("SS2_NADH.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
 
+
 #MITO_RESPIRATORY_CHAIN2 ----------
 resp.swarm.plots <- vector("list", length = 2)
 names(resp.swarm.plots) <- SS2.names
@@ -1353,6 +1381,7 @@ p2 <- resp.swarm.plots[["SS2 Patient 8"]] + resp.swarm.plots[["SS2 Patient 9"]]
 p2
 ggsave(plot = p2, filename = glue("SS2_MITO_RESP.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
 
+
 #MITO_TRANSLATION3 ----------
 translation.swarm.plots <- vector("list", length = 2)
 names(translation.swarm.plots) <- SS2.names
@@ -1391,6 +1420,7 @@ for(i in 1:2){
 p3 <- translation.swarm.plots[["SS2 Patient 8"]] + translation.swarm.plots[["SS2 Patient 9"]]
 p3
 ggsave(plot = p3, filename = glue("SS2_MT_TRANSLATION.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
+
 
 #MITO_TRANSLATIONAL_TERMINATION4 ----------
 term.swarm.plots <- vector("list", length = 2)
@@ -1470,6 +1500,7 @@ p5 <- pro.swarm.plots[["SS2 Patient 8"]] + pro.swarm.plots[["SS2 Patient 9"]]
 p5
 ggsave(plot = p5, filename = glue("SS2_PROTEIN_CATABOLISM.png"), path = "GO_results/GO_Vln/SS2", width = 17, height = 10)
 
+
 ```
 
 * **CONCLUSIONS**
@@ -1498,6 +1529,7 @@ It is interesting that all results we obtain from Patient 9 support our hypothes
         - Mitochondrial respiratory chain complex I assembly
         - Mitochondrial translational elongation
         - Mitochondrial translational termination 
+
 
 ```{r PCAGO, message = FALSE, warning = FALSE, fig.align = "center",  fig.width = 15, fig.height=10}
 PCs <- vector("list", length=2)
@@ -1530,7 +1562,9 @@ for(i in 1:2){
   SS2.name <- SS2.names[[i]]
   plots <- vector("list", length =2)
   
+
   plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
     theme(plot.title = element_text(size = 10))
   
@@ -1544,6 +1578,7 @@ p1 <- nadh.pca.plots[["SS2 Patient 8"]][[1]] + nadh.pca.plots[["SS2 Patient 8"]]
 p1
 ggsave(plot = p1, filename = glue("SS2_NADH.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
 
+
 # MITO_RESPIRATORY_CHAIN2.centered -------------------
 resp.pca.plots <- vector("list", length = 2)
 names(resp.pca.plots) <- SS2.names
@@ -1554,6 +1589,7 @@ for(i in 1:2){
   plots <- vector("list", length =2)
   
   plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
     theme(plot.title = element_text(size = 10))
   
@@ -1567,6 +1603,7 @@ p2 <- resp.pca.plots[["SS2 Patient 8"]][[1]] + resp.pca.plots[["SS2 Patient 8"]]
 p2
 ggsave(plot = p2, filename = glue("SS2_MT_RESP.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
 
+
 # MITO_TRANSLATION3.centered -------------------
 trans.pca.plots <- vector("list", length = 2)
 names(trans.pca.plots) <- SS2.names
@@ -1576,7 +1613,9 @@ for(i in 1:2){
   SS2.name <- SS2.names[[i]]
   plots <- vector("list", length =2)
   
+
   plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
     theme(plot.title = element_text(size = 10))
   
@@ -1586,6 +1625,7 @@ for(i in 1:2){
   trans.pca.plots[[SS2.name]] <- plots
 }
   
+
 p3 <- trans.pca.plots[["SS2 Patient 8"]][[1]] + trans.pca.plots[["SS2 Patient 8"]][[2]] + trans.pca.plots[["SS2 Patient 9"]][[1]] + trans.pca.plots[["SS2 Patient 9"]][[2]]
 p3 
 ggsave(plot = p3, filename = glue("SS2_MT_TRANSLATION.png"), path = "GO_results/GO_PCA/SS2", width = 15, height = 10)
@@ -1600,6 +1640,7 @@ for(i in 1:2){
   plots <- vector("list", length =2)
   
   plots[[1]] <- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue("{SS2.name} by Sample (PC3 vs PC6)")) + 
+
   scale_color_manual(values = c("#00AFBB", "#E7B800", "#FC4E07")) + 
     theme(plot.title = element_text(size = 10))
   
@@ -1643,6 +1684,15 @@ In these PCA plots for each GO term, there does not seem to have very clear sepa
 
 * **CONCLUSION** 
     - Considering all of the results we obtain from our DE Analysis of gene-sets of interest, while we've obtained some statistically significant results that support our hypothesis (MRD enriches OXPHOS, UPR, and other gene-sets of interest), these results are not consistent across all comparisons, including our PDX data. We therefore cannot conclude that our hypothesis is supported by our results, and this is most likely because our data is very low power since we have very little cells to analyze. 
+
+
+
+
+
+
+
+
+>>>>>>> 4bca25d18a3d86dd061af611583099294daf82ba
 
 
 
