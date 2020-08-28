@@ -8,9 +8,127 @@ editor_options:
   chunk_output_type: console
 ---
 
-## Project Overview
+# CHARACTERIZATION OF METABOLIC DYNAMICS OF OVARIAN PERSISTER CELLS FOLLOWING CARBOPLATIN TREATMENT
 
-The purpose of this project is to identify gene expression signatures from ovarian cancer RNA-seq data that are associated with a drug tolerant state that is characteristic of cancer persister cells.
+The purpose of this project is to identify gene expression signatures from **High-grade Serous Ovarian Cancer single-cell RNA-seq** data that are associated with a drug tolerant state that is characteristic of cancer persister cells.
+
+### OVARIAN CANCER
+Ovarian cancer (OVCA) is one of the deadliest cancers in women (Matulonis et al., 2016). OVCA is a disease with multiple origins and subtypes that share a common anatomical site upon presentation. 90% of the cases are of epithelial origin, the majority of which are High-grade serous tumors, which are known to have the worst prognosis. Despite not being listed as one of the top 10 leading sites of (new) cancer cases, OVCA is among the top 5 leading sites of estimated cancer deaths, with an estimate of 13,940 new deaths in 2020, taking up 5% of all cancer deaths according to the American Cancer Society. Unfortunately, HGSOC is typically detected at late stage due to the lack of symptoms, and the low specificity and sensitivity of the common biomarker CA 125, and in combination with the lack of druggable target molecules, makes the prognosis of HGSOC poor. 
+
+<center> 
+
+![Ovarian Cancer Stages](http://img.asiancancer.com/uploads/allimg/2018/08/18/1-15150046.jpg){width=50% height=50%}
+
+</center>
+
+**TREATMENT** 
+Late stage OVCA detection is frequently associated with metastasis, and along with the lack of druggable target molecules in ovarian cancer, treatment of ovarian cancer is fairly difficult. Current treatment for ovarian cancer often includes surgery and chemotherapy. The goal of the surgery is to stage the cancer and to debulk the tumor (remove as much as possible). The treatment for ovarian cancer is different at different stages. 
+
+  * Stage 1: limited to one or both ovaries, and can be found on the surface of the ovary. 
+  * Stage 2: tumor has invaded one or both ovaries and extended to the pelvic region but not to the abdomen 
+  * Stage 3: tumor has extended to the abdominal organs 
+  * Stage 4: cancer has spread to the lungs, liver, or lymph nodes in the neck
+    
+The lack of druggable target molecules makes cytotoxic platinum-based chemotherapy, such as cisplatin or carboplatin, the standard chemotherapy drugs for ovarian cancer.
+
+**RESISTANCE**
+Despite improved clinical response and survival in recent years, numerous patients succumb to the disease as a result of chemotherapy resistance. Although 70% of ovarian cancer patients initially respond to platinum-based chemotherapy, relapse occurs in 25% of patients with early stage ovarian cancer, and more than 80% in patients with advanced disease. The majority of these patients experience relapse within 2 years of initial treatment. 
+
+<center> 
+
+![Tapia and Dias-Padilla 2013](https://www.intechopen.com/media/chapter/43348/media/image1.png){width=50% height=50%}
+
+</center>
+
+Being able to understand the molecular mechanisms of chemotherapy resistance would therefore have important clinical relevance as researchers design new therapeutic strategies to overcome resistance and prevent cancer relapse. 
+
+### NONGENETIC DRUG RESISTANCE 
+Drug resistance is associated with the heterogeneity within the tumor cell population, where a subpopulation of tumor cells acquires the ability to survive treatment. These cells, termed minimal residual disease cells (MRD) or drug-tolerant persister cells (DTPs) re-proliferate once the environment becomes appropriate to do so, leading to cancer relapse. 
+Earlier studies focused on genetic mechanisms of drug resistance, where pro-survival genetic mutations can either be present in cells of the initial tumor cell population or be acquired during therapy. These mutations allow cancer cells to survive treatment while also passing down this capability permanently to their progeny. 
+
+However, non-genetic mechanisms have also been found to play an important role in drug resistance and cancer relapse, one of which was found in the PC9 cell line (epidermal growth factor receptor EFGR mutant non-small-cell lung carcinoma NSCLC), where a subpopulation of cells acquires a slow-cycling, transiently  drug-tolerant cell state following treatment (EGFR tyrosine kinase inhibitor) (Sharma et al. 2010). Interestingly, the progeny of these drug-tolerant persisters (drug-tolerant expanded persisters) reacquire cancer drug sensitivity following 30+ passages in drug-free medium, which demonstrates a nongenetic mechanism of drug resistance in the original drug-tolerant persisters. 
+
+Although the actual mechanisms of non-genetic drug resistance remain to be fully understood, several studies suggest that chemotherapy resistance may be linked to cancer stem-like cell characteristics such as cancer quiescence or metabolic reprogramming. 
+
+**CANCER STEM CELLS AND DRUG RESISTANT PERSISTER CELLS** 
+Chemotherapy resistant cells are found to have overlapping biological features with those of cancer stem cells, which includes plasticity, tumor-initiating capacity, and slow proliferation. 
+Cancer stem cells are slow-proliferating cells at the top of the cancer hierarchy, and are involved in tumor-initiation as they give rise to intermediate progenitors and to differentiated progeny. However, the boundaries between stem and non-stem cells have been found to be relatively weak in cancer, and studies report phenomena of therapy-induced enrichment of cancer stem-like cells, where differentiated cells are found to transition to a stem-like cell state that confer resistance.For example, Sharma et al observed that the putative CSC marker CD133 is expressed in all DTPs (but only in approximately 2% of the parental PC9 population), while another CSC marker CD24 is also enriched in some settings.
+
+<center> 
+
+![Cancer Stem Cells vs. Normal Stem Cells](https://blog.crownbio.com/hs-fs/hubfs/assets/cancer-stem-cell-hypothesis.jpg?width=1000&name=cancer-stem-cell-hypothesis.jpg){width=50% height=50%}
+
+</center>
+
+So how does cancer stem-like characteristics confer drug resistance? 
+
+**CANCER DORMANCY AND DRUG RESISTANCE**
+One of the many ways that a stem-like cell state may confer resistance is quiescent. Drug resistance is commonly characterized by a suppression of proliferation.Cancer cells can escape from the mitotic cell cycle and stay arrested at the non or low cycling G0-G1 phase to wait for an appropriate environment. Cancer cells can therefore make use of dormancy to overcome hostile microenvironments and re-enter the cell cycle to proliferate once unfavourable conditions are ruled out.  
+
+<center>
+
+![Takeishi and Nakayama, 2016](https://d3i71xaburhd42.cloudfront.net/344e2110539a24b048fa3c777a27c9395323d71e/2-Figure1-1.png){width=50% height=50%}
+
+</center>
+
+**METABOLIC REPROGRAMMING AND DRUG RESISTANCE**
+Another hypothesized way that a stem-like cell state may confer resistance is plasticity, specifically metabolic plasticity. Several studies report that drug resistant persister cells are transcriptionally and/or metabolically different from their drug-sensitive proliferating counterparts.
+
+A recent study reports a metabolic shift from aerobic glycolysis to oxidative phosphorylation (OXPHOS) in cisplatin-resistant (SKOV3/DPP) ovarian cancer cells (Xu et al., 2018). This is a crucial finding because cancer cells are known to favor glycolysis over OXPHOS even under aerobic conditions (the Warburg effect). 
+
+<center> 
+
+![Thomas and Yu, 2017](https://www.researchgate.net/profile/Tom_Thomas14/publication/318647071/figure/fig2/AS:662896304467969@1535058203439/Cancer-stem-cell-metabolism-may-demonstrate-another-element-of-cellular-plasticity-that.png){width=50% height=50%}
+
+</center>
+
+Other studies report a correlation between the activation of the unfolded protein response (UPR) and tumor progression (Madden et al., 2019; Sisinni et al., 2019). UPR is an ER stress response mechanism that can help to restore ER homeostasis or induce apoptosis under overloaded ER stress. ER stress can be induced by adverse conditions such as the accumulation of ROS, nutrient deprivation, or mutations that lead to misfolded proteins in the ER, and UPR helps relieve this stress by fixing misfolded and unfolded proteins through three main pathways.
+
+  * PERK (Protein Kinase R-like Endoplasmic Reticulum Kinase):
+      - Global inhibition of protein translation by phosphorylating and inactivating the eukaryotic translation initiation factor 2 (eIF2) 
+  * IRE1a (Inositol-requiring enzyme 1) 
+      - Dimeric kinase and endoribonuclease splices the mRNA of the X-box binding protein-1 (XBP1), and the changed ORF is translated into XBP1s, which serves as a transcription factor for genes involved in folding, glycosylation, and ER associated degradation. 
+  * ATF6 (Activating Transcription Factor 6) 
+      - The transmembrane ATF6 protein gets transported to the Golgi, where proteases cleaves of off the transmembrane domain and allows cATF6 to enter into the nucleus and act as a transcription factor of UPR target genes
+      
+<center> 
+
+![So 2018](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6125421/bin/molce-41-8-705f2.jpg){width=50% height=50%}
+
+</center>
+
+In addition to being a survival mechanism in normal cells, the dysregulation of ER stress response is reported to be one of the hallmarks of cancer, contributing to tumor progression and survival. For instance, studies report that UPR can ensure the survival of cancer cells and induce drug resistance through dormancy, angiogenesis, and the upregulation of antioxidant responses. 
+
+### OUR PURPOSE 
+Despite these findings, the actual mechanisms behind drug resistance remain to be elucidated, and many of the hypotheses are contradicted by other evidence as well. 
+
+   * For instance, although the expression of the putative CSC marker CD133 in all DTPs from the Sharma et al paper suggests a link between stemness and resistance, they also observed that CSC-specific markers are lost during the transition of DTPs to DTEPs despite the ability of both cell populations to be equally drug insensitive. 
+  * Another study contradicts the hypothesis on the link between OXPHOS metabolism and drug resistance, where very different metabolic patterns are found in drug resistant cells (Morandi & Indraccolo, 2017). In fact, a recent study in 2019 showed that cancer cells are able to shift between OXPHOS and glycolysis in response to the inhibition of either process (Elgendy et al. 2019). 
+
+Together, these findings reveal the complex mechanisms that confer drug resistance in cancer cells, which are in all likelihood different in different cancer types, tumor microenvironment, and the drug used. The eradication of DTPs is the first step to overcoming resistance and preventing cancer relapse. It is therefore important for us to identify and characterize the underlying biological mechanisms that make them different from their drug sensitive counterparts and allow them to survive and proliferate. We aim to confirm the results found in previous papers and identify epigenetic differences in specific cell cycle and metabolic gene-sets by analyzing the gene expression profile of high grade serous ovarian cancer cells across different treatment time-points through Gene ontology (GO) and Gene-set enrichment analysis (GSEA) as well as differential expression (DE) analysis of single genes. We are interested in discovering whether the links between cancer stem cell-like quiescent, metabolic plasticity specifically in OXPHOS and UPR expression, and drug resistance reported in other studies are also found in our ovarian cancer data. 
+
+### OUR DATA
+Our single-cell Ovarian cancer data is kindly provided by Izar and Tirosh et al., from their paper **A single-cell landscape of high-grade serous ovarian cancer**. 
+
+For their study, they collected scRNA-seq data from three HGSOC cohorts, which includes a set of 22 ascites samples from 11 patients and three patient ascites-derived xenograft models. 
+    * 8 ascites samples out of the 22 samples were sequenced using droplet-based 10X scRNAseq, while the remaining 14 ascites samples were sequenced using plate-based single cell RNAseq (SS2). 
+    * Considering that only 1 patient (Patient 5) in the 10X cohort had samples from more than 1 treatment condition, and that 99% of the malignant cells from that patient is from the on-treatment condition, with only 8 cells from the treatment-naive condition(8 TN vs. 4885 1CCT cells), we focus our analysis on the SS2 and PDX cohorts, which have more equally distributed cells across all treatment statuses. 
+
+**OUR FOCUS** 
+  * The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals: 
+      - Selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
+      - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses.
+  * The PDX data from Izar2020 consists of **only Malignant cells** from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation: 
+    - DF20 (BRCA WT treatment-naive, clinically platinum sensitive) 
+    - DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant) 
+    - DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant) 
+* After tumors were established, animals were divided into two groups per model: 
+    - Vehicle (treated with DMSO) 
+    - Carboplatin (treated with IP carboplatin) 
+        * Carboplatin-treated mice for minimal residual disease (**MRD**) group were harvested for scRNA-seq 
+        * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
+
+### OUR ANALYSIS AND RESULTS
 
 1. [A summary of the data from Izar 2020 et al.](data_summary.html)
 2. **PDX Data Analysis**
