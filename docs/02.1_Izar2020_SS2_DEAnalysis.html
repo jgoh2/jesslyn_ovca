@@ -414,7 +414,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -423,7 +423,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -432,10 +432,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-23
+<strong>Last updated:</strong> 2020-08-27
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -451,12 +451,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
 </div>
 </div>
 </div>
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee35baf5f626ae1377da812241ce09b24ad449b6etargetblanke35baf5a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e35baf5f626ae1377da812241ce09b24ad449b6e" target="_blank">e35baf5</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree58e936c4f7186a6165bd14ee30a5effef98bf6eatargetblank58e936ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/58e936c4f7186a6165bd14ee30a5effef98bf6ea" target="_blank">58e936c</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee35baf5f626ae1377da812241ce09b24ad449b6etargetblanke35baf5a" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree58e936c4f7186a6165bd14ee30a5effef98bf6eatargetblank58e936ca" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e35baf5f626ae1377da812241ce09b24ad449b6e" target="_blank">e35baf5</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/58e936c4f7186a6165bd14ee30a5effef98bf6ea" target="_blank">58e936c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -542,12 +542,26 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    GO_results/.DS_Store
+    Ignored:    GO_results/GO_PCA/.DS_Store
+    Ignored:    GO_results/GO_Vln/.DS_Store
+    Ignored:    GO_results/GO_Vln/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/F/
+    Ignored:    GO_results/GO_plots/SS2/.DS_Store
+    Ignored:    GO_results/Tables/.DS_Store
+    Ignored:    GO_results/Tables/PDX/.DS_Store
+    Ignored:    GO_results/Tables/PDX/F/
+    Ignored:    GO_results/Tables/SS2/.DS_Store
     Ignored:    analysis/.DS_Store
     Ignored:    code/.DS_Store
     Ignored:    data/.DS_Store
     Ignored:    data/HTAPP/
     Ignored:    data/Izar_2020/
     Ignored:    data/gene_lists/.DS_Store
+    Ignored:    data/gene_lists/GO_PDX/.DS_Store
+    Ignored:    data/gene_lists/GO_SS2/.DS_Store
     Ignored:    data/gene_lists/extra/.DS_Store
     Ignored:    jesslyn_plots/
     Ignored:    mike_plots/
@@ -559,15 +573,8 @@ Ignored files:
     Ignored:    renv/staging/
     Ignored:    vignettes/
 
-Untracked files:
-    Untracked:  SS2.8JS.PC1.txt
-    Untracked:  data/gene_lists/extra/G1S.txt
-
 Unstaged changes:
-    Modified:   code/read_Izar_2020.R
-    Modified:   data/gene_lists/hallmarks.txt
-    Modified:   old/edited/02_Izar2020_SS2_Load_Plots.Rmd
-    Modified:   old/edited/03_Izar2020_PDX_Load.Rmd
+    Modified:   analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd
 
 </code></pre>
 <p>
@@ -606,6 +613,91 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/58e936c4f7186a6165bd14ee30a5effef98bf6ea/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">58e936c</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+SS2 and PDX GO
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/56eea688127eacfaf2114abece537d60f19ac66d/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">56eea68</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+SS2 and PDX GO
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/3722083e5a53c4809cba30e86e7763631abba6a9/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">3722083</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+SS2 GO
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/675989093fb16641c3bc276549d8fadd16078358/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">6759890</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-25
+</td>
+<td>
+GO work in progress
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/02.1_Izar2020_SS2_DEAnalysis.html" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1333,6 +1425,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" target="_blank">26f64a3</a>
 </td>
 <td>
@@ -1381,6 +1484,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" target="_blank">26f64a3</a>
@@ -1589,6 +1703,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">26f64a3</a>
 </td>
 <td>
@@ -1637,6 +1762,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">26f64a3</a>
@@ -1852,6 +1988,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">80345fe</a>
 </td>
 <td>
@@ -1967,6 +2114,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">80345fe</a>
@@ -2093,8 +2251,8 @@ DT::datatable(SS2.all.DF) %&gt;%
 </ul>
 <p><strong>have not finalized the statistical test and ranking method to use for GSEA</strong></p>
 </div>
-<div id="step-4-de-analysis-2.-identifying-individual-de-genes" class="section level3">
-<h3>STEP 4 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE GENES</h3>
+<div id="step-4-de-analysis-2.-identifying-individual-de-oxphos-and-upr-genes" class="section level3">
+<h3>STEP 4 DE ANALYSIS #2. IDENTIFYING INDIVIDUAL DE OXPHOS AND UPR GENES</h3>
 <p>We are interesting in detecting individual OXPHOS and UPR genes that might be differentially expressed.</p>
 <ul>
 <li>We will focus our analysis on Patient 8 UPR and Patient 9 OXPHOS genes because those are the s<strong>tatistically significant</strong> gene-set scores that <strong>support our hypothesis</strong> based on the results we got from our VlnPlots.</li>
@@ -2149,6 +2307,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-1.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-1.png" target="_blank">84edf85</a>
@@ -2218,6 +2387,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-2.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-2.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -2284,6 +2464,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-1.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-1.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -2342,6 +2533,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-2.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-2.png" target="_blank">84edf85</a>
 </td>
 <td>
@@ -2362,8 +2564,8 @@ jgoh2
 </ul>
 <p>Since DE genes detected are not consistent across patients, we cannot conclude that there is an enrichment of OXPHOS or UPR genes in p.1.</p>
 </div>
-<div id="step-5.-analyzing-other-gene-sets" class="section level2">
-<h2>STEP 5. ANALYZING OTHER GENE SETS</h2>
+<div id="step-5.-analyzing-other-gene-sets" class="section level3">
+<h3>STEP 5. ANALYZING OTHER GENE SETS</h3>
 <ul>
 <li>Since we did not obtain any conclusive results from analyzing OXPHOS and UPR expression across treatment samples within each SS2 Patient, we now examine the expression of other gene sets to find potential trends. We are specifically interested in these gene sets:
 <ul>
@@ -2532,6 +2734,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-1.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/92568b87a1f3b0cfe5715dab09817ed8f3fee774/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-1.png" target="_blank">92568b8</a>
 </td>
 <td>
@@ -2604,6 +2817,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-2.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/92568b87a1f3b0cfe5715dab09817ed8f3fee774/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-2.png" target="_blank">92568b8</a>
@@ -2680,6 +2904,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-3.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/92568b87a1f3b0cfe5715dab09817ed8f3fee774/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-3.png" target="_blank">92568b8</a>
 </td>
 <td>
@@ -2754,6 +2989,28 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-4.png" target="_blank">4bca25d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-4.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/92568b87a1f3b0cfe5715dab09817ed8f3fee774/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-4.png" target="_blank">92568b8</a>
 </td>
 <td>
@@ -2767,6 +3024,581 @@ jgoh2
 </table>
 </div>
 </div>
+</div>
+<div id="step-6.-gene-ontology-functional-analysis" class="section level3">
+<h3>STEP 6. GENE ONTOLOGY FUNCTIONAL ANALYSIS</h3>
+<p>Our gene-set enrichement analyses above show us that the gene-sets we hypothesized to be differentially expressed in p.1 are not DE based on our results. Here, instead of testing for a specific gene-set, we use gene ontology functional analysis to verify if genes of interest are more often associated with certain biological functions than what would be expected in a random set of genes. We conduct GO analysis on a number of gene lists:</p>
+<ol style="list-style-type: decimal">
+<li>PC loadings from PC1-PC5
+<ol style="list-style-type: lower-roman">
+<li>Loadings are sorted in both directions, and the top 500 loadings are extracted (in both directions).</li>
+<li>Insignificantly associated laodings are first filtered based on the JackStraw output (padj &gt; 0.05) before being sorted as described above.</li>
+</ol></li>
+<li>Output from FindMarkes
+<ol style="list-style-type: lower-roman">
+<li>Filter out insignificant genes (padj &gt; 0.05) and sort by logFC both ways</li>
+</ol></li>
+</ol>
+<p><strong>PART 1: PC LOADINGS FROM PC1-PC10 OPTION i</strong></p>
+<pre class="r"><code>library(pcaExplorer)
+library(org.Hs.eg.db)
+library(topGO)
+
+PCs &lt;- c(&quot;PC_1&quot;, &quot;PC_2&quot;, &quot;PC_3&quot;, &quot;PC_4&quot;, &quot;PC_5&quot;, &quot;PC_6&quot;, &quot;PC_7&quot;, &quot;PC_8&quot;, &quot;PC_9&quot;, &quot;PC_10&quot;)
+background &lt;- rownames(SS2Malignant@assays$RNA@counts)
+
+#PATIENT 8 -----------------------------------
+p8.pc.go1 &lt;- vector(&quot;list&quot;, length = 10)
+names(p8.pc.go1) &lt;- PCs
+loadings &lt;- as.data.frame(SS2Malignant.8@reductions$pca@feature.loadings) %&gt;% rownames_to_column()
+
+for(i in 1:10){
+  PC &lt;- PCs[[i]]
+  pc.go.both &lt;- vector(&quot;list&quot;, length = 2)
+  names(pc.go.both) &lt;- c(&quot;positive&quot;, &quot;negative&quot;)
+  
+  pc.positive &lt;- loadings %&gt;% 
+    dplyr::select(&quot;rowname&quot;, PC) %&gt;% dplyr::arrange(-loadings[[PC]]) %&gt;% dplyr::select(&quot;rowname&quot;) %&gt;% deframe() %&gt;% head(500)
+  pc.negative &lt;- loadings %&gt;% 
+    dplyr::select(&quot;rowname&quot;, PC) %&gt;% dplyr::arrange(loadings[[PC]]) %&gt;% dplyr::select(&quot;rowname&quot;) %&gt;% deframe() %&gt;% head(500)
+  
+  pc.go.both[[&quot;positive&quot;]] &lt;- topGOtable(DEgenes = pc.positive, BGgenes = background, ontology = &quot;BP&quot;, mapping = &quot;org.Hs.eg.db&quot;, do_padj = TRUE)
+  pc.go.both[[&quot;negative&quot;]] &lt;- topGOtable(DEgenes = pc.negative, BGgenes = background, ontology = &quot;BP&quot;, mapping = &quot;org.Hs.eg.db&quot;, do_padj = TRUE)
+  
+  p8.pc.go1[[PC]] &lt;- pc.go.both
+}
+
+#PATIENT 9 -----------------------------------
+p9.pc.go1 &lt;- vector(&quot;list&quot;, length = 10)
+names(p9.pc.go1) &lt;- PCs
+loadings &lt;- as.data.frame(SS2Malignant.9@reductions$pca@feature.loadings) %&gt;% rownames_to_column()
+
+for(i in 1:10){
+  PC &lt;- PCs[[i]]
+  pc.go.both &lt;- vector(&quot;list&quot;, length = 2)
+  names(pc.go.both) &lt;- c(&quot;positive&quot;, &quot;negative&quot;)
+  
+  pc.positive &lt;- loadings %&gt;% 
+    dplyr::select(&quot;rowname&quot;, PC) %&gt;% dplyr::arrange(-loadings[[PC]]) %&gt;% dplyr::select(&quot;rowname&quot;) %&gt;% deframe() %&gt;% head(500)
+  pc.negative &lt;- loadings %&gt;% 
+    dplyr::select(&quot;rowname&quot;, PC) %&gt;% dplyr::arrange(loadings[[PC]]) %&gt;% dplyr::select(&quot;rowname&quot;) %&gt;% deframe() %&gt;% head(500)
+  
+  pc.go.both[[&quot;positive&quot;]] &lt;- topGOtable(DEgenes = pc.positive, BGgenes = background, ontology = &quot;BP&quot;, mapping = &quot;org.Hs.eg.db&quot;, do_padj = TRUE)
+  pc.go.both[[&quot;negative&quot;]] &lt;- topGOtable(DEgenes = pc.negative, BGgenes = background, ontology = &quot;BP&quot;, mapping = &quot;org.Hs.eg.db&quot;, do_padj = TRUE)
+  
+  p9.pc.go1[[PC]] &lt;- pc.go.both
+}
+
+# save output 
+for(i in 1:10){
+  for(z in c(&quot;positive&quot;, &quot;negative&quot;)){
+    PC &lt;- PCs[[i]]
+    type &lt;- z
+    write_csv(p8.pc.go1[[PC]][[z]], path = glue(&quot;GO_results/Tables/SS2/UF/GOuf_P8_{PC}_{type}.csv&quot;))
+    write_csv(p9.pc.go1[[PC]][[z]], path = glue(&quot;GO_results/Tables/SS2/UF/GOuf_P9_{PC}_{type}.csv&quot;))
+  }
+}
+
+#visualization 
+plots.8 &lt;- vector(&quot;list&quot;, length = 10)
+plots.9 &lt;- vector(&quot;list&quot;, length = 10)
+names(plots.8) &lt;- PCs
+names(plots.9) &lt;- PCs
+
+for(i in 1:10){
+  
+  pc8.plots &lt;- vector(&quot;list&quot;, length = 2)
+  pc9.plots &lt;- vector(&quot;list&quot;, length = 2)
+  names(pc8.plots) &lt;- c(&quot;positive&quot;, &quot;negative&quot;)
+  names(pc9.plots) &lt;- c(&quot;posititve&quot;, &quot;negative&quot;)
+  
+  for(z in c(&quot;positive&quot;, &quot;negative&quot;)){
+    PC &lt;- PCs[[i]]
+    
+    data.8 &lt;- p8.pc.go1[[PC]][[z]]
+    data.8 &lt;- data.8 %&gt;% dplyr::filter(padj_BY_elim &lt; 0.05)
+    pc8.plots[[z]] &lt;- ggplot(data.8, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated) *100), fill = padj_BY_elim)) +
+              geom_bar(stat = &quot;identity&quot;) +
+              labs(title = glue(&quot;Patient 8 {PC} {z} significant GO terms&quot;), x = &quot;Biological Process&quot;, y = &quot;% Significant/Annotated&quot;) +
+              coord_flip()
+
+    data.9 &lt;- p9.pc.go1[[PC]][[z]]
+    data.9 &lt;- data.9 %&gt;% dplyr::filter(padj_BY_elim &lt; 0.05)
+    pc9.plots[[z]] &lt;- ggplot(data.9, aes(x= reorder(Term, -padj_BY_elim), y= ((Significant/Annotated)*100), fill = padj_BY_elim)) +
+              geom_bar(stat = &quot;identity&quot;) +
+              labs(title = glue(&quot;Patient 9 {PC} {z} significant GO terms&quot;), x = &quot;Biological Process&quot;, y = &quot;% Significant/Annotated&quot;) + 
+              coord_flip()
+  }
+  
+  plots.8[[PC]] &lt;- pc8.plots
+  plots.9[[PC]] &lt;- pc9.plots
+  
+  p &lt;- plots.8[[PC]][[&quot;positive&quot;]] + plots.8[[PC]][[&quot;negative&quot;]] + plots.9[[PC]][[&quot;positive&quot;]] + plots.9[[PC]][[&quot;negative&quot;]]
+  ggsave(plot = p, filename = glue(&quot;SS2uf_{PC}.png&quot;), path = &quot;GO_results/GO_plots/SS2/UF&quot;, width = 30, height = 11)
+
+
+}</code></pre>
+<p><strong>PART 2: PC LOADINGS FROM PC1-PC10 OPTION ii (filter out insignificant loadings first)</strong></p>
+<p>The positive and negative results from the Filtered method are identical, which suggest that filtering out PC loadings may not have been the right approach. We move forward with our results from the first method.</p>
+<ul>
+<li><p><strong>OBSERVATIONS</strong> The most consistent results between Patients 8 and 9 are for PC_3, 4, and 6:</p>
+<ul>
+<li><strong>PC_3</strong>:
+<ul>
+<li>Mitochondrial electron transport (synonym OXPHOS), NADH to ubiquinone</li>
+<li>Mitochondrial respiratory chain complex I assembly</li>
+</ul></li>
+<li><strong>PC_4</strong>:
+<ul>
+<li>Proteasomal Ubiquitin-independent protein catabolic process</li>
+</ul></li>
+<li><strong>PC_6</strong>:
+<ul>
+<li>Mitochondrial electron transport NADH to ubiquinone</li>
+<li>Mitochondrial respiratory chain complex I assembly</li>
+<li>Mitochondrial translational elongation</li>
+<li>Mitochondrial translational termination</li>
+</ul></li>
+</ul></li>
+<li>After we’ve narrowed down our serach to the 5 most consistently significant GO terms across our SS2 data, we repeat our DE Analysis of these 5 gene-sets similar to what we’ve done above with the OXPHOS and UPR gene-sets
+<ul>
+<li>Score and center the scores of each geneset</li>
+<li>DE Analysis:
+<ul>
+<li>VlnPlots plotting the distribution of gene-set score for each treatment status</li>
+<li>PCA plots using the associated PCs as the axis colored by <strong>sample</strong> and by <strong>gene-set score</strong>
+<ul>
+<li>Even if VlnPlots show us that the overall gene-set score is not significantly different across treatment, it is possible that a few cells within a specific treatment condition does not follow the trend. We therefore visualize this with PCA plots to try to identify possible subpopulations of cells within a treatment condition that behaves differently from the rest.</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="step-7.-de-analysis-of-the-identified-enriched-go-terms" class="section level3">
+<h3>STEP 7. DE ANALYSIS OF THE IDENTIFIED ENRICHED GO TERMS</h3>
+<p><strong>SCORE CELLS FOR EACH OF THE 5 IDENTIFIED GO TERMS</strong></p>
+<pre class="r"><code>#read in GOs of interest
+GO_names = read_lines(&quot;data/gene_lists/GO_SS2/SS2.GO.txt&quot;)
+GO.list &lt;- vector(mode = &quot;list&quot;, length = length(GO_names))
+names(GO.list) &lt;- GO_names
+
+for(go in GO_names){
+    file &lt;- read_lines(glue(&quot;data/gene_lists/GO_SS2/{go}.txt&quot;), skip =1)
+    GO.list[[go]] &lt;- file
+  }
+
+#score cells with AddModuleScore
+SS2Malignant &lt;- AddModuleScore(SS2Malignant, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+SS2Malignant.8 &lt;- AddModuleScore(SS2Malignant.8, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+SS2Malignant.9 &lt;- AddModuleScore(SS2Malignant.9, features = GO.list, name = names(GO.list), nbin = 50, search = T)
+
+#center scores 
+GO.centered &lt;- c(&quot;MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1&quot;, &quot;MITO_RESPIRATORY_CHAIN2&quot;, &quot;MITO_TRANSLATION3&quot;, &quot;MITO_TRANSLATIONAL_TERMINATION4&quot;, &quot;PROTEOSOMAL_PROTEIN_CATABOLISM5&quot;)
+for(i in GO.centered){
+    SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant &lt;- AddMetaData(SS2Malignant, SS2Malignant.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    
+    SS2Malignant8.hm.centered &lt;- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 &lt;- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    
+    SS2Malignant9.hm.centered &lt;- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 &lt;- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+}</code></pre>
+<p><strong>VIOLIN PLOTS OF THE HALLMARKS MENTIONED ABOVE</strong> * Plot swarm plots of each GO term we’re interested in</p>
+<pre class="r"><code>#SWARM PLOTS 
+
+SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
+
+
+#MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1 ----------
+nadh.swarm.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(nadh.swarm.plots) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(GO.list[[&quot;MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(GO.list[[&quot;MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample , y = MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells OXPHOS NADH to UBIQUINONE expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} OXPHOS NADH to UBIQUINONE genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nadh.swarm.plots[[SS2.name]] &lt;- p 
+}
+
+p1 &lt;- nadh.swarm.plots[[&quot;SS2 Patient 8&quot;]] + nadh.swarm.plots[[&quot;SS2 Patient 9&quot;]]
+p1</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-1.png" width="1632" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p1, filename = glue(&quot;SS2_NADH.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
+
+
+#MITO_RESPIRATORY_CHAIN2 ----------
+resp.swarm.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(resp.swarm.plots) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(GO.list[[&quot;MITO_RESPIRATORY_CHAIN&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(GO.list[[&quot;MITO_RESPIRATORY_CHAIN&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample , y = MITO_RESPIRATORY_CHAIN2.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells MITO RESPIRATORY CHAIN expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} MITO RESPIRATORY CHAIN genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$MITO_RESPIRATORY_CHAIN2.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$MITO_RESPIRATORY_CHAIN2.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$MITO_RESPIRATORY_CHAIN2.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  resp.swarm.plots[[SS2.name]] &lt;- p 
+}
+
+p2 &lt;- resp.swarm.plots[[&quot;SS2 Patient 8&quot;]] + resp.swarm.plots[[&quot;SS2 Patient 9&quot;]]
+p2</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-2.png" width="1632" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p2, filename = glue(&quot;SS2_MITO_RESP.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
+
+
+#MITO_TRANSLATION3 ----------
+translation.swarm.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(translation.swarm.plots) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(GO.list[[&quot;MITO_TRANSLATION&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(GO.list[[&quot;MITO_TRANSLATION&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample , y = MITO_TRANSLATION3.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells MITO TRANSLATION expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} MITO TRANSLATION genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$MITO_TRANSLATION3.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$MITO_TRANSLATION3.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$MITO_TRANSLATION3.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  translation.swarm.plots[[SS2.name]] &lt;- p 
+}
+
+p3 &lt;- translation.swarm.plots[[&quot;SS2 Patient 8&quot;]] + translation.swarm.plots[[&quot;SS2 Patient 9&quot;]]
+p3</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-3.png" width="1632" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p3, filename = glue(&quot;SS2_MT_TRANSLATION.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
+
+
+#MITO_TRANSLATIONAL_TERMINATION4 ----------
+term.swarm.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(term.swarm.plots) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(GO.list[[&quot;MITO_TRANSLATIONAL_TERMINATION&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(GO.list[[&quot;MITO_TRANSLATIONAL_TERMINATION&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample , y = MITO_TRANSLATIONAL_TERMINATION4.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells MITO TRANSLATION TERMINATION expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} MITO TRANSLATION TERMINATION genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$MITO_TRANSLATIONAL_TERMINATION4.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$MITO_TRANSLATIONAL_TERMINATION4.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$MITO_TRANSLATIONAL_TERMINATION4.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  term.swarm.plots[[SS2.name]] &lt;- p 
+}
+
+p4 &lt;- term.swarm.plots[[&quot;SS2 Patient 8&quot;]] + term.swarm.plots[[&quot;SS2 Patient 9&quot;]]
+p4</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-4.png" width="1632" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p4, filename = glue(&quot;SS2_MT_TRANSLATIONAL_TERMINATION.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
+
+#PROTEOSOMAL_PROTEIN_CATABOLISM5 ----------
+pro.swarm.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(pro.swarm.plots) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(GO.list[[&quot;PROTEOSOMAL_PROTEIN_CATABOLISM&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(GO.list[[&quot;PROTEOSOMAL_PROTEIN_CATABOLISM&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample , y = PROTEOSOMAL_PROTEIN_CATABOLISM5.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells PROTEIN CATABOLISM expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} PROTEIN CATABOLISM genes found ({feature.pFound}%)&quot;)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$PROTEOSOMAL_PROTEIN_CATABOLISM5.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$PROTEOSOMAL_PROTEIN_CATABOLISM5.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$PROTEOSOMAL_PROTEIN_CATABOLISM5.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  pro.swarm.plots[[SS2.name]] &lt;- p 
+}
+
+p5 &lt;- pro.swarm.plots[[&quot;SS2 Patient 8&quot;]] + pro.swarm.plots[[&quot;SS2 Patient 9&quot;]]
+p5</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-5.png" width="1632" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p5, filename = glue(&quot;SS2_PROTEIN_CATABOLISM.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li>The statistically significant results are (p &lt; 0.05):
+<ul>
+<li><strong>MITOCHONDRIAL ELECTRON TRANSPORT, NADH TO UBIQUINONE</strong>
+<ul>
+<li>Patient 8: Vehicle &gt; MRD and relapse (rejects our hypothesis)</li>
+<li>Patient 9: MRD &gt; vehicle and relapse (supports our hypothesis)</li>
+</ul></li>
+<li><strong>MITOCHONDRIAL RESPIRATORY CHAIN COMPLEX</strong>
+<ul>
+<li>Patient 8: Vehicle &gt; MRD and relapse (rejects our hypothesis)</li>
+<li>Patient 9: MRD and Vehicle &gt; relapse (supports our hypothesis)</li>
+</ul></li>
+<li><strong>MITOCHONDRIAL TRANSLATION</strong>
+<ul>
+<li>Patient 9: MRD and Vehicle &gt; relapse (supports our hypothesis)</li>
+</ul></li>
+<li><strong>MITOCHONDRIAL TRANSLATIONAL TERMINATION</strong>
+<ul>
+<li>Patient 9: MRD and Vehicle &gt; relapse (supports our hypothesis)</li>
+</ul></li>
+<li><strong>PROTEOSOMAL UBIQUITIN INDEPENDENT PROTEIN CATABOLIC PROCESS</strong>
+<ul>
+<li>Patient 9: MRD and Vehicle &gt; relapse (supports our hypothesis)</li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+<p>It is interesting that all results we obtain from Patient 9 support our hypothesis but not Patient 8. We now use PCA plots to detect possible subpopulations of cells within a specific treatment condition that enrich these GO terms. The axis for the PCA plot depends on the PC that the GO term is associated with: * <strong>PC_3</strong>: - Mitochondrial electron transport (synonym OXPHOS), NADH to ubiquinone - Mitochondrial respiratory chain complex I assembly * <strong>PC_4</strong>: - Proteasomal Ubiquitin-independent protein catabolic process * <strong>PC_6</strong>: - Mitochondrial electron transport NADH to ubiquinone - Mitochondrial respiratory chain complex I assembly - Mitochondrial translational elongation - Mitochondrial translational termination</p>
+<pre class="r"><code>PCs &lt;- vector(&quot;list&quot;, length=2)
+names(PCs) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  PCs[[SS2.name]] &lt;- as.data.frame(SS2@reductions$pca@cell.embeddings)
+  PCs[[SS2.name]] &lt;- PCs[[SS2.name]] %&gt;% 
+    dplyr::mutate(&quot;MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered&quot; = deframe(SS2[[&quot;MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered&quot;]])) %&gt;%
+    dplyr::mutate(&quot;MITO_RESPIRATORY_CHAIN2.centered&quot; = deframe(SS2[[&quot;MITO_RESPIRATORY_CHAIN2.centered&quot;]])) %&gt;% 
+    dplyr::mutate(&quot;MITO_TRANSLATION3.centered&quot; = deframe(SS2[[&quot;MITO_TRANSLATION3.centered&quot;]])) %&gt;% 
+    dplyr::mutate(&quot;MITO_TRANSLATIONAL_TERMINATION4.centered&quot; = deframe(SS2[[&quot;MITO_TRANSLATIONAL_TERMINATION4.centered&quot;]])) %&gt;% 
+    dplyr::mutate(&quot;PROTEOSOMAL_PROTEIN_CATABOLISM5.centered&quot; = deframe(SS2[[&quot;PROTEOSOMAL_PROTEIN_CATABOLISM5.centered&quot;]])) %&gt;% 
+    dplyr::mutate(&quot;sample&quot; = deframe(SS2[[&quot;sample&quot;]]))
+  
+}
+
+# MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered -------------------
+GO.terms &lt;- c(&quot;MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered&quot;, &quot;MITO_RESPIRATORY_CHAIN2.centered&quot;, &quot;MITO_TRANSLATION3.centered&quot;, &quot;MITO_TRANSLATIONAL_TERMINATION4.centered&quot;)
+GO.names &lt;- c(&quot;OXPHOS NADH TO UBIQUINONE&quot;, &quot;MT RESPIRATORY CHAIN&quot;, &quot;MT TRANSLATION&quot;, &quot;MT TRANSLATIONAL TERMINATION&quot;)
+
+nadh.pca.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(nadh.pca.plots) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  plots &lt;- vector(&quot;list&quot;, length =2)
+  
+
+  plots[[1]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue(&quot;{SS2.name} by Sample (PC3 vs PC6)&quot;)) + 
+
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_ELECTRON_TRANSPORT_NADH_TO_UBIQUINONE1.centered)) + geom_point() + labs(title = glue(&quot;{SS2.name} OXPHOS NADH TO UBIQUINONE score&quot;), colour = &quot;OXPHOS NADH TO UBIQUINONE&quot;) + 
+    theme(plot.title = element_text(size = 10))
+  
+  nadh.pca.plots[[SS2.name]] &lt;- plots
+}
+  
+p1 &lt;- nadh.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + nadh.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + nadh.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + nadh.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
+p1</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p1, filename = glue(&quot;SS2_NADH.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
+
+
+# MITO_RESPIRATORY_CHAIN2.centered -------------------
+resp.pca.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(resp.pca.plots) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  plots &lt;- vector(&quot;list&quot;, length =2)
+  
+  plots[[1]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue(&quot;{SS2.name} by Sample (PC3 vs PC6)&quot;)) + 
+
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_RESPIRATORY_CHAIN2.centered)) + geom_point() + labs(title = glue(&quot;{SS2.name} MT RESPIRATORY CHAIN score&quot;), colour = &quot;MT RESPIRATORY CHAIN&quot;) + 
+    theme(plot.title = element_text(size = 10))
+  
+  resp.pca.plots[[SS2.name]] &lt;- plots
+}
+  
+p2 &lt;- resp.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + resp.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + resp.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + resp.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
+p2</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p2, filename = glue(&quot;SS2_MT_RESP.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
+
+
+# MITO_TRANSLATION3.centered -------------------
+trans.pca.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(trans.pca.plots) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  plots &lt;- vector(&quot;list&quot;, length =2)
+  
+
+  plots[[1]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue(&quot;{SS2.name} by Sample (PC3 vs PC6)&quot;)) + 
+
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_TRANSLATION3.centered)) + geom_point() + labs(title = glue(&quot;{SS2.name} MT TRANSLATION score&quot;), colour = &quot;MT TRANSLATION&quot;) + 
+    theme(plot.title = element_text(size = 10))
+  
+  trans.pca.plots[[SS2.name]] &lt;- plots
+}
+  
+
+p3 &lt;- trans.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + trans.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + trans.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + trans.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
+p3 </code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-3.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p3, filename = glue(&quot;SS2_MT_TRANSLATION.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
+
+# MITO_TRANSLATIONAL_TERMINATION4.centered -------------------
+term.pca.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(term.pca.plots) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  plots &lt;- vector(&quot;list&quot;, length =2)
+  
+  plots[[1]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue(&quot;{SS2.name} by Sample (PC3 vs PC6)&quot;)) + 
+
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_6, colour = MITO_TRANSLATIONAL_TERMINATION4.centered)) + geom_point() + labs(title = glue(&quot;{SS2.name} MT TRANSLATION TERMINATION score&quot;), colour = &quot;MT TRANSLATION TERMINATION&quot;) + 
+    theme(plot.title = element_text(size = 10))
+  
+  term.pca.plots[[SS2.name]] &lt;- plots
+}
+  
+p4 &lt;- term.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + term.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + term.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + term.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
+p4 </code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-4.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p4, filename = glue(&quot;SS2_MT_TRANSLATIONAL_TERMINATION.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
+
+# PROTEOSOMAL_PROTEIN_CATABOLISM5.centered -------------------
+pro.pca.plots &lt;- vector(&quot;list&quot;, length = 2)
+names(pro.pca.plots) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  plots &lt;- vector(&quot;list&quot;, length =2)
+  
+  plots[[1]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_4, colour = sample)) + geom_point(alpha = 0.7) + labs(title = glue(&quot;{SS2.name} by Sample (PC3 vs PC4)&quot;)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    theme(plot.title = element_text(size = 10))
+  
+  plots[[2]] &lt;- ggplot(PCs[[SS2.name]], aes(x = PC_3, y = PC_4, colour = PROTEOSOMAL_PROTEIN_CATABOLISM5.centered)) + geom_point() + labs(title = glue(&quot;{SS2.name} PROTEIN CATABOLISM score&quot;), colour = &quot;PROTEIN CATABOLISM&quot;) + 
+    theme(plot.title = element_text(size = 10))
+  
+  pro.pca.plots[[SS2.name]] &lt;- plots
+}
+  
+p5 &lt;- pro.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + pro.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + pro.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + pro.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
+p5</code></pre>
+<p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-5.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p5, filename = glue(&quot;SS2_PROTEIN_CATABOLISM.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)</code></pre>
+<p>In these PCA plots for each GO term, there does not seem to have very clear separation of cells. It therefore doesn’t seem like certain subpopulations of cells within a treatment condition enriches our GO terms of interest.</p>
+<ul>
+<li><strong>CONCLUSION</strong>
+<ul>
+<li>Considering all of the results we obtain from our DE Analysis of gene-sets of interest, while we’ve obtained some statistically significant results that support our hypothesis (MRD enriches OXPHOS, UPR, and other gene-sets of interest), these results are not consistent across all comparisons, including our PDX data. We therefore cannot conclude that our hypothesis is supported by our results, and this is most likely because our data is very low power since we have very little cells to analyze.</li>
+</ul></li>
+</ul>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -2787,40 +3619,63 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats     graphics  grDevices datasets  utils     methods   base     
+[1] stats4    parallel  stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
- [1] ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4       
- [6] tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5           
-[11] glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1             
-[16] readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4          
-[21] readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0      
-[26] cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
+ [1] topGO_2.40.0          SparseM_1.78          GO.db_3.11.4          graph_1.66.0          org.Hs.eg.db_3.11.4  
+ [6] AnnotationDbi_1.50.1  IRanges_2.22.2        S4Vectors_0.26.1      pcaExplorer_2.14.2    Biobase_2.48.0       
+[11] BiocGenerics_0.34.0   ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1             
+[16] reshape2_1.4.4        tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8    
+[21] Rcpp_1.0.5            glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2        
+[26] here_0.1              readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0          
+[31] purrr_0.3.4           readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2        
+[36] tidyverse_1.3.0       cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
 
 loaded via a namespace (and not attached):
-  [1] backports_1.1.8     fastmatch_1.1-0     workflowr_1.6.2     plyr_1.8.6          igraph_1.2.5       
-  [6] lazyeval_0.2.2      splines_4.0.2       crosstalk_1.1.0.1   BiocParallel_1.22.0 listenv_0.8.0      
- [11] digest_0.6.25       htmltools_0.5.0     fansi_0.4.1         magrittr_1.5        cluster_2.1.0      
- [16] ROCR_1.0-11         openxlsx_4.1.5      limma_3.44.3        globals_0.12.5      modelr_0.1.8       
- [21] colorspace_1.4-1    blob_1.2.1          rvest_0.3.5         haven_2.3.1         xfun_0.15          
- [26] crayon_1.3.4        jsonlite_1.7.0      survival_3.2-3      zoo_1.8-8           ape_5.4            
- [31] gtable_0.3.0        leiden_0.3.3        car_3.0-8           future.apply_1.6.0  abind_1.4-5        
- [36] scales_1.1.1        DBI_1.1.0           rstatix_0.6.0       viridisLite_0.3.0   reticulate_1.16    
- [41] foreign_0.8-80      rsvd_1.0.3          DT_0.14             tsne_0.1-3          htmlwidgets_1.5.1  
- [46] httr_1.4.1          RColorBrewer_1.1-2  ellipsis_0.3.1      ica_1.0-2           farver_2.0.3       
- [51] pkgconfig_2.0.3     reshape_0.8.8       uwot_0.1.8          dbplyr_1.4.4        labeling_0.3       
- [56] rlang_0.4.7         later_1.1.0.1       munsell_0.5.0       cellranger_1.1.0    tools_4.0.2        
- [61] cli_2.0.2           generics_0.0.2      broom_0.7.0         ggridges_0.5.2      evaluate_0.14      
- [66] yaml_2.2.1          knitr_1.29          fs_1.4.2            fitdistrplus_1.1-1  zip_2.0.4          
- [71] RANN_2.6.1          pbapply_1.4-2       future_1.18.0       nlme_3.1-148        whisker_0.4        
- [76] xml2_1.3.2          compiler_4.0.2      rstudioapi_0.11     beeswarm_0.2.3      plotly_4.9.2.1     
- [81] curl_4.3            png_0.1-7           ggsignif_0.6.0      reprex_0.3.0        stringi_1.4.6      
- [86] lattice_0.20-41     Matrix_1.2-18       vctrs_0.3.2         pillar_1.4.6        lifecycle_0.2.0    
- [91] lmtest_0.9-37       RcppAnnoy_0.0.16    irlba_2.3.3         httpuv_1.5.4        R6_2.4.1           
- [96] promises_1.1.1      KernSmooth_2.23-17  gridExtra_2.3       rio_0.5.16          vipor_0.4.5        
-[101] codetools_0.2-16    MASS_7.3-51.6       assertthat_0.2.1    rprojroot_1.3-2     withr_2.2.0        
-[106] sctransform_0.2.1   parallel_4.0.2      hms_0.5.3           grid_4.0.2          rmarkdown_2.3      
-[111] carData_3.0-4       Rtsne_0.15          git2r_0.27.1        lubridate_1.7.9    </code></pre>
+  [1] rappdirs_0.3.1              AnnotationForge_1.30.1      pkgmaker_0.31.1             bit64_0.9-7.1              
+  [5] knitr_1.29                  irlba_2.3.3                 DelayedArray_0.14.1         RCurl_1.98-1.2             
+  [9] doParallel_1.0.15           generics_0.0.2              RSQLite_2.2.0               RANN_2.6.1                 
+ [13] future_1.18.0               bit_1.1-15.2                webshot_0.5.2               xml2_1.3.2                 
+ [17] lubridate_1.7.9             httpuv_1.5.4                SummarizedExperiment_1.18.2 assertthat_0.2.1           
+ [21] viridis_0.5.1               xfun_0.15                   hms_0.5.3                   TSP_1.1-10                 
+ [25] evaluate_0.14               promises_1.1.1              fansi_0.4.1                 progress_1.2.2             
+ [29] caTools_1.18.0              dendextend_1.13.4           dbplyr_1.4.4                Rgraphviz_2.32.0           
+ [33] igraph_1.2.5                DBI_1.1.0                   geneplotter_1.66.0          htmlwidgets_1.5.1          
+ [37] reshape_0.8.8               ellipsis_0.3.1              crosstalk_1.1.0.1           backports_1.1.8            
+ [41] annotate_1.66.0             gridBase_0.4-7              biomaRt_2.44.1              vctrs_0.3.2                
+ [45] ROCR_1.0-11                 abind_1.4-5                 withr_2.2.0                 sctransform_0.2.1          
+ [49] gclus_1.3.2                 prettyunits_1.1.1           cluster_2.1.0               ape_5.4                    
+ [53] lazyeval_0.2.2              crayon_1.3.4                genefilter_1.70.0           pkgconfig_2.0.3            
+ [57] labeling_0.3                GenomeInfoDb_1.24.2         seriation_1.2-8             nlme_3.1-148               
+ [61] vipor_0.4.5                 rlang_0.4.7                 globals_0.12.5              lifecycle_0.2.0            
+ [65] registry_0.5-1              BiocFileCache_1.12.1        GOstats_2.54.0              modelr_0.1.8               
+ [69] rsvd_1.0.3                  cellranger_1.1.0            rprojroot_1.3-2             matrixStats_0.56.0         
+ [73] lmtest_0.9-37               rngtools_1.5                Matrix_1.2-18               carData_3.0-4              
+ [77] zoo_1.8-8                   reprex_0.3.0                base64enc_0.1-3             beeswarm_0.2.3             
+ [81] pheatmap_1.0.12             whisker_0.4                 ggridges_0.5.2              png_0.1-7                  
+ [85] viridisLite_0.3.0           bitops_1.0-6                shinydashboard_0.7.1        KernSmooth_2.23-17         
+ [89] blob_1.2.1                  workflowr_1.6.2             shinyAce_0.4.1              rstatix_0.6.0              
+ [93] ggsignif_0.6.0              scales_1.1.1                GSEABase_1.50.1             memoise_1.1.0              
+ [97] magrittr_1.5                plyr_1.8.6                  ica_1.0-2                   gplots_3.0.4               
+[101] gdata_2.18.0                bibtex_0.4.2.2              zlibbioc_1.34.0             threejs_0.3.3              
+[105] compiler_4.0.2              RColorBrewer_1.1-2          DESeq2_1.28.1               fitdistrplus_1.1-1         
+[109] cli_2.0.2                   XVector_0.28.0              Category_2.54.0             listenv_0.8.0              
+[113] pbapply_1.4-2               MASS_7.3-51.6               stringi_1.4.6               shinyBS_0.61               
+[117] yaml_2.2.1                  askpass_1.1                 locfit_1.5-9.4              grid_4.0.2                 
+[121] fastmatch_1.1-0             tools_4.0.2                 future.apply_1.6.0          rio_0.5.16                 
+[125] rstudioapi_0.11             foreach_1.5.0               foreign_0.8-80              git2r_0.27.1               
+[129] gridExtra_2.3               farver_2.0.3                Rtsne_0.15                  digest_0.6.25              
+[133] shiny_1.5.0                 GenomicRanges_1.40.0        car_3.0-8                   broom_0.7.0                
+[137] later_1.1.0.1               RcppAnnoy_0.0.16            httr_1.4.1                  colorspace_1.4-1           
+[141] rvest_0.3.5                 XML_3.99-0.4                fs_1.4.2                    reticulate_1.16            
+[145] splines_4.0.2               RBGL_1.64.0                 uwot_0.1.8                  plotly_4.9.2.1             
+[149] xtable_1.8-4                jsonlite_1.7.0              heatmaply_1.1.1             R6_2.4.1                   
+[153] pillar_1.4.6                htmltools_0.5.0             mime_0.9                    NMF_0.23.0                 
+[157] fastmap_1.0.1               DT_0.14                     BiocParallel_1.22.0         codetools_0.2-16           
+[161] tsne_0.1-3                  lattice_0.20-41             curl_4.3                    leiden_0.3.3               
+[165] gtools_3.8.2                zip_2.0.4                   openxlsx_4.1.5              openssl_1.4.2              
+[169] survival_3.2-3              limma_3.44.3                rmarkdown_2.3               munsell_0.5.0              
+[173] GenomeInfoDbData_1.2.3      iterators_1.0.12            haven_2.3.1                 gtable_0.3.0               </code></pre>
 </div>
 </div>
 </div>

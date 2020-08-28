@@ -1690,12 +1690,3 @@ In these PCA plots for each GO term, there does not seem to have very clear sepa
 
 
 
-
-
->>>>>>> 4bca25d18a3d86dd061af611583099294daf82ba
-
-
-
-
-
-
