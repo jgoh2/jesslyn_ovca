@@ -1,0 +1,2828 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jesslyn Goh and Mike Cuoco" />
+
+
+<title>Izar 2020 SS2 (Cohort 2) Cell Cycle Analysis</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/htmlwidgets-1.5.1/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.14/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.1.0.1/js/crosstalk.min.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">jesslyn_ovca</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="coding.html">Coding convention</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/mikecuoco/jesslyn_ovca">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Izar 2020 SS2 (Cohort 2) Cell Cycle Analysis</h1>
+<h4 class="author">Jesslyn Goh and Mike Cuoco</h4>
+<h4 class="date">7/20/2020</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-08-28
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200713code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200713)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200713code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200713)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee7a34101870d963b01786971f797e4cabc269258targetblanke7a3410a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e7a34101870d963b01786971f797e4cabc269258" target="_blank">e7a3410</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee7a34101870d963b01786971f797e4cabc269258targetblanke7a3410a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e7a34101870d963b01786971f797e4cabc269258" target="_blank">e7a3410</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    GO_results/.DS_Store
+    Ignored:    GO_results/GO_PCA/.DS_Store
+    Ignored:    GO_results/GO_Vln/.DS_Store
+    Ignored:    GO_results/GO_Vln/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/F/
+    Ignored:    GO_results/GO_plots/SS2/.DS_Store
+    Ignored:    GO_results/Tables/.DS_Store
+    Ignored:    GO_results/Tables/PDX/.DS_Store
+    Ignored:    GO_results/Tables/PDX/F/
+    Ignored:    GO_results/Tables/SS2/.DS_Store
+    Ignored:    analysis/.DS_Store
+    Ignored:    code/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/HTAPP/
+    Ignored:    data/Izar_2020/
+    Ignored:    data/gene_lists/.DS_Store
+    Ignored:    data/gene_lists/GO_PDX/.DS_Store
+    Ignored:    data/gene_lists/GO_SS2/.DS_Store
+    Ignored:    data/gene_lists/extra/.DS_Store
+    Ignored:    jesslyn_plots/
+    Ignored:    mike_plots/
+    Ignored:    old/.DS_Store
+    Ignored:    old/edited/.DS_Store
+    Ignored:    renv/.DS_Store
+    Ignored:    renv/library/
+    Ignored:    renv/python/
+    Ignored:    renv/staging/
+    Ignored:    vignettes/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd</code>) and HTML (<code>docs/02.2_Izar2020_SS2_CellCycleAnalysis.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/56eea688127eacfaf2114abece537d60f19ac66d/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">56eea68</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+SS2 and PDX GO
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e35baf5f626ae1377da812241ce09b24ad449b6e/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">e35baf5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+<td>
+Cell cycle ggplot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2c1accf8a5c21b85e3658190c11441d341d0d635/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">2c1accf</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/92568b87a1f3b0cfe5715dab09817ed8f3fee774/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">92568b8</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d60aeff9be61fbef75b246307d4c93f2b192aa7f/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">d60aeff</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-17
+</td>
+<td>
+More DE Analysis of other hallmarks
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b1ab47b83b06d4c1ba12270f293f49d1e774e18f/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">b1ab47b</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/789982d87a20d30b6ae656007dda319809fe3e6e/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">789982d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/e05c3281876449d3de1475d4b6c0c687986bd466/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d504c5953721665b13749ae0ef898a9b46ab6f03/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">d504c59</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/d801a7a707759fdd07c5918342259d636a0e5b22/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/6d23590f4a7c34ac917fb57c39c328d1f4d1dc31/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">6d23590</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">eaa900e</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/02.2_Izar2020_SS2_CellCycleAnalysis.html" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/284aad41a1a7e82fdd119034dd23aeb385fa2f03/analysis/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd" target="_blank">284aad4</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="izar-2020-ss2-cohort-2-data-analysis---part-2" class="section level1">
+<h1>IZAR 2020 SS2 (COHORT 2) DATA ANALYSIS - PART 2</h1>
+<div id="overview" class="section level3">
+<h3>OVERVIEW</h3>
+<ul>
+<li>The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals:
+<ul>
+<li>selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates</li>
+<li>Includes both <strong>malignant</strong> and <strong>nonmalignant</strong> populations but differs from 10X data - examines malignant ascites more closely.</li>
+<li>We are only interested in the <strong>malignant</strong> ascites population, specifically samples from <strong>patient 8 and 9</strong> because they are the only patients that have samples from different treatment statuses.</li>
+</ul></li>
+<li>In our 5-part analysis of the Izar 2020 SS2 data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses <strong>within</strong> patients 8 and 9</li>
+<li>We split our SS2 analysis into three parts:
+<ol style="list-style-type: decimal">
+<li><strong>Load Data and Create SS2 Seurat Object</strong>
+<ol style="list-style-type: lower-alpha">
+<li>The code to this part of our analysis is in the <strong>read_Izar_2020.R</strong> file in the <strong>code</strong> folder. During this part of our analysis we:
+<ol style="list-style-type: lower-roman">
+<li>Load in SS2 count matrix and Create Seurat Object</li>
+<li>Assign Metadata identities including:
+<ul>
+<li>Patient ID</li>
+<li>Time</li>
+<li>Sample ID</li>
+<li>Treatment Status</li>
+</ul></li>
+<li>Score cells for <strong>cell cycle</strong> and <strong>hallmark genesets</strong> - <strong>Note</strong>: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the <strong>data</strong> slot.</li>
+<li>Save Seurat Object</li>
+</ol></li>
+</ol></li>
+<li><strong>Process Data and Exploratory Data Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li>The code to this part of our analysis can be found in the <strong>02_Izar2020_SS2_Load_Plots</strong> file in the <strong>old/edited</strong> folder. During this part of our analysis we:
+<ol style="list-style-type: lower-roman">
+<li>Load in SS2 Seurat Object from Part 1 and <strong>subset by patients 8 and 9</strong>. Continue analysis separately for each model.</li>
+<li>Scale and FindVariableFeatures (prepares data for dimensionality reduction)</li>
+<li>Dimensionality Reduction (PCA + UMAP)</li>
+<li>Save Seurat Objects</li>
+</ol></li>
+</ol></li>
+<li><strong>Exploratory Data Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li>The code to this part of our analysis can be found in the <strong>02.0_Izar2020_SS2_Exploratory Analysis</strong> file in the <strong>analysis</strong> folder. During this part of our analysis we:
+<ol style="list-style-type: lower-roman">
+<li>Load in SS2 Seurat Object from Part 2. Analyze separately for patients 8 and 9</li>
+<li>Compute summary metrics for SS2 data such as:
+<ul>
+<li>Number of cells per patient per treatment</li>
+<li>Number of cells per treatment per cell cycle phase</li>
+</ul></li>
+<li>Visualize how cells separate based on metadata identities via UMAP and PCA - Intermodel heterogeneity: How do cells separate by sample? - Intramodel heterogeneity:
+<ul>
+<li>How do cells separate by treament status / sample?</li>
+<li>How do cells separate by cell cycle phase?</li>
+</ul></li>
+</ol></li>
+</ol></li>
+<li><strong>DE Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li><strong>TYPE #1 DE ANALYSIS</strong>: Visualizing and Quantifying Differentially Expression on <strong>Predefined</strong> GO Genesets
+<ol style="list-style-type: lower-roman">
+<li>Violin Plots and UMAP</li>
+<li>Gene Set Enrichment Analysis (GSEA)</li>
+</ol></li>
+<li><strong>TYPE #2 DE ANALYSIS</strong>: Finding DE Genes from scratch
+<ol style="list-style-type: lower-roman">
+<li>Volcano Plots</li>
+</ol></li>
+</ol></li>
+<li><strong>CELL CYCLE ANALYSIS</strong>
+<ol style="list-style-type: lower-alpha">
+<li><strong>TYPE #1 CELL CYCLE ANALYSIS</strong>: Examine correlation between treatment condition and cell cycle phase</li>
+<li>Evaluate the idea that cell cycle might influence expression of signatures</li>
+</ol></li>
+</ol></li>
+</ul>
+<p>This is the third part of our 5-part analysis of the Izar 2020 SS2 (Cohort 2) data.</p>
+</div>
+<div id="cell-cycle-analysis-in-depth-explanation" class="section level3">
+<h3>CELL CYCLE ANALYSIS IN-DEPTH EXPLANATION</h3>
+<p>We are interested in answering a few questions for our Cell Cycle Analysis:</p>
+<p><strong>CELL CYCLE ANALYSIS</strong></p>
+<ul>
+<li><strong>QUESTION #1</strong> Are more cells at different cell cycle phases between treatments?
+<ul>
+<li><strong>APPROACH</strong> Violin Plots and UMAP
+<ul>
+<li>Visualize differences in cell cycle score across treatment conditions with:
+<ul>
+<li>Stacked Bar Plot</li>
+<li>Violin Plot</li>
+</ul></li>
+<li>Statistical test: is the difference in cell cycle scores across treatment conditions statistically</li>
+</ul></li>
+</ul></li>
+<li><strong>QUESTION #2</strong> Is there a correlation between cell cycle phase and the expression of signatures?
+<ul>
+<li><strong>APPROACH</strong> Violin Plots
+<ul>
+<li>Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1.</li>
+<li>Stratify the Violin Plots by cell cycle phase</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="step-1-load-seurat-object" class="section level3">
+<h3>STEP 1 LOAD SEURAT OBJECT</h3>
+<pre class="r"><code># Load packages
+source(here::here(&#39;packages.R&#39;))
+
+#Read in SS2 RDS object
+SS2Malignant = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant_processed.RDS&quot;)
+SS2Malignant.8 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS&quot;)
+SS2Malignant.9 = readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS&quot;)
+
+# Read in ccgenes
+ccgenes = read_lines(&quot;data/gene_lists/regev_lab_cell_cycle_genes.txt&quot;)
+s.genes &lt;- ccgenes[1:43]
+g2m.genes &lt;- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names))
+names(hallmark.list) &lt;- hallmark_names
+
+for(hm in hallmark_names){
+  if(file.exists(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;))){
+    file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
+    hallmark.list[[hm]] &lt;- file
+  }
+  else{
+    file &lt;- read_lines(glue(&quot;data/gene_lists/extra/{hm}.txt&quot;), skip =2)
+    hallmark.list[[hm]] &lt;- file
+  }
+}
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names &lt;- names(SS2Malignant@meta.data)[14:62]
+
+for(i in hm.names){
+    SS2Malignant.hm.centered &lt;- scale(SS2Malignant[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant &lt;- AddMetaData(SS2Malignant, SS2Malignant.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    
+    SS2Malignant8.hm.centered &lt;- scale(SS2Malignant.8[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.8 &lt;- AddMetaData(SS2Malignant.8, SS2Malignant8.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    
+    SS2Malignant9.hm.centered &lt;- scale(SS2Malignant.9[[i]], center = TRUE, scale = FALSE)
+    SS2Malignant.9 &lt;- AddMetaData(SS2Malignant.9, SS2Malignant9.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+}</code></pre>
+</div>
+<div id="step-2-cell-cycle-analysis" class="section level3">
+<h3>STEP 2 CELL CYCLE ANALYSIS</h3>
+<p>In our <strong>Exploratory Analysis</strong> section, we observed that PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis. However, cells did not seem to cluster by treatment status. We now use a more quantitative approach to investigate the correlation between treatment and cell cycle phase.</p>
+<ul>
+<li><strong>QUESTION #1</strong> Are more cells at different cell cycle phases between treatments?</li>
+<li><strong>HYPOTHESIS</strong> There should be less cycling cells in the on-treatment conditions (<strong>p.1 and p.2</strong>) relative to the treatment-naive condition (<strong>p.0</strong>)
+<ul>
+<li><strong>APPROACH</strong> Violin Plots and UMAP
+<ul>
+<li>Visualize differences in cell cycle score across treatment conditions with:
+<ul>
+<li>Stacked Bar Plot</li>
+<li>Violin Plot</li>
+</ul></li>
+<li>Statistical test: is the difference in cell cycle scores across treatment conditions statistically significant.</li>
+</ul></li>
+</ul></li>
+</ul>
+<pre class="r"><code>#Stacked Bar Plot --------------------------
+SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
+SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
+bar.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(bar.plots) &lt;- SS2.names
+
+for(i in 1:length(SS2s)){
+  obj = SS2s[[i]]
+  name = SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  
+  obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
+  t = table(obj$Phase, obj$sample) %&gt;% 
+    as.data.frame() %&gt;% 
+    rename(Phase = Var1, Sample = Var2, numCells = Freq)
+
+sum = c()
+z = 1
+while(z &lt; nrow(t)){
+    n = t$numCells[z] + t$numCells[z+1] + t$numCells[z+2]
+    sum = c(sum, rep(n,3))
+    z = z + 3
+  }
+  
+t &lt;- t %&gt;% mutate(total = sum) %&gt;% mutate(percent = (numCells/total)*100)
+  
+  p = t %&gt;% 
+    ggplot(aes(x=Sample, y=percent, fill=Phase)) + 
+    geom_bar(stat=&quot;identity&quot;) + 
+    labs(title = glue(&quot;{name} % of Malignant Cells in Each Cell Cycle Phase/ Treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;Labeled by # cells in each phase per treatment&quot;) +
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 10), plot.caption = element_text(size = 8)) +
+    geom_text(aes(label = paste(numCells, &quot;cells&quot;)), position = &quot;stack&quot;, hjust = 0.5, vjust = 2, size = 3, color = &quot;white&quot;) + 
+    scale_fill_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+    
+  bar.plots[[i]] &lt;- p
+}
+
+bar.plots[[&quot;SS2 Patient 8&quot;]] + bar.plots[[&quot;SS2 Patient 9&quot;]] + plot_layout(guides= &#39;collect&#39;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle1-1">
+Past versions of cellcycle1-1.png
+</button>
+</p>
+<div id="fig-cellcycle1-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle1-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle1-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle1-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li><strong>Patient 8</strong> % Noncyclying cells 8.0 &gt; 8.1 &gt; 8.2 (does not support our hypothesis, on-treatment samples should have more noncycling cells)</li>
+<li><strong>Patient 9</strong> % Noncycling cells 9.2 &gt; 9.1 &gt; 9.0 (supports our hypothesis, not sure how to interpret 9.2 &gt; 9.1)</li>
+<li>Important to note that we have very little cells in each condition, so we have really little power and the results from our sample may not be representative of the true population.</li>
+</ul></li>
+</ul>
+<p>To investigate this further, we build violin plots of cell cycle scores separated by treatment status: - Noncycling Scores - G0 / early G1 - G1/S DNA Damage Checkpoint - G2M Checkpoint - G2M DNA Damage Checkpoint - Cycling Scores - G1/S Specific Transcription - S Score - G2M Score</p>
+<p><strong>1) NONCYCLING SCORES</strong></p>
+<pre class="r"><code>nc &lt;- c(&quot;G0G139.centered&quot;, &quot;G1S.DNAdamage40.centered&quot;, &quot;G2M.checkpoint43.centered&quot;, &quot;G2M.DNAdamage44.centered&quot;)
+nc.names &lt;- c(&quot;G0/G1&quot;, &quot;G1/S DNA Damage CP&quot;, &quot;G2M CP&quot;, &quot;G2M DNA Damage CP&quot;)
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+# G0G1 -------------
+g0g1.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g0g1.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;G0G1&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G0G1&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G0G139.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G0/G1 expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G0/G1 genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G0G139.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G0G139.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G0G139.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g0g1.swarm[[SS2.name]] &lt;- p 
+}
+
+g0g1.swarm[[&quot;SS2 Patient 8&quot;]] + g0g1.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-noncycling-1">
+Past versions of noncycling-1.png
+</button>
+</p>
+<div id="fig-noncycling-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-1.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># G1/S DNA Damage -------------
+g1s.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g1s.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;G1S.DNAdamage&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G1S.DNAdamage&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G1S.DNAdamage40.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G1/S DNA Damage CP expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S DNA Damage CP genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G1S.DNAdamage40.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G1S.DNAdamage40.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G1S.DNAdamage40.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.swarm[[SS2.name]] &lt;- p 
+}
+
+g1s.swarm[[&quot;SS2 Patient 8&quot;]] + g1s.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-noncycling-2">
+Past versions of noncycling-2.png
+</button>
+</p>
+<div id="fig-noncycling-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-2.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># G2M CP -------------
+g2m.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g2m.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;G2M.checkpoint&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G2M.checkpoint&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.checkpoint43.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G2M CP expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M CP genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) +
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.checkpoint43.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.checkpoint43.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.checkpoint43.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[SS2.name]] &lt;- p 
+}
+
+g2m.swarm[[&quot;SS2 Patient 8&quot;]] + g2m.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-noncycling-3">
+Past versions of noncycling-3.png
+</button>
+</p>
+<div id="fig-noncycling-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-3.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># G2M DNA Damage CP -------------
+g2m.dna.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g2m.dna.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;G2M.DNAdamage&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G2M.DNAdamage&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.DNAdamage44.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G2M DNA Damage CP expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M DNA Damage CP genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.DNAdamage44.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.DNAdamage44.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.DNAdamage44.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.dna.swarm[[SS2.name]] &lt;- p 
+}
+
+g2m.dna.swarm[[&quot;SS2 Patient 8&quot;]] + g2m.dna.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-noncycling-4">
+Past versions of noncycling-4.png
+</button>
+</p>
+<div id="fig-noncycling-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/noncycling-4.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We hypothesized that samples p.1 will have enriched levels of non/low-cycling genes.</p>
+<ul>
+<li>Statistically significant results
+<ul>
+<li>G0/G1
+<ul>
+<li>8.2 &gt; 8.0</li>
+</ul></li>
+<li>G1/S DNA Damage Checkpoint
+<ul>
+<li>9.0 &gt; 9.2</li>
+<li>9.1 &gt; 9.2 (supports our hypothesis)</li>
+</ul></li>
+<li>G2M Checkpoint
+<ul>
+<li>9.0 &gt; 9.2</li>
+<li>9.1 &gt; 9.2 (supports our hypothesis)</li>
+</ul></li>
+<li>G2M DNA Damage Checkpoint
+<ul>
+<li>9.0 &gt; 9.2</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><strong>2) CYCLING SCORES</strong></p>
+<ul>
+<li>Cycling Scores
+<ul>
+<li>G1/S Specific Transcription</li>
+<li>S Score</li>
+<li>G2M Score</li>
+</ul></li>
+</ul>
+<pre class="r"><code>#VlnPlot -------------------------
+cc &lt;- c(&quot;G1S.transcription42.centered&quot;, &quot;G1S41.centered&quot;, &quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;)
+cc.names &lt;- c(&quot;G1/S Specific Transcription&quot;, &quot;G1/S&quot;, &quot;S Score&quot;, &quot;G2M Score&quot;)
+
+# G1/S Specific Transcription --------
+g1s.transcription.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g1s.transcription.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;G1S.transcription&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G1S.transcription&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G1S.transcription42.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G1/S Specific Transcription expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G1S.transcription42.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G1S.transcription42.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G1S.transcription42.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.transcription.swarm[[SS2.name]] &lt;- p 
+}
+
+g1s.transcription.swarm[[&quot;SS2 Patient 8&quot;]] + g1s.transcription.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-1">
+Past versions of cellcycleVln-1.png
+</button>
+</p>
+<div id="fig-cellcycleVln-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># G1/S --------
+g1s.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g1s.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(hallmark.list[[&quot;G1S&quot;]] %in% rownames(SS2))
+  feature.length &lt;- length(hallmark.list[[&quot;G1S&quot;]])
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G1S41.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G1/S expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G1/S genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G1S41.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G1S41.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G1S41.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g1s.swarm[[SS2.name]] &lt;- p 
+}
+
+g1s.swarm[[&quot;SS2 Patient 8&quot;]] + g1s.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-2">
+Past versions of cellcycleVln-2.png
+</button>
+</p>
+<div id="fig-cellcycleVln-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-2.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># S --------
+s.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(s.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(s.genes %in% rownames(SS2))
+  feature.length &lt;- length(s.genes)
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = S.Score.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells S Phase expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} S genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$S.Score.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$S.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$S.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  s.swarm[[SS2.name]] &lt;- p 
+}
+
+s.swarm[[&quot;SS2 Patient 8&quot;]] + s.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-3">
+Past versions of cellcycleVln-3.png
+</button>
+</p>
+<div id="fig-cellcycleVln-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-3.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code># G2M --------
+g2m.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(g2m.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  feature.found &lt;- sum(g2m.genes %in% rownames(SS2))
+  feature.length &lt;- length(g2m.genes)
+  feature.pFound &lt;- round((feature.found / feature.length)*100, 2)
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = G2M.Score.centered, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells G2M Phase expression across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells, {feature.found} out of {feature.length} G2M genes found ({feature.pFound}%)&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$G2M.Score.centered) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$G2M.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$G2M.Score.centered) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  g2m.swarm[[SS2.name]] &lt;- p 
+}
+
+g2m.swarm[[&quot;SS2 Patient 8&quot;]] + g2m.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-4.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycleVln-4">
+Past versions of cellcycleVln-4.png
+</button>
+</p>
+<div id="fig-cellcycleVln-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycleVln-4.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li>Statistically significant results:
+<ul>
+<li>G1/S Specific Transcription Score
+<ul>
+<li>9.1 &gt; 9.2 (rejects our hypothesis)</li>
+</ul></li>
+<li>S Score
+<ul>
+<li>8.1 &gt; 8.0 (rejects our hypothesis)</li>
+<li>8.2 &gt; 8.0</li>
+</ul></li>
+<li>G2M Score
+<ul>
+<li>9.1 &gt; 9.2 (rejects our hypothesis)</li>
+<li>9.0 &gt; 9.2</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li>Statistically significant results from both NONCYCLING and CYCLYING gene score comparisons show us that 9.1 &gt; 9.2, which is very contradictory.</li>
+<li>It is possible that there is a correlation between nFeature/nCount and gene scores, so that 9.1 expresses higher levels of both types of gene-sets simply because it has more genes in general. We use swarm plots to compare the nFeature and nCount levels across treatment condition within each patient.</li>
+</ul>
+<pre class="r"><code>#nFeature ----
+nF.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(nF.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = nFeature_RNA, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells nFeature across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$nFeature_RNA) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$nFeature_RNA) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$nFeature_RNA) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nF.swarm[[SS2.name]] &lt;- p 
+}
+
+nF.swarm[[&quot;SS2 Patient 8&quot;]] + nF.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nFnCSwarm-1">
+Past versions of nFnCSwarm-1.png
+</button>
+</p>
+<div id="fig-nFnCSwarm-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-1.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#nCount ----
+nC.swarm &lt;- vector(&quot;list&quot;, length = 2)
+names(nC.swarm) &lt;- SS2.names
+
+for(i in 1:2){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.1&quot;)), 
+    c(glue(&quot;{patient[[i]]}.1&quot;), glue(&quot;{patient[[i]]}.2&quot;)), 
+    c(glue(&quot;{patient[[i]]}.0&quot;), glue(&quot;{patient[[i]]}.2&quot;))
+  )
+  
+  numCells &lt;- nrow(SS2@meta.data)
+  
+  p &lt;- ggplot(SS2@meta.data, aes(x= sample, y = nCount_RNA, color = sample)) +
+  geom_quasirandom(groupOnX =TRUE) + 
+  theme_bw() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+    labs(title = glue(&quot;{SS2.name} Malignant Cells nCount across sample&quot;), x = SS2.name, subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(size =10), plot.subtitle = element_text(size = 8)) + 
+  geom_boxplot(width = 0.10, position = position_dodge(0.9), alpha = 1, show.legend = F, color = &quot;black&quot;, outlier.alpha = 0) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].0&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.0&quot;), y = min(SS2$nCount_RNA) -0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].1&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.1&quot;), y = min(SS2$nCount_RNA) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    geom_text(label = paste(sum(str_detect(SS2$sample, &quot;[:digit:].2&quot;)), &quot;cells&quot;), x = glue(&quot;{patient[[i]]}.2&quot;), y = min(SS2$nCount_RNA) - 0.03, color = &quot;black&quot;, show.legend = FALSE) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.06) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.06, bracket.size = 0, vjust = 1.8)
+  
+  nC.swarm[[SS2.name]] &lt;- p 
+}
+
+nC.swarm[[&quot;SS2 Patient 8&quot;]] + nC.swarm[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nFnCSwarm-2">
+Past versions of nFnCSwarm-2.png
+</button>
+</p>
+<div id="fig-nFnCSwarm-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/nFnCSwarm-2.png" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>9.1 does not have statistically significantly higher nFeature of nCount. This rejects our hypothesis and it seems like there is no correlation between nFeature/nCount and cell cycle gene expression.</li>
+</ul></li>
+<li><strong>STATISTICAL SUMMARY</strong></li>
+</ul>
+<pre class="r"><code>#Patient 8 ---------------------------------
+SS2Malignant8.0 &lt;- subset(SS2Malignant.8, subset = (sample == &quot;8.0&quot;))
+SS2Malignant8.1 &lt;- subset(SS2Malignant.8, subset = (sample == &quot;8.1&quot;))
+SS2Malignant8.2 &lt;- subset(SS2Malignant.8, subset = (sample == &quot;8.2&quot;))
+
+SS28M.sscore.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$S.Score.centered, SS2Malignant8.1$S.Score.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$S.Score.centered, SS2Malignant8.2$S.Score.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$S.Score.centered, SS2Malignant8.2$S.Score.centered)$p.value
+)
+SS28M.g2m.df &lt;- 
+  data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant8.0$G2M.Score.centered, SS2Malignant8.1$G2M.Score.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant8.1$G2M.Score.centered, SS2Malignant8.2$G2M.Score.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant8.0$G2M.Score.centered, SS2Malignant8.2$G2M.Score.centered)$p.value
+)
+
+#Patient 9 ---------------------------------
+SS2Malignant9.0 &lt;- subset(SS2Malignant.9, subset = (sample == &quot;9.0&quot;))
+SS2Malignant9.1 &lt;- subset(SS2Malignant.9, subset = (sample == &quot;9.1&quot;))
+SS2Malignant9.2 &lt;- subset(SS2Malignant.9, subset = (sample == &quot;9.2&quot;))
+
+SS29M.sscore.df &lt;- data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$S.Score.centered, SS2Malignant9.1$S.Score.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$S.Score.centered, SS2Malignant9.2$S.Score.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$S.Score.centered, SS2Malignant9.2$S.Score.centered)$p.value
+)
+SS29M.g2m.df &lt;- 
+  data.frame(
+  &quot;p.0vsp.1&quot; = wilcox.test(SS2Malignant9.0$G2M.Score.centered, SS2Malignant9.1$G2M.Score.centered)$p.value, 
+  &quot;p.1vsp.2&quot; = wilcox.test(SS2Malignant9.1$G2M.Score.centered, SS2Malignant9.2$G2M.Score.centered)$p.value, 
+  &quot;p.0vsp.2&quot; = wilcox.test(SS2Malignant9.0$G2M.Score.centered, SS2Malignant9.2$G2M.Score.centered)$p.value
+)
+
+#combine ------------------------------
+sscore.DF &lt;- rbind(SS28M.sscore.df, SS29M.sscore.df)
+rownames(sscore.DF) &lt;- c(&quot;S.P8&quot;, &quot;S.P9&quot;)
+g2m.DF &lt;- rbind(SS28M.g2m.df, SS29M.g2m.df)
+rownames(g2m.DF) &lt;- c(&quot;g2m.P8&quot;, &quot;g2m.P9&quot;)
+both.DF &lt;- rbind(sscore.DF, g2m.DF)
+DT::datatable(both.DF) %&gt;% 
+  DT::formatSignif(names(both.DF), digits = 2) %&gt;% 
+  DT::formatStyle(names(both.DF), color = DT::styleInterval(0.05, c(&#39;red&#39;, &#39;black&#39;)))</code></pre>
+<div id="htmlwidget-2c6c6d1180881687b937" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-2c6c6d1180881687b937">{"x":{"filter":"none","data":[["S.P8","S.P9","g2m.P8","g2m.P9"],[0.00225590608862168,0.837091771747834,0.351779534846257,0.796662179510937],[0.532969243646715,0.115891139228093,0.224243909673312,0.028337669177522],[0.0187333727977988,0.0622817906649204,0.0624075560526233,0.0201105875116194]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>p.0vsp.1<\/th>\n      <th>p.1vsp.2<\/th>\n      <th>p.0vsp.2<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"targets":1,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":2,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"targets":3,"render":"function(data, type, row, meta) { return DTWidget.formatSignif(data, 2, 3, \",\", \".\"); }"},{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"rowCallback":"function(row, data) {\nvar value=data[1]; $(this.api().cell(row, 1).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[2]; $(this.api().cell(row, 2).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\nvar value=data[3]; $(this.api().cell(row, 3).node()).css({'color':isNaN(parseFloat(value)) ? '' : value <= 0.05 ? \"red\" : \"black\"});\n}"}},"evals":["options.columnDefs.0.render","options.columnDefs.1.render","options.columnDefs.2.render","options.rowCallback"],"jsHooks":[]}</script>
+<p>Our results from DE Analysis and Cell Cycle Analysis collectively suggest that <strong>OXPHOS and UPR</strong> expression weakly correlate with treatment condition, while cell cycle phase does not significantly correlate with treatment. However, considering the idea that cell cycle might influence the expression of signatures, we are now interested in examining whether there is a correlation between the expression of <strong>OXPHOS and UPR</strong> and <strong>cell cycle phase</strong>.</p>
+<p><strong>3) G2M vs. G1/S Scores Per Treatment</strong> We reconfirm our results by plotting G2M scores against G1/S Scores for each treatment condition</p>
+<pre class="r"><code>SS2s &lt;- c(SS2Malignant8.0, SS2Malignant8.1, SS2Malignant8.2, SS2Malignant9.0, SS2Malignant9.1, SS2Malignant9.2)
+SS2.names &lt;- c(&quot;8.0&quot;, &quot;8.1&quot;, &quot;8.2&quot;, &quot;9.0&quot;, &quot;9.1&quot;, &quot;9.2&quot;)
+plots &lt;- vector(&quot;list&quot;, length = length(SS2.names))
+names(plots) &lt;- SS2.names
+
+for(i in 1:length(SS2s)){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  scores &lt;- SS2@meta.data %&gt;% 
+    select(G1S41.centered, G2M.Score.centered)
+  cycling &lt;- vector(mode = &quot;character&quot;, length = nrow(scores))
+  cycling[(scores$G1S41.centered &lt; 1 | scores$G2M.Score.centered &lt; 1)] &lt;- &quot;Non-Cycling&quot;
+  cycling[(scores$G1S41.centered &gt; 1 | scores$G2M.Score.centered &gt; 1)] &lt;- &quot;Intermediate&quot;
+  cycling[(scores$G1S41.centered &gt; 2 | scores$G2M.Score.centered &gt; 2)] &lt;- &quot;Cycling&quot;
+  scores &lt;- scores %&gt;% mutate(&quot;Cycling&quot; = cycling)
+  
+  numCells &lt;- nrow(scores)
+  cycling &lt;- round(sum(scores$Cycling == &quot;Cycling&quot;) / numCells, 2)
+  levels(scores$Cycling) &lt;- c(&quot;Cycling&quot;, &quot;Intermediate&quot;, &quot;Non-Cycling&quot;)
+  myColors &lt;- c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)
+  names(myColors) &lt;- levels(scores$Cycling)
+  
+  p &lt;- ggplot(scores, aes(x = G1S41.centered, y = G2M.Score.centered, colour = Cycling)) + 
+    geom_point() + 
+    theme_bw() +
+    labs(title = glue(&quot;SS2 Sample {SS2.name} Cell Cycle State&quot;), subtitle = glue(&quot;N = {numCells}, {cycling}% cycling&quot;), x = &quot;G1/S Score&quot;, y = &quot;G2/M Score&quot;) + 
+  scale_color_manual(name =  &quot;Cycling&quot;, values = myColors) + 
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+  
+  plots[[SS2.name]] &lt;- p
+}
+
+plots[[&quot;8.0&quot;]] + plots[[&quot;8.1&quot;]] + plots[[&quot;8.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-1">
+Past versions of cellcycle2-1.png
+</button>
+</p>
+<div id="fig-cellcycle2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-1.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plots[[&quot;9.0&quot;]] + plots[[&quot;9.1&quot;]] + plots[[&quot;9.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle2-2">
+Past versions of cellcycle2-2.png
+</button>
+</p>
+<div id="fig-cellcycle2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle2-2.png" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>We confirm that there does not seem to have a significant correlation between cell cycle phase and treatment condition.</p>
+<ul>
+<li><strong>QUESTION #2</strong> Is there a correlation between cell cycle phase and the expression of signatures?</li>
+<li><strong>HYPOTHESIS</strong> We hypothesize that low cycling cells (G1) should express higher levels of <strong>OXPHOS and UPR</strong> genes. (G1 &gt; S &gt; G2M)
+<ul>
+<li><strong>APPROACH</strong> Violin Plots
+<ul>
+<li>Create Violin Plots for each hallmark of interest like **DE Analysis #1/APPROACH #1.</li>
+<li>Stratify the Violin Plots by cell cycle phase</li>
+</ul></li>
+</ul></li>
+</ul>
+<pre class="r"><code>SS2s &lt;- c(SS2Malignant.8, SS2Malignant.9)
+SS2.names &lt;- c(&quot;SS2 Patient 8&quot;, &quot;SS2 Patient 9&quot;)
+hms.centered &lt;- c(&quot;GO.OXPHOS35.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
+cc.exp.plot &lt;- vector(&quot;list&quot;, length = 3)
+names(cc.exp.plot) &lt;- SS2.names
+patient &lt;- c(&quot;8&quot;, &quot;9&quot;)
+
+for(i in 1:length(SS2s)){
+  obj = SS2s[[i]]
+  name = SS2.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
+  
+  my_comparisons &lt;- list(
+    c(glue(&quot;G1&quot;), glue(&quot;S&quot;)), 
+    c(glue(&quot;S&quot;), glue(&quot;G2M&quot;)), 
+    c(glue(&quot;G1&quot;), glue(&quot;G2M&quot;))
+  )
+  
+  if(patient[[i]] == &quot;8&quot;){
+    p1 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = 1)
+  }
+  else{
+    p1 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), y.max = 1.3)
+  }
+  p1[[1]] &lt;- p1[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)+  
+    geom_text(label = paste(sum(obj$Phase == &quot;G1&quot;), &quot;cells&quot;), x = &quot;G1&quot;, y = min(obj$GO.OXPHOS35.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;S&quot;), &quot;cells&quot;), x = &quot;S&quot;, y = min(obj$GO.OXPHOS35.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;G2M&quot;), &quot;cells&quot;), x = &quot;G2M&quot;, y = min(obj$GO.OXPHOS35.centered) - 0.03) + 
+    theme(plot.title = element_text(size = 10)) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.12) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.12, bracket.size = 0, vjust = 1.8)
+  
+  p1[[2]] &lt;- p1[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) +
+    theme(plot.title = element_text(size = 10)) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;G1&quot;), &quot;cells&quot;), x = &quot;G1&quot;, y = min(obj$UNUPDATED.UPR38.centered) -0.03) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;S&quot;), &quot;cells&quot;), x = &quot;S&quot;, y = min(obj$UNUPDATED.UPR38.centered) - 0.03) + 
+    geom_text(label = paste(sum(obj$Phase == &quot;G2M&quot;), &quot;cells&quot;), x = &quot;G2M&quot;, y = min(obj$UNUPDATED.UPR38.centered) - 0.03) +
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.format&quot;, step.increase = 0.12) + 
+    stat_compare_means(comparisons = my_comparisons, method = &quot;wilcox.test&quot;, label = &quot;p.signif&quot;, step.increase = 0.12, bracket.size = 0, vjust = 1.8)
+
+  
+  p2 &lt;- VlnPlot(obj, features = hms.centered, group.by = &quot;sample&quot;, split.by = &quot;Phase&quot;, pt.size = 0, combine = FALSE, c(&quot;#00AFBB&quot;, &quot;#FC4E07&quot;, &quot;#E7B800&quot;))
+  p2[[1]] &lt;- p2[[1]] + labs(title = glue(&quot;{name} OXPHOS score by Cell Cycle Phase / Treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    theme(plot.title = element_text(size = 10))
+  p2[[2]] &lt;- p2[[2]] + labs(title = glue(&quot;{name} UPR score by Cell Cycle Phase / Treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) +
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) + 
+    theme(plot.title = element_text(size = 10))
+  
+  cc.exp.plot[[i]] &lt;- p1[[1]] + p1[[2]] + p2[[1]]+ p2[[2]] + plot_layout(guides= &#39;collect&#39;)
+}
+
+cc.exp.plot[[&quot;SS2 Patient 8&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle3-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle3-1">
+Past versions of cellcycle3-1.png
+</button>
+</p>
+<div id="fig-cellcycle3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle3-1.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>cc.exp.plot[[&quot;SS2 Patient 9&quot;]]</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle3-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle3-2">
+Past versions of cellcycle3-2.png
+</button>
+</p>
+<div id="fig-cellcycle3-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle3-2.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li><strong>Patient 8</strong>
+<ul>
+<li>OXPHOS: G2M &gt; G1 &gt; S (not statistically significant &amp; does not support our hypothesis)</li>
+<li>UPR: G2M &gt; S &gt; G1 (not statistically significant &amp; does not support our hypothesis)</li>
+</ul></li>
+<li><strong>Patient 9</strong>
+<ul>
+<li>OXPHOS: G2M &gt; G1; S &gt; G1 (statistically significant but does not support our hypothesis)</li>
+<li>UPR: S &gt; G2M &gt; G1 (not statistically significant and does not support our hypothesis)</li>
+</ul></li>
+<li>No specific statistically significant trend identified. However, cells in the non / low cycling G1 phase do not seem to express higher levels of OXPHOS and UPR genes, which does not support our hypothesis.</li>
+</ul></li>
+</ul>
+<p>We reconfirm our results by plotting G2M vs. G1/S Scores, with points colored by high OXPHOS scores (&gt; 2).</p>
+<pre class="r"><code>SS2s &lt;- c(SS2Malignant8.0, SS2Malignant8.1, SS2Malignant8.2, SS2Malignant9.0, SS2Malignant9.1, SS2Malignant9.2)
+SS2.names &lt;- c(&quot;8.0&quot;, &quot;8.1&quot;, &quot;8.2&quot;, &quot;9.0&quot;, &quot;9.1&quot;, &quot;9.2&quot;)
+plots &lt;- vector(&quot;list&quot;, length = length(SS2.names))
+names(plots) &lt;- SS2.names
+
+for(i in 1:length(SS2s)){
+  SS2 &lt;- SS2s[[i]]
+  SS2.name &lt;- SS2.names[[i]]
+  
+  scores &lt;- SS2@meta.data %&gt;% 
+    select(G1S41.centered, G2M.Score.centered, GO.OXPHOS35.centered)
+  cycling &lt;- vector(mode = &quot;character&quot;, length = nrow(scores))
+  cycling[(scores$G1S41.centered &lt; 1 | scores$G2M.Score.centered &lt; 1)] &lt;- &quot;Non-Cycling&quot;
+  cycling[(scores$G1S41.centered &gt; 1 | scores$G2M.Score.centered &gt; 1)] &lt;- &quot;Intermediate&quot;
+  cycling[(scores$G1S41.centered &gt; 2 | scores$G2M.Score.centered &gt; 2)] &lt;- &quot;Cycling&quot;
+  
+  scores &lt;- scores %&gt;% mutate(&quot;Cycling&quot; = cycling)
+  scores &lt;- scores %&gt;% mutate(&quot;highOXPHOS&quot; = scores$GO.OXPHOS35.centered &gt; 0.2)
+  
+  numCells &lt;- nrow(scores)
+  cycling &lt;- round(sum(scores$Cycling == &quot;Cycling&quot;) / numCells, 2)
+  levels(scores$Cycling) &lt;- c(&quot;Cycling&quot;, &quot;Intermediate&quot;, &quot;Non-Cycling&quot;)
+  myColors &lt;- c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)
+  names(myColors) &lt;- levels(scores$Cycling)
+  
+  p &lt;- ggplot(scores, aes(x = G1S41.centered, y = G2M.Score.centered, colour = highOXPHOS)) + 
+    geom_point() + 
+    theme_bw() +
+    labs(title = glue(&quot;SS2 Sample {SS2.name} Cell Cycle State and OXPHOS score&quot;), subtitle = glue(&quot;N = {numCells}, {cycling}% cycling&quot;), x = &quot;G1/S Score&quot;, y = &quot;G2/M Score&quot;, colour = &quot;high OXPHOS ( &gt; 0.2)&quot;) + 
+    geom_hline(yintercept = 2, linetype = &quot;dashed&quot;) + 
+    theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+  
+  plots[[SS2.name]] &lt;- p
+}
+
+plots[[&quot;8.0&quot;]] + plots[[&quot;8.1&quot;]] + plots[[&quot;8.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle4-1">
+Past versions of cellcycle4-1.png
+</button>
+</p>
+<div id="fig-cellcycle4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle4-1.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>plots[[&quot;9.0&quot;]] + plots[[&quot;9.1&quot;]] + plots[[&quot;9.2&quot;]] + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle4-2.png" width="1152" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcycle4-2">
+Past versions of cellcycle4-2.png
+</button>
+</p>
+<div id="fig-cellcycle4-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/figure/02.2_Izar2020_SS2_CellCycleAnalysis.Rmd/cellcycle4-2.png" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Does not seem to have any correlation between OXPHOS expression and cell cycle phase since some cycling cells also have high OXPHOS scores. Again,it is very difficult to conclude anything because we have very little cells.</p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Mojave 10.14.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4       
+ [6] tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5           
+[11] glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1             
+[16] readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4          
+[21] readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0      
+[26] cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
+
+loaded via a namespace (and not attached):
+  [1] backports_1.1.8     fastmatch_1.1-0     workflowr_1.6.2     plyr_1.8.6          igraph_1.2.5       
+  [6] lazyeval_0.2.2      splines_4.0.2       crosstalk_1.1.0.1   BiocParallel_1.22.0 listenv_0.8.0      
+ [11] digest_0.6.25       htmltools_0.5.0     fansi_0.4.1         magrittr_1.5        cluster_2.1.0      
+ [16] ROCR_1.0-11         openxlsx_4.1.5      globals_0.12.5      modelr_0.1.8        colorspace_1.4-1   
+ [21] blob_1.2.1          rvest_0.3.5         haven_2.3.1         xfun_0.15           crayon_1.3.4       
+ [26] jsonlite_1.7.0      survival_3.2-3      zoo_1.8-8           ape_5.4             gtable_0.3.0       
+ [31] leiden_0.3.3        car_3.0-8           future.apply_1.6.0  abind_1.4-5         scales_1.1.1       
+ [36] DBI_1.1.0           rstatix_0.6.0       viridisLite_0.3.0   reticulate_1.16     foreign_0.8-80     
+ [41] rsvd_1.0.3          DT_0.14             tsne_0.1-3          htmlwidgets_1.5.1   httr_1.4.1         
+ [46] RColorBrewer_1.1-2  ellipsis_0.3.1      ica_1.0-2           farver_2.0.3        pkgconfig_2.0.3    
+ [51] reshape_0.8.8       uwot_0.1.8          dbplyr_1.4.4        labeling_0.3        rlang_0.4.7        
+ [56] later_1.1.0.1       munsell_0.5.0       cellranger_1.1.0    tools_4.0.2         cli_2.0.2          
+ [61] generics_0.0.2      broom_0.7.0         ggridges_0.5.2      evaluate_0.14       yaml_2.2.1         
+ [66] knitr_1.29          fs_1.4.2            fitdistrplus_1.1-1  zip_2.0.4           RANN_2.6.1         
+ [71] pbapply_1.4-2       future_1.18.0       nlme_3.1-148        whisker_0.4         xml2_1.3.2         
+ [76] compiler_4.0.2      rstudioapi_0.11     beeswarm_0.2.3      plotly_4.9.2.1      curl_4.3           
+ [81] png_0.1-7           ggsignif_0.6.0      reprex_0.3.0        stringi_1.4.6       lattice_0.20-41    
+ [86] Matrix_1.2-18       vctrs_0.3.2         pillar_1.4.6        lifecycle_0.2.0     lmtest_0.9-37      
+ [91] RcppAnnoy_0.0.16    irlba_2.3.3         httpuv_1.5.4        R6_2.4.1            promises_1.1.1     
+ [96] KernSmooth_2.23-17  gridExtra_2.3       rio_0.5.16          vipor_0.4.5         codetools_0.2-16   
+[101] MASS_7.3-51.6       assertthat_0.2.1    rprojroot_1.3-2     withr_2.2.0         sctransform_0.2.1  
+[106] parallel_4.0.2      hms_0.5.3           grid_4.0.2          rmarkdown_2.3       carData_3.0-4      
+[111] Rtsne_0.15          git2r_0.27.1        lubridate_1.7.9    </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -414,7 +414,7 @@ div.tocify {
 
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
-<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span>
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </button>
 </p>
 <div id="workflowr-report" class="collapse">
@@ -423,7 +423,7 @@ div.tocify {
 <a data-toggle="tab" href="#summary">Summary</a>
 </li>
 <li>
-<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> </a>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -432,10 +432,10 @@ div.tocify {
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2020-08-27
+<strong>Last updated:</strong> 2020-08-28
 </p>
 <p>
-<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 1
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
@@ -451,12 +451,12 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges"> <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges" class="panel-collapse collapse">
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of the R Markdown file created these results, you’ll want to first commit it to the Git repo. If you’re still working on the analysis, you can ignore this warning. When you’re finished, you can run <code>wflow_publish</code> to commit the R Markdown file and build the HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
 </div>
 </div>
 </div>
@@ -523,16 +523,16 @@ This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree58e936c4f7186a6165bd14ee30a5effef98bf6eatargetblank58e936ca"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/58e936c4f7186a6165bd14ee30a5effef98bf6ea" target="_blank">58e936c</a> </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee7a34101870d963b01786971f797e4cabc269258targetblanke7a3410a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e7a34101870d963b01786971f797e4cabc269258" target="_blank">e7a3410</a> </a>
 </p>
 </div>
-<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree58e936c4f7186a6165bd14ee30a5effef98bf6eatargetblank58e936ca" class="panel-collapse collapse">
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee7a34101870d963b01786971f797e4cabc269258targetblanke7a3410a" class="panel-collapse collapse">
 <div class="panel-body">
 <p>
 Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
 </p>
 <p>
-The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/58e936c4f7186a6165bd14ee30a5effef98bf6ea" target="_blank">58e936c</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e7a34101870d963b01786971f797e4cabc269258" target="_blank">e7a3410</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
 </p>
 <p>
 Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
@@ -573,9 +573,6 @@ Ignored files:
     Ignored:    renv/staging/
     Ignored:    vignettes/
 
-Unstaged changes:
-    Modified:   analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd
-
 </code></pre>
 <p>
 Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
@@ -613,6 +610,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/analysis/02.1_Izar2020_SS2_DEAnalysis.Rmd" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+<td>
+SS2 GO html render
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/02.1_Izar2020_SS2_DEAnalysis.html" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+<td>
+SS2 GO html render
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1425,6 +1456,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-1.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -1484,6 +1526,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosVolcano-2.png" target="_blank">4bca25d</a>
@@ -1703,6 +1756,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-1.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -1762,6 +1826,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/oxphosGS-2.png" target="_blank">4bca25d</a>
@@ -1988,6 +2063,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-1.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -2114,6 +2200,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/DEAnalysis1VlnPlot-2.png" target="_blank">4bca25d</a>
@@ -2309,6 +2406,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-1.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -2385,6 +2493,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlotSig-2.png" target="_blank">4bca25d</a>
@@ -2464,6 +2583,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-1.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -2531,6 +2661,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/VolcanoPlot2-2.png" target="_blank">4bca25d</a>
@@ -2734,6 +2875,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-1.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -2817,6 +2969,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-2.png" target="_blank">4bca25d</a>
@@ -2904,6 +3067,17 @@ Date
 <tbody>
 <tr>
 <td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-3.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+<tr>
+<td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-3.png" target="_blank">4bca25d</a>
 </td>
 <td>
@@ -2987,6 +3161,17 @@ Date
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-4.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
 <tr>
 <td>
 <a href="https://github.com/jgoh2/jesslyn_ovca/blob/4bca25d18a3d86dd061af611583099294daf82ba/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln-4.png" target="_blank">4bca25d</a>
@@ -3248,6 +3433,43 @@ for(i in 1:2){
 p1 &lt;- nadh.swarm.plots[[&quot;SS2 Patient 8&quot;]] + nadh.swarm.plots[[&quot;SS2 Patient 9&quot;]]
 p1</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-1.png" width="1632" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-otherVln2-1">
+Past versions of otherVln2-1.png
+</button>
+</p>
+<div id="fig-otherVln2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p1, filename = glue(&quot;SS2_NADH.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
 
 
@@ -3289,6 +3511,43 @@ for(i in 1:2){
 p2 &lt;- resp.swarm.plots[[&quot;SS2 Patient 8&quot;]] + resp.swarm.plots[[&quot;SS2 Patient 9&quot;]]
 p2</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-2.png" width="1632" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-otherVln2-2">
+Past versions of otherVln2-2.png
+</button>
+</p>
+<div id="fig-otherVln2-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p2, filename = glue(&quot;SS2_MITO_RESP.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
 
 
@@ -3330,6 +3589,43 @@ for(i in 1:2){
 p3 &lt;- translation.swarm.plots[[&quot;SS2 Patient 8&quot;]] + translation.swarm.plots[[&quot;SS2 Patient 9&quot;]]
 p3</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-3.png" width="1632" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-otherVln2-3">
+Past versions of otherVln2-3.png
+</button>
+</p>
+<div id="fig-otherVln2-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-3.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p3, filename = glue(&quot;SS2_MT_TRANSLATION.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
 
 
@@ -3371,6 +3667,43 @@ for(i in 1:2){
 p4 &lt;- term.swarm.plots[[&quot;SS2 Patient 8&quot;]] + term.swarm.plots[[&quot;SS2 Patient 9&quot;]]
 p4</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-4.png" width="1632" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-otherVln2-4">
+Past versions of otherVln2-4.png
+</button>
+</p>
+<div id="fig-otherVln2-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-4.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p4, filename = glue(&quot;SS2_MT_TRANSLATIONAL_TERMINATION.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)
 
 #PROTEOSOMAL_PROTEIN_CATABOLISM5 ----------
@@ -3411,6 +3744,43 @@ for(i in 1:2){
 p5 &lt;- pro.swarm.plots[[&quot;SS2 Patient 8&quot;]] + pro.swarm.plots[[&quot;SS2 Patient 9&quot;]]
 p5</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-5.png" width="1632" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-otherVln2-5">
+Past versions of otherVln2-5.png
+</button>
+</p>
+<div id="fig-otherVln2-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/otherVln2-5.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p5, filename = glue(&quot;SS2_PROTEIN_CATABOLISM.png&quot;), path = &quot;GO_results/GO_Vln/SS2&quot;, width = 17, height = 10)</code></pre>
 <ul>
 <li><strong>CONCLUSIONS</strong>
@@ -3488,6 +3858,43 @@ for(i in 1:2){
 p1 &lt;- nadh.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + nadh.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + nadh.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + nadh.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
 p1</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PCAGO-1">
+Past versions of PCAGO-1.png
+</button>
+</p>
+<div id="fig-PCAGO-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-1.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p1, filename = glue(&quot;SS2_NADH.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
 
 
@@ -3514,6 +3921,43 @@ for(i in 1:2){
 p2 &lt;- resp.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + resp.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + resp.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + resp.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
 p2</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PCAGO-2">
+Past versions of PCAGO-2.png
+</button>
+</p>
+<div id="fig-PCAGO-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-2.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p2, filename = glue(&quot;SS2_MT_RESP.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
 
 
@@ -3542,6 +3986,43 @@ for(i in 1:2){
 p3 &lt;- trans.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + trans.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + trans.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + trans.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
 p3 </code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-3.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PCAGO-3">
+Past versions of PCAGO-3.png
+</button>
+</p>
+<div id="fig-PCAGO-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-3.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p3, filename = glue(&quot;SS2_MT_TRANSLATION.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
 
 # MITO_TRANSLATIONAL_TERMINATION4.centered -------------------
@@ -3567,6 +4048,43 @@ for(i in 1:2){
 p4 &lt;- term.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + term.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + term.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + term.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
 p4 </code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-4.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PCAGO-4">
+Past versions of PCAGO-4.png
+</button>
+</p>
+<div id="fig-PCAGO-4" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-4.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p4, filename = glue(&quot;SS2_MT_TRANSLATIONAL_TERMINATION.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)
 
 # PROTEOSOMAL_PROTEIN_CATABOLISM5.centered -------------------
@@ -3591,6 +4109,43 @@ for(i in 1:2){
 p5 &lt;- pro.pca.plots[[&quot;SS2 Patient 8&quot;]][[1]] + pro.pca.plots[[&quot;SS2 Patient 8&quot;]][[2]] + pro.pca.plots[[&quot;SS2 Patient 9&quot;]][[1]] + pro.pca.plots[[&quot;SS2 Patient 9&quot;]][[2]]
 p5</code></pre>
 <p><img src="figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-5.png" width="1440" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PCAGO-5">
+Past versions of PCAGO-5.png
+</button>
+</p>
+<div id="fig-PCAGO-5" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/cd835db3df0ffbf4cbc4ad08d0e517d2e1d1dc05/docs/figure/02.1_Izar2020_SS2_DEAnalysis.Rmd/PCAGO-5.png" target="_blank">cd835db</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-28
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <pre class="r"><code>ggsave(plot = p5, filename = glue(&quot;SS2_PROTEIN_CATABOLISM.png&quot;), path = &quot;GO_results/GO_PCA/SS2&quot;, width = 15, height = 10)</code></pre>
 <p>In these PCA plots for each GO term, there does not seem to have very clear separation of cells. It therefore doesn’t seem like certain subpopulations of cells within a treatment condition enriches our GO terms of interest.</p>
 <ul>
@@ -3619,7 +4174,7 @@ locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
 attached base packages:
-[1] stats4    parallel  stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats4    parallel  stats     graphics  grDevices datasets  utils     methods   base     
 
 other attached packages:
  [1] topGO_2.40.0          SparseM_1.78          GO.db_3.11.4          graph_1.66.0          org.Hs.eg.db_3.11.4  

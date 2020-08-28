@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jesslyn Goh and Mike Cuoco" />
+
+
+<title>Izar 2020 PDX (Cohort 3) Exploratory Analysis</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">jesslyn_ovca</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="coding.html">Coding convention</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/mikecuoco/jesslyn_ovca">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Izar 2020 PDX (Cohort 3) Exploratory Analysis</h1>
+<h4 class="author">Jesslyn Goh and Mike Cuoco</h4>
+<h4 class="date">7/30/2020</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-08-28
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200713code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200713)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200713code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200713)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee7a34101870d963b01786971f797e4cabc269258targetblanke7a3410a"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e7a34101870d963b01786971f797e4cabc269258" target="_blank">e7a3410</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatreee7a34101870d963b01786971f797e4cabc269258targetblanke7a3410a" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/e7a34101870d963b01786971f797e4cabc269258" target="_blank">e7a3410</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    GO_results/.DS_Store
+    Ignored:    GO_results/GO_PCA/.DS_Store
+    Ignored:    GO_results/GO_Vln/.DS_Store
+    Ignored:    GO_results/GO_Vln/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/F/
+    Ignored:    GO_results/GO_plots/SS2/.DS_Store
+    Ignored:    GO_results/Tables/.DS_Store
+    Ignored:    GO_results/Tables/PDX/.DS_Store
+    Ignored:    GO_results/Tables/PDX/F/
+    Ignored:    GO_results/Tables/SS2/.DS_Store
+    Ignored:    analysis/.DS_Store
+    Ignored:    code/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/HTAPP/
+    Ignored:    data/Izar_2020/
+    Ignored:    data/gene_lists/.DS_Store
+    Ignored:    data/gene_lists/GO_PDX/.DS_Store
+    Ignored:    data/gene_lists/GO_SS2/.DS_Store
+    Ignored:    data/gene_lists/extra/.DS_Store
+    Ignored:    jesslyn_plots/
+    Ignored:    mike_plots/
+    Ignored:    old/.DS_Store
+    Ignored:    old/edited/.DS_Store
+    Ignored:    renv/.DS_Store
+    Ignored:    renv/library/
+    Ignored:    renv/python/
+    Ignored:    renv/staging/
+    Ignored:    vignettes/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd</code>) and HTML (<code>docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/56eea688127eacfaf2114abece537d60f19ac66d/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">56eea68</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-27
+</td>
+<td>
+SS2 and PDX GO
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/b7634b5550c6e7c65470f800f820a74f229dfa51/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">b7634b5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/e35baf5f626ae1377da812241ce09b24ad449b6e/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">e35baf5</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-23
+</td>
+<td>
+Cell cycle ggplot
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2c1accf8a5c21b85e3658190c11441d341d0d635/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">2c1accf</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-19
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/92568b87a1f3b0cfe5715dab09817ed8f3fee774/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">92568b8</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-17
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d60aeff9be61fbef75b246307d4c93f2b192aa7f/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">d60aeff</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-17
+</td>
+<td>
+More DE Analysis of other hallmarks
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/80345fe4bf9bd7015617c6c1500cd15d07991f5a/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">80345fe</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-15
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/789982d87a20d30b6ae656007dda319809fe3e6e/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">789982d</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-14
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/e05c3281876449d3de1475d4b6c0c687986bd466/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">e05c328</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d504c5953721665b13749ae0ef898a9b46ab6f03/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">d504c59</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/3e3db6777f7551d3cbc73b897e704026510ea30c/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">3e3db67</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/d801a7a707759fdd07c5918342259d636a0e5b22/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/6d23590f4a7c34ac917fb57c39c328d1f4d1dc31/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">6d23590</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/eaa900ebf0881bea5dc0b4a7395e3b2b0da3a17e/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">eaa900e</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/2dc1bee7caab8ef67312b7d286e864b74e8f3028/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">2dc1bee</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+Build site.
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/284aad41a1a7e82fdd119034dd23aeb385fa2f03/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">284aad4</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-31
+</td>
+<td>
+workflowr::wflow_publish(files = files)
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/analysis/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+<td>
+PDX Exploratory + DE + Cell Cycle Analyses
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/jgoh2/jesslyn_ovca/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/03.0_Izar2020_PDX_ExploratoryAnalysis.html" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+<td>
+PDX Exploratory + DE + Cell Cycle Analyses
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="izar-2020-pdx-cohort-3-data-differantial-expresison-analysis" class="section level1">
+<h1>IZAR 2020 PDX (COHORT 3) DATA DIFFERANTIAL EXPRESISON ANALYSIS</h1>
+<div id="overview" class="section level3">
+<h3>OVERVIEW</h3>
+<ul>
+<li>The PDX data from Izar2020 consists of <strong>only Malignant cells</strong> from three HGSOC PDX models derived from patients with different treatment histories were selected for implantation:
+<ul>
+<li>DF20 (BRCA WT treatment-naive, clinically platinum sensitive)</li>
+<li>DF101 (BRCA1 mutant, 2 lines of prior therapy, clinically platinum resistant)</li>
+<li>DF68 (BRCA1 mutant, 6 lines of prior therapy, clinically platinum resistant)</li>
+</ul></li>
+<li>After tumors were established, animals were divided into two groups per model:
+<ul>
+<li>Vehicle (treated with DMSO)</li>
+<li>Carboplatin (treated with IP carboplatin)
+<ul>
+<li>Carboplatin-treated mice for minimal residual disease (<strong>MRD</strong>) group were harvested for scRNA-seq</li>
+<li>The remaining carboplatin-treated mice were harvested at endpoint (<strong>vehicle</strong>)</li>
+</ul></li>
+</ul></li>
+<li>In our 5-part analysis of the Izar 2020 PDX data, we are interested in identifying differentially expressed genes and hallmark genesets between treatment statuses <strong>within</strong> each model.</li>
+<li>We split our PDX analysis into three parts:
+<ol style="list-style-type: decimal">
+<li><strong>Load Data and Create PDX Seurat Object</strong>
+<ol style="list-style-type: lower-alpha">
+<li>The code to this part of our analysis is in the <strong>read_Izar_2020.R</strong> file in the <strong>code</strong> folder. During this part of our analysis we:
+<ol style="list-style-type: lower-roman">
+<li>Load in PDX count matrix and Create Seurat Object</li>
+<li>Assign Metadata identities including:
+<ul>
+<li>Mouse ID</li>
+<li>Model ID</li>
+<li>Treatment Status</li>
+</ul></li>
+<li>Score cells for <strong>cell cycle</strong> and <strong>hallmark genesets</strong> - <strong>Note</strong>: It does not matter whether we call AddModuleScore before or after subsetting and scaling each model because AddModuleScore uses the <strong>data</strong> slot.</li>
+<li>Save Seurat Object</li>
+</ol></li>
+</ol></li>
+<li><strong>Process Data and Exploratory Data Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li>The code to this part of our analysis can be found in the <strong>03_Izar2020_PDX_Load</strong> file in the <strong>old/edited</strong> folder. During this part of our analysis we:
+<ol style="list-style-type: lower-roman">
+<li>Load in PDX Seurat Object from Part 1 and <strong>subset by model</strong>. Continue analysis separately for each model.</li>
+<li>Scale and FindVariableFeatures (prepares data for dimensionality reduction)</li>
+<li>Dimensionality Reduction (PCA + UMAP)</li>
+<li>Save Seurat Objects</li>
+</ol></li>
+</ol></li>
+<li><strong>Exploratory Data Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li>The code to this part of our analysis can be found in the <strong>03.0_Izar2020_PDX_Exploratory Analysis</strong> file in the <strong>analysis</strong> folder. During this part of our analysis we:
+<ol style="list-style-type: lower-roman">
+<li>Load in PDX Seurat Object from Part 2. Analyze separately for each model.</li>
+<li>Compute summary metrics for PDX data such as:
+<ul>
+<li>Number of cells per model per treatment</li>
+<li>Number of cells per treatment per cell cycle phase</li>
+</ul></li>
+<li>Visualize how cells separate based on metadata identities via UMAP - Intermodel heterogeneity: How do cells separate by model? - Intramodel heterogeneity:
+<ul>
+<li>How do cells separate by treament status?</li>
+<li>How do cells separate by cell cycle phase?</li>
+</ul></li>
+</ol></li>
+</ol></li>
+<li><strong>DE Analysis</strong>
+<ol style="list-style-type: lower-alpha">
+<li><strong>TYPE #1 DE ANALYSIS</strong>: Visualizing and Quantifying Differentially Expression on <strong>Predefined</strong> GO Genesets
+<ol style="list-style-type: lower-roman">
+<li>Violin Plots and UMAP</li>
+<li>Gene Set Enrichment Analysis (GSEA)</li>
+</ol></li>
+<li><strong>TYPE #2 DE ANALYSIS</strong>: Finding DE Genes from scratch
+<ol style="list-style-type: lower-roman">
+<li>Volcano Plots</li>
+</ol></li>
+</ol></li>
+<li><strong>CELL CYCLE ANALYSIS</strong>
+<ol style="list-style-type: lower-alpha">
+<li><strong>TYPE #1 CELL CYCLE ANALYSIS</strong>: Examine correlation between treatment condition and cell cycle phase</li>
+<li>Evaluate the idea that cell cycle might influence expression of signatures</li>
+</ol></li>
+</ol></li>
+</ul>
+<p>This is the third part of our 5-part analysis of the Izar 2020 PDX (Cohort 3) data.</p>
+</div>
+<div id="step-1-load-in-seurat-objects-and-genesets" class="section level3">
+<h3>STEP 1 LOAD IN SEURAT OBJECTS AND GENESETS</h3>
+<pre class="r"><code># Load packages
+source(here::here(&#39;packages.R&#39;))
+
+#Read in PDX RDS object
+PDX_All = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_All_processed.RDS&quot;)
+PDX_DF20 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF20_processed.RDS&quot;)
+PDX_DF101 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF101_processed.RDS&quot;)
+PDX_DF68 = readRDS(&quot;data/Izar_2020/test/jesslyn_PDX_DF68_processed.RDS&quot;)
+
+#Read in hallmarks of interest
+hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names))
+names(hallmark.list) &lt;- hallmark_names
+
+for(hm in hallmark_names){
+  if(file.exists(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;))){
+    file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
+    hallmark.list[[hm]] &lt;- file
+  }
+  else{
+    file &lt;- read_lines(glue(&quot;data/gene_lists/extra/{hm}.txt&quot;), skip =2)
+    hallmark.list[[hm]] &lt;- file
+  }
+}
+
+#center module and cell cycle scores and reassign to the metadata of each Seurat object
+hm.names &lt;- names(PDX_All@meta.data)[9:57]
+
+for(i in hm.names){
+    DF20.hm.centered &lt;- scale(PDX_DF20[[i]], center = TRUE, scale = FALSE)
+    PDX_DF20 &lt;- AddMetaData(PDX_DF20, DF20.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    
+    DF101.hm.centered &lt;- scale(PDX_DF101[[i]], center = TRUE, scale = FALSE)
+    PDX_DF101 &lt;- AddMetaData(PDX_DF101, DF101.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+    
+    DF68.hm.centered &lt;- scale(PDX_DF68[[i]], center = TRUE, scale = FALSE)
+    PDX_DF68 &lt;- AddMetaData(PDX_DF68, DF68.hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+}</code></pre>
+</div>
+<div id="step-2-examine-summary-metrics" class="section level3">
+<h3>STEP 2 EXAMINE SUMMARY METRICS</h3>
+<pre class="r"><code>#number of cells in each treatment level in each model 
+numCellsPerTreatmentPerModel = table(PDX_All$treatment.status, PDX_All$model_ID)
+numCellsPerTreatmentPerModel %&gt;% 
+  as.data.frame() %&gt;% 
+  dplyr::rename(treatmentStatus = Var1, model = Var2, numCells = Freq) %&gt;% 
+  ggplot(aes(x=model, fill=treatmentStatus, y=numCells)) +
+  geom_bar(stat=&quot;identity&quot;, position=&quot;fill&quot;) + labs(fill = &quot;treatmentStatus&quot;, x = &quot;model&quot;, y = &quot;Percent of cells&quot;) +
+  theme_bw() + 
+  geom_text(aes(label = glue(&quot;{numCells} Cells&quot;)), position = &quot;fill&quot;, hjust = 0.5, vjust = 2, size = 3, color = &quot;white&quot;) + 
+  labs(title = &quot;Percent of Malignant Cells Per Treatment Per Model&quot;) + 
+  scale_fill_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;)) + 
+  scale_y_continuous(labels = scales::percent)</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PDXmetrics-1.png" width="480" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PDXmetrics-1">
+Past versions of PDXmetrics-1.png
+</button>
+</p>
+<div id="fig-PDXmetrics-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/84edf85071d5ecdaced41f7357a865d5d5b458b8/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PDXmetrics-1.png" target="_blank">84edf85</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-12
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/a3ddf5426a00200791376a7aca6df663ea19f7ef/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PDXmetrics-1.png" target="_blank">a3ddf54</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-07
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PDXmetrics-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PDXmetrics-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The summary metrics of each model shows us how little cells we have in each sample, and in each treatment condition. We therefore have to keep in mind that the results we get from this small sample of cells may not be representative of the true population.</p>
+</div>
+<div id="step-3-umap-pca-visualizations" class="section level3">
+<h3>STEP 3 UMAP &amp; PCA VISUALIZATIONS</h3>
+<p>We are interested in finding out how cells cluster together. This helps us qualitatively understand what may be driving their differential expression (if any). We are specifically interested seeing if cells cluster due to these metadata identities: 1. Intermodel heterogeneity: Do separate by model? 2. Intramodel heterogeneity: a. Do cells separate by treatment status? b. Do cells separate by cell cycle phase? c. Do cells separate due to nFeature and nCount? d. Do cells separate by OXPHOS or UPR hallmark scores?</p>
+<p><strong>1) BY MODEL</strong></p>
+<pre class="r"><code>UMAPPlot(PDX_All, group.by = &quot;model_ID&quot;) + 
+  labs(title = &quot;PDX UMAP by Model&quot;, subtitle = paste(nrow(PDX_All@meta.data), &quot;Malignant Cells&quot;)) + 
+  coord_fixed() + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-UMAPbyModel-1">
+Past versions of UMAPbyModel-1.png
+</button>
+</p>
+<div id="fig-UMAPbyModel-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/UMAPbyModel-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>PDX data separates by model very well.</li>
+</ul>
+<p><strong>2) BY TREATMENT STATUS WITHIN EACH MODEL</strong></p>
+<pre class="r"><code>DF20.byt &lt;- UMAPPlot(PDX_DF20, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF20 UMAP by Treatment&quot;, subtitle = paste(nrow(PDX_DF20@meta.data), &quot;Malignant Cells&quot;)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+DF101.byt &lt;- UMAPPlot(PDX_DF101, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF101 UMAP by Treatment&quot;, subtitle = paste(nrow(PDX_DF101@meta.data), &quot;Malignant Cells&quot;))+ 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+DF68.byt &lt;- UMAPPlot(PDX_DF68, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF68 UMAP by Treatment&quot;, subtitle = paste(nrow(PDX_DF68@meta.data), &quot;Malignant Cells&quot;))+ 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+
+DF20.byt + DF101.byt + DF68.byt + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PbyTreatment-1">
+Past versions of PbyTreatment-1.png
+</button>
+</p>
+<div id="fig-PbyTreatment-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>DF20.pca.byt &lt;- PCAPlot(PDX_DF20, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF20 PCA by Treatment&quot;, subtitle = paste(nrow(PDX_DF20@meta.data), &quot;Malignant Cells&quot;)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+DF101.pca.byt &lt;- PCAPlot(PDX_DF101, group.by  =&quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF101 PCA by Treatment&quot;, subtitle = paste(nrow(PDX_DF101@meta.data), &quot;Malignant Cells&quot;)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+DF68.pca.byt &lt;- PCAPlot(PDX_DF68, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + labs(title = &quot;DF68 PCA by Treatment&quot;, subtitle = paste(nrow(PDX_DF68@meta.data), &quot;Malignant Cells&quot;)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+
+DF20.pca.byt + DF101.pca.byt + DF68.pca.byt + plot_layout(guides = &quot;collect&quot;)</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-PbyTreatment-2">
+Past versions of PbyTreatment-2.png
+</button>
+</p>
+<div id="fig-PbyTreatment-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/PbyTreatment-2.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>Seems like cells do not cluster together by treatment status.</li>
+<li>Treatment status is also not captured in PC_1 or PC_2</li>
+</ul>
+<p><strong>3) BY UPR AND OXPHOS GENESET SCORE</strong></p>
+<pre class="r"><code>hms.centered &lt;- c(&quot;UNUPDATED.OXPHOS37.centered&quot;, &quot;UNUPDATED.UPR38.centered&quot;)
+
+#UMAP 
+PDX.names &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
+PDXs &lt;- c(PDX_DF20, PDX_DF101, PDX_DF68)
+UMAP.plots &lt;- vector(&quot;list&quot;, length(PDXs))
+names(UMAP.plots) &lt;- PDX.names
+
+for (i in 1:length(PDXs)){
+  obj &lt;- PDX.names[[i]]
+  numCells = nrow(PDXs[[i]]@meta.data)
+  umap &lt;- UMAPPlot(PDXs[[i]], group.by = &quot;treatment.status&quot;) + 
+    labs(title = glue(&quot;{obj} UMAP by Treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;))+
+    theme(plot.subtitle = element_text(size = 10)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+  
+  p &lt;- FeaturePlot(PDXs[[i]], features = hms.centered, combine = FALSE)
+  p[[1]] &lt;- p[[1]] + labs(title = glue(&quot;{obj} UMAP by Oxphos Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION&quot;) 
+  p[[2]] &lt;- p[[2]] + labs(title = glue(&quot;{obj} UMAP by UPR Scores&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;), caption = &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE&quot;) 
+  
+  UMAP.plots[[obj]] &lt;- umap + p[[1]] + p[[2]]
+}
+
+UMAP.plots[[&quot;DF20&quot;]] </code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEanalysis1-UMAP-1">
+Past versions of “DEanalysis1 UMAP-1.png”
+</button>
+</p>
+<div id="fig-no-spaces-DEanalysis1-UMAP-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>UMAP.plots[[&quot;DF101&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEanalysis1-UMAP-2">
+Past versions of “DEanalysis1 UMAP-2.png”
+</button>
+</p>
+<div id="fig-no-spaces-DEanalysis1-UMAP-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-2.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-2.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>UMAP.plots[[&quot;DF68&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1%20UMAP-3.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-no-spaces-DEanalysis1-UMAP-3">
+Past versions of “DEanalysis1 UMAP-3.png”
+</button>
+</p>
+<div id="fig-no-spaces-DEanalysis1-UMAP-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-3.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-3.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/DEanalysis1 UMAP-3.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>Since cells do not separate by treatment status, it is difficult to determine whether there is a correlation between treatment condition and hallmark scores based on our UMAP visualization.</li>
+<li>We will therefore try to visualize DE hallmark scores across treatment conditions with VlnPlots in the DE Analysis section.</li>
+</ul>
+<p><strong>4) BY CELL CYCLE PHASE AND BY nFEATURE/ nCOUNT</strong></p>
+<pre class="r"><code>#UMAP -------------------------
+ccUMAP.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(ccUMAP.plots) &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
+  
+  byt &lt;- UMAPPlot(obj, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} UMAP by treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+  bycc &lt;- UMAPPlot(obj, group.by = &quot;Phase&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} UMAP by CC Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), pt.size = 0.5, combine = FALSE)
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} UMAP by S Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} UMAP by G2M Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  
+  ccUMAP.plots[[i]] &lt;- byt + bycc + byscore[[1]] + byscore[[2]]
+}
+
+ccUMAP.plots[[&quot;DF20&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-1">
+Past versions of cellcyleUMAP-1.png
+</button>
+</p>
+<div id="fig-cellcyleUMAP-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-1.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ccUMAP.plots[[&quot;DF101&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-2">
+Past versions of cellcyleUMAP-2.png
+</button>
+</p>
+<div id="fig-cellcyleUMAP-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-2.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ccUMAP.plots[[&quot;DF68&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-3.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyleUMAP-3">
+Past versions of cellcyleUMAP-3.png
+</button>
+</p>
+<div id="fig-cellcyleUMAP-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-3.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-3.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/c8bb9fc065ed0d52d9fff97708768a8502747ff6/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyleUMAP-3.png" target="_blank">c8bb9fc</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-30
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>#PCA -------------------- (PCA separates cell by cell cycle really well)
+ccPCA.plots &lt;- vector(&quot;list&quot;, length = 3)
+names(ccPCA.plots) &lt;- c(&quot;DF20&quot;, &quot;DF101&quot;, &quot;DF68&quot;)
+
+for(i in 1:length(PDXs)){
+  obj = PDXs[[i]]
+  name = PDX.names[[i]]
+  numCells = nrow(obj@meta.data)
+  obj$Phase &lt;- factor(obj$Phase, levels = c(&quot;G1&quot;, &quot;S&quot;, &quot;G2M&quot;))
+  
+  byt &lt;- PCAPlot(obj, group.by = &quot;treatment.status&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} PCA by treatment&quot;), subtitle = glue(&quot;{numCells} Malignant Cell&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+  bycc &lt;- PCAPlot(obj, group.by = &quot;Phase&quot;, pt.size = 0.5) + 
+    labs(title = glue(&quot;{name} PCA by CC Phase&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + 
+    theme(plot.title = element_text(hjust = 0.5, size = 10)) + 
+  scale_color_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))
+  byscore &lt;- FeaturePlot(obj, features = c(&quot;S.Score.centered&quot;, &quot;G2M.Score.centered&quot;), pt.size = 0.5, reduction = &quot;pca&quot;,combine = FALSE)
+  byscore[[1]] &lt;- byscore[[1]] + labs(title = glue(&quot;{name} PCA by centered S Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  byscore[[2]] &lt;- byscore[[2]] + labs(title = glue(&quot;{name} PCA by centered G2M Score&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  
+  bynFnC &lt;- FeaturePlot(obj, features = c(&quot;nCount_RNA&quot;, &quot;nFeature_RNA&quot;), reduction = &quot;pca&quot;, pt.size = 0.5, combine = FALSE)
+  bynFnC[[1]] &lt;- bynFnC[[1]] + labs(title = glue(&quot;{name} PCA by nCount&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  bynFnC[[2]] &lt;- bynFnC[[2]] + labs(title = glue(&quot;{name} PCA by nFeature&quot;), subtitle = glue(&quot;{numCells} Malignant Cells&quot;)) + theme(plot.title = element_text(size = 10))
+  
+  ccPCA.plots[[i]] &lt;- byt + bycc + byscore[[1]] + byscore[[2]] + bynFnC[[1]] + bynFnC[[2]]
+}
+
+ccPCA.plots[[&quot;DF20&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyclePCA-1">
+Past versions of cellcyclePCA-1.png
+</button>
+</p>
+<div id="fig-cellcyclePCA-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ccPCA.plots[[&quot;DF101&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-2.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyclePCA-2">
+Past versions of cellcyclePCA-2.png
+</button>
+</p>
+<div id="fig-cellcyclePCA-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-2.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-2.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<pre class="r"><code>ccPCA.plots[[&quot;DF68&quot;]]</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-3.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cellcyclePCA-3">
+Past versions of cellcyclePCA-3.png
+</button>
+</p>
+<div id="fig-cellcyclePCA-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-3.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/cellcyclePCA-3.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>Although it doesn’t seem like the cells cluster by treatment condition within each model, it does seem like cells in the same cell cycle phase, especially those with higher S or G2M scores tend to be near each other on UMAP space. We visualized how cells cluster by cell cycle using both UMAP and PCA because PCA is known to cluster cells well by cell cycle.<br />
+</li>
+<li>Looking at the PCA plots, we see that:
+<ul>
+<li>PC_2 captures Cell Cycle Phase, S.Score and G2M scores, as cells in the same phase or have high S or G2M scores are found to be near each other on the PC_2 Axis.</li>
+<li>PC_1 captures nCount and nFeature variation, as cells with higher nCount and nFeature values are near each other on the PC_1 Axis.</li>
+</ul></li>
+<li>However, it is hard to tell whether there is a correlation between treatment condition and cell cycle phase / score based on these plots.</li>
+</ul></li>
+</ul>
+<p>We will investigate further into the correlation between treatment status, hallmark scores, and cell cycle phase in the next sections.</p>
+<p><strong>5) Investigating Correlation between nCount, nFeature and Hallmark Scores</strong> * Here, we investigate whether there is a correlation between nCount, nFeature and Hallmark Scores. It is possible that cells that appear to have higher OXPHOS counts simply have higher nCount or nFeature in general. * This would bring bias to our analysis because it is possible that cells that appear to have enriched or depleted OXPHOS expression actually have more or less (dropouts) genes than other cells in general. * Although this bias in gene count should have been addressed by RPKM/CPM/TPM normalization, we would still like to confirm that the differential expression of our hallmarks of interest is not driven by technical (rather than biological) factors such as nFeature/nCount.</p>
+<pre class="r"><code>#DF20 -------
+DF20.oxphosVsnCount &lt;- ggplot(PDX_DF20@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF20 OXPHOS vs. nCount&quot;, subtitle = paste(nrow(PDX_DF20@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.52, p &lt; 2.2e-16)&quot;)) 
+
+DF20.oxphosVsnFeature &lt;- ggplot(PDX_DF20@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF20 OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(PDX_DF20@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.42, p  &lt; 2.2e-16)&quot;))
+
+#DF101 -------
+DF101.oxphosVsnCount &lt;- ggplot(PDX_DF101@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF101 OXPHOS vs. nCount&quot;, subtitle = paste(nrow(PDX_DF101@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.37, p &lt; 2.7e-06)&quot;))
+
+DF101.oxphosVsnFeature &lt;- ggplot(PDX_DF101@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF101 OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(PDX_DF101@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.44, p  &lt; 1.1e-08)&quot;))
+
+#DF68 -------
+DF68.oxphosVsnCount &lt;- ggplot(PDX_DF68@meta.data, aes(x = nCount_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF68 OXPHOS vs. nCount&quot;, subtitle = paste(nrow(PDX_DF68@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.46, p &lt; 3.2e-09)&quot;))
+
+DF68.oxphosVsnFeature &lt;- ggplot(PDX_DF68@meta.data, aes(x = nFeature_RNA, y = GO.OXPHOS35.centered)) + 
+  geom_point(alpha = 0.5, aes(colour = treatment.status)) + 
+  theme_bw() + 
+  labs(title = &quot;PDX DF68 OXPHOS vs. nFeature&quot;, subtitle = paste(nrow(PDX_DF68@meta.data),&quot;Malignant Cells&quot;, &quot;(R = 0.42, p  &lt; 1.3e-07)&quot;))
+
+DF20.oxphosVsnCount + DF20.oxphosVsnFeature + DF101.oxphosVsnCount + DF101.oxphosVsnFeature + DF68.oxphosVsnCount + DF68.oxphosVsnFeature + plot_layout(ncol =2, nrow = 3)</code></pre>
+<p><img src="figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/nCountvsHM-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-nCountvsHM-1">
+Past versions of nCountvsHM-1.png
+</button>
+</p>
+<div id="fig-nCountvsHM-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/d801a7a707759fdd07c5918342259d636a0e5b22/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/nCountvsHM-1.png" target="_blank">d801a7a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-04
+</td>
+</tr>
+<tr>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/26f64a3c5a9ca82d37db30b427f88739847f3db5/docs/figure/03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd/nCountvsHM-1.png" target="_blank">26f64a3</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-03
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<ul>
+<li>Weak to no correlation between OXPHOS score and nCount/nFeature</li>
+</ul>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Mojave 10.14.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4       
+ [6] tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5           
+[11] glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1             
+[16] readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4          
+[21] readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0      
+[26] cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
+
+loaded via a namespace (and not attached):
+  [1] backports_1.1.8     fastmatch_1.1-0     workflowr_1.6.2     plyr_1.8.6          igraph_1.2.5       
+  [6] lazyeval_0.2.2      splines_4.0.2       BiocParallel_1.22.0 listenv_0.8.0       digest_0.6.25      
+ [11] htmltools_0.5.0     fansi_0.4.1         magrittr_1.5        cluster_2.1.0       ROCR_1.0-11        
+ [16] openxlsx_4.1.5      globals_0.12.5      modelr_0.1.8        colorspace_1.4-1    blob_1.2.1         
+ [21] rvest_0.3.5         haven_2.3.1         xfun_0.15           crayon_1.3.4        jsonlite_1.7.0     
+ [26] survival_3.2-3      zoo_1.8-8           ape_5.4             gtable_0.3.0        leiden_0.3.3       
+ [31] car_3.0-8           future.apply_1.6.0  abind_1.4-5         scales_1.1.1        DBI_1.1.0          
+ [36] rstatix_0.6.0       viridisLite_0.3.0   reticulate_1.16     foreign_0.8-80      rsvd_1.0.3         
+ [41] tsne_0.1-3          htmlwidgets_1.5.1   httr_1.4.1          RColorBrewer_1.1-2  ellipsis_0.3.1     
+ [46] ica_1.0-2           farver_2.0.3        pkgconfig_2.0.3     reshape_0.8.8       uwot_0.1.8         
+ [51] dbplyr_1.4.4        labeling_0.3        rlang_0.4.7         later_1.1.0.1       munsell_0.5.0      
+ [56] cellranger_1.1.0    tools_4.0.2         cli_2.0.2           generics_0.0.2      broom_0.7.0        
+ [61] ggridges_0.5.2      evaluate_0.14       yaml_2.2.1          knitr_1.29          fs_1.4.2           
+ [66] fitdistrplus_1.1-1  zip_2.0.4           RANN_2.6.1          pbapply_1.4-2       future_1.18.0      
+ [71] nlme_3.1-148        whisker_0.4         xml2_1.3.2          compiler_4.0.2      rstudioapi_0.11    
+ [76] beeswarm_0.2.3      plotly_4.9.2.1      curl_4.3            png_0.1-7           ggsignif_0.6.0     
+ [81] reprex_0.3.0        stringi_1.4.6       lattice_0.20-41     Matrix_1.2-18       vctrs_0.3.2        
+ [86] pillar_1.4.6        lifecycle_0.2.0     lmtest_0.9-37       RcppAnnoy_0.0.16    irlba_2.3.3        
+ [91] httpuv_1.5.4        R6_2.4.1            promises_1.1.1      KernSmooth_2.23-17  gridExtra_2.3      
+ [96] rio_0.5.16          vipor_0.4.5         codetools_0.2-16    MASS_7.3-51.6       assertthat_0.2.1   
+[101] rprojroot_1.3-2     withr_2.2.0         sctransform_0.2.1   parallel_4.0.2      hms_0.5.3          
+[106] grid_4.0.2          rmarkdown_2.3       carData_3.0-4       Rtsne_0.15          git2r_0.27.1       
+[111] lubridate_1.7.9    </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
