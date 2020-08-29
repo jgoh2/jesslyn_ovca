@@ -129,6 +129,7 @@ For their study, they collected scRNA-seq data from three HGSOC cohorts, which i
         * The remaining carboplatin-treated mice were harvested at endpoint (**vehicle**)
 
 ### OUR ANALYSIS AND RESULTS
+Please read our README documentation on [our GitHub project repository](https://github.com/jgoh2/jesslyn_ovca) to understand how each part of our analysis is divided and structured. 
 
 1. [A summary of the data from Izar 2020 et al.](data_summary.html)
 2. **PDX Data Analysis**
@@ -142,6 +143,7 @@ For their study, they collected scRNA-seq data from three HGSOC cohorts, which i
 
 **Decision Making Process** 
 
+1. [Choices along our single-cell RNA-seq Analysis](PDX_choices.html)
 1. [GSEA Choices](GSEA_choices.html)
 
 ## Credits

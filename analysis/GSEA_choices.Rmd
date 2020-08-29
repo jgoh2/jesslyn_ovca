@@ -376,6 +376,7 @@ GSEA.plots[["SS2.9"]][["VR"]]
 
 * We get very different results depending on the ranking method we use. -log10padj x logFC and -log10padj x FC seem to give us opposite NES values most of the time. Which of the two metrics is better is not consistent, with x FC sometimes giving us GSEA results that agree more with our other analyses, and x logFC at other times. 
 * Interesting to note that GSEA plots using -log10padj x logFC or FC metrics give us plots with straight lines, while the plots using only logFC or padj give us curvier plots that look more like what GSEA plots usually look like. 
+* Since GSEA is usually done on RNA-seq data, it is possible that our single-cell RNAseq data is not suitable for GSEA. We will therefore not proceed with GSEA for our analysis. 
 
 
 

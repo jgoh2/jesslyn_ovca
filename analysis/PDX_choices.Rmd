@@ -45,7 +45,7 @@ source(here::here('packages.R'))
 
 #Read in PDX RDS object
 PDX = readRDS("data/Izar_2020/Izar_2020_PDX.RDS")
-PDX@meta.data <- PDX@meta.data[,-(9:49)]
+PDX@meta.data <- PDX@meta.data[,-(9:58)]
 
 treatment_levels <- c("vehicle", "MRD", "relapse")
 PDX$treatment.status = factor(PDX$treatment.status, levels = treatment_levels)
@@ -361,7 +361,7 @@ p2[[3]] <- p2[[3]] + labs(title = "p53 ('scale.data')",  x = "DF20") +
     geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
 
 #Scenario 3: Using the "data" slot, center the scores afterward, reassign to metadata
-hm.names <- names(DF20_score@meta.data)[18:57]
+hm.names <- names(DF20_score@meta.data)[9:55]
 hms.centered <- c("HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered", "HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered", "HALLMARK_P53_PATHWAY26.centered")
 
 for(i in hm.names){
@@ -401,9 +401,9 @@ DF20_data.df <- DF20_score@meta.data %>% as.data.frame()
 DF20_scale.data.df <- DF20_scale.dataSlot@meta.data %>% as.data.frame()
 
 sd.df = data.frame(
-    "DF20_data" = apply(DF20_data.df[18:57], 2, sd),
-    "DF20_data.centered" = apply(DF20_data.df[67:106], 2, sd),
-    "DF20_scale.data" = apply(DF20_scale.data.df[18:57],2,sd)
+    "DF20_data" = apply(DF20_data.df[9:55], 2, sd),
+    "DF20_data.centered" = apply(DF20_data.df[56:102], 2, sd),
+    "DF20_scale.data" = apply(DF20_scale.data.df[9:55],2,sd)
 ) 
 
 plot.df = reshape2::melt(sd.df)
@@ -1288,5 +1288,6 @@ ggsave(plot = GSEA.8.plots, filename = "SS28.GSEA.test.png", path= "jesslyn_plot
 ```
 
 * We get the same results as our DF20 comparison where the GSEA results for the different rank metrics are very different. Although the VolcanoPlot suggest that -log10padj x logFC is a better metric, the GSEA result for -log10padj x FC agree with our VlnPlot where 8.1 > 8.0 for UPR genes. 
+* We further investigate our choices for GSEA in the section below **"GSEA choices"**
 
 
