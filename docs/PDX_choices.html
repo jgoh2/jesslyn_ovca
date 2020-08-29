@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Jesslyn Goh &amp; Mike Cuoco" />
+
+
+<title>PDX Choices Documentation</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/master/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">jesslyn_ovca</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="coding.html">Coding convention</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/mikecuoco/jesslyn_ovca">
+    <span class="fa fa-github"></span>
+     
+    Source code
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">PDX Choices Documentation</h1>
+<h4 class="author">Jesslyn Goh &amp; Mike Cuoco</h4>
+<h4 class="date">7/15/2020</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span> workflowr <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> </a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2020-08-29
+</p>
+<p>
+<strong>Checks:</strong> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7 <span class="glyphicon glyphicon-exclamation-sign text-danger" aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>jesslyn_ovca/analysis/</code> <span class="glyphicon glyphicon-question-sign" aria-hidden="true" title="This is the local directory in which the code in this file was executed."> </span>
+</p>
+<p>
+This reproducible <a href="http://rmarkdown.rstudio.com">R Markdown</a> analysis was created with <a
+  href="https://github.com/jdblischak/workflowr">workflowr</a> (version 1.6.2). The <em>Checks</em> tab describes the reproducibility checks that were applied when the results were created. The <em>Past versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date </a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git repository, you know the exact version of the code that produced these results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the global environment can affect the analysis in your R Markdown file in unknown ways. For reproduciblity it’s best to always run the code in an empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20200713code"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Seed:</strong> <code>set.seed(20200713)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20200713code" class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20200713)</code> was run prior to running the code in the R Markdown file. Setting a seed ensures that any results that rely on randomness, e.g. subsampling or permutations, are reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Session information:</strong> recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be confident that you successfully produced the results during this run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree5ffd81e8aa34f2a2247aef5a4d52dd8e1ca13e6dtargetblank5ffd81ea"> <span class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> <strong>Repository version:</strong> <a href="https://github.com/jgoh2/jesslyn_ovca/tree/5ffd81e8aa34f2a2247aef5a4d52dd8e1ca13e6d" target="_blank">5ffd81e</a> </a>
+</p>
+</div>
+<div id="strongRepositoryversionstrongahrefhttpsgithubcomjgoh2jesslynovcatree5ffd81e8aa34f2a2247aef5a4d52dd8e1ca13e6dtargetblank5ffd81ea" class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development and connecting the code version to the results is critical for reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version <a href="https://github.com/jgoh2/jesslyn_ovca/tree/5ffd81e8aa34f2a2247aef5a4d52dd8e1ca13e6d" target="_blank">5ffd81e</a>. See the <em>Past versions</em> tab to see a history of the changes made to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for the analysis have been committed to Git prior to generating the results (you can use <code>wflow_publish</code> or <code>wflow_git_commit</code>). workflowr only checks the R Markdown file, but you know if there are other scripts or data files that it depends on. Below is the status of the Git repository when the results were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    GO_results/.DS_Store
+    Ignored:    GO_results/GO_PCA/.DS_Store
+    Ignored:    GO_results/GO_Vln/.DS_Store
+    Ignored:    GO_results/GO_Vln/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/.DS_Store
+    Ignored:    GO_results/GO_plots/PDX/F/
+    Ignored:    GO_results/GO_plots/SS2/.DS_Store
+    Ignored:    GO_results/Tables/.DS_Store
+    Ignored:    GO_results/Tables/PDX/.DS_Store
+    Ignored:    GO_results/Tables/PDX/F/
+    Ignored:    GO_results/Tables/SS2/.DS_Store
+    Ignored:    analysis/.DS_Store
+    Ignored:    code/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/HTAPP/
+    Ignored:    data/Izar_2020/
+    Ignored:    data/gene_lists/.DS_Store
+    Ignored:    data/gene_lists/GO_PDX/.DS_Store
+    Ignored:    data/gene_lists/GO_SS2/.DS_Store
+    Ignored:    data/gene_lists/extra/.DS_Store
+    Ignored:    jesslyn_plots/
+    Ignored:    mike_plots/
+    Ignored:    old/.DS_Store
+    Ignored:    old/edited/.DS_Store
+    Ignored:    renv/.DS_Store
+    Ignored:    renv/library/
+    Ignored:    renv/python/
+    Ignored:    renv/staging/
+    Ignored:    vignettes/
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not included in this status report because it is ok for generated content to have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/PDX_choices.Rmd</code>) and HTML (<code>docs/PDX_choices.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/5ffd81e8aa34f2a2247aef5a4d52dd8e1ca13e6d/analysis/PDX_choices.Rmd" target="_blank">5ffd81e</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-08-29
+</td>
+<td>
+PDX choices publish
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/f1acd7b63f7d61d83ee574a9d77c21cffeeb5cb9/analysis/PDX_choices.Rmd" target="_blank">f1acd7b</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-24
+</td>
+<td>
+Move PDX_choices.Rmd to old
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/bc21d3a4bbfeaaab3c3701621e489ba430369973/analysis/PDX_choices.Rmd" target="_blank">bc21d3a</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-23
+</td>
+<td>
+PDX DE Analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/jgoh2/jesslyn_ovca/blob/979ae91ff2afca3e9d691aaefb3d31128bc5fc24/analysis/PDX_choices.Rmd" target="_blank">979ae91</a>
+</td>
+<td>
+jgoh2
+</td>
+<td>
+2020-07-20
+</td>
+<td>
+Reorganize PDX code and add to the analysis folder
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="overview" class="section level1">
+<h1>OVERVIEW</h1>
+<p>Every choice we make along our RNA-seq analysis pipeline will affect the results we get and the conclusions we make about the data. Here, we document and explain the choices we make for each critical step in our PDX analysis:</p>
+<ol style="list-style-type: decimal">
+<li>Normalization and Scaling
+<ol style="list-style-type: lower-roman">
+<li>What arguments should we use for ScaleData? -&gt; do.scale = do.center = T</li>
+<li>Should we scale first or subset by model first? -&gt; subset by model first</li>
+<li>Should we log normalize by model? -&gt; No, log normalizing twice tightens the data too much</li>
+</ol></li>
+<li>Scoring Cells (AddModuleScore)
+<ol style="list-style-type: lower-roman">
+<li>Which Seurat slot does AddModuleScore use by default? –&gt; normalized but unscaled “data” slot</li>
+<li>Should we call AddModuleScore first or subset by model first? -&gt; Same results</li>
+<li>Which slot should we use for AddModuleScore? -&gt; score with “data”, center afterward
+<ol style="list-style-type: upper-alpha">
+<li>“data” slot</li>
+<li>“scale.data” slot</li>
+<li>score with “data” slot, the center the scores</li>
+</ol></li>
+</ol></li>
+<li>DE Analysis
+<ol style="list-style-type: lower-roman">
+<li>How do our decisions for FindMarkers (slot and statistical test) affect our results for:
+<ol style="list-style-type: upper-alpha">
+<li>Identification of individual DE Genes (Volcano Plot)</li>
+<li>Geneset enrichment analysis (GSEA)</li>
+</ol></li>
+<li>What metric should we use to rank our genes? (logFC vs. AUC)</li>
+</ol></li>
+</ol>
+<pre class="r"><code># Load packages
+source(here::here(&#39;packages.R&#39;))
+
+#Read in PDX RDS object
+PDX = readRDS(&quot;data/Izar_2020/Izar_2020_PDX.RDS&quot;)
+PDX@meta.data &lt;- PDX@meta.data[,-(9:58)]
+
+treatment_levels &lt;- c(&quot;vehicle&quot;, &quot;MRD&quot;, &quot;relapse&quot;)
+PDX$treatment.status = factor(PDX$treatment.status, levels = treatment_levels)
+
+# Read in gene lists
+ccgenes = read_lines(&quot;data/gene_lists/regev_lab_cell_cycle_genes.txt&quot;)
+s.genes &lt;- ccgenes[1:43]
+g2m.genes &lt;- ccgenes[44:97]
+
+#Read in hallmarks of interest
+hallmark_names = read_lines(&quot;data/gene_lists/hallmarks.txt&quot;)
+hallmark.list &lt;- vector(mode = &quot;list&quot;, length = length(hallmark_names))
+names(hallmark.list) &lt;- hallmark_names
+
+for(hm in hallmark_names){
+  if(file.exists(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;))){
+    file &lt;- read_lines(glue(&quot;data/gene_lists/hallmarks/{hm}_updated.txt&quot;), skip = 1)
+    hallmark.list[[hm]] &lt;- file
+  }
+  else{
+    file &lt;- read_lines(glue(&quot;data/gene_lists/extra/{hm}.txt&quot;), skip =2)
+    hallmark.list[[hm]] &lt;- file
+  }
+}
+
+if(!dir.exists(&quot;jesslyn_plots/PDX_test&quot;)){dir.create(&quot;jesslyn_plots/PDX_test&quot;)}</code></pre>
+</div>
+<div id="part-1.-normalization-and-scaling" class="section level1">
+<h1>PART 1. NORMALIZATION AND SCALING</h1>
+<div id="scaling---deciding-scaledata-arguments---do.scale-do.center-t" class="section level3">
+<h3>1.1 SCALING - DECIDING ScaleData( ) ARGUMENTS -&gt; <strong>do.scale = do.center = T</strong></h3>
+<ul>
+<li><strong>QUESTION</strong>: How does scaling/centering affect our data? We will be testing four scenarios:
+<ul>
+<li>don’t run ScaleData</li>
+<li>ScaleData(do.scale = F, do.center = T)</li>
+<li>ScaleData(do.scale = T, do.center = F)</li>
+<li><strong>ScaleData(do.scale = T, do.center = T)</strong></li>
+</ul></li>
+<li><p><strong>IMPORTANCE</strong>: scaling makes count data more comparable <strong>across genes</strong> and cells, and how we scale our data affects downstream analysis such as dimensional reduction (PCA).</p></li>
+<li><strong>HYPOTHESIS</strong>: we hypothesize that the <strong>do.scale = do.center = T</strong> scenario is best for our data, as it would make our data more comparable across genes and cells by centering the count distribution of each gene at zero, and controlling the standard deviation at 1.
+<ul>
+<li>do.center: center the expression of each gene at 0 by subtracting the average expression for that gene</li>
+<li>do.scale: if do.center = TRUE, scales the expression level for each gene so that the sd is controlled at 1 (by dividing the centered gene expression levels by their standard deviations).</li>
+</ul></li>
+<li><strong>APPROACH</strong>:
+<ol style="list-style-type: decimal">
+<li>Scale the normalized counts for each of the four scenarios listed above.</li>
+<li>Compute summary metrics for each scenario. Visualize the distribution of each summary metric with Violin Plots.
+<ol style="list-style-type: lower-roman">
+<li>Mean expression per cell</li>
+<li>Mean expression per gene</li>
+<li>Standard deviation per gene</li>
+</ol></li>
+</ol></li>
+</ul>
+<pre class="r"><code>#Scale PDX data in the four different ways 
+PDX_orig = ScaleData(PDX, do.scale = F, do.center = F)
+PDX_center = ScaleData(PDX, do.scale = F, do.center = T)
+PDX_scale = ScaleData(PDX, do.scale = T, do.center = F)
+PDX_scale_center = ScaleData(PDX, do.scale = T, do.center = T)
+
+#COMPARE EACH SCENARIO THROUGH VISUALIZATION 
+#compute and plot the mean expression per cell in each scenario
+df = data.frame(
+    &quot;orig&quot; = colMeans(PDX_orig[[&quot;RNA&quot;]]@scale.data),
+    &quot;center&quot; = colMeans(PDX_center[[&quot;RNA&quot;]]@scale.data),
+    &quot;scale&quot; = colMeans(PDX_scale[[&quot;RNA&quot;]]@scale.data),
+    &quot;scale-center&quot; = colMeans(PDX_scale_center[[&quot;RNA&quot;]]@scale.data)
+) 
+
+plot.df = reshape2::melt(df)
+
+p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = &quot;PDX data norm type&quot;, y = &quot;mean expression/cell&quot;, title = &quot;expression/cell (Plot #1)&quot;) +
+  theme_bw()
+
+#compute and plot the mean expression per gene in each scenario
+df = data.frame(
+    &quot;orig&quot; = rowMeans(PDX_orig[[&quot;RNA&quot;]]@scale.data),
+    &quot;center&quot; = rowMeans(PDX_center[[&quot;RNA&quot;]]@scale.data),
+    &quot;scale&quot; = rowMeans(PDX_scale[[&quot;RNA&quot;]]@scale.data),
+    &quot;scale-center&quot; = rowMeans(PDX_scale_center[[&quot;RNA&quot;]]@scale.data)
+) 
+
+plot.df = reshape2::melt(df)
+
+p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = &quot;PDX data norm type&quot;, y = &quot;mean expression/gene&quot;, title = &quot;evaluate centering (Plot #2)&quot;) +
+  ylim(-5,10) +
+  theme_bw()
+
+#compute and plot the standard deviation across cells per gene  in each scenario
+sd.df = data.frame(
+    &quot;orig&quot; = apply(PDX_orig[[&quot;RNA&quot;]]@scale.data,1,sd),
+    &quot;center&quot; = apply(PDX_center[[&quot;RNA&quot;]]@scale.data,1,sd),
+    &quot;scale&quot; = apply(PDX_scale[[&quot;RNA&quot;]]@scale.data,1,sd),
+    &quot;scale-center&quot; = apply(PDX_scale_center[[&quot;RNA&quot;]]@scale.data,1,sd)
+)
+
+plot.df = reshape2::melt(sd.df)
+
+p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = &quot;PDX data norm type&quot;, y = &quot;SD/gene&quot;, title = &quot;evaluate scaling (Plot #3)&quot;) +
+  theme_bw()
+
+p1+p2+p3 + patchwork::plot_layout(nrow = 1)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/Deciding%20ScaleData()%20arguments-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;PDX_data_scaletest.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 15, height = 5)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>:
+<ol style="list-style-type: decimal">
+<li>Normalization
+<ol style="list-style-type: lower-roman">
+<li>Data has been log normalized considering the range of expression (0 - 1), and the shape of the distribution is reasonably normal.</li>
+</ol></li>
+<li>ScaleData() Arguments
+<ol style="list-style-type: lower-roman">
+<li>do.scale = do.center = TRUE is the best option because while <strong>center</strong> looks similar to <strong>scale.center</strong> for plots 1 and 2, the variance of <strong>center</strong> is not controlled.</li>
+</ol></li>
+</ol></li>
+</ul>
+</div>
+<div id="scaling---deciding-to-scale-first-or-subset-by-model-first-subset-first" class="section level3">
+<h3>1.2 SCALING - DECIDING TO SCALE FIRST OR SUBSET BY MODEL FIRST –&gt; <strong>subset first</strong></h3>
+<p>We previously decided the parameters for <strong>ScaleData (do.scale = do.center = T)</strong>. Now, we’d like to see the effect of scaling before subsetting vs. scaling each model individually after subsetting by model, to decide which scenario is best.</p>
+<ul>
+<li><p><strong>QUESTION</strong>: Should we scale our data before subsetting by model, or should we subset by model first?</p></li>
+<li><p><strong>IMPORTANCE</strong>: We are interested in comparing gene expression between treatment conditions <strong>within</strong> each model. Considering that the difference between models are so drastic, using count data that is scaled so that it is comparable across genes across models might mask over the smaller differences between treatment conditions <strong>within</strong> a specific model. It is therefore a significant step to make sure that our count data in each model is scaled so that it is comparable across all cells <strong>within</strong> a specific model, instead of <strong>across</strong> models. We also want to center the average expression of each gene at 0.</p></li>
+<li><p><strong>HYPOTHESIS</strong>: We hypothesize that we should subset by model first, before scaling the data in each model separately, so that the data for each model would be scaled across all cells <strong>within</strong> the specific model itself.</p></li>
+<li><strong>APPROACH</strong>: focus on DF20
+<ol style="list-style-type: decimal">
+<li><strong>Scenario #1</strong>: Subset the <strong>PDX_scale_center</strong> Seurat object from above for DF20.</li>
+<li><strong>Scenario #2</strong>: Subset the original <strong>PDX</strong> object for DF20. Scale the subsetted object (do.center = do.scale = T)</li>
+<li><strong>Scenario #3</strong>: Subset the <strong>PDX_scale_center</strong> Seurat object for DF20, and scale the object again.</li>
+<li>Compute summary metrics for each scenario. Visualize the distribution of each summary metric with Violin Plots.
+<ol style="list-style-type: lower-roman">
+<li>Mean expression per cell</li>
+<li>Mean expression per gene</li>
+<li>Standard deviation per gene</li>
+</ol></li>
+</ol></li>
+</ul>
+<pre class="r"><code>#scenario 1: scale first then subset (PDX -&gt; scale -&gt; subset)
+scale_center_DF20 &lt;- subset(PDX_scale_center, subset = (model_ID == &quot;DF20&quot;))
+
+#scenario 2: subset first, then scale (PDX -&gt; subset -&gt; scale)
+DF20 &lt;- subset(PDX, subset = model_ID == &quot;DF20&quot;)
+DF20_scale_center &lt;- ScaleData(DF20, do.scale = T, do.center = T)
+
+#scenario 3: scale first, subset, and scale again (PDX -&gt; scale -&gt; subset -&gt; scale)
+scale_center_DF20_scale_center &lt;- ScaleData(scale_center_DF20, do.scale = T, do.center = T)
+
+#COMPARE EACH SCENARIO THROUGH VISUALIZATION 
+#mean expression per cell within model DF20
+cell.mean.df = data.frame(
+    &quot;scale-center-DF20&quot; = colMeans(scale_center_DF20[[&quot;RNA&quot;]]@scale.data),
+    &quot;DF20-scale-center&quot; = colMeans(DF20_scale_center[[&quot;RNA&quot;]]@scale.data), 
+    &quot;before-DF20-after&quot; = colMeans(scale_center_DF20_scale_center[[&quot;RNA&quot;]]@scale.data)
+) 
+
+plot.df = reshape2::melt(cell.mean.df)
+
+p1 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = &quot;PDX scale vs. subset sequence&quot;, y = &quot;mean expression/cell&quot;, title = &quot;expression/cell&quot;) +
+  theme_bw()
+
+#mean expression per gene across all cells within model DF20 
+gene.mean.df = data.frame(
+    &quot;scale-center-DF20&quot; = rowMeans(scale_center_DF20[[&quot;RNA&quot;]]@scale.data),
+    &quot;DF20-scale-center&quot; = rowMeans(DF20_scale_center[[&quot;RNA&quot;]]@scale.data),
+    &quot;before-DF20-after&quot; = rowMeans(scale_center_DF20_scale_center[[&quot;RNA&quot;]]@scale.data)
+) 
+
+plot.df = reshape2::melt(gene.mean.df)
+
+p2 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = &quot;PDX scale vs. subset sequence&quot;, y = &quot;mean expression/gene&quot;, title = &quot;evaluate the mean expression per gene&quot;) +
+  theme_bw()
+
+#standard deviation per gene across all cells within model DF20 
+sd.df = data.frame(
+    &quot;scale-center-DF20&quot; = apply(scale_center_DF20[[&quot;RNA&quot;]]@scale.data,1,sd),
+    &quot;DF20-scale-center&quot; = apply(DF20_scale_center[[&quot;RNA&quot;]]@scale.data,1,sd), 
+    &quot;before-DF20-after&quot; = apply(scale_center_DF20_scale_center[[&quot;RNA&quot;]]@scale.data,1,sd)
+) 
+
+plot.df = reshape2::melt(sd.df)
+
+p3 = ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + 
+  geom_violin() + 
+  labs(x = &quot;PDX scale vs. subset sequence&quot;, y = &quot;variance/gene&quot;, title = &quot;evaluate the variance in expression per gene&quot;) +
+  theme_bw()
+
+p1+p2+p3 + patchwork::plot_layout(nrow = 1)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/scale%20or%20subset-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;PDX_data_scaleVSsubset.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 15, height = 5)</code></pre>
+<ul>
+<li><strong>scale.center.DF20</strong> = scale and center across all cells before subsetting by model</li>
+<li><strong>DF20.scale.center</strong> = subset by model first before scaling and centering across all cells within an individual model</li>
+<li><p><strong>before.DF20.after</strong> = scale and center across all cells, subset by model, scale and center within each model again</p></li>
+<li><strong>CONCLUSIONS</strong>:
+<ul>
+<li>Graphs for the mean expression and variance per gene suggest that we should subset first, and scale each model separately. We could also scale everything first across all models, subset, and scale everything again within each model, since the distribution looks the same for all three criteria between the green and the blue scenarios. However, we decide to subset first because scaling twice might add bias.
+<ol style="list-style-type: lower-roman">
+<li>By scaling each model separately, we were able to control for the mean expression per gene (centered at 0), and were also able to control for the variance per gene (mostly sd of 1).</li>
+<li>Subsetting first and scaling afterwards therefore makes our data more comparable across cells within each model</li>
+</ol></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="part-2.-scoring-cells" class="section level1">
+<h1>PART 2. SCORING CELLS</h1>
+<div id="addmodulescore---investigate-which-slot-it-calls-from-data-slot" class="section level3">
+<h3>2.1 AddModuleScore - INVESTIGATE WHICH SLOT IT CALLS FROM –&gt; <strong>‘data’ slot</strong></h3>
+<ul>
+<li><p><strong>QUESTION</strong>: Which data slot does <strong>AddModuleScore</strong> use?</p></li>
+<li><p><strong>IMPORTANCE</strong>: The type of data we use to score our cells will drastically affect downstream DE analysis.</p></li>
+<li><p><strong>HYPOTHESIS</strong>: we hypothesize that <strong>AddModuleScore</strong> uses the normalized but unscaled, uncentered “data” slot.</p></li>
+<li><strong>APPROACH</strong>:
+<ol style="list-style-type: decimal">
+<li>Call AddModuleScore on the original normalized but unscaled, uncentered PDX Seurat object (<strong>PDX_orig</strong>) for <strong>OXPHOS</strong></li>
+<li>Call AddModuleScore on the normalized, scaled, and centered PDX Seurat object (<strong>PDX_scale_center</strong>) for <strong>OXPHOS</strong></li>
+<li><strong>VlnPlot</strong>: Plot and compare the distribution of OXPHOS scores between the two Seurat objects.</li>
+</ol></li>
+</ul>
+<pre class="r"><code>#Calculate module score on the unscaled, uncentered PDX data, and plot the distribution of OXPHOS scores
+PDX_orig &lt;- AddModuleScore(PDX_orig, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T) 
+p1 &lt;- VlnPlot(PDX_orig, features = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25&quot;) + labs(title = &quot;oxphos orig.score distribution&quot;, x = &quot;PDX_orig&quot;)
+
+#Calculate module score on scaled and centered PDX data, and plot the distribution of OXPHOS scores
+PDX_scale_center &lt;- AddModuleScore(PDX_scale_center, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+p2 &lt;- VlnPlot(PDX_scale_center, features = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25&quot;) + labs(title = &quot;oxphos scale.center.score distribution&quot;, x = &quot;PDX_scale_center&quot;)
+
+p1 + p2 + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 2)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/AddModuleScore%20slot-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;PDX_data_addScoreTest.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>:
+<ul>
+<li>Distribution of oxphos score is exactly the same between the unscaled and scaled PDX objects.</li>
+<li>Suggests that <strong>AddModuleScore()</strong> scores cells using the <strong>‘data’</strong> slot instead of the <strong>‘scale.data’</strong> slot</li>
+</ul></li>
+</ul>
+</div>
+<div id="addmodulescore---deciding-to-score-cells-first-or-subset-by-model-first-doesnt-matter" class="section level3">
+<h3>2.2 AddModuleScore - DECIDING TO SCORE CELLS FIRST OR SUBSET BY MODEL FIRST –&gt; <strong>doesn’t matter</strong></h3>
+<p>Our current workflow: <strong>PDX -&gt; subset -&gt; scale and center separately</strong></p>
+<ul>
+<li><strong>QUESTION</strong>: Should we call AddModuleScore before or after subsetting by model:
+<ul>
+<li>PDX → AddModuleScore → subset → scale and center or</li>
+<li>PDX → subset → AddModuleScore separately → scale and center separately</li>
+</ul></li>
+<li><p><strong>IMPORTANCE</strong>: Since we are interested in detecting differential expression across treatment conditions <strong>within</strong> each model, it is important to investigate whether there are significant differences between scoring cells before vs. after subsetting by model, and to determine which workflow would be better.</p></li>
+<li><strong>HYPOTHESIS</strong>: We hypothesize that we should call AddModuleScore <strong>after</strong> subsetting by model, since we are interested in comparing differential expression <strong>within</strong> each model.
+<ul>
+<li>We hypothesize that by calling AddModuleScore() before subsetting by model, the score for an individual cell would be relative to all other cells across all models. This would possibly mask the difference between cells within models, since the difference across models is much larger. We therefore thought that calling AddModuleScore() individually by model should have resulted in a score for an individual cell that is relative to all other cells within the same model.</li>
+</ul></li>
+<li><strong>APPROACH</strong>: focus on model DF20 and scoring for <strong>OXPHOS</strong>
+<ol style="list-style-type: decimal">
+<li><strong>Scenario #1</strong>: Call AddModuleScore on the entire PDX dataset before subsetting for DF20</li>
+<li><strong>Scenario #2</strong>: Subset for DF20, then call AddModuleScore on the subsetted object</li>
+<li><strong>VlnPlot</strong>: Graph and compare the distribution of OXPHOS scores between the two scenario.</li>
+</ol></li>
+</ul>
+<pre class="r"><code>#Scenario 1: PDX -&gt; scale -&gt; add module score -&gt; subset
+score_DF20 &lt;- subset(PDX_scale_center, subset = (model_ID == &quot;DF20&quot;))
+p3 &lt;- VlnPlot(score_DF20, features = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25&quot;) + labs(title = &quot;OXPHOS score first subset later (DF20)&quot;) + theme(plot.title = element_text(size = 8))
+
+#Scenario 2: PDX -&gt; subset -&gt; scale -&gt; add module score
+DF20_score &lt;- AddModuleScore(DF20_scale_center, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+p4 &lt;- VlnPlot(DF20_score, features = &quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25&quot;) + labs(title = &quot;OXPHOS subset first score individually (DF20)&quot;) + theme(plot.title = element_text(size = 8))
+
+#compare distribution of OXPHOS score between the two scenarios
+p3 + p4 + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 2)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/AddModuleScore%20or%20subset-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;PDX_data_scoreVSsubset.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>:
+<ul>
+<li>The results rejected our hypothesis</li>
+<li><strong>Calling AddModuleScore() before or after subsetting by model actually leads to the same distribution of oxphos gene scores</strong></li>
+<li>This is possibly because <strong>AddModuleScore()</strong> is using the ‘data’ slot, which is the same whether we subset by model first or later. The expression of each gene within a cell is therefore still relative to all cells across models even after we subsetted for DF20. In addition, the distribution of OXPHOS scores are not centered at 0, which we’d like to have in order to understand the positive and negative relationship of the scores.</li>
+</ul></li>
+</ul>
+<p>We wonder if it would be better to “force” AddModuleScore in using the “scale.data” slot (scaled and centered by model) instead, since the counts in the “scale.data” slot is relative to all cells within DF20, instead of across all models.</p>
+</div>
+<div id="addmodulescore---what-type-of-data-is-best-for-scoring-cells-data-slot" class="section level3">
+<h3>2.3 AddModuleScore - WHAT TYPE OF DATA IS BEST FOR SCORING CELLS –&gt; <strong>data slot</strong></h3>
+<ul>
+<li><strong>QUESTION</strong>: Which type of data is best for AddModuleScore?
+<ul>
+<li>“data” slot</li>
+<li>“scale.data” slot</li>
+<li>Using “data” slot to score, center scores afterwards</li>
+</ul></li>
+<li><p><strong>IMPORTANCE</strong>: The type of data we use to score our cells may drastically affect downstream DE analysis.</p></li>
+<li><p><strong>HYPOTHESIS</strong>: We hypothesize that using the “scale.data” slot would be best, since it is scaled across all cells within a specific model.</p></li>
+<li><strong>APPROACH</strong>:
+<ol style="list-style-type: decimal">
+<li>We compare the distribution of OXPHOS, UPR, and p53 scores in DF20 between the following three workflows to decide which slot is best for AddModuleScore:</li>
+</ol>
+<ol style="list-style-type: lower-roman">
+<li>Using “data” slot</li>
+<li>Using “scale.data” slot</li>
+<li>Using “data” slot on DF20, center the scores afterwards</li>
+</ol></li>
+</ul>
+<pre class="r"><code>hms &lt;- c(&quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25&quot;, &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE33&quot;, &quot;HALLMARK_P53_PATHWAY26&quot;)
+
+#Scenario 1: Using the &quot;data&quot; slot (basically scenario 2 from above, DF20_score object)
+p1 &lt;- VlnPlot(DF20_score, features = hms, combine= F, cols = c(&quot;#00AFBB&quot;), pt.size = 0) 
+p1[[1]] &lt;- p1[[1]] + labs(title = &quot;OXPHOS (&#39;data&#39;)&quot;, x = &quot;DF20&quot;) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p1[[2]] &lt;- p1[[2]] + labs(title = &quot;UPR (&#39;data&#39;)&quot;, x = &quot;DF20&quot;) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p1[[3]] &lt;- p1[[3]] + labs(title = &quot;p53 (&#39;data&#39;)&quot;,  x = &quot;DF20&quot;) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+#Scenario 2: Using the &quot;scale.data&quot; slot
+scale.data &lt;- GetAssayData(object = DF20_scale_center, slot = &quot;scale.data&quot;)
+DF20_scale_center_forced &lt;- SetAssayData(object = DF20_scale_center, slot = &quot;data&quot;, new.data = scale.data, assay = &quot;RNA&quot;)
+
+DF20_scale.dataSlot &lt;- AddModuleScore(DF20_scale_center_forced, features = hallmark.list, name = names(hallmark.list), nbin = 25, search = T)
+p2 &lt;- VlnPlot(DF20_scale.dataSlot, pt.size = 0, features = hms, combine = F, cols= c(&quot;#E7B800&quot;)) 
+p2[[1]] &lt;- p2[[1]] + labs(title = &quot;OXPHOS (&#39;scale.data&#39;)&quot;, x = &quot;DF20&quot;) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p2[[2]]&lt;- p2[[2]] + labs(title = &quot;UPR (&#39;scale.data&#39;)&quot;, x = &quot;DF20&quot;) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p2[[3]] &lt;- p2[[3]] + labs(title = &quot;p53 (&#39;scale.data&#39;)&quot;,  x = &quot;DF20&quot;) + 
+    geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+#Scenario 3: Using the &quot;data&quot; slot, center the scores afterward, reassign to metadata
+hm.names &lt;- names(DF20_score@meta.data)[9:55]
+hms.centered &lt;- c(&quot;HALLMARK_OXIDATIVE_PHOSPHORYLATION25.centered&quot;, &quot;HALLMARK_UNFOLDED_PROTEIN_RESPONSE33.centered&quot;, &quot;HALLMARK_P53_PATHWAY26.centered&quot;)
+
+for(i in hm.names){
+    hm.centered &lt;- scale(DF20_score[[i]], scale = FALSE)
+    DF20_score &lt;- AddMetaData(DF20_score, hm.centered, col.name = glue(&quot;{i}.centered&quot;))
+}
+
+p3 &lt;- VlnPlot(DF20_score, features = hms.centered, pt.size = 0, combine = F, cols = c(&quot;#FC4E07&quot;)) 
+p3[[1]] &lt;- p3[[1]] + labs(title = &quot;OXPHOS (&#39;data&#39; score centered)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p3[[2]] &lt;- p3[[2]] + labs(title = &quot;UPR (&#39;data&#39; score centered)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+p3[[3]] &lt;- p3[[3]] + labs(title = &quot;p53 (&#39;data&#39; score centered)&quot;,  x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+#COMPARE 
+p1[[1]] + p3[[1]] + p2[[1]] + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 3)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/AddModuleScore%20slots-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_oxphos.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)
+
+p1[[2]] + p3[[2]] + p2[[2]] + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 3)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/AddModuleScore%20slots-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_UPR.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)
+
+p1[[3]] + p3[[3]] + p2[[3]] + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 3)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/AddModuleScore%20slots-3.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_p53.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>:
+<ul>
+<li>By using the <strong>scale.data</strong> slot, the distributions of module scores are now centered at 0, and the shape of the distribution (variance) also shifted. This change in shape is possibly because the scores are now calculated relative to all other cells within the same model, rather than across all models. Since the scale.data slot scales the expression of each gene within DF20 to a sd of 1,it explains why graphs for the <strong>scale.data</strong> scenario look tighter.<br />
+</li>
+<li>Centering the scores calculated from normalized but unscaled, uncentered “data” simply shifted the whole violin plot to a mean of 0, but conserved the shape of the distribution (same variance).</li>
+<li>By looking at these plots, we’re still not very sure which scenario is best for AddModuleScore, since AddModuleScore forces us to use the “data” slot, “scale.data” might not be the right slot to use. However, at the same time, by using the “data” slot, the expression per gene across cells is still not scaled to be relative across all cells within DF20, but is relative across all models instead. Both scenarios may have led to bias in our results.</li>
+</ul></li>
+</ul>
+<p>To look into this more, we compare the variance in module score between the scenarios.</p>
+<pre class="r"><code>#compute standard deviation per module 
+DF20_data.df &lt;- DF20_score@meta.data %&gt;% as.data.frame()
+DF20_scale.data.df &lt;- DF20_scale.dataSlot@meta.data %&gt;% as.data.frame()
+
+sd.df = data.frame(
+    &quot;DF20_data&quot; = apply(DF20_data.df[9:55], 2, sd),
+    &quot;DF20_data.centered&quot; = apply(DF20_data.df[56:102], 2, sd),
+    &quot;DF20_scale.data&quot; = apply(DF20_scale.data.df[9:55],2,sd)
+) 
+
+plot.df = reshape2::melt(sd.df)
+
+ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
+  labs(x = &quot;DF20 AddModuleScore senario&quot;, y = &quot;variance/module&quot;, title = &quot;Comparing DF20 variance in module score&quot;) +
+  theme_bw() + 
+  scale_fill_manual(values = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;))</code></pre>
+<p><img src="figure/PDX_choices.Rmd/module%20score%20variance-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_variance.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)</code></pre>
+<ul>
+<li>It seems like the variance is a lot tighter when we use the <strong>scale.data</strong> slot. This is expected because the standard deviation of each gene is controlled at 1 for the <strong>scale.data</strong> slot.</li>
+<li>However, we wonder if using the <strong>scale.data</strong> slot would diminish intra-model differences instead of enhancing them.</li>
+</ul>
+<p>To further investigate this issue, we now split the violin plot (still focusing solely on DF20) by <strong>treatment status</strong> to examine if the trends we see are similar between using the <strong>data</strong> vs. <strong>scale.data</strong> slot. * We hypothesize that we should see clear trends where the <strong>MRD</strong> treatment condition differentially overexpress OXPHOS, UPR, and p53 genes, especially when using the <strong>scale.data</strong> slot.</p>
+<pre class="r"><code>#Scenario 1: Using the &quot;data&quot; slot
+
+p1 &lt;- VlnPlot(DF20_score, features = hms, combine= F, group.by = &quot;treatment.status&quot;, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), pt.size = 0) 
+p1[[1]] &lt;- p1[[1]] + labs(title = &quot;OXPHOS (&#39;data&#39;)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+p1[[2]] &lt;- p1[[2]] + labs(title = &quot;UPR (&#39;data&#39;)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+p1[[3]] &lt;- p1[[3]] + labs(title = &quot;p53 (&#39;data&#39;)&quot;,  x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+#Scenario 2: Using the &quot;scale.data&quot; slot
+p2 &lt;- VlnPlot(DF20_scale.dataSlot, features = hms, combine = F, group.by = &quot;treatment.status&quot;, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), pt.size = 0) 
+p2[[1]] &lt;- p2[[1]] + labs(title = &quot;OXPHOS (&#39;scale.data&#39;)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+p2[[2]]&lt;- p2[[2]] + labs(title = &quot;UPR (&#39;scale.data&#39;)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+
+p2[[3]] &lt;- p2[[3]] + labs(title = &quot;p53 (&#39;scale.data&#39;)&quot;,  x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+#Scenario 3: Using the &quot;data&quot; slot, center the scores afterward, reassign to metadata
+p3 &lt;- VlnPlot(DF20_score, features = hms.centered, combine = F, group.by = &quot;treatment.status&quot;, cols = c(&quot;#00AFBB&quot;, &quot;#E7B800&quot;, &quot;#FC4E07&quot;), pt.size = 0) 
+p3[[1]] &lt;- p3[[1]] + labs(title = &quot;OXPHOS (&#39;data&#39; score centered)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+
+p3[[2]] &lt;- p3[[2]] + labs(title = &quot;UPR (&#39;data&#39; score centered)&quot;, x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F) 
+
+p3[[3]] &lt;- p3[[3]] + labs(title = &quot;p53 (&#39;data&#39; score centered)&quot;,  x = &quot;DF20&quot;) + 
+  geom_boxplot(width = 0.15, position = position_dodge(0.9), alpha = 0.3, show.legend = F)
+
+#COMPARE 
+p1[[1]] + p3[[1]] + p2[[1]] + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 3)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/VlnPlot%20by%20treatment-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_oxphosByT.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)
+
+p1[[2]] + p3[[2]] + p2[[2]] + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 3)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/VlnPlot%20by%20treatment-2.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_UPRByT.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)
+
+p1[[3]] + p3[[3]] + p2[[3]] + plot_layout(guides= &#39;collect&#39;, nrow = 1, ncol = 3)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/VlnPlot%20by%20treatment-3.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &quot;DF20_AddModuleScore_p53ByT.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 10, height = 5)</code></pre>
+<p>Although similar trends are seen between the three scenarios, there are also some inconsistencies between them. For example: * It seems like the trends are more obvious when calculating module score with the <strong>scale.data</strong> slot. - This is what we hoped/ expected because the <strong>scale.data</strong> slot scales the counts across cells within the same model, rather than across all models (which would have masked intra-model differences due to the large inter-model differences) * For the UPR plot, it seems like MRD has the highest expression level when using the “data” slot, but not when using the “scale.data” slot. This is weird because scaling the data shouldn’t affect the relative position of the count data. For example, if a cell in treatment condition A expresses a higher level of gene A than condition B, scaling the data and controlling for the standard deviation should still make condition A express higher levels of gene A than condition B. * The results from this graph therefore tells us that there are significant differences depending on the slot we use for AddModuleScore considering how they resulted in different trends.</p>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li>Looking at these results, we decide that the <strong>scale.data</strong> slot might have shrunk the variance too much, which may obscure some differences. We therefore determine that it is best to use the <strong>data</strong> slot instead.
+<ul>
+<li>Counts in the normalized but unscaled “data” slot is comparable across cells because of TPM/RPKM/FPKM.</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="part-3.-de-analysis" class="section level1">
+<h1>PART 3. DE ANALYSIS</h1>
+<div id="investigate-which-slot-is-best-for-findmarkers-data-slot" class="section level3">
+<h3>3.1 INVESTIGATE WHICH SLOT IS BEST FOR FINDMARKERS –&gt; <strong>“data” slot</strong></h3>
+<ul>
+<li><p><strong>QUESTION</strong>: Which data slot is best for FindMarkers?</p></li>
+<li><p><strong>IMPORTANCE</strong>: Possible that we will get different DE genes, LogFC, and pvalues, depending on the data slot we use. This may drastically affect our visualization of DE genes (Volcano Plots) and downstream DE Analysis such as GSEA, which both rely on the FindMarkers function.</p></li>
+<li><p><strong>HYPOTHESIS</strong>: We hypothesize that it would be better to use the “<strong>data</strong>” slot because the “<strong>scale.data</strong>” slot are already z-scores.</p></li>
+<li><strong>APPROACH</strong>: Focus on DE genes between MRD and vehicle in DF20 (default test = “wilcox”)
+<ol style="list-style-type: decimal">
+<li>Call FindMarkers on DF20 using the “data” slot</li>
+<li>Call FindMarkers on DF20 using the “scale.data” slot</li>
+<li>Arrange the DE gene list from step #1 and #2 in ascending order for padj (genes w/ the smallest padj value on top) and then in descending order for avg_logFC / avg_diff depending on the data slot used (genes w/ the highest logFC on top)</li>
+</ol></li>
+</ul>
+<pre class="r"><code>data_slot &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;)
+
+scale.data.slot &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, slot = &quot;scale.data&quot;)
+
+both &lt;- merge(data_slot, scale.data.slot, by=&quot;rowname&quot;) 
+both &lt;- both %&gt;% mutate(&quot;both.DE&quot; = as.character(both$data.DE + both$scale.data.DE))
+
+identical(data_slot$rowname, scale.data.slot$rowname)</code></pre>
+<pre><code>[1] FALSE</code></pre>
+<pre class="r"><code>length(which(data_slot$rowname != scale.data.slot$rowname))/13893</code></pre>
+<pre><code>[1] 0.9512704</code></pre>
+<pre class="r"><code>#compare ranks 
+ranks.plot &lt;- ggplot(both, aes(x = data.rank, y = scale.data.rank)) + geom_point(alpha = 0.5, aes(colour = both.DE)) + geom_abline() + labs(title = &quot;Comparing gene ranks when using data vs. scale.data&quot;, x = &quot;data&quot;, y = &quot;scale.data&quot;, colour = &quot;DE in&quot;, subtitle = &quot;ranked by padj ascending, then logFC descending&quot;, caption = &quot;R = 0.67, p &lt; 2.2e-16&quot;) +  theme_bw() + 
+theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+ggsave(plot = ranks.plot, &quot;DF20_FindMarkers_slot_ranks.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)
+
+#compare padj 
+padj.plot &lt;- ggplot(both, aes(x = p_val_adj.x, y = p_val_adj.y)) + geom_point(alpha = 0.5) + geom_abline() + theme_bw() + labs(title = &quot;Comparing the padj values of using data vs. scale.data&quot;, x = &quot;data&quot;, y = &quot;scale.data&quot;, caption = &quot;R = 1, p &lt; 2.2e-16&quot;) +  theme(plot.title = element_text(size = 10))
+ggsave(plot = padj.plot, &quot;DF20_FindMarkers_slot_padj.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)
+
+#compare avg_logfc vs. avg_diff
+logFC.plot &lt;- ggplot(both, aes(x = avg_logFC, y = avg_diff)) + geom_point(alpha = 0.3, aes(colour = both.DE)) + labs(title = &quot;Comparing the logFC and avg_diff values of using data vs. scale.data&quot;, x = &quot;data&quot;, y = &quot;scale.data&quot;, colour = &quot;DE in&quot;, caption = &quot;R = 0.56, p &lt; 2.2e-16&quot;) + theme_bw() + theme(plot.title = element_text(size = 10)) + geom_abline()
+ggsave(plot = logFC.plot, &quot;DF20_FindMarkers_slot_logFC.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)
+
+ranks.plot + padj.plot + logFC.plot + plot_layout(guides= &#39;collect&#39;)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20data%20slot-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li>Ranks between the two scenarios are the same in the beginning but begin to diverge significantly starting from the 680th gene all the way to the end of the ranked lists. Only <strong>95%</strong> of the rankings are the same.</li>
+<li>Only genes in the beginning of the ranked list are detected as DE in both scenarios.
+<ul>
+<li>Not what we expected, because DE genes should be detected both at the beginning (significantly upregulated) <strong>and</strong> the end (significantly downregulated) of the ranked list</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>We examine how padj and logFC (or avg_diff) values correlate between the two scenarios: * padj values associated with each gene is identical regardless of the slot used (correlation coefficient = 1) - Makes sense because the wilcoxon rank sum test is used here, so the unscaled vs. scaled count data should be given the same rank in each scenario to calculate the p values. * The ranks therefore differ depending on the slot used for FindMarkers due to <strong>avg_logFC</strong> (or avg_diff) - Unexpected because although the scale.data slot are z-scores, the scaling shouldn’t have changed the relative expression across cells for a single gene. For example, if a condition expresses more a gene A than the other condition, while they expresses gene B at the same level, scaling the counts should not change the fact that gene A is differentially expressed while gene B is not. The avg_logFC of gene A relative to gene B should therefore be identical to the avg_diff of gene A relative to gene B. - Although it could be possible that FindMarkers may have scaled the counts in the <strong>scale.data</strong> slot again, which may have tightened the spread of the data even more and obscure differences between conditions, the fact that FindMarkers report values in <strong>avg_diff</strong> instead of <strong>avg_logFC</strong> imply that the function should already know that it is working with z-scores when slot is set to <strong>scale.data</strong>. - We therefore investigate how the distribution of avg_logFC when using the “data” slot compares to the distribution of avg_diff when using the “scale.data” slot for FindMarkers.</p>
+<pre class="r"><code>fc.diff = data.frame(
+    &quot;avg_logFC&quot; = data_slot$avg_logFC,
+    &quot;avg_diff&quot; = scale.data.slot$avg_diff
+)
+
+plot.df = reshape2::melt(fc.diff)
+
+ggplot(plot.df, aes(x = variable, y = value, fill = variable)) + geom_violin() + 
+  labs(x = &quot;&#39;data&#39; vs. &#39;scale.data&#39;&quot;, y = &quot;logFC or diff&quot;, title = &quot;Comparing the distribution of avg_logFC vs. avg_diff&quot;) +
+  theme_bw()</code></pre>
+<p><img src="figure/PDX_choices.Rmd/logFC%20vs.%20diff-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(&quot;DF20_FindMarkers_slot_logFC2.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)</code></pre>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>Both are normally distributed and centered at 0. Makes sense because most genes are not differentially expressed.</li>
+<li>The distribution of avg_diff is a lot tighter than that of avg_logFC. There are a lot more genes that are deemed not DE when using <strong>scale.data</strong> than <strong>data</strong>.
+<ul>
+<li>This makes sense because the count data for each gene in <strong>scale.data</strong> is scaled to a sd of 1, which explains why less variation is detected when we use <strong>scale.data</strong></li>
+<li>Not sure if using the <strong>scale.data</strong> slot actually reduces false positives, since less DE genes are detected, or increases false negatives (obscures differences between cells).</li>
+</ul></li>
+</ul></li>
+<li>However, this does not explain how the gene ranks would change when we use “data” vs. “scale.data”.
+<ul>
+<li>Here, we plot the average count of each gene within DF20, only MRD, and only vehicle, using both “data” and “scale.data” to visualize how the ranks might have changed.</li>
+</ul></li>
+</ul>
+<pre class="r"><code>DF20.vehicle &lt;- subset(DF20_score, subset = (treatment.status == &quot;vehicle&quot;))
+DF20.MRD &lt;- subset(DF20_score, subset = (treatment.status == &quot;MRD&quot;))
+
+df.data &lt;- data.frame(
+  &quot;DF20&quot; = Matrix::rowMeans(DF20_score[[&quot;RNA&quot;]]@data),
+  &quot;DF20.vehicle&quot; = Matrix::rowMeans(DF20.vehicle[[&quot;RNA&quot;]]@data),
+  &quot;DF20.MRD&quot; = Matrix::rowMeans(DF20.MRD[[&quot;RNA&quot;]]@data),
+  &quot;diff&quot; = (Matrix::rowMeans(DF20.MRD[[&quot;RNA&quot;]]@data) - Matrix::rowMeans(DF20.vehicle[[&quot;RNA&quot;]]@data)),
+  &quot;logFC&quot; = log2(Matrix::rowMeans(DF20.MRD[[&quot;RNA&quot;]]@data) / Matrix::rowMeans(DF20.vehicle[[&quot;RNA&quot;]]@data)),
+  &quot;genes&quot; = rownames(DF20.vehicle) %in% c(&quot;DDRGK1&quot;,&quot;RPS27&quot;,&quot;BCL9L&quot;,&quot;PYCR1&quot;,&quot;ACSF2&quot;),
+  &quot;rownames&quot; = rownames(DF20.vehicle)
+  )
+rownames(df.data) &lt;- rownames(DF20.vehicle)
+
+df.scale.data &lt;- data.frame(
+  &quot;DF20.vehicle&quot; = rowMeans(DF20.vehicle[[&quot;RNA&quot;]]@scale.data),
+  &quot;DF20.MRD&quot; = rowMeans(DF20.MRD[[&quot;RNA&quot;]]@scale.data),
+  &quot;diff&quot; = rowMeans(DF20.MRD[[&quot;RNA&quot;]]@scale.data) - rowMeans(DF20.vehicle[[&quot;RNA&quot;]]@scale.data),
+  &quot;genes&quot; = rownames(DF20.vehicle) %in% c(&quot;DDRGK1&quot;,&quot;RPS27&quot;,&quot;BCL9L&quot;,&quot;PYCR1&quot;,&quot;ACSF2&quot;),
+  &quot;rownames&quot; = rownames(DF20.vehicle)
+)
+rownames(df.scale.data) &lt;- rownames(DF20.vehicle)
+
+scale.data = data.frame(&quot;DF20&quot; = rowMeans(DF20_score[[&quot;RNA&quot;]]@scale.data), 
+                  &quot;genes&quot; = rownames(DF20_score) %in% c(&quot;DDRGK1&quot;,&quot;RPS27&quot;,&quot;BCL9L&quot;,&quot;PYCR1&quot;,&quot;ACSF2&quot;),
+                  &quot;rownames&quot; = rownames(DF20.vehicle)
+                  )
+
+plot.df.data = reshape2::melt(df.data)
+plot.df.scale.data = reshape2::melt(df.scale.data)
+plot = reshape2::melt(scale.data)
+
+p1 = ggplot() + 
+  geom_point(data = plot.df.data, aes(x = variable, y = value, colour = genes), alpha = 0.3) + labs(title = &quot;data slot&quot;) +
+  theme_bw() + geom_text_repel(data = filter(plot.df.data, genes == TRUE), aes(x = variable, y = value, label = rownames), size = 2)
+
+p2 = ggplot() + 
+  geom_point(data = plot.df.scale.data, aes(x = variable, y = value, colour = genes), alpha = 0.3) + labs(title = &quot;scale.data slot&quot;) +
+  theme_bw() + geom_text_repel(data = filter(plot.df.scale.data, genes == TRUE), aes(x = variable, y = value, label = rownames), size = 2)
+
+p3 = ggplot() + 
+  geom_point(data = plot, aes(x = variable, y = value, colour = genes), alpha = 0.3) + labs(title = &quot;scale.data slot DF20 only&quot;) +
+  theme_bw() + geom_text_repel(data = filter(plot, genes == TRUE), aes(x = variable, y = value, label = rownames), size = 2)
+
+p1 + p3 + p2 + plot_layout(guides= &#39;collect&#39;)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20ranks-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>abs(df.data[&quot;DDRGK1&quot;,&quot;logFC&quot;]) &gt; abs(df.data[&quot;ACSF2&quot;,&quot;logFC&quot;])  &amp;&amp; 
+  abs(df.data[&quot;ACSF2&quot;,&quot;logFC&quot;]) &gt; abs(df.data[&quot;RPS27&quot;,&quot;logFC&quot;]) &amp;&amp; 
+  abs(df.data[&quot;RPS27&quot;,&quot;logFC&quot;]) &gt; abs(df.data[&quot;BCL9L&quot;,&quot;logFC&quot;]) &amp;&amp; 
+  abs(df.data[&quot;BCL9L&quot;,&quot;logFC&quot;]) &gt; abs(df.data[&quot;PYCR1&quot;,&quot;logFC&quot;])</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code>abs(df.scale.data[&quot;RPS27&quot;,&quot;diff&quot;]) &gt; abs(df.scale.data[&quot;DDRGK1&quot;,&quot;diff&quot;]) &amp;&amp;
+  abs(df.scale.data[&quot;DDRGK1&quot;,&quot;diff&quot;]) &gt; abs(df.scale.data[&quot;ACSF2&quot;,&quot;diff&quot;]) &amp;&amp;
+  abs(df.scale.data[&quot;ACSF2&quot;,&quot;diff&quot;]) &gt; abs(df.scale.data[&quot;BCL9L&quot;,&quot;diff&quot;]) &amp;&amp; 
+  abs(df.scale.data[&quot;BCL9L&quot;,&quot;diff&quot;]) &gt; abs(df.scale.data[&quot;PYCR1&quot;,&quot;diff&quot;])</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>Interestingly, the position of average gene expression are drastically different depending on whether we use the “data” or “scale.data” slot. This also affects the ranking of differential expression:
+<ul>
+<li>data slot ranking: <strong>DDRGK1 &gt; ACSF2 &gt; RPS27</strong> &gt; BCL9L &gt; PYCR1</li>
+<li>scale.data slot ranking: <strong>RPS27 &gt; DDRGK1 &gt; ACSF2</strong> &gt; BCL9L &gt; PYCR1</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>We therefore build MAPlots to try to determine whether avg_logFC or avg_diff would be a better metric to use.</p>
+<pre class="r"><code>MA.df = data.frame(
+  &quot;rowname&quot; = rownames(DF20_score[[&quot;RNA&quot;]]@data),
+  &quot;normalized.exp&quot; = Matrix::rowMeans(DF20_score[[&quot;RNA&quot;]]@data)
+)
+
+MA.df &lt;- merge(MA.df, both, by = &quot;rowname&quot;)
+
+FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = avg_logFC)) + 
+  geom_point() + 
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression (from data slot) vs. logFC&quot;)
+
+diff &lt;- ggplot(MA.df, aes(x = normalized.exp, y = avg_diff)) + 
+  geom_point() + 
+  theme_bw() +
+  geom_hline(yintercept = 0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, title = &quot;Mean expression (from data slot) vs. avg_diff&quot;)
+
+FC + diff</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20logFC%20MAPlots-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li>Based on the comparison, it seems like <strong>avg_logFC</strong> is a better metric to use than <strong>avg_diff</strong> because the variation in logFC follows what we would expect from an MAplot, which decreases as the log2 mean expression increases, while the variance in avg_diff is large nonetheless.</li>
+</ul></li>
+</ul>
+</div>
+<div id="investigate-which-statistical-test-is-best-for-findmarkers" class="section level3">
+<h3>3.1.2 INVESTIGATE WHICH STATISTICAL TEST IS BEST FOR FINDMARKERS</h3>
+<ul>
+<li><strong>QUESTION</strong>: Which statistical test is best for FindMarkers?
+<ul>
+<li>wilcoxon rank sum test</li>
+<li>t test</li>
+<li>MAST</li>
+<li>LR</li>
+</ul></li>
+<li><p><strong>IMPORTANCE</strong>: Different statistical tests use different approximations and assumptions, which may slightly affect the resulting DE genes they detect.</p></li>
+<li><p><strong>HYPOTHESIS</strong>: We hypothesize that the wilcox rank sum test would be the best test to use.</p></li>
+<li><strong>APPROACH</strong>: Focus on DE genes between MRD and vehicle in DF20
+<ol style="list-style-type: decimal">
+<li>Call FindMarkers on DF20 with the four statistical tests (“data” slot)</li>
+<li>Arrange the DE gene list from step #1 in ascending order for padj (genes w/ the smallest padj value on top) and then in descending order for avg_logFC (genes w/ the highest logFC on top)</li>
+<li>Compare</li>
+</ol></li>
+</ul>
+<pre class="r"><code>wilcox &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;wilcox&quot;)
+colnames(wilcox) &lt;- c(&quot;feature&quot;, &quot;wilcox.logFC&quot;, &quot;wilcox.padj&quot;, &quot;wilcox.-log10padj&quot;, &quot;wilcox.rank&quot;, &quot;wilcox.DE&quot;)
+
+t.test &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;t&quot;) 
+colnames(t.test) &lt;- c(&quot;feature&quot;, &quot;t.logFC&quot;, &quot;t.padj&quot;, &quot;t.-log10padj&quot;, &quot;t.rank&quot;, &quot;t.DE&quot;)
+
+MAST &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;MAST&quot;) 
+colnames(MAST) &lt;- c(&quot;feature&quot;, &quot;MAST.logFC&quot;, &quot;MAST.padj&quot;, &quot;MAST.-log10padj&quot;, &quot;MAST.rank&quot;, &quot;MAST.DE&quot;)
+
+LR &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;LR&quot;) 
+colnames(LR) &lt;- c(&quot;feature&quot;, &quot;LR.logFC&quot;, &quot;LR.padj&quot;, &quot;LR.-log10padj&quot;, &quot;LR.rank&quot;, &quot;LR.DE&quot;)
+
+wilcox.t &lt;- merge(wilcox, t.test, by = &quot;feature&quot;)
+MAST.LR &lt;- merge(MAST, LR, by = &quot;feature&quot;)
+all &lt;- merge(wilcox.t, MAST.LR, by = &quot;feature&quot;)
+
+#compare padj 
+all.padj &lt;- ggpairs(all, columns = c(&quot;wilcox.padj&quot;, &quot;t.padj&quot;, &quot;MAST.padj&quot;, &quot;LR.padj&quot;), diag = &quot;blank&quot;, mapping = aes(alpha = 0.3)) + labs(title = &quot;Comparing padj values between statistical tests&quot;)
+all.padj[2,1] &lt;- all.padj[2,1] + geom_abline(colour = &quot;grey&quot;)
+all.padj[3,1] &lt;- all.padj[3,1] + geom_abline(colour = &quot;grey&quot;)
+all.padj[3,2] &lt;- all.padj[3,2] + geom_abline(colour = &quot;grey&quot;)
+all.padj[4,1] &lt;- all.padj[4,1] + geom_abline(colour = &quot;grey&quot;)
+all.padj[4,2] &lt;- all.padj[4,2] + geom_abline(colour = &quot;grey&quot;)
+all.padj[4,3] &lt;- all.padj[4,3] + geom_abline(colour = &quot;grey&quot;)
+all.padj</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test-1.png" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.padj, &quot;DF20_FindMarkers_test_padj.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, height = 7.15, width = 7.15)
+
+#compare -log10 padj 
+all.neglog10padj &lt;- ggpairs(all, columns = c(&quot;wilcox.-log10padj&quot;, &quot;t.-log10padj&quot;, &quot;MAST.-log10padj&quot;, &quot;LR.-log10padj&quot;), diag = &quot;blank&quot;, mapping = aes(alpha = 0.3)) + labs(title = &quot;Comparing -log10 padj values between statistical tests&quot;)
+all.neglog10padj[2,1] &lt;- all.neglog10padj[2,1] + geom_abline(colour = &quot;grey&quot;)
+all.neglog10padj[3,1] &lt;- all.neglog10padj[3,1] + geom_abline(colour = &quot;grey&quot;)
+all.neglog10padj[3,2] &lt;- all.neglog10padj[3,2] + geom_abline(colour = &quot;grey&quot;)
+all.neglog10padj[4,1] &lt;- all.neglog10padj[4,1] + geom_abline(colour = &quot;grey&quot;)
+all.neglog10padj[4,2] &lt;- all.neglog10padj[4,2] + geom_abline(colour = &quot;grey&quot;)
+all.neglog10padj[4,3] &lt;- all.neglog10padj[4,3] + geom_abline(colour = &quot;grey&quot;)
+all.neglog10padj</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test-2.png" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.neglog10padj, &quot;DF20_FindMarkers_test_-log10padj.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, height = 7.15, width = 7.15)
+
+#compare logFC
+all.logFC &lt;- ggpairs(all, columns = c(&quot;wilcox.logFC&quot;, &quot;t.logFC&quot;, &quot;MAST.logFC&quot;, &quot;LR.logFC&quot;), diag = &quot;blank&quot;, mapping = aes(alpha = 0.3)) + labs(title = &quot;Comparing logFC values between statistical tests&quot;)
+all.logFC[2,1] &lt;- all.logFC[2,1] + geom_abline(colour = &quot;grey&quot;)
+all.logFC[3,1] &lt;- all.logFC[3,1] + geom_abline(colour = &quot;grey&quot;)
+all.logFC[3,2] &lt;- all.logFC[3,2] + geom_abline(colour = &quot;grey&quot;)
+all.logFC[4,1] &lt;- all.logFC[4,1] + geom_abline(colour = &quot;grey&quot;)
+all.logFC[4,2] &lt;- all.logFC[4,2] + geom_abline(colour = &quot;grey&quot;)
+all.logFC[4,3] &lt;- all.logFC[4,3] + geom_abline(colour = &quot;grey&quot;)
+all.logFC</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test-3.png" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.logFC, &quot;DF20_FindMarkers_test_logFC.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, height = 7.15, width = 7.15)
+
+#compare ranks
+all.ranks &lt;- ggpairs(all, columns = c(&quot;wilcox.rank&quot;, &quot;t.rank&quot;, &quot;MAST.rank&quot;, &quot;LR.rank&quot;), diag = &quot;blank&quot;, mapping = aes(alpha = 0.3)) + labs(title = &quot;Comparing gene ranks between statistical tests&quot;, subtitle = &quot;Ranked by padj ascending, then logFC descending&quot;)
+all.ranks[2,1] &lt;- all.ranks[2,1] + geom_abline(colour = &quot;grey&quot;)
+all.ranks[3,1] &lt;- all.ranks[3,1] + geom_abline(colour = &quot;grey&quot;)
+all.ranks[3,2] &lt;- all.ranks[3,2] + geom_abline(colour = &quot;grey&quot;)
+all.ranks[4,1] &lt;- all.ranks[4,1] + geom_abline(colour = &quot;grey&quot;)
+all.ranks[4,2] &lt;- all.ranks[4,2] + geom_abline(colour = &quot;grey&quot;)
+all.ranks[4,3] &lt;- all.ranks[4,3] + geom_abline(colour = &quot;grey&quot;)
+all.ranks</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test-4.png" width="480" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.ranks, &quot;DF20_FindMarkers_test_ranks.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, height = 7.15, width = 7.15)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>:
+<ul>
+<li>The logFC value associated with each gene is <strong>identical</strong> regardless of the statistical test used (correlation coefficient = 1).</li>
+<li>However, padj values differ significantly between statistical tests. The best correlation is between LR and the t.test, which has a correlation coefficient of <strong>0.957</strong>. Although the correlation coefficient is stronger when plotting -log10padj values, they still differ significantly between statistical tests</li>
+<li>Despite the significant differences in padj values between statistical tests, gene ranks between statistical test are strongly correlated, the strongest being the correlation between LR and the t.test (<strong>0.987</strong>).</li>
+<li>Although the t.test and LR are the only two tests that were highly correlated with each other for all three metrics, we are not sure if this means that either of the two tests are best for our data.</li>
+</ul></li>
+</ul>
+<p>Since the logFC values are identical across statistical tests, gene rank depends on the padj value associated with each statistical test. We examine this by creating an MAplot and coloring each gene by whether it is DE in none, one, or any combination of statistical tests.</p>
+<pre class="r"><code>#compute whether a gene is DE in none, one, or any combination of statistical tests
+all &lt;- all %&gt;% mutate(&quot;num.DE&quot; = as.character(all$wilcox.DE + all$t.DE + all$MAST.DE + all$LR.DE))
+
+#MAplots 
+MA.df = data.frame(
+  &quot;feature&quot; = rownames(DF20_score[[&quot;RNA&quot;]]@data),
+  &quot;normalized.exp&quot; = Matrix::rowMeans(DF20_score[[&quot;RNA&quot;]]@data)
+)
+
+MA.df &lt;- merge(MA.df, all, by = &quot;feature&quot;)
+
+stat.FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = wilcox.logFC)) + 
+  geom_point(alpha = 0.5, aes(colour = num.DE)) + 
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression vs. logFC (Label DE genes from all statistical tests)&quot;, colour = &quot;DE in:&quot;)
+
+wilcox.FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = wilcox.logFC)) + 
+  geom_point(alpha = 0.5, aes(colour = wilcox.DE)) +
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression vs. logFC (Label DE genes from wilcox)&quot;, colour = &quot;DE&quot;)
+
+t.FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = t.logFC)) + 
+  geom_point(alpha = 0.5, aes(colour = t.DE)) + 
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression vs. logFC (Label DE genes from t.test)&quot;, colour = &quot;DE&quot;)
+
+MAST.FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = MAST.logFC)) +
+  geom_point(alpha = 0.5, aes(colour = MAST.DE)) + 
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression vs. logFC (Label DE genes from MAST)&quot;, colour = &quot;DE&quot;)
+
+LR.FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = LR.logFC)) + 
+  geom_point(alpha = 0.5, aes(colour = LR.DE)) + 
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression vs. logFC (Label DE genes from LR)&quot;, colour = &quot;DE&quot;)
+
+stat.FC</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test%20MAplots-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>wilcox.FC + t.FC + MAST.FC + LR.FC + plot_layout(guides= &#39;collect&#39;)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test%20MAplots-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>It seems like all of the statistical tests share similar DE genes, although there are a variety of genes that are DE in only a few of the tests.</li>
+<li>However, this plot is not informative enough about which statistical test is the best. We therefore plot volcano plots for each statistical test and determine which test gives us the most false positives (genes with very small padj but also small logFC).</li>
+</ul></li>
+</ul>
+<pre class="r"><code>wilcox.volcano &lt;- EnhancedVolcano(all, lab = all$feature, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;), caption = paste(sum(all$wilcox.DE), &quot;DE genes&quot;))
+
+t.volcano &lt;- EnhancedVolcano(all, lab = all$feature, x=&#39;t.logFC&#39;, y=&#39;t.padj&#39;, 
+      pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes -T.test&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;), caption = paste(sum(all$t.DE), &quot;DE genes&quot;))
+
+MAST.volcano &lt;- EnhancedVolcano(all, lab = all$feature, x=&#39;MAST.logFC&#39;, y=&#39;MAST.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - MAST&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;), caption = paste(sum(all$MAST.DE), &quot;DE genes&quot;))
+
+LR.volcano &lt;- EnhancedVolcano(all, lab = all$feature, x=&#39;LR.logFC&#39;, y=&#39;LR.padj&#39;, 
+      pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - LR&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;), caption = paste(sum(all$LR.DE), &quot;DE genes&quot;))
+
+all.volcano &lt;- wilcox.volcano + t.volcano + MAST.volcano + LR.volcano
+all.volcano</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test%20Volcano%20Plots-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.volcano, filename = &quot;DF20_stattest_volcano.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, height = 15, width = 20)</code></pre>
+<p>We investigate how ranking by padj for each statistical test would affect our results. Which statistical test gives us the most false positives at the top of the rank?</p>
+<pre class="r"><code>wilcox.volcano &lt;- EnhancedVolcano(all, lab= all$wilcox.rank, selectLab = all$wilcox.rank, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox (ranked with padj)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (padj ascending, logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+t.volcano &lt;- EnhancedVolcano(all, lab= all$t.rank, selectLab = all$t.rank, x=&#39;t.logFC&#39;, y=&#39;t.padj&#39;, 
+      pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes -T.test (ranked with padj)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (padj ascending, logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+MAST.volcano &lt;- EnhancedVolcano(all, lab= all$MAST.rank, selectLab = all$MAST.rank, x=&#39;MAST.logFC&#39;, y=&#39;MAST.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - MAST (ranked with padj)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (padj ascending, logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+LR.volcano &lt;- EnhancedVolcano(all, lab= all$LR.rank, selectLab = all$LR.rank, x=&#39;LR.logFC&#39;, y=&#39;LR.padj&#39;, 
+      pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - LR (ranked with padj)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (padj ascending, logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+all.volcano &lt;- wilcox.volcano + t.volcano + MAST.volcano + LR.volcano
+all.volcano</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20statistical%20test%20Volcano%20Plots2-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.volcano, filename = &quot;DF20_stattest_volcano2.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, height = 15, width = 20)</code></pre>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li><strong>T-test</strong> and <strong>LR</strong> resulted in the least number of false positives (small padj values but also small logFC).</li>
+<li>Since we rank the genes by padj values first, then by logFC, a lot of the genes that are at the <strong>top</strong> of the rank for <strong>wilcox</strong> and <strong>MAST</strong> are actually false positives.</li>
+<li>However, <strong>T.test and LR</strong> detected drastically <strong>less</strong> DE genes than <strong>wilcox</strong> and <strong>MAST</strong>. We’re not sure whether using the <strong>t.test or LR</strong> would be better because they reduce false positives, since less DE genes are detected, or if it is actually not a great idea to use these two tests because they possibly increase false negatives (obscures differences between cells).</li>
+</ul></li>
+</ul>
+<p>Since <strong>t.test</strong> and <strong>LR</strong> are <strong>parametric</strong> tests, unlike <strong>wilcox</strong>, which is nonparametric, we examine whether it would still be better to use the <strong>data</strong> slot than the <strong>scale.data</strong> slot for parametric tests like we have determined above. * We focus on using the <strong>t.test</strong> as the representative of <strong>parametric</strong> tests</p>
+<pre class="r"><code>#t.test 
+t.data = t.test
+
+t.scale.data &lt;- FindMarkers_code(DF20_score, group.by=&quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;t&quot;, slot = &quot;scale.data&quot;)
+colnames(t.scale.data) &lt;- c(&quot;feature&quot;, &quot;t.avg_diff&quot;, &quot;t.scale.padj&quot;, &quot;t.scale.-log10padj&quot;, &quot;t.scale.rank&quot;, &quot;t.scale.DE&quot;)
+
+t.both &lt;- merge(t.data, t.scale.data, by = &quot;feature&quot;)
+t.both &lt;- t.both %&gt;% mutate(&quot;DE.in&quot; = as.character(t.both$t.DE + t.both$t.scale.DE))
+
+#compare ranks 
+t.ranks.plot &lt;- ggplot(t.both, aes(x = t.rank, y = t.scale.rank)) + geom_point(alpha = 0.5, aes(colour = DE.in)) + geom_abline() + labs(title = &quot;Comparing gene ranks when using data vs. scale.data for t.test&quot;, x = &quot;data&quot;, y = &quot;scale.data&quot;, subtitle = &quot;ranked by padj ascending, then logFC descending&quot;, caption = &quot;R = 0.62, p &lt; 2.2e-16&quot;, colour = &quot;DE in&quot;) +  theme_bw() +
+theme(plot.title = element_text(size = 10), plot.subtitle = element_text(size = 8))
+ggsave(plot = t.ranks.plot, &quot;DF20_FindMarkers_slot_t.ranks.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)
+
+#compare padj 
+t.padj.plot &lt;- ggplot(t.both, aes(x = t.padj, y = t.scale.padj)) + geom_point(alpha = 0.5) + theme_bw() + geom_abline() + labs(title = &quot;Comparing the padj values of using data vs. scale.data for t.test&quot;, x = &quot;data&quot;, y = &quot;scale.data&quot;, caption = &quot;R = 1, p &lt; 2.2e-16&quot;) +  theme(plot.title = element_text(size = 10))
+ggsave(plot = t.padj.plot, &quot;DF20_FindMarkers_slot_t.padj.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)
+
+#compare avg_logfc vs. avg_diff
+t.logFC.plot &lt;- ggplot(t.both, aes(x = t.logFC, y = t.avg_diff)) + geom_point(alpha = 0.3, aes(colour = DE.in)) + labs(title = &quot;Comparing the logFC and avg_diff values of using data vs. scale.data for t.test&quot;, x = &quot;data&quot;, y = &quot;scale.data&quot;, colour = &quot;DE in&quot;, caption = &quot;R = 0.56, p &lt; 2.2e-16&quot;) + theme_bw() + theme(plot.title = element_text(size = 10)) + geom_abline()
+ggsave(plot = t.logFC.plot, &quot;DF20_FindMarkers_slot_t.logFC.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;)
+
+t.ranks.plot + t.padj.plot + t.logFC.plot + plot_layout(guides= &#39;collect&#39;)</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20t.test%20and%20LR%20slots-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#MAplots 
+MA.df = data.frame(
+  &quot;feature&quot; = rownames(DF20_score[[&quot;RNA&quot;]]@data),
+  &quot;normalized.exp&quot; = Matrix::rowMeans(DF20_score[[&quot;RNA&quot;]]@data)
+)
+
+MA.df &lt;- merge(MA.df, t.both, by = &quot;feature&quot;)
+
+FC &lt;- ggplot(MA.df, aes(x = normalized.exp, y = t.logFC)) + 
+  geom_point(alpha = 0.5, aes(colour = DE.in)) +
+  theme_bw() +
+  geom_hline(yintercept =0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, y = &quot;logFC&quot;, title = &quot;Mean expression (from data slot) vs. logFC - T.test&quot;)
+
+diff &lt;- ggplot(MA.df, aes(x = normalized.exp, y = t.avg_diff)) + 
+  geom_point(alpha = 0.5, aes(colour = DE.in)) +
+  theme_bw() +
+  geom_hline(yintercept = 0, colour = &quot;grey&quot;) + 
+  labs(x = &quot;Log2 Mean Expression&quot;, title = &quot;Mean expression (from data slot) vs. avg_diff - T.test&quot;)
+
+FC + diff</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20t.test%20and%20LR%20slots-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li><strong>CONCLUSIONS</strong>
+<ul>
+<li>Very similar results when testing which data slot is best for <strong>parametric</strong> tests in comparison to what we determine while using the <strong>nonparamteric wilcoxon rank sum test</strong>:
+<ul>
+<li>We obtained the same padj values regardless of the slot we used for the <strong>t.test</strong></li>
+<li>Ranks differed at a similar level it differed when testing with the <strong>wilcoxon</strong> statistical test</li>
+<li>MAplot tells us that it would be better to use the “data” slot, because the distribution of t.logFC has less variation than the distribution of t.avg_diff.</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="investigate-ranking-method" class="section level3">
+<h3>3.1.3 INVESTIGATE RANKING METHOD</h3>
+<ul>
+<li>We demonstrated above that ranking by padj values first, then by logFC resulted in <strong>false positives</strong>, where many genes that are high in rank have low padj values but also low logFC that do not meet the 0.5 threshold. Here, we investigate which method would be best for ranking genes:
+<ul>
+<li>Ranking by padj values ascending, then by logFC descending (demonstrated above, will include again below)</li>
+<li>Ranking by logFC descending, then by padj values ascending</li>
+<li>Rank by AUC</li>
+<li>Ranking by first filtering out genes with padj &gt; 0.05, then rank by logFC descending</li>
+<li>Multiplying -log10padj by logFC and using this metric to rank genes</li>
+<li>Multiplying -log10padj by FC and using this metric to rank genes</li>
+</ul></li>
+</ul>
+<pre class="r"><code>all.volcano</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20rank%20by%20padj-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li>Rank by padj first, then by logFC:
+<ul>
+<li>A lot of false positives - many genes that are at the <strong>top</strong> of the rank, especially for <strong>wilcox</strong> and <strong>MAST</strong> are actually false positives.</li>
+</ul></li>
+</ul>
+<p>We now test how our ranked list would look like if we rank with logFC first:</p>
+<pre class="r"><code>#rank by logFC descending first, then by padj
+wilcox.FCrank &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;wilcox&quot;, rank.by = &quot;logFC&quot;)
+colnames(wilcox.FCrank) &lt;- c(&quot;rowname&quot;, &quot;wilcox.logFC&quot;, &quot;wilcox.padj&quot;, &quot;wilcox.-log10padj&quot;, &quot;wilcox.rank&quot;, &quot;wilcox.DE&quot;)
+  
+t.test.FCrank &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;t&quot;, rank.by = &quot;logFC&quot;)
+colnames(t.test.FCrank) &lt;- c(&quot;rowname&quot;, &quot;t.logFC&quot;, &quot;t.padj&quot;, &quot;t.-log10padj&quot;, &quot;t.rank&quot;, &quot;t.DE&quot;)
+
+MAST.FCrank &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;MAST&quot;, rank.by = &quot;logFC&quot;)
+colnames(MAST.FCrank) &lt;- c(&quot;rowname&quot;, &quot;MAST.logFC&quot;, &quot;MAST.padj&quot;, &quot;MAST.-log10padj&quot;, &quot;MAST.rank&quot;, &quot;MAST.DE&quot;)
+
+LR.FCrank &lt;- FindMarkers_code(DF20_score, group.by = &quot;treatment.status&quot;, group.1 = &quot;MRD&quot;, group.2 = &quot;vehicle&quot;, stattest = &quot;LR&quot;, rank.by = &quot;logFC&quot;)
+colnames(LR.FCrank) &lt;- c(&quot;rowname&quot;, &quot;LR.logFC&quot;, &quot;LR.padj&quot;, &quot;LR.-log10padj&quot;, &quot;LR.rank&quot;, &quot;LR.DE&quot;)
+
+#volcano plots 
+wilcox.FCrank.plot &lt;- EnhancedVolcano(wilcox.FCrank, lab= wilcox.FCrank$wilcox.rank, selectLab = wilcox.FCrank$wilcox.rank, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox (ranked with logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (logFC descending, padj ascending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+t.FCrank.plot &lt;- EnhancedVolcano(t.test.FCrank, lab= t.test.FCrank$t.rank, selectLab = t.test.FCrank$t.rank, x=&#39;t.logFC&#39;, y=&#39;t.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - T.test (ranked with logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (logFC descending, padj ascending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+MAST.FCrank.plot &lt;- EnhancedVolcano(MAST.FCrank, lab= MAST.FCrank$MAST.rank, selectLab = MAST.FCrank$MAST.rank, x=&#39;MAST.logFC&#39;, y=&#39;MAST.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - MAST (ranked with logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (logFC descending, padj ascending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+LR.FCrank.plot &lt;- EnhancedVolcano(LR.FCrank, lab= LR.FCrank$LR.rank, selectLab = LR.FCrank$LR.rank, x=&#39;LR.logFC&#39;, y=&#39;LR.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - LR (ranked with logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (logFC descending, padj ascending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+all.FCrank.plot &lt;- wilcox.FCrank.plot + t.FCrank.plot + MAST.FCrank.plot + LR.FCrank.plot
+all.FCrank.plot</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20rank%20by%20logFC-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = all.FCrank.plot, file = &quot;DF20_FCrankPlot.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 20, height = 15)</code></pre>
+<ul>
+<li>Rank by logFC first, then by padj:
+<ul>
+<li>Very bad - genes at the top of the ranked list all have a padj value of 1. They aggregate at the bottom of the volcano plot.</li>
+<li>Genes that are actually detected as DE (padj &lt; 0.05, abs(logFC) &gt; 0.5) are towards the very end of the ranked list.</li>
+<li>The only good news is that the <strong>false positives</strong> are also at the very end of the ranked list instead of being at the top of the list like when we ranked with padj.</li>
+</ul></li>
+</ul>
+<p><strong>TESTING WILCOXAUC</strong>* We now test how our ranked list would look like if we rank with AUC. AUC is calculated using the <strong>wilcoxauc</strong> function, which calculate the <strong>logFC</strong>, <strong>padj</strong>, and <strong>auc</strong> value for each gene</p>
+<pre class="r"><code>wilcoxauc.test &lt;- wilcoxauc(DF20_score, group_by = &quot;treatment.status&quot;, groups_use = c(&quot;vehicle&quot;, &quot;MRD&quot;), assay = &quot;data&quot;) %&gt;% filter(group == &quot;MRD&quot;)
+wilcoxauc.test &lt;- wilcoxauc.test %&gt;%
+  arrange(-auc) %&gt;%
+  mutate(&quot;rank&quot; = seq(from=1, to=length(wilcoxauc.test$feature)))
+
+#compare metrics from wilcoxauc.test vs. wilcox
+wilcoxVs.auc &lt;- merge(wilcox, wilcoxauc.test, by = &quot;feature&quot;)
+
+wilcoxVsAuc.padj &lt;- ggplot(wilcoxVs.auc, aes(x = wilcox.padj, y = padj)) + 
+  geom_point(alpha = 0.5) + geom_abline() + theme_bw() +
+  labs(x = &quot;wilcox padj&quot;, y = &quot;wilcoxauc padj&quot;, title = &quot;Comparing padj values from wilcox vs. wilcoxauc&quot;, subtitle = &quot;R = 0.22, p &lt; 2.2e-16&quot;)
+
+wilcoxVsAuc.logFC &lt;- ggplot(wilcoxVs.auc, aes(x = wilcox.logFC, y = logFC)) + 
+  geom_point(alpha = 0.5) + geom_abline() + theme_bw() + 
+  labs(x = &quot;wilcox logFC&quot;, y = &quot;wilcoxauc logFC&quot;, title = &quot;Comparing logFC values from wilcox vs. wilcoxauc&quot;, subtitle = &quot;R = 0.56, p &lt; 2.2e-16&quot;) 
+
+wilcoxVsAuc.rank &lt;- ggplot(wilcoxVs.auc, aes(x = wilcox.rank, y = rank)) + 
+  geom_point(alpha = 0.5) + geom_abline() + theme_bw() + 
+  labs(x = &quot;wilcox rank (by padj first)&quot;, y = &quot;wilcoxauc rank (by auc)&quot;, title = &quot;Comparing gene ranks between ranking by padj vs. auc&quot;, subtitle = &quot;R = 0.29, p &lt; 2.2e-16&quot;) 
+
+wilcoxVsAuc.padj + wilcoxVsAuc.logFC + wilcoxVsAuc.rank</code></pre>
+<p><img src="figure/PDX_choices.Rmd/FindMarkers%20rank%20by%20AUC-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li>We used <strong>wilcoxauc</strong> to calculate the logFC, padj, and auc value for each gene in MRD relative to vehicle. However, the logFC and padj values obtained differs significantly from those we obtained using the <strong>wilcoxon rank sum test</strong>.
+<ul>
+<li>While some genes have a padj value of <strong>1</strong> using the <strong>wilcox</strong> test, they actually have a significant padj value (p &lt; 0.05) when using the <strong>wilcoxauc</strong></li>
+<li>It is <strong>unexpected</strong> that the logFC value associated with each gene would be different depending on the statistical test, because that was not the case when we tested between the four statistical tests above (wilcox, t.test, MAST, LR).</li>
+</ul></li>
+</ul>
+<p>We are not sure which test to trust considering how drastically different the logFC and padj values obtained are between the two statistical tests.</p>
+<p>Meanwhile, we rank each gene by their <strong>auc</strong> value, and a create VolcanoPlot to visualize the results:</p>
+<pre class="r"><code>wilcoxauc.plot &lt;- EnhancedVolcano(wilcoxauc.test, lab= wilcoxauc.test$rank, selectLab = wilcoxauc.test$rank, x=&#39;logFC&#39;, y=&#39;padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - WilcoxAUC (ranked by AUC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled by gene ranks (ranked by AUC)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
+
+wilcox.volcano &lt;- wilcox.volcano + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
+
+wilcox.FCrank.plot &lt;- wilcox.FCrank.plot + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
+
+ranks.plot &lt;- wilcoxauc.plot + wilcox.volcano + wilcox.FCrank.plot
+ranks.plot</code></pre>
+<p><img src="figure/PDX_choices.Rmd/wilcoxauc%20volcano%20plot-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<ul>
+<li><strong>OBSERVATIONS</strong>
+<ul>
+<li>The <strong>wilcoxauc</strong> test gave us a lot more <strong>false positives</strong> than any of the statistical tests we tested above, and some of these false positives are pretty high up in the gene ranks, although most of them are in the middle / lower end of the rank.</li>
+<li>Ranking genes with <strong>auc</strong> seems like the best option because genes that are at the top of the list (auc = 1) are those that are enriched in group.1 (MRD) relative group.2 (vehicle), while genes that are at the end of the list (auc = 0) are those that are depleted in group.1 (MRD) relative to group.2 (vehicle). Genes in the middle are those that are not DE.
+<ul>
+<li>This is the most appropriate way of ranking genes for GSEA. GSEA ranks genes by walking down the list and adding to a running sum if a gene in the list is in the geneset. Therefore, if the GSEA plot is skewed towards the left, it means that the geneset is enriched, while if the plot is skewed towards the right, the geneset is depleted altogether.</li>
+<li>Although this can also be achieved by ranking genes by logFC, we demonstrated above that doing so will result in top ranked genes with a padj value of 1.</li>
+<li>However, if we ranked by padj values first, top ranked genes would be a mixture of those that are upregulated and depleted.</li>
+</ul></li>
+</ul></li>
+<li>Although ranking genes by AUC seems like the best method for now, the drastic difference in logFC and padj values we get from the <strong>wilcoxauc</strong> vs. <strong>wilcox</strong> statistical tests is a concerning factor, and we’re not sure which metric to trust.
+<ul>
+<li>We therefore try to rank by logFC again, but filter out not statistically significant genes first. We will investigate how the rankings look on the volcano plot again. As above, we will focus on <strong>wilcox</strong>.</li>
+</ul></li>
+</ul>
+<p><strong>TESTING FILTER OUT PADJ FIRST, THEN RANK BY LOGFC</strong></p>
+<pre class="r"><code>wilcox.fpFC &lt;- wilcox %&gt;% select(-wilcox.rank) %&gt;% filter(wilcox.padj &lt; 0.05)
+wilcox.fpFC &lt;- wilcox.fpFC %&gt;% arrange(-wilcox.logFC)
+wilcox.fpFC &lt;- wilcox.fpFC %&gt;% mutate(&quot;wilcox.rank&quot; = seq(from = 1, length = nrow(wilcox.fpFC)))
+
+wilcox.fpFC.plot &lt;- EnhancedVolcano(wilcox.fpFC, lab= wilcox.fpFC$wilcox.rank, selectLab = wilcox.fpFC$wilcox.rank, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox (filtered out p&gt;0.05 genes, ranked by logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10)) 
+
+p &lt;- wilcox.volcano + wilcox.FCrank.plot + wilcoxauc.plot + wilcox.fpFC.plot
+p</code></pre>
+<p><img src="figure/PDX_choices.Rmd/wilcoxRank-1.png" width="1440" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p, filename = &quot;ranktest.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 15, height = 15)</code></pre>
+<p>It seems like filtering our padj first, then ranking by logFC might be the best option because: - The most enriched genes are all at the top - The most depleted genes are all at the bottom - They are all statistically significant - False positives are at the middle of the ranked list which doesn’t matter * However, it might not be a great idea to filter out genes because GSEA needs to work on all genes. * We therefore test to rank genes by - multiplying -log10padj by logFC and using this metric to rank - filtering out padj&gt; 0.05 genes first then rank by that metric</p>
+<p><strong>TESTING -LOG10PADJ X LOGFC METRIC</strong></p>
+<pre class="r"><code># -log10padj * logFC ----------------------
+wilcox.Mult &lt;- wilcox %&gt;% select(-wilcox.rank) 
+wilcox.Mult &lt;- wilcox.Mult %&gt;% 
+  mutate(&quot;rank.metric&quot; = wilcox.Mult$&quot;wilcox.-log10padj&quot; * wilcox.Mult$wilcox.logFC)
+wilcox.Mult &lt;- wilcox.Mult %&gt;% arrange(-rank.metric)
+wilcox.Mult &lt;- wilcox.Mult %&gt;% mutate(&quot;wilcox.rank&quot; = seq(from = 1, length = nrow(wilcox.Mult)))
+
+wilcox.Mult.plot &lt;- EnhancedVolcano(wilcox.Mult, lab= wilcox.Mult$wilcox.rank, selectLab = wilcox.Mult$wilcox.rank, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox (-log10padj * logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (-log10padj * logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
+
+# -log10padj * logFC (filter genes out)
+wilcox.Mult.filt &lt;- wilcox %&gt;% select(-wilcox.rank) %&gt;% filter(wilcox.padj &lt; 0.05)
+wilcox.Mult.filt &lt;- wilcox.Mult.filt %&gt;% 
+  mutate(&quot;rank.metric&quot; = wilcox.Mult.filt$&quot;wilcox.-log10padj&quot; * wilcox.Mult.filt$wilcox.logFC)
+wilcox.Mult.filt &lt;- wilcox.Mult.filt %&gt;% arrange(-rank.metric)
+wilcox.Mult.filt &lt;- wilcox.Mult.filt %&gt;% mutate(&quot;wilcox.rank&quot; = seq(from = 1, length = nrow(wilcox.Mult.filt)))
+
+wilcox.Mult.filt.plot &lt;- EnhancedVolcano(wilcox.Mult.filt, lab= wilcox.Mult.filt$wilcox.rank, selectLab = wilcox.Mult.filt$wilcox.rank, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox (filtered, -log10padj * logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (filtered, -log10padj * logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
+
+
+p1 &lt;- p + wilcox.Mult.plot + wilcox.Mult.filt.plot
+p1 </code></pre>
+<p><img src="figure/PDX_choices.Rmd/rankMult-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p1, filename = &quot;ranktest2.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 30, height = 15)</code></pre>
+<ul>
+<li>In terms of comparing ranking methods using the <strong>wilcox</strong> test, it seems like ranking it by the <strong>-log10padj x logFC</strong> metric is the best because it has a nice separation of upregulated and downregulated genes at separate poles, and genes that are false positives are relatively in the middle of the rank.</li>
+<li>Although we are not considering so much about ranking after filtering genes out, it is important to note that ranking genes with logFC after filtering genes out allows us to rank genes that are highly DE on top, whereas using the <strong>-log10padj x logFC</strong> puts the priority more to statistical significance (genes that are more statistically significant are at the top of the list despite the clearly separate poles).</li>
+<li>We are still unsure how to compare <strong>wilcoxauc</strong> vs <strong>wilcox</strong>, since the AUC metric is also great for ranking but the logFC and padj values we get are completely different.</li>
+</ul>
+<p>We now try the following to try to give more weight to FC than padj by Multiplying -log10padj by FC and using this metric to rank genes</p>
+<p><strong>TESTING -LOG10PADJ X FC METRIC</strong></p>
+<pre class="r"><code># -log10padj x FC 
+wilcox.MultxFC &lt;- wilcox %&gt;% select(-wilcox.rank)
+wilcox.MultxFC &lt;- wilcox.MultxFC %&gt;% mutate(&quot;wilcox.FC&quot; = exp(wilcox.logFC))
+wilcox.MultxFC &lt;- wilcox.MultxFC %&gt;% mutate(&quot;rank.metric&quot; = wilcox.MultxFC$&quot;wilcox.-log10padj&quot; * wilcox.FC)
+wilcox.MultxFC &lt;- wilcox.MultxFC %&gt;% 
+  arrange(-rank.metric) %&gt;% mutate(&quot;wilcox.rank&quot; = seq(from =1, length = nrow(wilcox.MultxFC)))
+
+wilcox.MultxFC.plot &lt;- EnhancedVolcano(wilcox.MultxFC, lab= wilcox.MultxFC$wilcox.rank, selectLab = wilcox.MultxFC$wilcox.rank, x=&#39;wilcox.logFC&#39;, y=&#39;wilcox.padj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;DF20 MRD vs. vehicle DE Genes - Wilcox (-log10padj * FC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (-log10padj * FC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;)) + theme(plot.title = element_text(size = 12), plot.subtitle = element_text(size = 8), plot.caption = element_text(size = 10))
+
+p2 &lt;- p + wilcox.Mult.plot + wilcox.MultxFC.plot
+p2</code></pre>
+<p><img src="figure/PDX_choices.Rmd/rankMult2-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = p2, filename = &quot;ranktest3.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 30, height = 15)
+
+p3 &lt;- wilcox.Mult.plot + wilcox.MultxFC.plot
+ggsave(plot = p3, filename = &quot;ranktest4.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 30, height = 15)</code></pre>
+<ul>
+<li>It seems like using the -log10adj * logFC metric is still the best because differentially downregulated genes are more towards the end of the list, and less false positive genes are nearer to the top of the list.</li>
+<li>However, we try to confirm our decisions by running GSEA using both ranking methods.</li>
+</ul>
+</div>
+<div id="testing-gsea" class="section level2">
+<h2>TESTING GSEA</h2>
+<p>We try to run GSEA with the following ranking methods:</p>
+<ol style="list-style-type: decimal">
+<li>-log10padj * logFC</li>
+<li>-log10padj * FC</li>
+</ol>
+<pre class="r"><code># DF20 MRD vs. Vehicle OXPHOS ------------------------------
+# -log10padj x logFC 
+wilcox.Mult.ranks &lt;- wilcox.Mult %&gt;% select(feature, rank.metric) %&gt;% deframe()
+wilcox.Mult.GSEA &lt;- fgsea(hallmark.list, stats = wilcox.Mult.ranks, minSize = 15, maxSize = 500, nperm = 1000) %&gt;% 
+  as_tibble() %&gt;% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %&gt;% 
+  arrange(desc(NES), padj)
+
+padj = wilcox.Mult.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.OXPHOS&quot;) %&gt;% select(padj) %&gt;% deframe() %&gt;% round(digits = 3)
+NES = wilcox.Mult.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.OXPHOS&quot;) %&gt;% select(NES) %&gt;% deframe() %&gt;% round(digits = 3)
+p5 &lt;- plotEnrichment(pathway = hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]], stats = wilcox.Mult.ranks) + labs(title = glue(&quot;DF20 OXPHOS GSEA results for MRD vs. Vehicle&quot;), subtitle = glue(&quot;(NES = {NES}, padj = {padj})&quot;), caption = &quot;-log10padj x logFC&quot;)
+
+# -log10padj x FC 
+wilcox.MultxFC.ranks &lt;- wilcox.MultxFC %&gt;% select(feature, rank.metric) %&gt;% deframe()
+wilcox.MultxFC.GSEA &lt;- fgsea(hallmark.list, stats = wilcox.MultxFC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %&gt;% 
+  as_tibble() %&gt;% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %&gt;% 
+  arrange(desc(NES), padj)
+
+padj = wilcox.MultxFC.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.OXPHOS&quot;) %&gt;% select(padj) %&gt;% deframe() %&gt;% round(digits = 3)
+NES = wilcox.MultxFC.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.OXPHOS&quot;) %&gt;% select(NES) %&gt;% deframe() %&gt;% round(digits = 3)
+p6 &lt;- plotEnrichment(pathway = hallmark.list[[&quot;UNUPDATED.OXPHOS&quot;]], stats = wilcox.MultxFC.ranks) + labs(title = glue(&quot;DF20 OXPHOS GSEA results for MRD vs. Vehicle&quot;), subtitle = glue(&quot;(NES = {NES}, padj = {padj})&quot;), caption = &quot;-log10padj x FC&quot;)
+
+p3 &lt;- p5 + p6
+ggsave(plot = p3, filename = &quot;GSEAtest.png&quot;, path = &quot;jesslyn_plots/PDX_test&quot;, width = 15)</code></pre>
+<ul>
+<li>It is interesting that using different ranking methods give us such different results.
+<ul>
+<li>Multiplying by logFC tells us that MRD deplete OXPHOS genes, while multiplying by FC tells us that MRD enriches OXPHOS genes.</li>
+<li>Although both enrichment scores are insignificant, the FC padj is closer to 1</li>
+<li>However, our VlnPlot of DF20 OXPHOS scores show us that MRD upregulates OXPHOS genes relative to Vehicle (although it is insignificant), so we are not sure whether we should go with ranking by multiplying FC or logFC.</li>
+</ul></li>
+</ul>
+<p>We try to run GSEA using both ranking methods on other comparisons (SS2 9.1 vs. 9.2 OXPHOS)</p>
+<ul>
+<li>According to our Violin plot, 9.1 &gt; 9.2 for OXPHOS expression (and this difference is statistically significant)</li>
+</ul>
+<pre class="r"><code>#SS2 9.1 vs. 9.2 OXPHOS -----------------
+SS2Malignant.9 &lt;- readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant9_processed.RDS&quot;)
+SS2.1v2.markers &lt;- FindMarkers(SS2Malignant.9, group.by = &quot;sample&quot;, ident.1 = &quot;9.1&quot;, ident.2 = &quot;9.2&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+SS2.1v2.markers &lt;- SS2.1v2.markers %&gt;% rownames_to_column() %&gt;% mutate(&quot;neglog10padj&quot;= -log10(p_val_adj))
+
+#-log10padj x logFC -----------------------
+SS2.Mult.logFC &lt;- SS2.1v2.markers %&gt;% mutate(&quot;rank.metric&quot; = (neglog10padj * avg_logFC))
+SS2.Mult.logFC &lt;- SS2.Mult.logFC %&gt;% arrange(-rank.metric) %&gt;% mutate(&quot;rank&quot; = seq(from = 1, length = nrow(SS2.Mult.logFC))) %&gt;% mutate(&quot;DE&quot; = (abs(avg_logFC) &gt; 0.5 &amp; p_val_adj &lt; 0.05))
+
+SS2.Mult.logFC.plot &lt;- EnhancedVolcano(SS2.Mult.logFC, lab= SS2.Mult.logFC$rank, selectLab = SS2.Mult.logFC$rank, x=&#39;avg_logFC&#39;, y=&#39;p_val_adj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;SS2 9.1 vs. 9.2 DE Genes - Wilcox (-log10padj x logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (-log10padj x logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+#GSEA 
+SS2.Mult.logFC.ranks &lt;- SS2.Mult.logFC %&gt;% select(rowname, rank.metric) %&gt;% deframe()
+SS2.Mult.logFC.GSEA &lt;- fgsea(hallmark.list, stats = SS2.Mult.logFC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %&gt;% 
+  as_tibble() %&gt;% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %&gt;% 
+  arrange(desc(NES), padj)
+
+padj = SS2.Mult.logFC.GSEA %&gt;% filter(pathway == &quot;GO.OXPHOS&quot;) %&gt;% select(padj) %&gt;% deframe() %&gt;% round(digits = 3)
+NES = SS2.Mult.logFC.GSEA %&gt;% filter(pathway == &quot;GO.OXPHOS&quot;) %&gt;% select(NES) %&gt;% deframe() %&gt;% round(digits = 3)
+p7 &lt;- plotEnrichment(pathway = hallmark.list[[&quot;GO.OXPHOS&quot;]], stats = SS2.Mult.logFC.ranks) + labs(title = glue(&quot;SS2 OXPHOS GSEA results for 9.1 vs. 9.2&quot;), subtitle = glue(&quot;(NES = {NES}, padj = {padj})&quot;), caption = &quot;-log10padj x logFC&quot;)
+
+#-log10padj x FC -----------------------
+SS2.MultxFC &lt;- SS2.1v2.markers %&gt;% mutate(&quot;FC&quot; = exp(avg_logFC))
+SS2.MultxFC &lt;- SS2.MultxFC %&gt;% mutate(&quot;rank.metric&quot; = neglog10padj * FC)
+SS2.MultxFC &lt;- SS2.MultxFC %&gt;% 
+  arrange(-rank.metric) %&gt;% 
+  mutate(&quot;rank&quot; = seq(from =1, length = nrow(SS2.MultxFC)))
+
+SS2.Mult.FC.plot &lt;- EnhancedVolcano(SS2.MultxFC, lab= SS2.MultxFC$rank, selectLab = SS2.MultxFC$rank, x=&#39;avg_logFC&#39;, y=&#39;p_val_adj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;SS2 9.1 vs. 9.2 DE Genes - Wilcox (-log10padj x FC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (-log10padj x FC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+#GSEA 
+SS2.Mult.FC.ranks &lt;- SS2.MultxFC %&gt;% select(rowname, rank.metric) %&gt;% deframe()
+SS2.Mult.FC.GSEA &lt;- fgsea(hallmark.list, stats = SS2.Mult.FC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %&gt;% 
+  as_tibble() %&gt;% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %&gt;% 
+  arrange(desc(NES), padj)
+
+padj = SS2.Mult.FC.GSEA %&gt;% filter(pathway == &quot;GO.OXPHOS&quot;) %&gt;% select(padj) %&gt;% deframe() %&gt;% round(digits = 3)
+NES = SS2.Mult.FC.GSEA %&gt;% filter(pathway == &quot;GO.OXPHOS&quot;) %&gt;% select(NES) %&gt;% deframe() %&gt;% round(digits = 3)
+p8 &lt;- plotEnrichment(pathway = hallmark.list[[&quot;GO.OXPHOS&quot;]], stats = SS2.Mult.FC.ranks) + labs(title = glue(&quot;SS2 OXPHOS GSEA results for 9.1 vs. 9.2&quot;), subtitle = glue(&quot;(NES = {NES}, padj = {padj})&quot;), caption = &quot;-log10padj x FC&quot;)
+
+
+volcano &lt;- SS2.Mult.logFC.plot + SS2.Mult.FC.plot
+volcano </code></pre>
+<p><img src="figure/PDX_choices.Rmd/GSEAP9-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = volcano, filename = &quot;SS2.volcano.test.png&quot;, path= &quot;jesslyn_plots/PDX_test&quot;, width = 20, height = 10)
+
+GSEA.plots &lt;- p7 + p8 
+GSEA.plots </code></pre>
+<p><img src="figure/PDX_choices.Rmd/GSEAP9-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = GSEA.plots, filename = &quot;SS2.GSEA.test.png&quot;, path= &quot;jesslyn_plots/PDX_test&quot;, width = 20, height = 10)</code></pre>
+<ul>
+<li>For our SS2 9.1 vs. 9.2 comparisons, we get very similar GSEA results and it also agrees with our VlnPlot that 9.1 &gt; 9.2 for OXPHOS. However, although the our results are statistically significant when looking at our VlnPlot, the padj value for GSEA is statistically insignificant.</li>
+<li>In terms of gene ranking, it still seems like using -log10padj x logFC is a better metric because genes that are differentially downregulated are more towards the end of the list. However, important to note that more false positives are towards the top of the ranked list than DF20.</li>
+</ul>
+<p>Since we’ve been getting inconsistent results, we try another comparison to see whether it agrees more with our PDX DF20 comparison results or our SS2 Patient 9 results about GSEA and ranking method.</p>
+<p>We will be testing Patient 8.1 vs 8.0 for UPR genes. According to our VlnPlot, 8.1 &gt; 8.0 for UPR expression (padj &lt; 0.05)</p>
+<pre class="r"><code>#SS2 8.1 vs. 8.2 OXPHOS -----------------
+SS2Malignant.8 &lt;- readRDS(file = &quot;data/Izar_2020/jesslyn_SS2Malignant8_processed.RDS&quot;)
+SS28.1v0.markers &lt;- FindMarkers(SS2Malignant.8, group.by = &quot;sample&quot;, ident.1 = &quot;8.1&quot;, ident.2 = &quot;8.0&quot;, test.use = &quot;wilcox&quot;, logfc.threshold = 0)
+SS28.1v0.markers &lt;- SS28.1v0.markers %&gt;% rownames_to_column() %&gt;% mutate(&quot;neglog10padj&quot;= -log10(p_val_adj))
+
+#-log10padj x logFC -----------------------
+SS28.Mult.logFC &lt;- SS28.1v0.markers %&gt;% mutate(&quot;rank.metric&quot; = (neglog10padj * avg_logFC))
+SS28.Mult.logFC &lt;- SS28.Mult.logFC %&gt;% arrange(-rank.metric) %&gt;% mutate(&quot;rank&quot; = seq(from = 1, length = nrow(SS28.Mult.logFC))) %&gt;% mutate(&quot;DE&quot; = (abs(avg_logFC) &gt; 0.5 &amp; p_val_adj &lt; 0.05))
+
+SS28.Mult.logFC.plot &lt;- EnhancedVolcano(SS28.Mult.logFC, lab= SS28.Mult.logFC$rank, selectLab = SS28.Mult.logFC$rank, x=&#39;avg_logFC&#39;, y=&#39;p_val_adj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;SS2 8.1 vs. 8.0 DE Genes - Wilcox (-log10padj x logFC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (-log10padj x logFC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+#GSEA 
+SS28.Mult.logFC.ranks &lt;- SS28.Mult.logFC %&gt;% select(rowname, rank.metric) %&gt;% deframe()
+SS28.Mult.logFC.GSEA &lt;- fgsea(hallmark.list, stats = SS28.Mult.logFC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %&gt;% 
+  as_tibble() %&gt;% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %&gt;% 
+  arrange(desc(NES), padj)
+
+padj = SS28.Mult.logFC.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.UPR&quot;) %&gt;% select(padj) %&gt;% deframe() %&gt;% round(digits = 3)
+NES = SS28.Mult.logFC.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.UPR&quot;) %&gt;% select(NES) %&gt;% deframe() %&gt;% round(digits = 3)
+p9 &lt;- plotEnrichment(pathway = hallmark.list[[&quot;UNUPDATED.UPR&quot;]], stats = SS28.Mult.logFC.ranks) + labs(title = glue(&quot;SS2 UPR GSEA results for 8.1 vs. 8.0&quot;), subtitle = glue(&quot;(NES = {NES}, padj = {padj})&quot;), caption = &quot;-log10padj x logFC&quot;)
+
+#-log10padj x FC -----------------------
+SS28.MultxFC &lt;- SS28.1v0.markers %&gt;% mutate(&quot;FC&quot; = exp(avg_logFC))
+SS28.MultxFC &lt;- SS28.MultxFC %&gt;% mutate(&quot;rank.metric&quot; = neglog10padj * FC)
+SS28.MultxFC &lt;- SS28.MultxFC %&gt;% 
+  arrange(-rank.metric) %&gt;% 
+  mutate(&quot;rank&quot; = seq(from =1, length = nrow(SS28.MultxFC)))
+
+SS28.Mult.FC.plot &lt;- EnhancedVolcano(SS28.MultxFC, lab= SS28.MultxFC$rank, selectLab = SS28.MultxFC$rank, x=&#39;avg_logFC&#39;, y=&#39;p_val_adj&#39;, pCutoff = 0.05, FCcutoff = 0.5, col = c(&quot;black&quot;, &quot;black&quot;, &quot;purple2&quot;, &quot;red2&quot;), 
+      title= &quot;SS2 8.1 vs. 8.0 DE Genes - Wilcox (-log10padj x FC)&quot;, subtitle= &quot;LogFC cutoff: 0.5, p cutoff: 0.05&quot;, 
+      caption = &quot;Labeled with gene ranks (-log10padj x FC descending)&quot;, 
+      legendLabels = c(&quot;NS&quot;, expression(Log[2]~FC), &quot;False Positives&quot;, &quot;DE&quot;))
+
+#GSEA 
+SS28.Mult.FC.ranks &lt;- SS28.MultxFC %&gt;% select(rowname, rank.metric) %&gt;% deframe()
+SS28.Mult.FC.GSEA &lt;- fgsea(hallmark.list, stats = SS28.Mult.FC.ranks, minSize = 15, maxSize = 500, nperm = 1000) %&gt;% 
+  as_tibble() %&gt;% 
+  select(-leadingEdge, -ES, -nMoreExtreme) %&gt;% 
+  arrange(desc(NES), padj)
+
+padj = SS28.Mult.FC.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.UPR&quot;) %&gt;% select(padj) %&gt;% deframe() %&gt;% round(digits = 3)
+NES = SS28.Mult.FC.GSEA %&gt;% filter(pathway == &quot;UNUPDATED.UPR&quot;) %&gt;% select(NES) %&gt;% deframe() %&gt;% round(digits = 3)
+p10 &lt;- plotEnrichment(pathway = hallmark.list[[&quot;UNUPDATED.UPR&quot;]], stats = SS28.Mult.FC.ranks) + labs(title = glue(&quot;SS2 UPR GSEA results for 8.1 vs. 8.0&quot;), subtitle = glue(&quot;(NES = {NES}, padj = {padj})&quot;), caption = &quot;-log10padj x FC&quot;)
+
+
+volcano.8 &lt;- SS28.Mult.logFC.plot + SS28.Mult.FC.plot
+volcano.8 </code></pre>
+<p><img src="figure/PDX_choices.Rmd/GSEAP8-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = volcano.8, filename = &quot;SS28.volcano.test.png&quot;, path= &quot;jesslyn_plots/PDX_test&quot;, width = 20, height = 10)
+
+GSEA.8.plots &lt;- p9 + p10
+GSEA.8.plots </code></pre>
+<p><img src="figure/PDX_choices.Rmd/GSEAP8-2.png" width="1920" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(plot = GSEA.8.plots, filename = &quot;SS28.GSEA.test.png&quot;, path= &quot;jesslyn_plots/PDX_test&quot;, width = 20, height = 10)</code></pre>
+<ul>
+<li>We get the same results as our DF20 comparison where the GSEA results for the different rank metrics are very different. Although the VolcanoPlot suggest that -log10padj x logFC is a better metric, the GSEA result for -log10padj x FC agree with our VlnPlot where 8.1 &gt; 8.0 for UPR genes.</li>
+<li>We further investigate our choices for GSEA in the section below <strong>“GSEA choices”</strong></li>
+</ul>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span> Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.0.2 (2020-06-22)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Mojave 10.14.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices datasets  utils     methods   base     
+
+other attached packages:
+ [1] ggbeeswarm_0.6.0      ggpubr_0.4.0          GGally_2.0.0          gt_0.2.1              reshape2_1.4.4       
+ [6] tidyselect_1.1.0      fgsea_1.14.0          presto_1.0.0          data.table_1.12.8     Rcpp_1.0.5           
+[11] glue_1.4.1            patchwork_1.0.1       EnhancedVolcano_1.6.0 ggrepel_0.8.2         here_0.1             
+[16] readxl_1.3.1          forcats_0.5.0         stringr_1.4.0         dplyr_1.0.0           purrr_0.3.4          
+[21] readr_1.3.1           tidyr_1.1.0           tibble_3.0.3          ggplot2_3.3.2         tidyverse_1.3.0      
+[26] cowplot_1.0.0         Seurat_3.1.5          BiocManager_1.30.10   renv_0.11.0-4        
+
+loaded via a namespace (and not attached):
+  [1] backports_1.1.8             fastmatch_1.1-0             workflowr_1.6.2             plyr_1.8.6                 
+  [5] igraph_1.2.5                lazyeval_0.2.2              splines_4.0.2               BiocParallel_1.22.0        
+  [9] listenv_0.8.0               GenomeInfoDb_1.24.2         digest_0.6.25               htmltools_0.5.0            
+ [13] fansi_0.4.1                 magrittr_1.5                cluster_2.1.0               ROCR_1.0-11                
+ [17] limma_3.44.3                openxlsx_4.1.5              globals_0.12.5              modelr_0.1.8               
+ [21] matrixStats_0.56.0          prettyunits_1.1.1           colorspace_1.4-1            blob_1.2.1                 
+ [25] rvest_0.3.5                 haven_2.3.1                 xfun_0.15                   RCurl_1.98-1.2             
+ [29] crayon_1.3.4                jsonlite_1.7.0              survival_3.2-3              zoo_1.8-8                  
+ [33] ape_5.4                     gtable_0.3.0                zlibbioc_1.34.0             XVector_0.28.0             
+ [37] leiden_0.3.3                DelayedArray_0.14.1         car_3.0-8                   SingleCellExperiment_1.10.1
+ [41] future.apply_1.6.0          BiocGenerics_0.34.0         abind_1.4-5                 scales_1.1.1               
+ [45] DBI_1.1.0                   rstatix_0.6.0               progress_1.2.2              viridisLite_0.3.0          
+ [49] reticulate_1.16             foreign_0.8-80              rsvd_1.0.3                  stats4_4.0.2               
+ [53] tsne_0.1-3                  htmlwidgets_1.5.1           httr_1.4.1                  RColorBrewer_1.1-2         
+ [57] ellipsis_0.3.1              ica_1.0-2                   farver_2.0.3                pkgconfig_2.0.3            
+ [61] reshape_0.8.8               uwot_0.1.8                  dbplyr_1.4.4                labeling_0.3               
+ [65] rlang_0.4.7                 later_1.1.0.1               munsell_0.5.0               cellranger_1.1.0           
+ [69] tools_4.0.2                 cli_2.0.2                   generics_0.0.2              broom_0.7.0                
+ [73] ggridges_0.5.2              evaluate_0.14               yaml_2.2.1                  knitr_1.29                 
+ [77] fs_1.4.2                    fitdistrplus_1.1-1          zip_2.0.4                   RANN_2.6.1                 
+ [81] pbapply_1.4-2               future_1.18.0               nlme_3.1-148                whisker_0.4                
+ [85] xml2_1.3.2                  compiler_4.0.2              rstudioapi_0.11             beeswarm_0.2.3             
+ [89] plotly_4.9.2.1              curl_4.3                    png_0.1-7                   ggsignif_0.6.0             
+ [93] reprex_0.3.0                stringi_1.4.6               lattice_0.20-41             Matrix_1.2-18              
+ [97] vctrs_0.3.2                 pillar_1.4.6                lifecycle_0.2.0             lmtest_0.9-37              
+[101] RcppAnnoy_0.0.16            bitops_1.0-6                irlba_2.3.3                 GenomicRanges_1.40.0       
+[105] httpuv_1.5.4                R6_2.4.1                    promises_1.1.1              KernSmooth_2.23-17         
+[109] gridExtra_2.3               rio_0.5.16                  IRanges_2.22.2              vipor_0.4.5                
+[113] codetools_0.2-16            MASS_7.3-51.6               assertthat_0.2.1            SummarizedExperiment_1.18.2
+[117] MAST_1.14.0                 rprojroot_1.3-2             withr_2.2.0                 sctransform_0.2.1          
+[121] GenomeInfoDbData_1.2.3      S4Vectors_0.26.1            parallel_4.0.2              hms_0.5.3                  
+[125] grid_4.0.2                  rmarkdown_2.3               carData_3.0-4               Rtsne_0.15                 
+[129] git2r_0.27.1                Biobase_2.48.0              lubridate_1.7.9            </code></pre>
+</div>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+http://docs.mathjax.org/en/latest/configuration.html.  This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
