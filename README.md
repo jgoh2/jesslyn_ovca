@@ -15,7 +15,8 @@ Our code for our scRNA-seq analysis can be found in the **analysis** folder and 
 
 We split our scRNA-seq analysis into five parts: 
   1. **Load Data and Create Seurat Objects**
-      a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
+  
+    a. The code to this part of our analysis is in the **read_Izar_2020.R** file in the **code** folder. During this part of our analysis we: 
             i. Load in the raw count matrix and Create Seurat Object 
             ii. Assign Metadata identities including: 
                 - Patient ID
@@ -26,7 +27,8 @@ We split our scRNA-seq analysis into five parts:
             iv. Save Seurat Object
           
   2. **Process Data**
-      a. The code to this part of our analysis can be found in the **02_Izar2020_SS2_Load_Plots.Rmd** file for the SS2 data and in the 
+  
+    a. The code to this part of our analysis can be found in the **02_Izar2020_SS2_Load_Plots.Rmd** file for the SS2 data and in the 
       **03_Izar2020_PDX_Load.Rmd** file in the **old/edited** folder for the PDX data. During this part of our analysis we: 
             i. Load in SS2 Seurat Object from Part 1 and **subset by patient/model**. Continue analysis separately for each patient/model. 
             ii. Scale and center data, and FindVariableFeatures (prepare data for dimensionality reduction)
@@ -34,7 +36,8 @@ We split our scRNA-seq analysis into five parts:
             vi. Save Seurat Objects 
       
   3. **Exploratory Data Analysis**
-      a. The code to this part of our analysis can be found in the **02.0_Izar2020_SS2_Exploratory Analysis** and **03.0_Izar2020_PDX_Exploratory Analysis** files in the **analysis** folder. 
+  
+    a. The code to this part of our analysis can be found in the **02.0_Izar2020_SS2_Exploratory Analysis** and **03.0_Izar2020_PDX_Exploratory Analysis** files in the **analysis** folder. 
       During this part of our analysis we: 
             i. Load in Seurat Objects from Part 2. Analyze separately for each patient/model
             ii. Compute summary metrics for SS2 data such as: 
@@ -47,12 +50,14 @@ We split our scRNA-seq analysis into five parts:
                     * How do cells separate by cell cycle phase?
             
   4. **DE Analysis**
-        a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
-        b. **TYPE #2 DE ANALYSIS**: Identifying Individual DE Genes 
-        c. **TYPE #3 DE ANALYSIS**: Gene Ontology Functional Enrichment Analysis 
+
+    a. **TYPE #1 DE ANALYSIS**: Visualizing and Quantifying Differentially Expression on **Predefined** GO Genesets
+    b. **TYPE #2 DE ANALYSIS**: Identifying Individual DE Genes 
+    c. **TYPE #3 DE ANALYSIS**: Gene Ontology Functional Enrichment Analysis 
           
   5. **CELL CYCLE ANALYSIS**
-        a. Examine whether there is a correlation between treatment condition and cell cycle phase through DE Analysis of cell cycle gene-set scores
-        b. Examine a correlation between cell cycle phase and the expression of our gene-sets of interest
+        
+    a. Examine whether there is a correlation between treatment condition and cell cycle phase through DE Analysis of cell cycle gene-set scores
+    b. Examine a correlation between cell cycle phase and the expression of our gene-sets of interest
         
 Please find our analysis workflow, our code, and results on [our project website](https://jgoh2.github.io/jesslyn_ovca/).    
