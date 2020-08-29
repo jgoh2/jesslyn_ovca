@@ -107,7 +107,7 @@ In addition to being a survival mechanism in normal cells, the dysregulation of 
 ### OUR PURPOSE 
 Despite these findings, the actual mechanisms behind drug resistance remain to be elucidated, and many of the hypotheses are contradicted by other evidence as well. 
 
-   * For instance, although the expression of the putative CSC marker CD133 in all DTPs from the Sharma et al paper suggests a link between stemness and resistance, they also observed that CSC-specific markers are lost during the transition of DTPs to DTEPs despite the ability of both cell populations to be equally drug insensitive. 
+  * For instance, although the expression of the putative CSC marker CD133 in all DTPs from the Sharma et al paper suggests a link between stemness and resistance, they also observed that CSC-specific markers are lost during the transition of DTPs to DTEPs despite the ability of both cell populations to be equally drug insensitive. 
   * Another study contradicts the hypothesis on the link between OXPHOS metabolism and drug resistance, where very different metabolic patterns are found in drug resistant cells (Morandi & Indraccolo, 2017). In fact, a recent study in 2019 showed that cancer cells are able to shift between OXPHOS and glycolysis in response to the inhibition of either process (Elgendy et al. 2019). 
 
 Together, these findings reveal the complex mechanisms that confer drug resistance in cancer cells, which are in all likelihood different in different cancer types, tumor microenvironment, and the drug used. The eradication of DTPs is the first step to overcoming resistance and preventing cancer relapse. It is therefore important for us to identify and characterize the underlying biological mechanisms that make them different from their drug sensitive counterparts and allow them to survive and proliferate. We aim to confirm the results found in previous papers and identify epigenetic differences in specific cell cycle and metabolic gene-sets by analyzing the gene expression profile of high grade serous ovarian cancer cells across different treatment time-points through Gene ontology (GO) and Gene-set enrichment analysis (GSEA) as well as differential expression (DE) analysis of single genes. We are interested in discovering whether the links between cancer stem cell-like quiescent, metabolic plasticity specifically in OXPHOS and UPR expression, and drug resistance reported in other studies are also found in our ovarian cancer data. 
@@ -116,8 +116,9 @@ Together, these findings reveal the complex mechanisms that confer drug resistan
 Our single-cell Ovarian cancer data is kindly provided by Izar and Tirosh et al., from their paper **A single-cell landscape of high-grade serous ovarian cancer**. 
 
 For their study, they collected scRNA-seq data from three HGSOC cohorts, which includes a set of 22 ascites samples from 11 patients and three patient ascites-derived xenograft models. 
-    * 8 ascites samples out of the 22 samples were sequenced using droplet-based 10X scRNAseq, while the remaining 14 ascites samples were sequenced using plate-based single cell RNAseq (SS2). 
-    * Considering that only 1 patient (Patient 5) in the 10X cohort had samples from more than 1 treatment condition, and that 99% of the malignant cells from that patient is from the on-treatment condition, with only 8 cells from the treatment-naive condition(8 TN vs. 4885 1CCT cells), we focus our analysis on the SS2 and PDX cohorts, which have more equally distributed cells across all treatment statuses. 
+
+* 8 ascites samples out of the 22 samples were sequenced using droplet-based 10X scRNAseq, while the remaining 14 ascites samples were sequenced using plate-based single cell RNAseq (SS2). 
+* Considering that only 1 patient (Patient 5) in the 10X cohort had samples from more than 1 treatment condition, and that 99% of the malignant cells from that patient is from the on-treatment condition, with only 8 cells from the treatment-naive condition(8 TN vs. 4885 1CCT cells), we focus our analysis on the SS2 and PDX cohorts, which have more equally distributed cells across all treatment statuses. 
 
 **OUR FOCUS** 
 
