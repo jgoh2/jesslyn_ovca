@@ -22,6 +22,7 @@ Ovarian cancer (OVCA) is one of the deadliest cancers in women (Matulonis et al.
 </center>
 
 **TREATMENT** 
+
 Late stage OVCA detection is frequently associated with metastasis, and along with the lack of druggable target molecules in ovarian cancer, treatment of ovarian cancer is fairly difficult. Current treatment for ovarian cancer often includes surgery and chemotherapy. The goal of the surgery is to stage the cancer and to debulk the tumor (remove as much as possible). The treatment for ovarian cancer is different at different stages. 
 
   * Stage 1: limited to one or both ovaries, and can be found on the surface of the ovary. 
@@ -32,6 +33,7 @@ Late stage OVCA detection is frequently associated with metastasis, and along wi
 The lack of druggable target molecules makes cytotoxic platinum-based chemotherapy, such as cisplatin or carboplatin, the standard chemotherapy drugs for ovarian cancer.
 
 **RESISTANCE**
+
 Despite improved clinical response and survival in recent years, numerous patients succumb to the disease as a result of chemotherapy resistance. Although 70% of ovarian cancer patients initially respond to platinum-based chemotherapy, relapse occurs in 25% of patients with early stage ovarian cancer, and more than 80% in patients with advanced disease. The majority of these patients experience relapse within 2 years of initial treatment. 
 
 <center> 
@@ -51,6 +53,7 @@ However, non-genetic mechanisms have also been found to play an important role i
 Although the actual mechanisms of non-genetic drug resistance remain to be fully understood, several studies suggest that chemotherapy resistance may be linked to cancer stem-like cell characteristics such as cancer quiescence or metabolic reprogramming. 
 
 **CANCER STEM CELLS AND DRUG RESISTANT PERSISTER CELLS** 
+
 Chemotherapy resistant cells are found to have overlapping biological features with those of cancer stem cells, which includes plasticity, tumor-initiating capacity, and slow proliferation. 
 Cancer stem cells are slow-proliferating cells at the top of the cancer hierarchy, and are involved in tumor-initiation as they give rise to intermediate progenitors and to differentiated progeny. However, the boundaries between stem and non-stem cells have been found to be relatively weak in cancer, and studies report phenomena of therapy-induced enrichment of cancer stem-like cells, where differentiated cells are found to transition to a stem-like cell state that confer resistance.For example, Sharma et al observed that the putative CSC marker CD133 is expressed in all DTPs (but only in approximately 2% of the parental PC9 population), while another CSC marker CD24 is also enriched in some settings.
 
@@ -63,6 +66,7 @@ Cancer stem cells are slow-proliferating cells at the top of the cancer hierarch
 So how does cancer stem-like characteristics confer drug resistance? 
 
 **CANCER DORMANCY AND DRUG RESISTANCE**
+
 One of the many ways that a stem-like cell state may confer resistance is quiescent. Drug resistance is commonly characterized by a suppression of proliferation.Cancer cells can escape from the mitotic cell cycle and stay arrested at the non or low cycling G0-G1 phase to wait for an appropriate environment. Cancer cells can therefore make use of dormancy to overcome hostile microenvironments and re-enter the cell cycle to proliferate once unfavourable conditions are ruled out.  
 
 <center>
@@ -72,6 +76,7 @@ One of the many ways that a stem-like cell state may confer resistance is quiesc
 </center>
 
 **METABOLIC REPROGRAMMING AND DRUG RESISTANCE**
+
 Another hypothesized way that a stem-like cell state may confer resistance is plasticity, specifically metabolic plasticity. Several studies report that drug resistant persister cells are transcriptionally and/or metabolically different from their drug-sensitive proliferating counterparts.
 
 A recent study reports a metabolic shift from aerobic glycolysis to oxidative phosphorylation (OXPHOS) in cisplatin-resistant (SKOV3/DPP) ovarian cancer cells (Xu et al., 2018). This is a crucial finding because cancer cells are known to favor glycolysis over OXPHOS even under aerobic conditions (the Warburg effect). 
@@ -115,6 +120,7 @@ For their study, they collected scRNA-seq data from three HGSOC cohorts, which i
     * Considering that only 1 patient (Patient 5) in the 10X cohort had samples from more than 1 treatment condition, and that 99% of the malignant cells from that patient is from the on-treatment condition, with only 8 cells from the treatment-naive condition(8 TN vs. 4885 1CCT cells), we focus our analysis on the SS2 and PDX cohorts, which have more equally distributed cells across all treatment statuses. 
 
 **OUR FOCUS** 
+
   * The SS2 data from Izar2020 consists of cells from 14 ascites samples from 6 individuals: 
       - Selected for malignant EPCAM+CD24+ cells by fluorophore-activated cell sorting into 96-well plates
       - We are only interested in the **malignant** ascites population, specifically samples from **patient 8 and 9** because they are the only patients that have samples from different treatment statuses.
