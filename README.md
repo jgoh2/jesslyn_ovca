@@ -23,7 +23,7 @@ We split our scRNA-seq analysis into five parts:
                 - Time
                 - Sample ID
                 - Treatment Status 
-            iii. Score cells for **cell cycle** and **hallmark genesets** 
+            iii. Score cells for cell cycle and hallmark genesets 
             iv. Save Seurat Object
           
   2. **Process Data**
@@ -37,7 +37,8 @@ We split our scRNA-seq analysis into five parts:
       
   3. **Exploratory Data Analysis**
   
-    a. The code to this part of our analysis can be found in the [02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd] and [03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd] files in the [analysis] folder. During this part of our analysis we: 
+    a. The code to this part of our analysis can be found in the [02.0_Izar2020_SS2_ExploratoryAnalysis.Rmd] and [03.0_Izar2020_PDX_ExploratoryAnalysis.Rmd] 
+    files in the [analysis] folder. During this part of our analysis we: 
             i. Load in Seurat Objects from Part 2. Analyze separately for each patient/model
             ii. Compute summary metrics for SS2 data such as: 
                 - Number of cells per patient per treatment 
