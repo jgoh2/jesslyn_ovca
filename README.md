@@ -1,32 +1,36 @@
-# CHARACTERIZATION OF METABOLIC DYNAMICS OF OVARIAN PERSISTER CELLS FOLLOWING CARBOPLATIN TREATMENT
+# CHARACTERIZING METABOLIC DYNAMICS OF OVARIAN CANCER CELLS FOLLOWING CARBOPLATIN TREATMENT
 Developed by [Jesslyn Goh](https://github.com/jgoh2) and [Mike Cuoco](https://github.com/mikecuoco)
 
-We characterize the gene expression signatures of **High-grade Serous Ovarian Cancer cells** across different treatment conditions. 
-We aim to identify differential gene or gene-set expression that are associated with the drug tolerant cancer persister cells. The identification of underlying biological mechanisms 
-that enable persister cells to survive and proliferate following drug treatment will inform future work in the creation of new drugs that specifically eradicate 
-these persisters cells and prevent cancer relapse. For more background information about Ovarian Cancer and Non-genetic drug tolerant persister cells, 
-please visit [our project website](https://jgoh2.github.io/jesslyn_ovca/).
+In this meta-analysis, we aim to identify gene expression signatures associated with  **drug tolerant ovarian cancer persister cells**. (can add a brief background sentence about persister cells here). The mechanistic characterization of persister cell survival and proliferation will expand our understanding of cancer's ability to resist traditional cytotoxic agents and inform the development of new drugs to prevent disease relapse. 
 
-Our single-cell Ovarian cancer data is kindly provided by Izar and Tirosh et al., from their paper A single-cell landscape of high-grade serous ovarian cancer. 
-For more background information about our Ovarian Cancer data, please visit [our project website](https://jgoh2.github.io/jesslyn_ovca/).
+Our single-cell RNA-seq dataset is kindly provided by the authors ["A single-cell landscape of high-grade serous ovarian cancer." (Izar et al. 2020)](https://doi.org/10.1038/s41591-020-0926-0). 
+
+For more background information about ovarian cancer and drug tolerant persister cells and our ovarian cancer dataset , please visit [our project website](https://jgoh2.github.io/jesslyn_ovca/).
+
+## SPECIFIC AIMS
+1. Identify candidate drug tolerant cancer persister cells among available single-cell RNA-seq datasets.
+
+2. Characterize the gene expression signatures unique to the identified persister populations.
+
+
 
 ## OUR ANALYSIS WORKFLOW 
-Our code for our scRNA-seq analysis can be found in the **analysis** folder and helper functions that are used in our analysis can be found in the **code** folder. 
+The code for our scRNA-seq analysis can be found in the `analysis/` folder and helper functions that are used in our analysis can be found in the `code/` folder. 
 
 We split our scRNA-seq analysis into five parts: 
-  1. **Load Data and Create Seurat Objects**
+
+  1. **Load Data and Create Seurat Objects:** `code/read_Izar_2020.R` 
   
-    a. The code to this part of our analysis is in the [read_Izar_2020.R] file in the [code] folder. During this part of our analysis we: 
-            i. Load in the raw count matrix and Create Seurat Object 
-            ii. Assign Metadata identities including: 
-                - Patient ID
-                - Time
-                - Sample ID
-                - Treatment Status 
-            iii. Score cells for cell cycle and hallmark genesets 
-            iv. Save Seurat Object
+      a) Load in the raw count matrix and Create Seurat Object
+      b) Assign Metadata identities including: 
+        - Patient ID
+        - Time
+        - Sample ID
+        - Treatment Status 
+      c) Score cells for cell cycle and hallmark genesets 
+      d) Save Seurat Object
           
-  2. **Process Data**
+  2. **Process Data:** 
   
     a. The code to this part of our analysis can be found in the [02_Izar2020_SS2_Load_Plots.Rmd] file for the SS2 data and in the 
       [03_Izar2020_PDX_Load.Rmd] file in the [old/edited] folder for the PDX data. During this part of our analysis we: 
